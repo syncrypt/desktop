@@ -73,10 +73,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
         UpdateVaults ->
-            ( { model | state = UpdatingVaults model.vaults }, Api.getVaults model.config )
+            ( { model | state = UpdatingVaults model.vaults }
+            , Api.getVaults model.config
+            )
 
         UpdatedVaultsFromApi (Ok vaults) ->
-            ( { model | state = ShowingAllVaults vaults, vaults = vaults }, Cmd.none )
+            ( { model | state = ShowingAllVaults vaults, vaults = vaults }
+            , Cmd.none
+            )
 
         UpdatedVaultsFromApi (Err reason) ->
             let
