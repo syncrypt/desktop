@@ -35,6 +35,8 @@ apiUrl config path =
                 ( False, False ) ->
                     config.apiUrl ++ "/"
     in
+        -- the daemon API expects requests URLs to end with "/"
+        -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
         if String.endsWith "/" path then
             rootUrl ++ path
         else
