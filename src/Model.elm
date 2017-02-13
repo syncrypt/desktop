@@ -15,7 +15,7 @@ type alias Model =
 type State
     = LoadingVaults
     | UpdatingVaults (List Vault)
-    | ShowingAllVaults (List Vault)
+    | ShowingAllVaults
     | ShowingVaultDetails Vault
 
 

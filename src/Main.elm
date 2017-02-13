@@ -50,8 +50,8 @@ subscriptions model =
 
 
 view : Model -> Html.Html Msg
-view { config, state } =
-    case state of
+view model =
+    case model.state of
         LoadingVaults ->
             div [ class "vault-list", onClick UpdateVaults ]
                 [ Html.text "Loading Vaults" ]
@@ -59,10 +59,10 @@ view { config, state } =
         UpdatingVaults vaults ->
             text ("Updating vaults: " ++ (vaults |> List.length |> toString))
 
-        ShowingAllVaults vaults ->
+        ShowingAllVaults ->
             div []
-                (text ("Showing vaults: " ++ (vaults |> List.length |> toString))
-                    :: List.map View.VaultList.vaultItem vaults
+                (text ("Showing vaults: " ++ (model.vaults |> List.length |> toString))
+                    :: List.map View.VaultList.vaultItem model.vaults
                 )
 
         ShowingVaultDetails { id } ->
@@ -78,7 +78,7 @@ update action model =
             )
 
         UpdatedVaultsFromApi (Ok vaults) ->
-            ( { model | state = ShowingAllVaults vaults, vaults = vaults }
+            ( { model | state = ShowingAllVaults, vaults = vaults }
             , Cmd.none
             )
 
