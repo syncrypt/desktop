@@ -24,7 +24,11 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    let
+        model =
+            initialModel
+    in
+        ( model, Api.getVaults model.config )
 
 
 initialModel : Model
@@ -80,6 +84,9 @@ update action model =
             in
                 -- retry to get vaults if request failed
                 ( model, Api.getVaults model.config )
+
+        OpenVaultDetails vault ->
+            ( { model | state = ShowingVaultDetails vault }, Cmd.none )
 
         _ ->
             ( { model | state = LoadingVaults }, Cmd.none )

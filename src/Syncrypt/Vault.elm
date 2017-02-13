@@ -13,6 +13,7 @@ type Status
     | Syncing
     | Initializing
     | Synced
+    | Ready
 
 
 type alias Vault =

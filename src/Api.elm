@@ -10,9 +10,6 @@ import Date exposing (Date)
 import String
 
 
--- exposing (Vault, Status(..))
-
-
 type alias Path =
     String
 
@@ -44,10 +41,7 @@ apiUrl config path =
             rootUrl ++ path ++ "/"
 
 
-
---++ "?auth=" ++ config.apiAuthToken
-
-
+apiHeaders : Config -> List Http.Header
 apiHeaders config =
     [ Http.header "X-Authtoken" config.apiAuthToken
     ]
@@ -110,6 +104,9 @@ vaultStatus =
 
                 "synced" ->
                     succeed Syncrypt.Vault.Synced
+
+                "ready" ->
+                    succeed Syncrypt.Vault.Ready
 
                 val ->
                     fail ("Invalid vault status: " ++ val)
