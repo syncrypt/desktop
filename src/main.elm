@@ -4,31 +4,12 @@ import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Http
-import Model.Config exposing (Config)
-import Model.User exposing (User)
-import Model.Vault exposing (Vault)
+import Config exposing (Config)
+import Syncrypt.User exposing (User)
+import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
-
-
-type alias Model =
-    { config : Config
-    , vaults : List Vault
-    , state : State
-    }
-
-
-type State
-    = LoadingVaults
-    | UpdatingVaults (List Vault)
-    | ShowingAllVaults (List Vault)
-    | ShowingVaultDetails Vault
-
-
-type Action
-    = UpdateVaults
-    | OpenVaultDetails Vault
-    | CloseVaultDetails Vault
-    | OpenProgramSettings
+import View.VaultList
+import Model exposing (..)
 
 
 main =
@@ -46,11 +27,7 @@ initialModel =
         , apiAuthToken = "my API token here"
         }
     , vaults =
-        [ { id = "12312-asadssad-asdasdasd-123231123"
-          , description = "foobar"
-          , metadata = Dict.empty
-          }
-        ]
+        [ Syncrypt.Vault.init "12312-asadssad-asdasdasd-123231123" ]
     , state = LoadingVaults
     }
 
@@ -66,7 +43,10 @@ view { config, state } =
             text ("Updating vaults: " ++ (vaults |> List.length |> toString))
 
         ShowingAllVaults vaults ->
-            text ("Showing vaults: " ++ (vaults |> List.length |> toString))
+            div []
+                (text ("Showing vaults: " ++ (vaults |> List.length |> toString))
+                    :: List.map View.VaultList.vaultItem vaults
+                )
 
         ShowingVaultDetails { id } ->
             text ("Vault details = " ++ id)

@@ -1,4 +1,4 @@
-module Model.User exposing (..)
+module Syncrypt.User exposing (..)
 
 
 type alias User =
