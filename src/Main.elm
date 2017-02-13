@@ -35,10 +35,11 @@ initialModel : Model
 initialModel =
     { config =
         { apiUrl = "http://localhost:28080/v1/"
-        , apiAuthToken = "my API token here"
+        , apiAuthToken =
+            -- set this to your actual api auth token
+            "my API token here"
         }
-    , vaults =
-        [ Syncrypt.Vault.init "12312-asadssad-asdasdasd-123231123" ]
+    , vaults = []
     , state = LoadingVaults
     }
 
