@@ -2,6 +2,7 @@ module Model exposing (..)
 
 import Syncrypt.Vault exposing (Vault)
 import Config exposing (Config)
+import Http
 
 
 type alias Model =
@@ -18,8 +19,9 @@ type State
     | ShowingVaultDetails Vault
 
 
-type Action
+type Msg
     = UpdateVaults
+    | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | OpenVaultDetails Vault
     | CloseVaultDetails Vault
     | OpenProgramSettings

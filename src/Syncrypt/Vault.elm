@@ -4,7 +4,11 @@ import Dict exposing (Dict)
 import Date exposing (Date)
 
 
-type State
+type alias VaultId =
+    String
+
+
+type Status
     = Unsynced
     | Syncing
     | Initializing
@@ -12,31 +16,37 @@ type State
 
 
 type alias Vault =
-    { id : String
-    , description : String
-    , metadata : Dict String String
-    , state : State
+    { id : VaultId
+    , name : Maybe String
+    , size : Int
+    , status : Status
+    , userCount : Int
+    , fileCount : Int
+    , revisionCount : Int
+    , resourceUri : String
+    , folderPath : String
     , modificationDate : Maybe Date
     }
 
 
-type alias VaultID =
-    String
-
-
-init : VaultID -> Vault
-init id =
-    { id = id
-    , description = ""
-    , metadata = Dict.empty
-    , state = Initializing
+init : VaultId -> Vault
+init vaultId =
+    { id = vaultId
+    , name = Nothing
+    , size = 0
+    , status = Initializing
+    , userCount = 0
+    , fileCount = 0
+    , revisionCount = 0
+    , resourceUri = ""
+    , folderPath = ""
     , modificationDate = Nothing
     }
 
 
 vaultName : Vault -> String
 vaultName vault =
-    case Dict.get "name" vault.metadata of
+    case vault.name of
         Just name ->
             name
 

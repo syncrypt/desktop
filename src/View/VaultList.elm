@@ -4,7 +4,7 @@ import Html exposing (Html, button, div, text, node, hr, canvas)
 import Html.Attributes exposing (class, id, attribute, height, width)
 import Html.Events exposing (onClick)
 import MD5
-import Syncrypt.Vault exposing (Vault, vaultName, State(..))
+import Syncrypt.Vault exposing (Vault, vaultName, Status(..))
 import String
 import Model exposing (..)
 
@@ -25,7 +25,7 @@ vaultIcon vault =
 
 
 vaultItemSyncStateClass vault =
-    "vault-status-" ++ (vault.state |> toString |> String.toLower)
+    "vault-status-" ++ (vault.status |> toString |> String.toLower)
 
 
 vaultUpdatedAtInfo vault =

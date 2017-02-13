@@ -3,27 +3,34 @@ module Main exposing (..)
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import Http
 import Config exposing (Config)
 import Syncrypt.User exposing (User)
 import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
 import View.VaultList
 import Model exposing (..)
+import Api
+import Debug
 
 
 main =
-    Html.beginnerProgram
-        { model = initialModel
+    Html.program
+        { init = init
+        , subscriptions = subscriptions
         , view = view
         , update = update
         }
 
 
+init : ( Model, Cmd Msg )
+init =
+    ( initialModel, Cmd.none )
+
+
 initialModel : Model
 initialModel =
     { config =
-        { apiUrl = "http://localhost:28080/api/v1/"
+        { apiUrl = "http://localhost:28080/v1/"
         , apiAuthToken = "my API token here"
         }
     , vaults =
@@ -32,7 +39,12 @@ initialModel =
     }
 
 
-view : Model -> Html.Html Action
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+view : Model -> Html.Html Msg
 view { config, state } =
     case state of
         LoadingVaults ->
@@ -52,11 +64,22 @@ view { config, state } =
             text ("Vault details = " ++ id)
 
 
-update : Action -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
         UpdateVaults ->
-            { model | state = UpdatingVaults model.vaults }
+            ( { model | state = UpdatingVaults model.vaults }, Api.getVaults model.config )
+
+        UpdatedVaultsFromApi (Ok vaults) ->
+            ( { model | state = ShowingAllVaults vaults, vaults = vaults }, Cmd.none )
+
+        UpdatedVaultsFromApi (Err reason) ->
+            let
+                _ =
+                    Debug.log ("Error UpdatedVaultsFromApi: " ++ (toString reason))
+            in
+                -- retry to get vaults if request failed
+                ( model, Api.getVaults model.config )
 
         _ ->
-            { model | state = LoadingVaults }
+            ( { model | state = LoadingVaults }, Cmd.none )
