@@ -1,13 +1,12 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, div, text, h1)
+import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
 import Config exposing (Config)
 import Syncrypt.User exposing (User)
 import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
-import View.VaultList
+import View.MainScreen
 import Model exposing (..)
 import Daemon exposing (attempt, attemptDelayed)
 import Debug
@@ -143,37 +142,7 @@ view model =
             text ("Updating vaults: " ++ (vaults |> List.length |> toString))
 
         ShowingAllVaults ->
-            viewAllVaults model
+            View.MainScreen.view model
 
         ShowingVaultDetails { id } ->
             text ("Vault details = " ++ id)
-
-
-viewAllVaults model =
-    let
-        vaultsHeader =
-            h1 [] [ text "Local Vaults:" ]
-
-        flyingVaultsHeader =
-            case model.flyingVaults of
-                [] ->
-                    text ""
-
-                _ ->
-                    h1 []
-                        [ text "Remote Vaults:" ]
-
-        vaultCards =
-            div [ class "vault-list" ]
-                (List.map View.VaultList.vaultItem model.vaults)
-
-        flyingVaultCards =
-            div [ class "flying-vault-list" ]
-                (List.map View.VaultList.flyingVaultItem model.flyingVaults)
-    in
-        div []
-            [ vaultsHeader
-            , vaultCards
-            , flyingVaultsHeader
-            , flyingVaultCards
-            ]
