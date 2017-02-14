@@ -13,12 +13,12 @@ import Task exposing (Task)
 
 getVaults : Config -> Http.Request (List Vault)
 getVaults config =
-    apiRequest config Get "vault" decodeVaults
+    apiRequest config Get "vault" vaultsDecoder
 
 
 getFlyingVaults : Config -> Http.Request (List FlyingVault)
 getFlyingVaults config =
-    apiRequest config Get "flying-vault" decodeFlyingVaults
+    apiRequest config Get "flying-vault" flyingVaultsDecoder
 
 
 type alias Path =
@@ -105,13 +105,13 @@ apiHeaders config =
     ]
 
 
-decodeVaults : Json.Decoder (List Syncrypt.Vault.Vault)
-decodeVaults =
+vaultsDecoder : Json.Decoder (List Syncrypt.Vault.Vault)
+vaultsDecoder =
     Json.list vaultDecoder
 
 
-decodeFlyingVaults : Json.Decoder (List Syncrypt.Vault.FlyingVault)
-decodeFlyingVaults =
+flyingVaultsDecoder : Json.Decoder (List Syncrypt.Vault.FlyingVault)
+flyingVaultsDecoder =
     Json.list flyingVaultDecoder
 
 
