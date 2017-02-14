@@ -9,11 +9,10 @@ import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
 import View.VaultList
 import Model exposing (..)
-import Daemon exposing (task)
+import Daemon exposing (task, attemptDelayed)
 import Debug
 import Task exposing (attempt)
 import Platform.Cmd exposing (batch)
-import Util exposing (delay)
 
 
 main =
@@ -116,9 +115,7 @@ update action model =
             ( model
             , model.config
                 |> Daemon.getVaults
-                |> task
-                |> delay 1000
-                |> attempt UpdatedVaultsFromApi
+                |> attemptDelayed 1000 UpdatedVaultsFromApi
             )
 
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
@@ -133,9 +130,7 @@ update action model =
             ( model
             , model.config
                 |> Daemon.getFlyingVaults
-                |> task
-                |> delay 1000
-                |> attempt UpdatedFlyingVaultsFromApi
+                |> attemptDelayed 1000 UpdatedFlyingVaultsFromApi
             )
 
         OpenVaultDetails vault ->

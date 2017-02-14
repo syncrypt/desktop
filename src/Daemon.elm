@@ -9,6 +9,7 @@ import Syncrypt.Vault exposing (..)
 import Date exposing (Date)
 import String
 import Task exposing (Task)
+import Util
 
 
 getVaults : Config -> Http.Request (List Vault)
@@ -86,6 +87,18 @@ apiRequest config method path decoder =
 task : Http.Request a -> Task Http.Error a
 task =
     Http.toTask
+
+
+attempt msg request =
+    request
+        |> task
+        |> Task.attempt msg
+
+
+attemptDelayed time msg request =
+    request
+        |> task
+        |> Util.attemptDelayed time msg
 
 
 {-| Returns the api url for a given `Config` and `Path`.
