@@ -164,16 +164,16 @@ viewAllVaults model =
                         [ text "Remote Vaults:" ]
 
         vaultCards =
-            List.map View.VaultList.vaultItem model.vaults
+            div [ class "vault-list" ]
+                (List.map View.VaultList.vaultItem model.vaults)
 
         flyingVaultCards =
-            List.map View.VaultList.flyingVaultItem model.flyingVaults
+            div [ class "flying-vault-list" ]
+                (List.map View.VaultList.flyingVaultItem model.flyingVaults)
     in
         div []
             [ vaultsHeader
-            , div [ class "vault-list" ]
-                vaultCards
+            , vaultCards
             , flyingVaultsHeader
-            , div [ class "flying-vault-list" ]
-                flyingVaultCards
+            , flyingVaultCards
             ]
