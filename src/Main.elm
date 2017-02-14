@@ -9,7 +9,7 @@ import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
 import View.VaultList
 import Model exposing (..)
-import Api exposing (task)
+import Daemon exposing (task)
 import Debug
 import Task exposing (attempt, andThen)
 import Platform.Cmd exposing (batch)
@@ -31,10 +31,10 @@ init =
             initialModel
 
         getVaults =
-            Api.getVaults model.config |> task
+            Daemon.getVaults model.config |> task
 
         getFlyingVaults =
-            Api.getFlyingVaults model.config |> task
+            Daemon.getFlyingVaults model.config |> task
     in
         ( model
         , batch
@@ -88,12 +88,12 @@ update action model =
     case action of
         UpdateVaults ->
             ( { model | state = UpdatingVaults model.vaults }
-            , attempt UpdatedVaultsFromApi (Api.getVaults model.config |> task)
+            , attempt UpdatedVaultsFromApi (Daemon.getVaults model.config |> task)
             )
 
         UpdateFlyingVaults ->
             ( model
-            , attempt UpdatedFlyingVaultsFromApi (Api.getFlyingVaults model.config |> task)
+            , attempt UpdatedFlyingVaultsFromApi (Daemon.getFlyingVaults model.config |> task)
             )
 
         UpdatedVaultsFromApi (Ok vaults) ->
@@ -125,7 +125,7 @@ update action model =
                     Debug.crash (toString reason)
             in
                 -- retry to get vaults if request failed
-                ( model, attempt UpdatedVaultsFromApi (Api.getVaults model.config |> task) )
+                ( model, attempt UpdatedVaultsFromApi (Daemon.getVaults model.config |> task) )
 
         OpenVaultDetails vault ->
             ( { model | state = ShowingVaultDetails vault }, Cmd.none )

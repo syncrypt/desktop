@@ -1,4 +1,4 @@
-module Api exposing (..)
+module Daemon exposing (..)
 
 import Config exposing (..)
 import Json.Decode as Json exposing (succeed, andThen, fail)
