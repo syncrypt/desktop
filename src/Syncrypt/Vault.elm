@@ -63,9 +63,5 @@ init vaultId =
 
 nameOrId : { v | name : Maybe String, id : String } -> String
 nameOrId vault =
-    case vault.name of
-        Just name ->
-            name
-
-        Nothing ->
-            vault.id
+    vault.name
+        |> Maybe.withDefault vault.id
