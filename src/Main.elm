@@ -11,8 +11,9 @@ import View.VaultList
 import Model exposing (..)
 import Daemon exposing (task)
 import Debug
-import Task exposing (attempt, andThen)
+import Task exposing (attempt)
 import Platform.Cmd exposing (batch)
+import Util exposing (delay)
 
 
 main =
@@ -115,17 +116,27 @@ update action model =
         UpdatedFlyingVaultsFromApi (Err reason) ->
             let
                 _ =
-                    Debug.crash (toString reason)
+                    Debug.log ("UpdatedFlyingVaultsFromApi failed: " ++ (toString reason))
+
+                retryTask =
+                    Daemon.getFlyingVaults model.config
+                        |> task
+                        |> delay 1000
             in
                 ( model, Cmd.none )
 
         UpdatedVaultsFromApi (Err reason) ->
             let
                 _ =
-                    Debug.crash (toString reason)
+                    Debug.log ("UpdatedVaultsFromApi failed: " ++ (toString reason))
+
+                retryTask =
+                    Daemon.getVaults model.config
+                        |> task
+                        |> delay 1000
             in
                 -- retry to get vaults if request failed
-                ( model, attempt UpdatedVaultsFromApi (Daemon.getVaults model.config |> task) )
+                ( model, attempt UpdatedVaultsFromApi retryTask )
 
         OpenVaultDetails vault ->
             ( { model | state = ShowingVaultDetails vault }, Cmd.none )
