@@ -2,10 +2,15 @@ module View.MainScreen exposing (..)
 
 import Html exposing (Html, button, div, text, h1)
 import Html.Attributes exposing (class)
-import Html.Events exposing (onClick)
+
+
+-- import Html.Events exposing (onClick)
+
 import View.VaultList
+import Model exposing (..)
 
 
+view : Model -> Html Msg
 view model =
     let
         vaultsHeader =

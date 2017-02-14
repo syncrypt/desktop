@@ -1,6 +1,5 @@
 module Syncrypt.Vault exposing (..)
 
-import Dict exposing (Dict)
 import Date exposing (Date)
 
 
@@ -62,8 +61,8 @@ init vaultId =
 -- Types have the correctly typed `name` and `id` fields.
 
 
-vaultName : { c | name : Maybe String, id : String } -> String
-vaultName vault =
+nameOrId : { v | name : Maybe String, id : String } -> String
+nameOrId vault =
     case vault.name of
         Just name ->
             name

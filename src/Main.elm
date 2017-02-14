@@ -3,16 +3,13 @@ module Main exposing (..)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Config exposing (Config)
-import Syncrypt.User exposing (User)
-import Syncrypt.Vault exposing (Vault)
-import Dict exposing (Dict)
 import View.MainScreen
 import Model exposing (..)
 import Daemon exposing (attempt, attemptDelayed)
-import Debug
 import Platform.Cmd exposing (batch)
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
