@@ -6,7 +6,6 @@ import Config exposing (Config)
 import View.MainScreen
 import Model exposing (..)
 import Daemon exposing (attempt, attemptDelayed)
-import Platform.Cmd exposing (batch)
 
 
 main : Program Never Model Msg
@@ -29,7 +28,7 @@ init =
         model =
             initialModel
     in
-        ( model, updateAllVaults model.config )
+        model ! (updateAllVaults model.config)
 
 
 initialModel : Model
@@ -63,9 +62,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
         UpdateVaults ->
-            ( { model | state = UpdatingVaults model.vaults }
-            , updateAllVaults model.config
-            )
+            { model | state = UpdatingVaults model.vaults } ! (updateAllVaults model.config)
 
         UpdateFlyingVaults ->
             ( model
@@ -112,16 +109,15 @@ update action model =
             ( { model | state = LoadingVaults }, Cmd.none )
 
 
-updateAllVaults : Config -> Cmd Msg
+updateAllVaults : Config -> List (Cmd Msg)
 updateAllVaults config =
-    batch
-        [ config
-            |> Daemon.getVaults
-            |> attempt UpdatedVaultsFromApi
-        , config
-            |> Daemon.getFlyingVaults
-            |> attempt UpdatedFlyingVaultsFromApi
-        ]
+    [ config
+        |> Daemon.getVaults
+        |> attempt UpdatedVaultsFromApi
+    , config
+        |> Daemon.getFlyingVaults
+        |> attempt UpdatedFlyingVaultsFromApi
+    ]
 
 
 
