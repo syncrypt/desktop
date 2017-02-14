@@ -14,7 +14,8 @@ view : Model -> Html Msg
 view model =
     let
         vaultsHeader =
-            h1 [] [ text "Local Vaults:" ]
+            h1 []
+                [ text "Local Vaults:" ]
 
         flyingVaultsHeader =
             case model.flyingVaults of

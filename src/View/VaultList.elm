@@ -1,12 +1,11 @@
 module View.VaultList exposing (..)
 
-import Html exposing (Html, button, div, text, node, hr, canvas)
-import Html.Attributes exposing (class, id, attribute, height, width)
+import Html exposing (Html, button, canvas, div, hr, node, text)
+import Html.Attributes exposing (attribute, class, height, id, width)
 import Html.Events exposing (onClick)
 import MD5
-import Syncrypt.Vault exposing (Vault, nameOrId, Status(..), FlyingVault)
-import String
 import Model exposing (..)
+import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, nameOrId)
 
 
 itemClass : Vault -> String
@@ -14,14 +13,15 @@ itemClass vault =
     "card vault-card-selected"
 
 
+jdenticonAttr : { a | id : String } -> Html.Attribute msg
+jdenticonAttr vault =
+    attribute "data-jdenticon-hash" (MD5.hex vault.id)
+
+
 vaultIcon : { a | id : String } -> Html msg
 vaultIcon vault =
     div [ class "vault-icon" ]
-        [ canvas
-            [ width 25
-            , height 25
-            , attribute "data-jdenticon-hash" (MD5.hex vault.id)
-            ]
+        [ canvas [ width 25, height 25, jdenticonAttr vault ]
             []
         ]
 
@@ -49,10 +49,12 @@ vaultUpdatedAtInfo vault =
     in
         case vault.status of
             Initializing ->
-                div [] ((text "Generating key&hellip;") :: remainingBody)
+                div []
+                    ((text "Generating key&hellip;") :: remainingBody)
 
             _ ->
-                div [] remainingBody
+                div []
+                    remainingBody
 
 
 vaultUpdatedAt : Vault -> Html msg
@@ -64,7 +66,8 @@ vaultUpdatedAt vault =
                     text ("Last update: " ++ (toString date))
 
                 Nothing ->
-                    div [] []
+                    div []
+                        []
             ]
         ]
 
