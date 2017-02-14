@@ -107,9 +107,6 @@ update action model =
 
         UpdatedVaultsFromApi (Err reason) ->
             let
-                _ =
-                    Debug.log ("UpdatedVaultsFromApi failed: " ++ (toString reason))
-
                 retryTask =
                     Daemon.getVaults model.config
                         |> task
@@ -128,9 +125,6 @@ update action model =
 
         UpdatedFlyingVaultsFromApi (Err reason) ->
             let
-                _ =
-                    Debug.log ("UpdatedFlyingVaultsFromApi failed: " ++ (toString reason))
-
                 retryTask =
                     Daemon.getFlyingVaults model.config
                         |> task
