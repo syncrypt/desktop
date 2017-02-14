@@ -10,6 +10,8 @@ import Date exposing (Date)
 import String
 import Task exposing (Task)
 import Util
+import Result exposing (Result)
+import Time exposing (Time)
 
 
 getVaults : Config -> Http.Request (List Vault)
@@ -89,12 +91,14 @@ task =
     Http.toTask
 
 
+attempt : (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
 attempt msg request =
     request
         |> task
         |> Task.attempt msg
 
 
+attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
 attemptDelayed time msg request =
     request
         |> task
