@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, text, h1)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Config exposing (Config)
@@ -21,6 +21,10 @@ main =
         , view = view
         , update = update
         }
+
+
+
+-- INIT
 
 
 init : ( Model, Cmd Msg )
@@ -46,29 +50,17 @@ initialModel =
     }
 
 
+
+-- SUBSCRIPTIONS
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
 
 
-view : Model -> Html.Html Msg
-view model =
-    case model.state of
-        LoadingVaults ->
-            div [ class "vault-list" ]
-                [ Html.text "Loading Vaults" ]
 
-        UpdatingVaults vaults ->
-            text ("Updating vaults: " ++ (vaults |> List.length |> toString))
-
-        ShowingAllVaults ->
-            div []
-                (text ("Showing vaults: " ++ (model.vaults |> List.length |> toString))
-                    :: List.map View.VaultList.vaultItem model.vaults
-                )
-
-        ShowingVaultDetails { id } ->
-            text ("Vault details = " ++ id)
+-- UPDATE
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -134,3 +126,54 @@ updateAllVaults config =
             |> Daemon.getFlyingVaults
             |> attempt UpdatedFlyingVaultsFromApi
         ]
+
+
+
+-- VIEW
+
+
+view : Model -> Html.Html Msg
+view model =
+    case model.state of
+        LoadingVaults ->
+            div [ class "vault-list" ]
+                [ Html.text "Loading Vaults" ]
+
+        UpdatingVaults vaults ->
+            text ("Updating vaults: " ++ (vaults |> List.length |> toString))
+
+        ShowingAllVaults ->
+            viewAllVaults model
+
+        ShowingVaultDetails { id } ->
+            text ("Vault details = " ++ id)
+
+
+viewAllVaults model =
+    let
+        vaultsHeader =
+            h1 [] [ text "Local Vaults:" ]
+
+        flyingVaultsHeader =
+            case model.flyingVaults of
+                [] ->
+                    text ""
+
+                vs ->
+                    h1 []
+                        [ text "Remote Vaults:" ]
+
+        vaultCards =
+            List.map View.VaultList.vaultItem model.vaults
+
+        flyingVaultCards =
+            List.map View.VaultList.flyingVaultItem model.flyingVaults
+    in
+        div []
+            [ vaultsHeader
+            , div [ class "vault-list" ]
+                vaultCards
+            , flyingVaultsHeader
+            , div [ class "flying-vault-list" ]
+                flyingVaultCards
+            ]

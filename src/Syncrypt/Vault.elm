@@ -57,7 +57,7 @@ init vaultId =
     }
 
 
-vaultName : Vault -> String
+vaultName : { c | name : Maybe String, id : String } -> String
 vaultName vault =
     case vault.name of
         Just name ->

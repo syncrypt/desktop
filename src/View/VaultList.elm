@@ -7,6 +7,7 @@ import MD5
 import Syncrypt.Vault exposing (Vault, vaultName, Status(..))
 import String
 import Model exposing (..)
+import Date
 
 
 vaultItemClass vault =
@@ -51,13 +52,29 @@ vaultUpdatedAtInfo vault =
                 div [] remainingBody
 
 
-vaultInfoItem vault =
-    div [ class "vault-info-item" ]
-        [ div [ class "vault-updated-at" ]
-            [ div [ class (vaultItemSyncStateClass vault) ]
-                []
+vaultUpdatedAt vault =
+    div [ class "vault-updated-at" ]
+        [ div [ class (vaultItemSyncStateClass vault) ]
+            [ case vault.modificationDate of
+                Just date ->
+                    text ("Last update: " ++ (toString date))
+
+                Nothing ->
+                    div [] []
             ]
         ]
+
+
+vaultInfoItem vault =
+    div [ class "vault-info-item" ]
+        [ text ("ID: " ++ vault.id)
+        , vaultUpdatedAt vault
+        ]
+
+
+flyingVaultInfoItem vault =
+    div [ class "flying-vault-info-item" ]
+        [ text ("ID: " ++ vault.id) ]
 
 
 vaultItem vault =
@@ -68,5 +85,17 @@ vaultItem vault =
                 [ text (vaultName vault) ]
             , hr [] []
             , vaultInfoItem vault
+            ]
+        ]
+
+
+flyingVaultItem flyingVault =
+    div [ class "flying-vault-item", onClick (OpenFlyingVaultDetails flyingVault) ]
+        [ vaultIcon flyingVault
+        , div [ class "vault-info" ]
+            [ div [ class "vault-title" ]
+                [ text (vaultName flyingVault) ]
+            , hr [] []
+            , flyingVaultInfoItem flyingVault
             ]
         ]
