@@ -37,6 +37,11 @@ type RequestMethod
     | Delete
 
 
+{-| Converts `RequestMethod` into `String`.
+
+    requestMethod Get  -- -> "GET"
+    requestMethod Post -- -> "POST"
+-}
 requestMethod : RequestMethod -> String
 requestMethod rm =
     case rm of
@@ -56,6 +61,13 @@ requestMethod rm =
             "DELETE"
 
 
+{-| Creates an syncrypt daemon API compatible `Http.Request`.
+
+    let
+      config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
+    in
+      apiRequest config Get "vault" vaultsDecoder
+-}
 apiRequest : Config -> RequestMethod -> Path -> Json.Decoder a -> Http.Request a
 apiRequest config method path decoder =
     Http.request
@@ -69,11 +81,21 @@ apiRequest config method path decoder =
         }
 
 
+{-| Create a `Task.Task` from an api request (`Http.Request`)
+-}
 task : Http.Request a -> Task Http.Error a
 task =
     Http.toTask
 
 
+{-| Returns the api url for a given `Config` and `Path`.
+
+    let
+      config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
+    in
+      apiUrl config "foo"  -- -> "http://localhost:28080/foo/"
+      apiUrl config "/bar" -- -> "http://localhost:28080/bar/"
+-}
 apiUrl : Config -> Path -> Url
 apiUrl config path =
     let
@@ -99,22 +121,30 @@ apiUrl config path =
             rootUrl ++ path ++ "/"
 
 
+{-| Returns the required `Http.Header`s required by the daemon JSON API.
+-}
 apiHeaders : Config -> List Http.Header
 apiHeaders config =
     [ Http.header "X-Authtoken" config.apiAuthToken
     ]
 
 
+{-| Decodes an array of `Syncrypt.Vault.Vault`.
+-}
 vaultsDecoder : Json.Decoder (List Syncrypt.Vault.Vault)
 vaultsDecoder =
     Json.list vaultDecoder
 
 
+{-| Decodes an array of `Syncrypt.Vault.FlyingVault`.
+-}
 flyingVaultsDecoder : Json.Decoder (List Syncrypt.Vault.FlyingVault)
 flyingVaultsDecoder =
     Json.list flyingVaultDecoder
 
 
+{-| Decodes a `Syncrypt.Vault.Vault`.
+-}
 vaultDecoder : Json.Decoder Syncrypt.Vault.Vault
 vaultDecoder =
     decode Syncrypt.Vault.Vault
@@ -130,6 +160,8 @@ vaultDecoder =
         |> required "modification_date" date
 
 
+{-| Decodes a `Syncrypt.Vault.FlyingVault`.
+-}
 flyingVaultDecoder : Json.Decoder Syncrypt.Vault.FlyingVault
 flyingVaultDecoder =
     decode Syncrypt.Vault.FlyingVault
@@ -143,6 +175,8 @@ flyingVaultDecoder =
         |> required "modification_date" date
 
 
+{-| Decodes a `Syncrypt.Vault.Status`.
+-}
 vaultStatus : Json.Decoder Status
 vaultStatus =
     let
@@ -170,6 +204,8 @@ vaultStatus =
         Json.string |> andThen convert
 
 
+{-| Decodes an `Maybe Date` from a string.
+-}
 date : Json.Decoder (Maybe Date)
 date =
     let
