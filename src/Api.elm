@@ -70,8 +70,8 @@ apiRequest config method path decoder =
 
 
 task : Http.Request a -> Task Http.Error a
-task request =
-    Http.toTask request
+task =
+    Http.toTask
 
 
 apiUrl : Config -> Path -> Url
