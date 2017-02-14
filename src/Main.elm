@@ -83,13 +83,24 @@ update action model =
             , Api.getVaults model.config
             )
 
+        UpdateFlyingVaults ->
+            ( model
+            , Api.getFlyingVaults model.config
+            )
+
         UpdatedVaultsFromApi (Ok vaults) ->
-            ( { model | state = ShowingAllVaults, vaults = vaults }
+            ( { model
+                | state = ShowingAllVaults
+                , vaults = vaults
+              }
             , Cmd.none
             )
 
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
-            ( { model | state = ShowingAllVaults, flyingVaults = vaults }
+            ( { model
+                | state = ShowingAllVaults
+                , flyingVaults = vaults
+              }
             , Cmd.none
             )
 

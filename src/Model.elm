@@ -22,6 +22,7 @@ type State
 
 type Msg
     = UpdateVaults
+    | UpdateFlyingVaults
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
     | OpenVaultDetails Vault
