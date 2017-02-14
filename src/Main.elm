@@ -159,7 +159,7 @@ viewAllVaults model =
                 [] ->
                     text ""
 
-                vs ->
+                _ ->
                     h1 []
                         [ text "Remote Vaults:" ]
 
