@@ -1,6 +1,6 @@
 module Model exposing (..)
 
-import Syncrypt.Vault exposing (Vault)
+import Syncrypt.Vault exposing (Vault, FlyingVault)
 import Config exposing (Config)
 import Http
 
@@ -8,6 +8,7 @@ import Http
 type alias Model =
     { config : Config
     , vaults : List Vault
+    , flyingVaults : List FlyingVault
     , state : State
     }
 
@@ -22,6 +23,7 @@ type State
 type Msg
     = UpdateVaults
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
+    | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
     | OpenVaultDetails Vault
     | CloseVaultDetails Vault
     | OpenProgramSettings

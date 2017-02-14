@@ -28,7 +28,12 @@ init =
         model =
             initialModel
     in
-        ( model, Api.getVaults model.config )
+        ( model
+        , Cmd.batch
+            [ Api.getVaults model.config
+            , Api.getFlyingVaults model.config
+            ]
+        )
 
 
 initialModel : Model
@@ -40,6 +45,7 @@ initialModel =
             "my API token here"
         }
     , vaults = []
+    , flyingVaults = []
     , state = LoadingVaults
     }
 
@@ -82,10 +88,22 @@ update action model =
             , Cmd.none
             )
 
+        UpdatedFlyingVaultsFromApi (Ok vaults) ->
+            ( { model | state = ShowingAllVaults, flyingVaults = vaults }
+            , Cmd.none
+            )
+
+        UpdatedFlyingVaultsFromApi (Err reason) ->
+            let
+                _ =
+                    Debug.crash (toString reason)
+            in
+                ( model, Cmd.none )
+
         UpdatedVaultsFromApi (Err reason) ->
             let
                 _ =
-                    Debug.log ("Error UpdatedVaultsFromApi: " ++ (toString reason))
+                    Debug.crash (toString reason)
             in
                 -- retry to get vaults if request failed
                 ( model, Api.getVaults model.config )

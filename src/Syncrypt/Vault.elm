@@ -30,6 +30,18 @@ type alias Vault =
     }
 
 
+type alias FlyingVault =
+    { id : VaultId
+    , name : Maybe String
+    , size : Maybe Int
+    , userCount : Int
+    , fileCount : Int
+    , revisionCount : Int
+    , resourceUri : String
+    , modificationDate : Maybe Date
+    }
+
+
 init : VaultId -> Vault
 init vaultId =
     { id = vaultId
