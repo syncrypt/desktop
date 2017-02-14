@@ -105,6 +105,19 @@ update action model =
             , Cmd.none
             )
 
+        UpdatedVaultsFromApi (Err reason) ->
+            let
+                _ =
+                    Debug.log ("UpdatedVaultsFromApi failed: " ++ (toString reason))
+
+                retryTask =
+                    Daemon.getVaults model.config
+                        |> task
+                        |> delay 1000
+            in
+                -- retry to get vaults if request failed
+                ( model, attempt UpdatedVaultsFromApi retryTask )
+
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
             ( { model
                 | state = ShowingAllVaults
@@ -123,20 +136,7 @@ update action model =
                         |> task
                         |> delay 1000
             in
-                ( model, Cmd.none )
-
-        UpdatedVaultsFromApi (Err reason) ->
-            let
-                _ =
-                    Debug.log ("UpdatedVaultsFromApi failed: " ++ (toString reason))
-
-                retryTask =
-                    Daemon.getVaults model.config
-                        |> task
-                        |> delay 1000
-            in
-                -- retry to get vaults if request failed
-                ( model, attempt UpdatedVaultsFromApi retryTask )
+                ( model, attempt UpdatedFlyingVaultsFromApi retryTask )
 
         OpenVaultDetails vault ->
             ( { model | state = ShowingVaultDetails vault }, Cmd.none )
