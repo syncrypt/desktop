@@ -57,6 +57,11 @@ init vaultId =
     }
 
 
+
+-- This is pretty cool and will work with `Vault` & `FlyingVault` because both
+-- Types have the correctly typed `name` and `id` fields.
+
+
 vaultName : { c | name : Maybe String, id : String } -> String
 vaultName vault =
     case vault.name of
