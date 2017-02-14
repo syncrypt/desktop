@@ -30,17 +30,17 @@ init =
     let
         model =
             initialModel
-
-        getVaults =
-            Daemon.getVaults model.config |> task
-
-        getFlyingVaults =
-            Daemon.getFlyingVaults model.config |> task
     in
         ( model
         , batch
-            [ attempt UpdatedVaultsFromApi getVaults
-            , attempt UpdatedFlyingVaultsFromApi getFlyingVaults
+            [ model.config
+                |> Daemon.getVaults
+                |> task
+                |> attempt UpdatedVaultsFromApi
+            , model.config
+                |> Daemon.getFlyingVaults
+                |> task
+                |> attempt UpdatedFlyingVaultsFromApi
             ]
         )
 
@@ -89,12 +89,18 @@ update action model =
     case action of
         UpdateVaults ->
             ( { model | state = UpdatingVaults model.vaults }
-            , attempt UpdatedVaultsFromApi (Daemon.getVaults model.config |> task)
+            , model.config
+                |> Daemon.getVaults
+                |> task
+                |> attempt UpdatedVaultsFromApi
             )
 
         UpdateFlyingVaults ->
             ( model
-            , attempt UpdatedFlyingVaultsFromApi (Daemon.getFlyingVaults model.config |> task)
+            , model.config
+                |> Daemon.getFlyingVaults
+                |> task
+                |> attempt UpdatedFlyingVaultsFromApi
             )
 
         UpdatedVaultsFromApi (Ok vaults) ->
@@ -106,14 +112,14 @@ update action model =
             )
 
         UpdatedVaultsFromApi (Err reason) ->
-            let
-                retryTask =
-                    Daemon.getVaults model.config
-                        |> task
-                        |> delay 1000
-            in
-                -- retry to get vaults if request failed
-                ( model, attempt UpdatedVaultsFromApi retryTask )
+            -- retry to get vaults if request failed
+            ( model
+            , model.config
+                |> Daemon.getVaults
+                |> task
+                |> delay 1000
+                |> attempt UpdatedVaultsFromApi
+            )
 
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
             ( { model
@@ -124,13 +130,13 @@ update action model =
             )
 
         UpdatedFlyingVaultsFromApi (Err reason) ->
-            let
-                retryTask =
-                    Daemon.getFlyingVaults model.config
-                        |> task
-                        |> delay 1000
-            in
-                ( model, attempt UpdatedFlyingVaultsFromApi retryTask )
+            ( model
+            , model.config
+                |> Daemon.getFlyingVaults
+                |> task
+                |> delay 1000
+                |> attempt UpdatedFlyingVaultsFromApi
+            )
 
         OpenVaultDetails vault ->
             ( { model | state = ShowingVaultDetails vault }, Cmd.none )
