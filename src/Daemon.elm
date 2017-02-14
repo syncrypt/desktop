@@ -65,9 +65,9 @@ requestMethod rm =
 {-| Creates an syncrypt daemon API compatible `Http.Request`.
 
     let
-      config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
+        config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
     in
-      apiRequest config Get "vault" vaultsDecoder
+        apiRequest config Get "vault" vaultsDecoder
 -}
 apiRequest : Config -> RequestMethod -> Path -> Json.Decoder a -> Http.Request a
 apiRequest config method path decoder =
@@ -104,10 +104,10 @@ attemptDelayed time msg request =
 {-| Returns the api url for a given `Config` and `Path`.
 
     let
-      config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
+        config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
     in
-      apiUrl config "foo"  -- -> "http://localhost:28080/foo/"
-      apiUrl config "/bar" -- -> "http://localhost:28080/bar/"
+        apiUrl config "foo"  -- -> "http://localhost:28080/foo/"
+        apiUrl config "/bar" -- -> "http://localhost:28080/bar/"
 -}
 apiUrl : Config -> Path -> Url
 apiUrl config path =
