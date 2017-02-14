@@ -9,9 +9,8 @@ import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
 import View.VaultList
 import Model exposing (..)
-import Daemon exposing (task, attemptDelayed)
+import Daemon exposing (attempt, attemptDelayed)
 import Debug
-import Task exposing (attempt)
 import Platform.Cmd exposing (batch)
 
 
@@ -30,18 +29,7 @@ init =
         model =
             initialModel
     in
-        ( model
-        , batch
-            [ model.config
-                |> Daemon.getVaults
-                |> task
-                |> attempt UpdatedVaultsFromApi
-            , model.config
-                |> Daemon.getFlyingVaults
-                |> task
-                |> attempt UpdatedFlyingVaultsFromApi
-            ]
-        )
+        ( model, updateAllVaults model.config )
 
 
 initialModel : Model
@@ -67,7 +55,7 @@ view : Model -> Html.Html Msg
 view model =
     case model.state of
         LoadingVaults ->
-            div [ class "vault-list", onClick UpdateVaults ]
+            div [ class "vault-list" ]
                 [ Html.text "Loading Vaults" ]
 
         UpdatingVaults vaults ->
@@ -88,17 +76,13 @@ update action model =
     case action of
         UpdateVaults ->
             ( { model | state = UpdatingVaults model.vaults }
-            , model.config
-                |> Daemon.getVaults
-                |> task
-                |> attempt UpdatedVaultsFromApi
+            , updateAllVaults model.config
             )
 
         UpdateFlyingVaults ->
             ( model
             , model.config
                 |> Daemon.getFlyingVaults
-                |> task
                 |> attempt UpdatedFlyingVaultsFromApi
             )
 
@@ -138,3 +122,15 @@ update action model =
 
         _ ->
             ( { model | state = LoadingVaults }, Cmd.none )
+
+
+updateAllVaults : Config -> Cmd Msg
+updateAllVaults config =
+    batch
+        [ config
+            |> Daemon.getVaults
+            |> attempt UpdatedVaultsFromApi
+        , config
+            |> Daemon.getFlyingVaults
+            |> attempt UpdatedFlyingVaultsFromApi
+        ]
