@@ -9,8 +9,10 @@ import Syncrypt.Vault exposing (Vault)
 import Dict exposing (Dict)
 import View.VaultList
 import Model exposing (..)
-import Api
+import Api exposing (task)
 import Debug
+import Task exposing (attempt, andThen)
+import Platform.Cmd exposing (batch)
 
 
 main =
@@ -27,11 +29,17 @@ init =
     let
         model =
             initialModel
+
+        getVaults =
+            Api.getVaults model.config |> task
+
+        getFlyingVaults =
+            Api.getFlyingVaults model.config |> task
     in
         ( model
-        , Cmd.batch
-            [ Api.getVaults model.config
-            , Api.getFlyingVaults model.config
+        , batch
+            [ attempt UpdatedVaultsFromApi getVaults
+            , attempt UpdatedFlyingVaultsFromApi getFlyingVaults
             ]
         )
 
@@ -80,12 +88,12 @@ update action model =
     case action of
         UpdateVaults ->
             ( { model | state = UpdatingVaults model.vaults }
-            , Api.getVaults model.config
+            , attempt UpdatedVaultsFromApi (Api.getVaults model.config |> task)
             )
 
         UpdateFlyingVaults ->
             ( model
-            , Api.getFlyingVaults model.config
+            , attempt UpdatedFlyingVaultsFromApi (Api.getFlyingVaults model.config |> task)
             )
 
         UpdatedVaultsFromApi (Ok vaults) ->
@@ -117,7 +125,7 @@ update action model =
                     Debug.crash (toString reason)
             in
                 -- retry to get vaults if request failed
-                ( model, Api.getVaults model.config )
+                ( model, attempt UpdatedVaultsFromApi (Api.getVaults model.config |> task) )
 
         OpenVaultDetails vault ->
             ( { model | state = ShowingVaultDetails vault }, Cmd.none )

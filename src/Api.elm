@@ -8,16 +8,17 @@ import Model exposing (..)
 import Syncrypt.Vault exposing (..)
 import Date exposing (Date)
 import String
+import Task exposing (Task)
 
 
-getVaults : Config -> Cmd Msg
+getVaults : Config -> Http.Request (List Vault)
 getVaults config =
-    Http.send UpdatedVaultsFromApi (apiRequest config Get "vault" decodeVaults)
+    apiRequest config Get "vault" decodeVaults
 
 
-getFlyingVaults : Config -> Cmd Msg
+getFlyingVaults : Config -> Http.Request (List FlyingVault)
 getFlyingVaults config =
-    Http.send UpdatedFlyingVaultsFromApi (apiRequest config Get "flying-vault" decodeFlyingVaults)
+    apiRequest config Get "flying-vault" decodeFlyingVaults
 
 
 type alias Path =
@@ -66,6 +67,11 @@ apiRequest config method path decoder =
         , timeout = Nothing
         , withCredentials = False
         }
+
+
+task : Http.Request a -> Task Http.Error a
+task request =
+    Http.toTask request
 
 
 apiUrl : Config -> Path -> Url
