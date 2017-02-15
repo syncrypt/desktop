@@ -12,6 +12,15 @@ import Css.Colors
 import Util exposing (bytesReadable)
 
 
+type alias HasId a =
+    { a | id : String }
+
+
+type alias HasModificationDate a =
+    { a | modificationDate : Maybe Date }
+
+
+
 -- HTML views
 
 
@@ -20,12 +29,12 @@ itemClass vault =
     "card vault-card-selected"
 
 
-jdenticonAttr : { a | id : String } -> Html.Attribute msg
+jdenticonAttr : HasId a -> Html.Attribute msg
 jdenticonAttr vault =
     attribute "data-jdenticon-hash" (MD5.hex vault.id)
 
 
-vaultIcon : { a | id : String } -> Html msg
+vaultIcon : HasId a -> Html msg
 vaultIcon vault =
     div [ class "vault-icon" ]
         [ canvas [ width 25, height 25, jdenticonAttr vault ]
@@ -38,7 +47,7 @@ vaultItemSyncStateClass vault =
     "vault-status-" ++ (vault.status |> toString |> String.toLower)
 
 
-vaultUpdatedAtInfo : { a | modificationDate : Maybe Date } -> Html msg
+vaultUpdatedAtInfo : HasModificationDate a -> Html msg
 vaultUpdatedAtInfo vault =
     case vault.modificationDate of
         Nothing ->
@@ -52,11 +61,7 @@ vaultUpdatedAtInfo vault =
                 []
 
 
-
--- vaultInfoItem : Vault -> List (Html msg) -> Html msg
-
-
-vaultInfoItem : { a | id : String } -> List (Html b) -> Html b
+vaultInfoItem : HasId a -> List (Html msg) -> Html msg
 vaultInfoItem vault bodyItems =
     div [ class "vault-info-item" ]
         bodyItems
