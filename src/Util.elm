@@ -91,9 +91,8 @@ removeTrailing char string =
 
 
 removeTrailingZeroes : String -> String
-removeTrailingZeroes floatStr =
-    floatStr
-        |> removeTrailing '0'
+removeTrailingZeroes =
+    removeTrailing '0'
 
 
 {-| Returns a human readable version of a storage size in bytes.
