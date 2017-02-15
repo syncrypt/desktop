@@ -118,6 +118,7 @@ vaultRemoveFromSyncButton vault =
         []
 
 
+openVaultFolderButton : Vault -> Html Msg
 openVaultFolderButton vault =
     div
         [ class "vault-folder-button"
