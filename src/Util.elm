@@ -49,8 +49,8 @@ type alias ByteUnitPrecision =
     Int
 
 
-byteUnits : List ( ByteUnit, ByteUnitPrecision )
-byteUnits =
+byteUnitsWithPrecision : List ( ByteUnit, ByteUnitPrecision )
+byteUnitsWithPrecision =
     [ ( "Bytes", 0 )
     , ( "kB", 0 )
     , ( "MB", 1 )
@@ -107,7 +107,7 @@ bytesReadable : Int -> String
 bytesReadable x =
     let
         ( sizeStr, unit ) =
-            bytesReadable_ (toFloat x) byteUnits
+            bytesReadable_ (toFloat x) byteUnitsWithPrecision
 
         trimmedSizeStr =
             case String.split "." sizeStr of
