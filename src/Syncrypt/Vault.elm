@@ -7,6 +7,14 @@ type alias VaultId =
     String
 
 
+{-| Record type with an id and optional name field.
+-}
+type alias NameOrId vault =
+    { vault | name : Maybe String, id : VaultId }
+
+
+{-| Vault status as returned from Daemon API.
+-}
 type Status
     = Unsynced
     | Syncing
@@ -15,6 +23,8 @@ type Status
     | Ready
 
 
+{-| Main vault type. Represents all vaults cloned & synced on current computer.
+-}
 type alias Vault =
     { id : VaultId
     , name : Maybe String
@@ -29,6 +39,8 @@ type alias Vault =
     }
 
 
+{-| Remote vaults that haven't been cloned or synced to this computer.
+-}
 type alias FlyingVault =
     { id : VaultId
     , name : Maybe String
@@ -61,7 +73,7 @@ init vaultId =
 -- Types have the correctly typed `name` and `id` fields.
 
 
-nameOrId : { v | name : Maybe String, id : String } -> String
+nameOrId : NameOrId a -> String
 nameOrId vault =
     vault.name
         |> Maybe.withDefault vault.id

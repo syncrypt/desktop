@@ -6,7 +6,7 @@ import Html.Attributes exposing (attribute, class, height, id, width)
 import Html.Events exposing (onClick)
 import MD5
 import Model exposing (..)
-import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, nameOrId)
+import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, NameOrId, nameOrId, asVault)
 import Css
 import Css.Colors
 import Util exposing (bytesReadable)
@@ -56,10 +56,10 @@ vaultUpdatedAtInfo vault =
 -- vaultInfoItem : Vault -> List (Html msg) -> Html msg
 
 
-vaultInfoItem : Vault -> List (Html a) -> Html a
+vaultInfoItem : { a | id : String } -> List (Html b) -> Html b
 vaultInfoItem vault bodyItems =
     div [ class "vault-info-item" ]
-        ((text vault.id) :: bodyItems)
+        bodyItems
 
 
 vaultStatus : Vault -> Html msg
@@ -94,7 +94,7 @@ vaultUserCount vault =
         [ div
             [ class "vault-info-item" ]
             [ div [ class "vault-users", attribute "data-tip" "Users with access to vault" ]
-                [ text "{vault.user_count || 0}" ]
+                [ text (toString vault.userCount) ]
             ]
         ]
 
@@ -113,23 +113,46 @@ vaultRemoveFromSyncButton vault =
         [ class "vault-remove-button"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Remove vault from sync"
-        , onClick (VaultList (RemoveVaultFromSync vault))
+        , onClick (RemoveVaultFromSync vault)
         ]
         []
+
+
+openVaultFolderButton vault =
+    div
+        [ class "vault-folder-button"
+        , attribute "data-for" "button-tooltip"
+        , attribute "data-tip" "Open Vault Folder"
+        , onClick (OpenVaultFolder vault)
+        ]
+        []
+
+
+vaultInfo : NameOrId vault -> List (Html msg) -> Html msg
+vaultInfo vault nodes =
+    let
+        vaultHeader =
+            [ div [ class "vault-title" ]
+                [ text (nameOrId vault) ]
+            , div [ class "vault-id" ]
+                [ text vault.id ]
+            , hr [] []
+            ]
+    in
+        div [ class "vault-info" ]
+            (vaultHeader ++ nodes)
 
 
 vaultItem : Vault -> Html Msg
 vaultItem vault =
     div [ class (itemClass vault), onClick (OpenVaultDetails vault) ]
         [ vaultIcon vault
-        , div [ class "vault-info" ]
-            [ div [ class "vault-title" ]
-                [ text (nameOrId vault) ]
-            , hr [] []
-            , vaultStatus vault
+        , vaultInfo vault
+            [ vaultStatus vault
             , vaultActivity vault
             , vaultUserCount vault
             , vaultRemoveFromSyncButton vault
+            , openVaultFolderButton vault
             ]
         ]
 
@@ -138,11 +161,10 @@ flyingVaultItem : FlyingVault -> Html Msg
 flyingVaultItem flyingVault =
     div [ class "flying-vault-item", onClick (OpenFlyingVaultDetails flyingVault) ]
         [ vaultIcon flyingVault
-        , div [ class "vault-info" ]
-            [ div [ class "vault-title" ]
-                [ text (nameOrId flyingVault) ]
-            , hr [] []
-            , flyingVaultInfoItem flyingVault
+        , vaultInfo flyingVault
+            [ flyingVaultInfoItem flyingVault
+            , vaultActivity (flyingVault |> asVault)
+            , vaultUserCount (flyingVault |> asVault)
             ]
         ]
 

@@ -26,11 +26,8 @@ type Msg
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
     | OpenVaultDetails Vault
+    | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
     | CloseVaultDetails Vault
     | OpenProgramSettings
-    | VaultList VaultListMsg
-
-
-type VaultListMsg
-    = RemoveVaultFromSync Vault
+    | RemoveVaultFromSync Vault
