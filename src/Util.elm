@@ -51,7 +51,7 @@ type alias ByteUnitPrecision =
 
 byteUnits : List ( ByteUnit, ByteUnitPrecision )
 byteUnits =
-    [ ( "", 0 )
+    [ ( "Bytes", 0 )
     , ( "kB", 0 )
     , ( "MB", 1 )
     , ( "GB", 2 )
