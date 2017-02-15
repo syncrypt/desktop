@@ -47,18 +47,40 @@ vaultItemSyncStateClass vault =
     "vault-status-" ++ (vault.status |> toString |> String.toLower)
 
 
-vaultUpdatedAtInfo : HasModificationDate a -> Html msg
-vaultUpdatedAtInfo vault =
-    case vault.modificationDate of
-        Nothing ->
-            text ""
+updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Html msg
+updatedAtInfo vault updatedAtHeader =
+    let
+        header =
+            Maybe.withDefault (text "") updatedAtHeader
+    in
+        div [ class "vault-updated-at" ]
+            [ header
+            , case vault.modificationDate of
+                Nothing ->
+                    text ""
 
-        Just date ->
-            node "TimeAgo"
-                [ attribute "data-tip" "Time since last file was uploaded"
-                , attribute "date" (toString date)
-                ]
+                Just date ->
+                    node "TimeAgo"
+                        [ attribute "data-tip" "Time since last file was uploaded"
+                        , attribute "date" (toString date)
+                        ]
+                        []
+            ]
+
+
+vaultUpdatedAtInfo : Vault -> Html msg
+vaultUpdatedAtInfo vault =
+    updatedAtInfo vault
+        (Just
+            (div [ class (vaultItemSyncStateClass vault) ]
                 []
+            )
+        )
+
+
+flyingVaultUpdatedAtInfo : FlyingVault -> Html msg
+flyingVaultUpdatedAtInfo flyingVault =
+    updatedAtInfo flyingVault Nothing
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
@@ -108,7 +130,7 @@ flyingVaultInfoItem : FlyingVault -> Html msg
 flyingVaultInfoItem vault =
     div [ class "flying-vault-info-item" ]
         [ text ("ID: " ++ vault.id)
-        , vaultUpdatedAtInfo vault
+        , flyingVaultUpdatedAtInfo vault
         ]
 
 
