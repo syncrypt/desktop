@@ -96,6 +96,14 @@ removeTrailingZeroes floatStr =
         |> removeTrailing '0'
 
 
+{-| Returns a human readable version of a storage size in bytes.
+
+    bytesReadable 100  -- -> "100 bytes"
+    bytesReadable 1024 -- -> "1 kB"
+    bytesReadable 2048 -- -> "2 kb"
+    mb n = 1024.0 * 1024.0 * n
+    bytesReadable (round (mb 42.3)) -- -> "42.3 MB"
+-}
 bytesReadable : Int -> String
 bytesReadable x =
     let
@@ -105,7 +113,12 @@ bytesReadable x =
         trimmedSizeStr =
             case String.split "." sizeStr of
                 [ a, b ] ->
-                    a ++ "." ++ (removeTrailingZeroes b)
+                    case (removeTrailingZeroes b) of
+                        "" ->
+                            a
+
+                        b ->
+                            a ++ "." ++ b
 
                 _ ->
                     sizeStr
