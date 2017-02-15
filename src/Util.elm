@@ -1,10 +1,20 @@
-module Util exposing (..)
+module Util
+    exposing
+        ( ByteUnit
+        , ByteUnitPrecision
+        , delay
+        , attemptDelayed
+        , skipCharsWhile
+        , removeTrailingZeroes
+        , bytesReadable
+        )
 
 import Time exposing (Time)
 import Task exposing (Task, andThen, attempt)
 import Process
 import Model exposing (Msg)
 import Result exposing (Result)
+import Round
 
 
 {-| Creates a new `Task` that delays a given `Task` by a given time.
@@ -29,3 +39,103 @@ attemptDelayed time msg task =
     task
         |> delay time
         |> attempt msg
+
+
+type alias ByteUnit =
+    String
+
+
+type alias ByteUnitPrecision =
+    Int
+
+
+byteUnits : List ( ByteUnit, ByteUnitPrecision )
+byteUnits =
+    [ ( "", 0 )
+    , ( "kB", 0 )
+    , ( "MB", 1 )
+    , ( "GB", 2 )
+    , ( "TB", 2 )
+    , ( "PB", 2 )
+    , ( "EB", 2 )
+    , ( "ZB", 2 )
+    , ( "YB", 2 )
+    ]
+
+
+skipCharsWhile : (Char -> Bool) -> String -> String
+skipCharsWhile f string =
+    case string |> String.uncons of
+        Nothing ->
+            ""
+
+        Just ( c, rest ) ->
+            if f c then
+                rest
+            else
+                String.cons c (skipCharsWhile f rest)
+
+
+removeLeading : Char -> String -> String
+removeLeading char string =
+    string
+        |> skipCharsWhile (\c -> c == char)
+
+
+removeTrailing : Char -> String -> String
+removeTrailing char string =
+    string
+        |> String.reverse
+        |> removeLeading char
+        |> String.reverse
+
+
+removeTrailingZeroes : String -> String
+removeTrailingZeroes floatStr =
+    floatStr
+        |> removeTrailing '0'
+
+
+bytesReadable : Int -> String
+bytesReadable x =
+    let
+        ( sizeStr, unit ) =
+            bytesReadable_ (toFloat x) byteUnits
+
+        trimmedSizeStr =
+            case String.split "." sizeStr of
+                [ a, b ] ->
+                    a ++ "." ++ (removeTrailingZeroes b)
+
+                _ ->
+                    sizeStr
+    in
+        case unit of
+            "" ->
+                trimmedSizeStr
+
+            _ ->
+                trimmedSizeStr ++ " " ++ unit
+
+
+bytesReadable_ : Float -> List ( ByteUnit, ByteUnitPrecision ) -> ( String, String )
+bytesReadable_ size units =
+    -- find first unit where
+    case units of
+        [] ->
+            -- I doubt this will happen any time soon
+            ( Round.round 2 size, "YB" )
+
+        [ ( unit, precision ) ] ->
+            -- only one unit left, pick it
+            ( Round.round precision size, unit )
+
+        ( unit, precision ) :: units ->
+            let
+                rem =
+                    size / 1024
+            in
+                if size < 1 || rem < 1 then
+                    ( Round.round precision size, unit )
+                else
+                    bytesReadable_ rem units

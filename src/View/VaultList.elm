@@ -7,6 +7,12 @@ import Html.Events exposing (onClick)
 import MD5
 import Model exposing (..)
 import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, nameOrId)
+import Css
+import Css.Colors
+import Util exposing (bytesReadable)
+
+
+-- HTML views
 
 
 itemClass : Vault -> String
@@ -46,24 +52,50 @@ vaultUpdatedAtInfo vault =
                 []
 
 
-vaultInfoItem : Vault -> Html msg
-vaultInfoItem vault =
-    div [ class "vault-info-item" ]
-        [ text ("ID: " ++ vault.id)
-        , let
-            updatedAt =
-                vaultUpdatedAtInfo vault
-          in
-            case vault.status of
-                Initializing ->
-                    div []
-                        [ text "Generating key&hellip;"
-                        , updatedAt
-                        ]
 
-                _ ->
-                    div []
-                        [ updatedAt ]
+-- vaultInfoItem : Vault -> List (Html msg) -> Html msg
+
+
+vaultInfoItem : Vault -> List (Html a) -> Html a
+vaultInfoItem vault bodyItems =
+    div [ class "vault-info-item" ]
+        ((text vault.id) :: bodyItems)
+
+
+vaultStatus : Vault -> Html msg
+vaultStatus vault =
+    let
+        updatedAt =
+            vaultUpdatedAtInfo vault
+    in
+        case vault.status of
+            Initializing ->
+                vaultInfoItem vault
+                    [ text "Generating key&hellip;"
+                    , updatedAt
+                    ]
+
+            _ ->
+                vaultInfoItem vault
+                    [ updatedAt ]
+
+
+vaultActivity : Vault -> Html msg
+vaultActivity vault =
+    vaultInfoItem vault
+        [ div [ class "vault-activity", attribute "data-tip" "Total vault size with all file revisions" ]
+            [ text (bytesReadable vault.size) ]
+        ]
+
+
+vaultUserCount : Vault -> Html msg
+vaultUserCount vault =
+    vaultInfoItem vault
+        [ div
+            [ class "vault-info-item" ]
+            [ div [ class "vault-users", attribute "data-tip" "Users with access to vault" ]
+                [ text "{vault.user_count || 0}" ]
+            ]
         ]
 
 
@@ -75,6 +107,17 @@ flyingVaultInfoItem vault =
         ]
 
 
+vaultRemoveFromSyncButton : Vault -> Html Msg
+vaultRemoveFromSyncButton vault =
+    div
+        [ class "vault-remove-button"
+        , attribute "data-for" "button-tooltip"
+        , attribute "data-tip" "Remove vault from sync"
+        , onClick (VaultList (RemoveVaultFromSync vault))
+        ]
+        []
+
+
 vaultItem : Vault -> Html Msg
 vaultItem vault =
     div [ class (itemClass vault), onClick (OpenVaultDetails vault) ]
@@ -83,7 +126,10 @@ vaultItem vault =
             [ div [ class "vault-title" ]
                 [ text (nameOrId vault) ]
             , hr [] []
-            , vaultInfoItem vault
+            , vaultStatus vault
+            , vaultActivity vault
+            , vaultUserCount vault
+            , vaultRemoveFromSyncButton vault
             ]
         ]
 
@@ -99,3 +145,7 @@ flyingVaultItem flyingVault =
             , flyingVaultInfoItem flyingVault
             ]
         ]
+
+
+
+-- CSS

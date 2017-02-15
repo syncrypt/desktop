@@ -29,3 +29,8 @@ type Msg
     | OpenFlyingVaultDetails FlyingVault
     | CloseVaultDetails Vault
     | OpenProgramSettings
+    | VaultList VaultListMsg
+
+
+type VaultListMsg
+    = RemoveVaultFromSync Vault
