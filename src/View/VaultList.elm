@@ -1,5 +1,6 @@
 module View.VaultList exposing (..)
 
+import Date exposing (Date)
 import Html exposing (Html, button, canvas, div, hr, node, text)
 import Html.Attributes exposing (attribute, class, height, id, width)
 import Html.Events exposing (onClick)
@@ -31,59 +32,47 @@ vaultItemSyncStateClass vault =
     "vault-status-" ++ (vault.status |> toString |> String.toLower)
 
 
-vaultUpdatedAtInfo : Vault -> Html msg
+vaultUpdatedAtInfo : { a | modificationDate : Maybe Date } -> Html msg
 vaultUpdatedAtInfo vault =
-    let
-        remainingBody =
-            case vault.modificationDate of
-                Nothing ->
-                    []
+    case vault.modificationDate of
+        Nothing ->
+            text ""
 
-                Just date ->
-                    [ node "TimeAgo"
-                        [ attribute "data-tip" "Time since last file was uploaded"
-                        , attribute "date" (toString date)
-                        ]
-                        []
-                    ]
-    in
-        case vault.status of
-            Initializing ->
-                div []
-                    ((text "Generating key&hellip;") :: remainingBody)
-
-            _ ->
-                div []
-                    remainingBody
-
-
-vaultUpdatedAt : Vault -> Html msg
-vaultUpdatedAt vault =
-    div [ class "vault-updated-at" ]
-        [ div [ class (vaultItemSyncStateClass vault) ]
-            [ case vault.modificationDate of
-                Just date ->
-                    text ("Last update: " ++ (toString date))
-
-                Nothing ->
-                    div []
-                        []
-            ]
-        ]
+        Just date ->
+            node "TimeAgo"
+                [ attribute "data-tip" "Time since last file was uploaded"
+                , attribute "date" (toString date)
+                ]
+                []
 
 
 vaultInfoItem : Vault -> Html msg
 vaultInfoItem vault =
     div [ class "vault-info-item" ]
         [ text ("ID: " ++ vault.id)
-        , vaultUpdatedAt vault
+        , let
+            updatedAt =
+                vaultUpdatedAtInfo vault
+          in
+            case vault.status of
+                Initializing ->
+                    div []
+                        [ text "Generating key&hellip;"
+                        , updatedAt
+                        ]
+
+                _ ->
+                    div []
+                        [ updatedAt ]
         ]
 
 
-flyingVaultInfoItem : { a | id : String } -> Html msg
+flyingVaultInfoItem : FlyingVault -> Html msg
 flyingVaultInfoItem vault =
     div [ class "flying-vault-info-item" ]
-        [ text ("ID: " ++ vault.id), text "foi" ]
+        [ text ("ID: " ++ vault.id)
+        , vaultUpdatedAtInfo vault
+        ]
 
 
 vaultItem : Vault -> Html Msg
