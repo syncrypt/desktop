@@ -65,3 +65,18 @@ nameOrId : { v | name : Maybe String, id : String } -> String
 nameOrId vault =
     vault.name
         |> Maybe.withDefault vault.id
+
+
+asVault : FlyingVault -> Vault
+asVault fv =
+    { id = fv.id
+    , name = fv.name
+    , size = Maybe.withDefault 0 fv.size
+    , status = Unsynced
+    , userCount = fv.userCount
+    , fileCount = fv.fileCount
+    , revisionCount = fv.revisionCount
+    , resourceUri = fv.resourceUri
+    , folderPath = ""
+    , modificationDate = fv.modificationDate
+    }
