@@ -106,6 +106,9 @@ update action model =
             { model | state = ShowingFlyingVaultDetails flyingVault }
                 ! []
 
+        CloseVaultDetails ->
+            { model | state = ShowingAllVaults } ! []
+
         _ ->
             { model | state = LoadingVaults }
                 ! []

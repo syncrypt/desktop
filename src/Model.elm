@@ -30,7 +30,7 @@ type Msg
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
-    | CloseVaultDetails Vault
+    | CloseVaultDetails
     | OpenProgramSettings
     | OpenAccountSettings
     | RemoveVaultFromSync Vault

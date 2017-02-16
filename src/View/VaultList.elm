@@ -171,9 +171,41 @@ vaultInfo vault nodes =
             (vaultHeader ++ nodes)
 
 
+vaultItemOnClick model vault =
+    let
+        openVault =
+            OpenVaultDetails vault
+    in
+        case model.state of
+            ShowingVaultDetails v ->
+                if vault == v then
+                    CloseVaultDetails
+                else
+                    openVault
+
+            _ ->
+                openVault
+
+
+flyingVaultItemOnClick model flyingVault =
+    let
+        openFlyingVault =
+            OpenFlyingVaultDetails flyingVault
+    in
+        case model.state of
+            ShowingFlyingVaultDetails v ->
+                if flyingVault == v then
+                    CloseVaultDetails
+                else
+                    openFlyingVault
+
+            _ ->
+                openFlyingVault
+
+
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
-    div [ class (vaultItemClass model vault), onClick (OpenVaultDetails vault) ]
+    div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
         [ vaultIcon vault
         , vaultInfo vault
             [ vaultStatus vault
@@ -187,7 +219,7 @@ vaultItem model vault =
 
 flyingVaultItem : Model -> FlyingVault -> Html Msg
 flyingVaultItem model flyingVault =
-    div [ class (flyingVaultItemClass model flyingVault), onClick (OpenFlyingVaultDetails flyingVault) ]
+    div [ class (flyingVaultItemClass model flyingVault), onClick (flyingVaultItemOnClick model flyingVault) ]
         [ vaultIcon flyingVault
         , vaultInfo flyingVault
             [ flyingVaultInfoItem flyingVault
