@@ -6,7 +6,6 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Model exposing (..)
 import View.MainScreen
-import View.VaultDetailsDialog
 
 
 main : Program Never Model Msg
@@ -142,5 +141,4 @@ view model =
             View.MainScreen.view model
 
         ShowingVaultDetails vault ->
-            model
-                |> View.VaultDetailsDialog.view vault
+            View.MainScreen.view model
