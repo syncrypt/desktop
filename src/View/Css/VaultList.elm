@@ -26,6 +26,7 @@ type CssClass
     | FlyingVaultItem
     | VaultUsers
     | VaultList
+    | FlyingVaultList
     | FlyingVaultSeparator
 
 

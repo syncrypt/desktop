@@ -1,7 +1,7 @@
 module View.VaultList exposing (..)
 
 import Date exposing (Date)
-import Html exposing (Html, button, canvas, div, hr, node, text)
+import Html exposing (Html, button, canvas, div, hr, node, text, h1)
 import Html.Attributes exposing (attribute, class, height, id, width)
 import Html.Events exposing (onClick)
 import MD5
@@ -199,5 +199,31 @@ flyingVaultItem flyingVault =
 
 view : Model -> Html Msg
 view model =
-    div [ class [ VaultList ] ]
-        (List.map (vaultItem model) model.vaults)
+    let
+        vaultsHeader =
+            h1 []
+                [ text "Local Vaults:" ]
+
+        flyingVaultsHeader =
+            case model.flyingVaults of
+                [] ->
+                    text ""
+
+                _ ->
+                    h1 []
+                        [ text "Remote Vaults:" ]
+
+        vaultCards =
+            div [ class [ VaultList ] ]
+                (List.map (vaultItem model) model.vaults)
+
+        flyingVaultCards =
+            div [ class [ FlyingVaultList ] ]
+                (List.map flyingVaultItem model.flyingVaults)
+    in
+        div []
+            [ vaultsHeader
+            , vaultCards
+            , flyingVaultsHeader
+            , flyingVaultCards
+            ]

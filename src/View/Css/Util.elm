@@ -9,3 +9,7 @@ transition =
 
 borderWidth =
     property "border-width"
+
+
+background =
+    property "background"

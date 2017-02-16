@@ -10,6 +10,7 @@ type alias Model =
     , vaults : List Vault
     , flyingVaults : List FlyingVault
     , state : State
+    , stats : { stats : Int, downloads : Int, uploads : Int }
     }
 
 
@@ -30,4 +31,6 @@ type Msg
     | OpenFlyingVaultDetails FlyingVault
     | CloseVaultDetails Vault
     | OpenProgramSettings
+    | OpenAccountSettings
     | RemoveVaultFromSync Vault
+    | Logout

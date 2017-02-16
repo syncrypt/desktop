@@ -1,11 +1,12 @@
 module Main exposing (..)
 
+import Config exposing (Config)
+import Daemon exposing (attempt, attemptDelayed)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
-import Config exposing (Config)
-import View.MainScreen
 import Model exposing (..)
-import Daemon exposing (attempt, attemptDelayed)
+import View.MainScreen
+import View.VaultDetailsDialog
 
 
 main : Program Never Model Msg
@@ -42,6 +43,9 @@ initialModel =
     , vaults = []
     , flyingVaults = []
     , state = LoadingVaults
+    , stats =
+        -- TODO: get these from stats api
+        { stats = 0, downloads = 0, uploads = 0 }
     }
 
 
@@ -137,5 +141,6 @@ view model =
         ShowingAllVaults ->
             View.MainScreen.view model
 
-        ShowingVaultDetails { id } ->
-            text ("Vault details = " ++ id)
+        ShowingVaultDetails vault ->
+            model
+                |> View.VaultDetailsDialog.view vault
