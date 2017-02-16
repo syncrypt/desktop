@@ -43,6 +43,7 @@ css =
                , card
                , flyingVaultSeperator
                , flyingVaultCard
+               , vaultCardSelected
                ]
         )
 
@@ -117,6 +118,14 @@ flyingVaultCard : Snippet
 flyingVaultCard =
     class FlyingVaultCard
         [ border3 (px 1) dashed (hex "e6e6e6") ]
+
+
+vaultCardSelected : Snippet
+vaultCardSelected =
+    class VaultCardSelected
+        [ display inlineBlock
+        , backgroundColor (hex "efeeea")
+        ]
 
 
 
