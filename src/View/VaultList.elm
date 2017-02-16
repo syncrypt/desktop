@@ -39,10 +39,7 @@ vaultIcon vault =
         ]
 
 
-
--- vaultItemSyncStateClass : Vault -> String
-
-
+vaultItemSyncStateClass : Vault -> CssClass
 vaultItemSyncStateClass vault =
     VaultStatus vault.status
 
@@ -171,6 +168,7 @@ vaultInfo vault nodes =
             (vaultHeader ++ nodes)
 
 
+vaultItemOnClick : Model -> Vault -> Msg
 vaultItemOnClick model vault =
     let
         openVault =
@@ -187,6 +185,7 @@ vaultItemOnClick model vault =
                 openVault
 
 
+flyingVaultItemOnClick : Model -> FlyingVault -> Msg
 flyingVaultItemOnClick model flyingVault =
     let
         openFlyingVault =
