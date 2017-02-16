@@ -7,9 +7,15 @@ import Html.Events exposing (onClick)
 import MD5
 import Model exposing (..)
 import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, NameOrId, nameOrId, asVault)
-import Css
-import Css.Colors
 import Util exposing (bytesReadable)
+import View.Css.VaultList exposing (..)
+import Html.CssHelpers
+
+
+{-| Custom HTML helpers using our CSS types
+-}
+{ id, class, classList } =
+    Html.CssHelpers.withNamespace "VaultListView-"
 
 
 type alias HasId a =
@@ -20,15 +26,6 @@ type alias HasModificationDate a =
     { a | modificationDate : Maybe Date }
 
 
-
--- HTML views
-
-
-itemClass : Vault -> String
-itemClass vault =
-    "card vault-card-selected"
-
-
 jdenticonAttr : HasId a -> Html.Attribute msg
 jdenticonAttr vault =
     attribute "data-jdenticon-hash" (MD5.hex vault.id)
@@ -36,15 +33,18 @@ jdenticonAttr vault =
 
 vaultIcon : HasId a -> Html msg
 vaultIcon vault =
-    div [ class "vault-icon" ]
+    div [ class [ VaultIcon ] ]
         [ canvas [ width 25, height 25, jdenticonAttr vault ]
             []
         ]
 
 
-vaultItemSyncStateClass : Vault -> String
+
+-- vaultItemSyncStateClass : Vault -> String
+
+
 vaultItemSyncStateClass vault =
-    "vault-status-" ++ (vault.status |> toString |> String.toLower)
+    VaultStatus vault.status
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Html msg
@@ -53,7 +53,7 @@ updatedAtInfo vault updatedAtHeader =
         header =
             Maybe.withDefault (text "") updatedAtHeader
     in
-        div [ class "vault-updated-at" ]
+        div [ class [ VaultUpdatedAt ] ]
             [ header
             , case vault.modificationDate of
                 Nothing ->
@@ -72,7 +72,7 @@ vaultUpdatedAtInfo : Vault -> Html msg
 vaultUpdatedAtInfo vault =
     updatedAtInfo vault
         (Just
-            (div [ class (vaultItemSyncStateClass vault) ]
+            (div [ class [ vaultItemSyncStateClass vault ] ]
                 []
             )
         )
@@ -85,7 +85,7 @@ flyingVaultUpdatedAtInfo flyingVault =
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
 vaultInfoItem vault bodyItems =
-    div [ class "vault-info-item" ]
+    div [ class [ VaultInfoItem ] ]
         bodyItems
 
 
@@ -110,7 +110,7 @@ vaultStatus vault =
 vaultActivity : Vault -> Html msg
 vaultActivity vault =
     vaultInfoItem vault
-        [ div [ class "vault-activity", attribute "data-tip" "Total vault size with all file revisions" ]
+        [ div [ class [ VaultActivity ], attribute "data-tip" "Total vault size with all file revisions" ]
             [ text (bytesReadable vault.size) ]
         ]
 
@@ -119,8 +119,8 @@ vaultUserCount : Vault -> Html msg
 vaultUserCount vault =
     vaultInfoItem vault
         [ div
-            [ class "vault-info-item" ]
-            [ div [ class "vault-users", attribute "data-tip" "Users with access to vault" ]
+            [ class [ VaultInfoItem ] ]
+            [ div [ class [ VaultUsers ], attribute "data-tip" "Users with access to vault" ]
                 [ text (toString vault.userCount) ]
             ]
         ]
@@ -128,7 +128,7 @@ vaultUserCount vault =
 
 flyingVaultInfoItem : FlyingVault -> Html msg
 flyingVaultInfoItem vault =
-    div [ class "flying-vault-info-item" ]
+    div [ class [ FlyingVaultInfoItem ] ]
         [ text ("ID: " ++ vault.id)
         , flyingVaultUpdatedAtInfo vault
         ]
@@ -137,7 +137,7 @@ flyingVaultInfoItem vault =
 vaultRemoveFromSyncButton : Vault -> Html Msg
 vaultRemoveFromSyncButton vault =
     div
-        [ class "vault-remove-button"
+        [ class [ VaultRemoveButton ]
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Remove vault from sync"
         , onClick (RemoveVaultFromSync vault)
@@ -148,7 +148,7 @@ vaultRemoveFromSyncButton vault =
 openVaultFolderButton : Vault -> Html Msg
 openVaultFolderButton vault =
     div
-        [ class "vault-folder-button"
+        [ class [ VaultFolderButton ]
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Open Vault Folder"
         , onClick (OpenVaultFolder vault)
@@ -160,20 +160,20 @@ vaultInfo : NameOrId vault -> List (Html msg) -> Html msg
 vaultInfo vault nodes =
     let
         vaultHeader =
-            [ div [ class "vault-title" ]
+            [ div [ class [ VaultTitle ] ]
                 [ text (nameOrId vault) ]
-            , div [ class "vault-id" ]
+            , div [ class [ VaultId ] ]
                 [ text vault.id ]
             , hr [] []
             ]
     in
-        div [ class "vault-info" ]
+        div [ class [ VaultInfo ] ]
             (vaultHeader ++ nodes)
 
 
-vaultItem : Vault -> Html Msg
-vaultItem vault =
-    div [ class (itemClass vault), onClick (OpenVaultDetails vault) ]
+vaultItem : Model -> Vault -> Html Msg
+vaultItem model vault =
+    div [ class (itemClass model vault), onClick (OpenVaultDetails vault) ]
         [ vaultIcon vault
         , vaultInfo vault
             [ vaultStatus vault
@@ -187,7 +187,7 @@ vaultItem vault =
 
 flyingVaultItem : FlyingVault -> Html Msg
 flyingVaultItem flyingVault =
-    div [ class "flying-vault-item", onClick (OpenFlyingVaultDetails flyingVault) ]
+    div [ class [ Card, FlyingVaultCard ], onClick (OpenFlyingVaultDetails flyingVault) ]
         [ vaultIcon flyingVault
         , vaultInfo flyingVault
             [ flyingVaultInfoItem flyingVault
@@ -197,5 +197,7 @@ flyingVaultItem flyingVault =
         ]
 
 
-
--- CSS
+view : Model -> Html Msg
+view model =
+    div [ class [ VaultList ] ]
+        (List.map (vaultItem model) model.vaults)

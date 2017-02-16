@@ -27,8 +27,7 @@ view model =
                         [ text "Remote Vaults:" ]
 
         vaultCards =
-            div [ class "vault-list" ]
-                (List.map View.VaultList.vaultItem model.vaults)
+            View.VaultList.view model
 
         flyingVaultCards =
             div [ class "flying-vault-list" ]
