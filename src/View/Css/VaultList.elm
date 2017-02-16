@@ -48,6 +48,10 @@ css =
         )
 
 
+
+-- Snippets
+
+
 vaultList : Snippet
 vaultList =
     class VaultList
@@ -70,6 +74,7 @@ card =
         , position relative
         , transition "all 0.25s"
         , backgroundColor (hex "efddda")
+        , highlightWithPointerOnHover
         ]
 
 
@@ -108,9 +113,9 @@ vaultStatuses =
     [ vaultStatusWith (VaultStatus Synced)
         [ backgroundImage (url "../assets/check.png") ]
     , vaultStatusWith (VaultStatus Syncing)
-        [ backgroundImage (url "../assets/check.png") ]
+        [ backgroundImage (url "../assets/update_vault.png") ]
     , vaultStatusWith (VaultStatus Initializing)
-        [ backgroundImage (url "../assets/check.png") ]
+        [ backgroundImage (url "../assets/update_vault.png") ]
     ]
 
 
@@ -129,7 +134,22 @@ vaultCardSelected =
 
 
 
--- helpers
+-- Mixins
+
+
+highlightWithPointerOnHover : Mixin
+highlightWithPointerOnHover =
+    mixin
+        [ hover
+            [ opacity (num 0.7)
+            , transition "all 0.25s"
+            , cursor pointer
+            ]
+        ]
+
+
+
+-- Helpers
 
 
 vaultItemClass : Model -> Vault -> List CssClass
