@@ -107,7 +107,8 @@ update action model =
                 ! []
 
         _ ->
-            ( { model | state = LoadingVaults }, Cmd.none )
+            { model | state = LoadingVaults }
+                ! []
 
 
 updateAllVaults : Config -> List (Cmd Msg)
