@@ -19,6 +19,7 @@ type State
     | UpdatingVaults (List Vault)
     | ShowingAllVaults
     | ShowingVaultDetails Vault
+    | ShowingFlyingVaultDetails FlyingVault
 
 
 type Msg

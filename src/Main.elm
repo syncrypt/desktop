@@ -65,48 +65,46 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
         UpdateVaults ->
-            { model | state = UpdatingVaults model.vaults } ! (updateAllVaults model.config)
+            { model | state = UpdatingVaults model.vaults }
+                ! (updateAllVaults model.config)
 
         UpdateFlyingVaults ->
-            ( model
-            , model.config
-                |> Daemon.getFlyingVaults
-                |> attempt UpdatedFlyingVaultsFromApi
-            )
+            model
+                ! [ model.config
+                        |> Daemon.getFlyingVaults
+                        |> attempt UpdatedFlyingVaultsFromApi
+                  ]
 
         UpdatedVaultsFromApi (Ok vaults) ->
-            ( { model
-                | state = ShowingAllVaults
-                , vaults = vaults
-              }
-            , Cmd.none
-            )
+            { model | state = ShowingAllVaults, vaults = vaults }
+                ! []
 
         UpdatedVaultsFromApi (Err reason) ->
             -- retry to get vaults if request failed
-            ( model
-            , model.config
-                |> Daemon.getVaults
-                |> attemptDelayed 1000 UpdatedVaultsFromApi
-            )
+            model
+                ! [ model.config
+                        |> Daemon.getVaults
+                        |> attemptDelayed 1000 UpdatedVaultsFromApi
+                  ]
 
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
-            ( { model
-                | state = ShowingAllVaults
-                , flyingVaults = vaults
-              }
-            , Cmd.none
-            )
+            { model | state = ShowingAllVaults, flyingVaults = vaults }
+                ! []
 
         UpdatedFlyingVaultsFromApi (Err reason) ->
-            ( model
-            , model.config
-                |> Daemon.getFlyingVaults
-                |> attemptDelayed 1000 UpdatedFlyingVaultsFromApi
-            )
+            model
+                ! [ model.config
+                        |> Daemon.getFlyingVaults
+                        |> attemptDelayed 1000 UpdatedFlyingVaultsFromApi
+                  ]
 
         OpenVaultDetails vault ->
-            ( { model | state = ShowingVaultDetails vault }, Cmd.none )
+            { model | state = ShowingVaultDetails vault }
+                ! []
+
+        OpenFlyingVaultDetails flyingVault ->
+            { model | state = ShowingFlyingVaultDetails flyingVault }
+                ! []
 
         _ ->
             ( { model | state = LoadingVaults }, Cmd.none )
@@ -137,8 +135,5 @@ view model =
         UpdatingVaults vaults ->
             text ("Updating vaults: " ++ (vaults |> List.length |> toString))
 
-        ShowingAllVaults ->
-            View.MainScreen.view model
-
-        ShowingVaultDetails vault ->
+        _ ->
             View.MainScreen.view model

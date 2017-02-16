@@ -2,9 +2,9 @@ module View.Css.VaultList exposing (..)
 
 import Css exposing (..)
 import Css.Namespace exposing (namespace)
-import Syncrypt.Vault exposing (Status(..), Vault)
-import View.Css.Util exposing (..)
 import Model exposing (..)
+import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault)
+import View.Css.Util exposing (..)
 
 
 type CssClass
@@ -132,8 +132,8 @@ vaultCardSelected =
 -- helpers
 
 
-itemClass : Model -> Vault -> List CssClass
-itemClass model vault =
+vaultItemClass : Model -> Vault -> List CssClass
+vaultItemClass model vault =
     let
         defaultClass =
             [ Card, VaultCard ]
@@ -141,6 +141,23 @@ itemClass model vault =
         case model.state of
             ShowingVaultDetails selectedVault ->
                 if vault == selectedVault then
+                    [ Card, VaultCardSelected ]
+                else
+                    defaultClass
+
+            _ ->
+                defaultClass
+
+
+flyingVaultItemClass : Model -> FlyingVault -> List CssClass
+flyingVaultItemClass model flyingVault =
+    let
+        defaultClass =
+            [ Card, FlyingVaultCard ]
+    in
+        case model.state of
+            ShowingFlyingVaultDetails selectedVault ->
+                if flyingVault == selectedVault then
                     [ Card, VaultCardSelected ]
                 else
                     defaultClass

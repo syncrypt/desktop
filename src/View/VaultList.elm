@@ -173,7 +173,7 @@ vaultInfo vault nodes =
 
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
-    div [ class (itemClass model vault), onClick (OpenVaultDetails vault) ]
+    div [ class (vaultItemClass model vault), onClick (OpenVaultDetails vault) ]
         [ vaultIcon vault
         , vaultInfo vault
             [ vaultStatus vault
@@ -185,9 +185,9 @@ vaultItem model vault =
         ]
 
 
-flyingVaultItem : FlyingVault -> Html Msg
-flyingVaultItem flyingVault =
-    div [ class [ Card, FlyingVaultCard ], onClick (OpenFlyingVaultDetails flyingVault) ]
+flyingVaultItem : Model -> FlyingVault -> Html Msg
+flyingVaultItem model flyingVault =
+    div [ class (flyingVaultItemClass model flyingVault), onClick (OpenFlyingVaultDetails flyingVault) ]
         [ vaultIcon flyingVault
         , vaultInfo flyingVault
             [ flyingVaultInfoItem flyingVault
@@ -219,7 +219,7 @@ view model =
 
         flyingVaultCards =
             div [ class [ FlyingVaultList ] ]
-                (List.map flyingVaultItem model.flyingVaults)
+                (List.map (flyingVaultItem model) model.flyingVaults)
     in
         div []
             [ vaultsHeader

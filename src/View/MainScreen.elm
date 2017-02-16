@@ -25,6 +25,12 @@ view model =
                     |> View.VaultDetailsDialog.view vault
                 ]
 
+        ShowingFlyingVaultDetails vault ->
+            layout model
+                [ model
+                    |> View.VaultDetailsDialog.view vault
+                ]
+
         _ ->
             layout model []
 

@@ -11,6 +11,6 @@ import Syncrypt.Vault exposing (Vault)
 -- import View.Css.VaultDetailsDialog exposing (..)
 
 
-view : Vault -> Model -> Html msg
+view : vault -> Model -> Html msg
 view vault model =
     text "ok"
