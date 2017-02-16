@@ -2,6 +2,7 @@ port module Stylesheets exposing (..)
 
 import Css.File exposing (CssFileStructure, CssCompilerProgram)
 import View.Css.VaultList
+import View.Css.MainScreen
 
 
 port files : CssFileStructure -> Cmd msg
@@ -13,6 +14,7 @@ fileStructure =
         [ ( "index.css"
           , Css.File.compile
                 [ View.Css.VaultList.css
+                , View.Css.MainScreen.css
                 ]
           )
         ]
