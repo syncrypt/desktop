@@ -229,33 +229,40 @@ flyingVaultItem model flyingVault =
         ]
 
 
+vaultsHeader : Model -> Html msg
+vaultsHeader _ =
+    h1 []
+        [ text "Local Vaults:" ]
+
+
+flyingVaultsHeader : Model -> Html Msg
+flyingVaultsHeader model =
+    case model.flyingVaults of
+        [] ->
+            text ""
+
+        _ ->
+            h1 []
+                [ text "Remote Vaults:" ]
+
+
+vaultList : Model -> Html Msg
+vaultList model =
+    div [ class [ VaultList ] ]
+        (List.map (vaultItem model) model.vaults)
+
+
+flyingVaultList : Model -> Html Msg
+flyingVaultList model =
+    div [ class [ FlyingVaultList ] ]
+        (List.map (flyingVaultItem model) model.flyingVaults)
+
+
 view : Model -> Html Msg
 view model =
-    let
-        vaultsHeader =
-            h1 []
-                [ text "Local Vaults:" ]
-
-        flyingVaultsHeader =
-            case model.flyingVaults of
-                [] ->
-                    text ""
-
-                _ ->
-                    h1 []
-                        [ text "Remote Vaults:" ]
-
-        vaultCards =
-            div [ class [ VaultList ] ]
-                (List.map (vaultItem model) model.vaults)
-
-        flyingVaultCards =
-            div [ class [ FlyingVaultList ] ]
-                (List.map (flyingVaultItem model) model.flyingVaults)
-    in
-        div []
-            [ vaultsHeader
-            , vaultCards
-            , flyingVaultsHeader
-            , flyingVaultCards
-            ]
+    div []
+        [ vaultsHeader model
+        , vaultList model
+        , flyingVaultsHeader model
+        , flyingVaultList model
+        ]
