@@ -311,6 +311,8 @@ vaultInfoItem : Snippet
 vaultInfoItem =
     class VaultInfoItem
         [ paddingBottom (px 25)
+        , position relative
+        , top (px -12)
         , descendants
             [ class StatusName
                 [ fontSize (px 15)
@@ -341,7 +343,9 @@ vaultUsers =
         , fontSize (px 15)
         , color (hex "888888")
         , width (px 80)
-        , marginLeft (px 120)
+          --, marginLeft (px 120)
+          --, position relative
+          --, top (px -20)
         ]
 
 
@@ -357,6 +361,8 @@ vaultActivity =
         , color (hex "666666")
         , width (px 80)
         , whiteSpace noWrap
+        , position relative
+        , top (px -15)
         ]
 
 

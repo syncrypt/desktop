@@ -211,8 +211,8 @@ vaultItem model vault =
         [ vaultIcon vault
         , vaultInfo vault
             [ vaultStatus vault
-            , vaultActivity vault
             , vaultUserCount vault
+            , vaultActivity vault
             , vaultRemoveFromSyncButton vault
             , openVaultFolderButton vault
             ]
