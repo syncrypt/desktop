@@ -35,15 +35,25 @@ view model =
             layout model []
 
 
+currentClass : Model -> List CssClass
+currentClass model =
+    if model.sidebarOpen then
+        [ Container ]
+    else
+        [ Container, Expanded ]
+
+
 layout : Model -> List (Html Msg) -> Html Msg
 layout model nodes =
-    div []
-        ((header
-            :: View.VaultList.view model
-            :: nodes
-         )
-            ++ [ footer model ]
-        )
+    div [ class (currentClass model) ]
+        [ header
+        , div [ class [ Container ] ]
+            ((View.VaultList.view model
+                :: nodes
+             )
+                ++ [ footer model ]
+            )
+        ]
 
 
 header : Html Msg

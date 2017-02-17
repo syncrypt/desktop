@@ -2,7 +2,7 @@ module View.VaultList exposing (..)
 
 import Set
 import Date exposing (Date)
-import Html exposing (Html, button, canvas, div, hr, node, text, h1)
+import Html exposing (Html, button, canvas, div, hr, node, text, h1, span)
 import Html.Attributes exposing (attribute, class, height, id, width)
 import Html.Events exposing (onClick)
 import MD5
@@ -229,33 +229,42 @@ flyingVaultItem model flyingVault =
         ]
 
 
-vaultsHeader : Model -> Html msg
-vaultsHeader _ =
-    h1 []
-        [ text "Local Vaults:" ]
-
-
-flyingVaultsHeader : Model -> Html Msg
-flyingVaultsHeader model =
-    case model.flyingVaults of
-        [] ->
-            text ""
-
-        _ ->
-            h1 []
-                [ text "Remote Vaults:" ]
-
-
 vaultList : Model -> Html Msg
 vaultList model =
-    div [ class [ VaultList ] ]
-        (List.map (vaultItem model) model.vaults)
+    let
+        vaultItems =
+            List.map (vaultItem model) model.vaults
+
+        vaultListInfo =
+            div [ class [ VaultListInfo ] ]
+                [ span [ class [ Title ] ]
+                    [ text "Local Vaults" ]
+                , span [ class [ Subtitle ] ]
+                    [ text "These vaults are cloned and synchronized on this computer." ]
+                ]
+    in
+        div [ class [ VaultList ], onClick CloseVaultDetails ]
+            (vaultListInfo :: vaultItems)
 
 
 flyingVaultList : Model -> Html Msg
 flyingVaultList model =
-    div [ class [ FlyingVaultList ] ]
-        (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
+    let
+        flyingVaultItems =
+            (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
+    in
+        div [ class [ FlyingVaultList ] ]
+            ([ hr [ class [ FlyingVaultSeparator ] ]
+                []
+             , div [ class [ VaultListInfo ] ]
+                [ span [ class [ Title ] ]
+                    [ text "Available Vaults" ]
+                , span [ class [ Subtitle ] ]
+                    [ text "Click on a vault to clone it to your computer" ]
+                ]
+             ]
+                ++ flyingVaultItems
+            )
 
 
 unsyncedFlyingVaults : Model -> List FlyingVault
@@ -277,8 +286,6 @@ unsyncedFlyingVaults model =
 view : Model -> Html Msg
 view model =
     div []
-        [ vaultsHeader model
-        , vaultList model
-        , flyingVaultsHeader model
+        [ vaultList model
         , flyingVaultList model
         ]

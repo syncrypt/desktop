@@ -13,3 +13,7 @@ borderWidth =
 
 background =
     property "background"
+
+
+animation =
+    property "animation"

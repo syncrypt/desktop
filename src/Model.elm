@@ -11,6 +11,7 @@ type alias Model =
     , flyingVaults : List FlyingVault
     , state : State
     , stats : { stats : Int, downloads : Int, uploads : Int }
+    , sidebarOpen : Bool
     }
 
 

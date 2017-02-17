@@ -28,7 +28,6 @@ css =
     (stylesheet << namespace "MainScreenView-") <|
         general
             ++ [ mainScreen
-               , container
                , header
                , footer
                , stats
@@ -45,6 +44,8 @@ general =
         , overflowY hidden
         , fontFamilies [ "Hind", "Arial", "Helvetica", "Helvetica Neue" ]
         , margin (px 0)
+        , background "linear-gradient(0deg, #404f60, #c17d6f)"
+        , backgroundAttachment fixed
         ]
     , h2
         [ margin (px 0)
@@ -111,21 +112,16 @@ mainScreen =
                 ]
             ]
         , children
-            [ container ]
-        ]
-
-
-container : Snippet
-container =
-    class Container
-        [ width (pct 70)
-        , height (pct 100)
-        , position absolute
-        , top (px 64)
-        , bottom (px 26)
-        , overflowY auto
-        , transition "width 0.5s"
-        , background "linear-gradient(0deg, #404f60, #c17d6f)"
+            [ class Container
+                [ width (pct 70)
+                , height (pct 100)
+                , position absolute
+                , top (px 64)
+                , bottom (px 26)
+                , overflowY auto
+                , transition "width 0.5s"
+                ]
+            ]
         ]
 
 

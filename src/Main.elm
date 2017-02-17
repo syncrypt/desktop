@@ -45,6 +45,7 @@ initialModel =
     , stats =
         -- TODO: get these from stats api
         { stats = 0, downloads = 0, uploads = 0 }
+    , sidebarOpen = False
     }
 
 
