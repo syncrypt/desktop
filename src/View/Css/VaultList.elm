@@ -43,8 +43,8 @@ type CssClass
 
 css : Stylesheet
 css =
-    (stylesheet << namespace "VaultListView-")
-        (vaultStatuses
+    (stylesheet << namespace "VaultListView-") <|
+        vaultStatuses
             ++ [ vaultList
                , card
                , flyingVaultSeperator
@@ -65,7 +65,6 @@ css =
                , vaultRemoveButton
                , vaultFolderButton
                ]
-        )
 
 
 
