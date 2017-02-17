@@ -1,13 +1,13 @@
 module View.MainScreen exposing (..)
 
-import Html exposing (Html, button, div, h1, node, text)
+import Html exposing (Html, button, div, h1, node, span, text)
 import Html.Attributes exposing (..)
 import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import View.Css.MainScreen exposing (..)
-import View.VaultList
 import View.VaultDetailsDialog
+import View.VaultList
 
 
 {-| Custom HTML helpers using our CSS types
@@ -90,8 +90,10 @@ footer { stats, vaults } =
                 |> String.join " / "
     in
         div [ class [ Footer ] ]
-            [ text <|
-                (vaults |> List.length |> toString)
-                    ++ " Vault(s) / "
-                    ++ statsStr
+            [ span [ class [ Stats ] ]
+                [ text <|
+                    (vaults |> List.length |> toString)
+                        ++ " Vault(s) / "
+                        ++ statsStr
+                ]
             ]

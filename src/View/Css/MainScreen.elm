@@ -2,9 +2,7 @@ module View.Css.MainScreen exposing (..)
 
 import Css exposing (..)
 import Css.Namespace exposing (namespace)
-import Css.Elements exposing (h2)
-import Model exposing (..)
-import Syncrypt.Vault exposing (Status(..), Vault)
+import Css.Elements exposing (body, h1, h2, a, p, li, div)
 import View.Css.Util exposing (..)
 
 
@@ -13,29 +11,86 @@ type alias CssMixin =
 
 
 type CssClass
-    = MainScreen
+    = Root
+    | MainScreen
     | Expanded
     | Container
+    | ModalContent
     | Header
     | Footer
     | FlyingVaultList
     | Buttons
-    | Element CssMixin
+    | Stats
 
 
 css : Stylesheet
 css =
-    (stylesheet << namespace "MainScreenView-")
-        [ mainScreen
-        , expanded
-        , container
-        , expandedContainer
-        , header
-        , footer
-        , class [ Header, Element h2 ]
-            [ fontSize (Css.rem 3.0)
+    (stylesheet << namespace "MainScreenView-") <|
+        general
+            ++ [ mainScreen
+               , container
+               , header
+               , footer
+               , stats
+               , buttons
+               ]
+
+
+general =
+    [ body
+        [ position relative
+        , color (hex "333")
+        , height (vh 100)
+        , backgroundColor (hex "fff")
+        , overflowY hidden
+        , fontFamilies [ "Hind", "Arial", "Helvetica", "Helvetica Neue" ]
+        , margin (px 0)
+        ]
+    , h2
+        [ margin (px 0)
+        , fontSize (Css.rem 2.25)
+        , fontWeight bold
+        , letterSpacing (Css.rem -0.25)
+        , color (hex "333")
+        ]
+    , p [ fontSize (px 24) ]
+    , li [ listStyle none ]
+    , a
+        [ color (hex "555")
+        , opacity (num 0.75)
+        , textDecoration none
+        , linkHover
+        ]
+    , Css.id Root (fullSize ++ [ children [ div fullSize ] ])
+    , class Container
+        [ width (pct 100) ]
+    , class ModalContent
+        [ borderRadius (px 0) ]
+    ]
+
+
+fullSize : List Mixin
+fullSize =
+    [ height (pct 100), width (pct 100) ]
+
+
+linkHover : Mixin
+linkHover =
+    mixin
+        [ hover
+            [ opacity (num 1)
+            , textDecoration none
+            , cursor pointer
             ]
         ]
+
+
+
+--
+-- ::-webkit-input-placeholder {
+--    color: #4D4D4D !important;
+-- }
+--
 
 
 mainScreen : Snippet
@@ -43,14 +98,20 @@ mainScreen =
     class MainScreen
         [ width (pct 70)
         , property "-webkit-transition" "width 0.5s"
-        ]
-
-
-expanded : Snippet
-expanded =
-    class Expanded
-        [ width (pct 100)
-        , property "-webkit-transition" "width 0.5s"
+        , descendants
+            [ class Expanded
+                [ width (pct 100)
+                , transition "width 0.5s"
+                , children
+                    [ class Container
+                        [ width (pct 100)
+                        , transition "width 0.5s"
+                        ]
+                    ]
+                ]
+            ]
+        , children
+            [ container ]
         ]
 
 
@@ -68,14 +129,6 @@ container =
         ]
 
 
-expandedContainer : Snippet
-expandedContainer =
-    class [ Expanded, Container ]
-        [ width (pct 100)
-        , transition "width 0.5s"
-        ]
-
-
 header : Snippet
 header =
     class Header
@@ -88,10 +141,49 @@ header =
         , backgroundPosition2 (px 20) (px 2)
         , backgroundSize (px 170)
         , width (pct 100)
+        , descendants
+            [ h1
+                [ -- fontSize (Css.rem 3.0)
+                  fontSize (px 100)
+                , color (hex "f00")
+                  -- TODO: remove this
+                ]
+            , a
+                [ fontSize (Css.rem 1.4)
+                ]
+            ]
+        ]
+
+
+stats : Snippet
+stats =
+    class Stats
+        [ position absolute
+        , right (px 20)
+        , top (px 10)
+        ]
+
+
+buttons : Snippet
+buttons =
+    class Buttons
+        [ position absolute
+        , right (px 10)
+        , top (px 17)
+          -- , display flex
         ]
 
 
 footer : Snippet
 footer =
     class Footer
-        []
+        [ position fixed
+        , fontSize (px 14)
+        , left (px 0)
+        , right (px 0)
+        , bottom (px 0)
+        , height (px 26)
+        , backgroundColor (hex "4d4d4d")
+        , color (hex "fff")
+        , padding (px 5)
+        ]
