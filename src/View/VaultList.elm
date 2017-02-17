@@ -35,7 +35,7 @@ jdenticonAttr vault =
 vaultIcon : HasId a -> Html msg
 vaultIcon vault =
     div [ class [ VaultIcon ] ]
-        [ canvas [ width 25, height 25, jdenticonAttr vault ]
+        [ canvas [ width 100, height 100, jdenticonAttr vault ]
             []
         ]
 
@@ -116,19 +116,15 @@ vaultActivity vault =
 vaultUserCount : Vault -> Html msg
 vaultUserCount vault =
     vaultInfoItem vault
-        [ div
-            [ class [ VaultInfoItem ] ]
-            [ div [ class [ VaultUsers ], attribute "data-tip" "Users with access to vault" ]
-                [ text (toString vault.userCount) ]
-            ]
+        [ div [ class [ VaultUsers ], attribute "data-tip" "Users with access to vault" ]
+            [ text (toString vault.userCount) ]
         ]
 
 
 flyingVaultInfoItem : FlyingVault -> Html msg
 flyingVaultInfoItem vault =
     div [ class [ FlyingVaultInfoItem ] ]
-        [ text ("ID: " ++ vault.id)
-        , flyingVaultUpdatedAtInfo vault
+        [ flyingVaultUpdatedAtInfo vault
         ]
 
 
@@ -229,6 +225,19 @@ flyingVaultItem model flyingVault =
         ]
 
 
+newVaultItem : Html Msg
+newVaultItem =
+    div
+        [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
+        , attribute "data-offset" "{'bottom': -15, 'left': 0}"
+        , attribute "data-for" "new-vault-item-tooltip"
+        , attribute "className" "vault-plus"
+        ]
+        [ div [ class [ VaultPlusIcon ] ]
+            []
+        ]
+
+
 vaultList : Model -> Html Msg
 vaultList model =
     let
@@ -244,7 +253,7 @@ vaultList model =
                 ]
     in
         div [ class [ VaultList ], onClick CloseVaultDetails ]
-            (vaultListInfo :: vaultItems)
+            ((vaultListInfo :: vaultItems) ++ [ newVaultItem ])
 
 
 flyingVaultList : Model -> Html Msg

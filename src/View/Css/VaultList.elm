@@ -55,6 +55,15 @@ css =
                , vaultPlus
                , vaultPlusIcon
                , vaultInfo
+               , vaultIcon
+               , vaultTitle
+               , class VaultId [ fontSize (px 8) ]
+               , vaultInfoItem
+               , vaultUpdatedAt
+               , vaultUsers
+               , vaultActivity
+               , vaultRemoveButton
+               , vaultFolderButton
                ]
         )
 
@@ -162,6 +171,11 @@ vaultCardSelected =
     class VaultCardSelected
         [ display inlineBlock
         , backgroundColor (hex "efeeea")
+        , descendants
+            [ class VaultTitle
+                [ color (hex "000")
+                ]
+            ]
         ]
 
 
@@ -174,27 +188,13 @@ vaultCard =
                 [ opacity (num 0.7)
                 , transition "all 0.25s"
                 , cursor pointer
+                , color (hex "000")
                 ]
             ]
-        ]
-
-
-
--- TODO:
--- .vault-card-selected .vault-title,
--- .vault-card:hover .vault-title {
---   color: #000000;
--- }
--- Mixins
-
-
-highlightWithPointerOnHover : Mixin
-highlightWithPointerOnHover =
-    mixin
-        [ hover
-            [ opacity (num 0.7)
-            , transition "all 0.25s"
-            , cursor pointer
+        , descendants
+            [ class VaultTitle
+                [ color (hex "000")
+                ]
             ]
         ]
 
@@ -272,6 +272,25 @@ vaultInfo =
         ]
 
 
+vaultIcon : Snippet
+vaultIcon =
+    class VaultIcon
+        [ height (px 50)
+        , width (px 50)
+        , float left
+        , descendants
+            [ canvas
+                [ height (px 50)
+                , width (px 50)
+                , marginLeft (px 5)
+                , marginRight (px 20)
+                , marginTop (px 15)
+                , padding (px 0)
+                ]
+            ]
+        ]
+
+
 vaultTitle : Snippet
 vaultTitle =
     class VaultTitle
@@ -285,6 +304,124 @@ vaultTitle =
         , marginRight (px 10)
         , textOverflow ellipsis
         , overflow hidden
+        ]
+
+
+vaultInfoItem : Snippet
+vaultInfoItem =
+    class VaultInfoItem
+        [ paddingTop (px 10)
+        ]
+
+
+vaultUpdatedAt : Snippet
+vaultUpdatedAt =
+    class VaultUpdatedAt
+        [ fontSize (px 12)
+        , width (px 140)
+        ]
+
+
+vaultUsers : Snippet
+vaultUsers =
+    class VaultUsers
+        [ backgroundImage (url "../assets/avatar.png")
+        , backgroundSize (px 20)
+        , backgroundRepeat noRepeat
+        , paddingLeft (px 25)
+        , fontWeight (int 300)
+        , fontSize (px 15)
+        , color (hex "888888")
+        , width (px 80)
+        , marginLeft (px 120)
+        ]
+
+
+vaultActivity : Snippet
+vaultActivity =
+    class VaultActivity
+        [ backgroundImage (url "../assets/vault.png")
+        , backgroundSize (px 18)
+        , backgroundRepeat noRepeat
+        , paddingLeft (px 25)
+        , fontWeight (int 300)
+        , fontSize (px 15)
+        , color (hex "666666")
+        , width (px 80)
+        , whiteSpace noWrap
+        ]
+
+
+
+-- -- TODO: keyframes function doesn't exist in API.
+-- rotating : Snippet
+-- rotating =
+--     keyframes "rotating "
+--         [ "from { transform: rotate(0deg); }"
+--         , "to { transform: rotate(360deg); }"
+--         ]
+-- -- Need this:
+-- -- @keyframes rotating {
+-- --   from { transform: rotate(0deg); }
+-- --   to { transform: rotate(360deg); }
+-- -- }
+
+
+vaultRemoveButton : Snippet
+vaultRemoveButton =
+    class VaultRemoveButton
+        [ display none
+        , backgroundImage (url "../assets/remove_vault.png")
+        , backgroundRepeat noRepeat
+        , backgroundSize2 (px 25) (px 25)
+        , width (px 25)
+        , height (px 25)
+        , opacity (num 0.44)
+        , position absolute
+        , top (px 2)
+        , right (px 2)
+        , buttonHover
+        ]
+
+
+vaultFolderButton : Snippet
+vaultFolderButton =
+    class VaultFolderButton
+        [ display none
+        , backgroundImage (url "../assets/folder.png")
+        , backgroundRepeat noRepeat
+        , backgroundSize2 (px 20) (px 20)
+        , width (px 20)
+        , height (px 20)
+        , opacity (num 0.44)
+        , position absolute
+        , bottom (px 10)
+        , right (px 4)
+        , buttonHover
+        ]
+
+
+
+-- Mixins
+
+
+buttonHover =
+    mixin
+        [ hover
+            [ cursor pointer
+            , opacity (num 1.0)
+            ]
+        ]
+
+
+highlightWithPointerOnHover : Mixin
+highlightWithPointerOnHover =
+    mixin
+        [ hover
+            [ opacity (num 0.7)
+            , transition "all 0.25s"
+            , cursor pointer
+            ]
         ]
 
 

@@ -17,3 +17,11 @@ background =
 
 animation =
     property "animation"
+
+
+
+--keyframes : String -> List String -> Snippet
+--keyframes name props =
+--    Snippet
+--        [ Keyframes name props
+--        ]
