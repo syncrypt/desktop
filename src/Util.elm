@@ -23,8 +23,8 @@ import Round
 -}
 delay : Time -> Task err a -> Task err a
 delay time task =
-    Process.sleep 1000
-        |> andThen (\x -> task)
+    Process.sleep time
+        |> andThen (\_ -> task)
 
 
 {-| Attempts to perform a `Task` after a given delay.
