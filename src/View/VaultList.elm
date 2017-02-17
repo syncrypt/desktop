@@ -90,19 +90,25 @@ vaultInfoItem vault bodyItems =
 vaultStatus : Vault -> Html msg
 vaultStatus vault =
     let
+        statusName =
+            span [ class [ StatusName ] ]
+                [ text (toString vault.status) ]
+
         updatedAt =
             vaultUpdatedAtInfo vault
     in
         case vault.status of
             Initializing ->
                 vaultInfoItem vault
-                    [ text "Generating key&hellip;"
+                    [ statusName
                     , updatedAt
                     ]
 
             _ ->
                 vaultInfoItem vault
-                    [ updatedAt ]
+                    [ statusName
+                    , updatedAt
+                    ]
 
 
 vaultActivity : Vault -> Html msg

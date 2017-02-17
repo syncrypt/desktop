@@ -34,6 +34,7 @@ type CssClass
     | FlyingVaultSeparator
     | Title
     | Subtitle
+    | StatusName
 
 
 
@@ -139,7 +140,7 @@ vaultStatuses =
     , vaultStatusWith (VaultStatus Initializing)
         [ backgroundImage (url "../assets/update_vault.png") ]
     , vaultStatusWith (VaultStatus Ready)
-        [ backgroundImage (url "../assets/update_vault.png") ]
+        [ backgroundImage (url "../assets/check.png") ]
     ]
 
 
@@ -309,7 +310,15 @@ vaultTitle =
 vaultInfoItem : Snippet
 vaultInfoItem =
     class VaultInfoItem
-        [ paddingTop (px 10)
+        [ paddingBottom (px 25)
+        , descendants
+            [ class StatusName
+                [ fontSize (px 15)
+                , top (px 16)
+                , paddingLeft (px 25)
+                , position relative
+                ]
+            ]
         ]
 
 
