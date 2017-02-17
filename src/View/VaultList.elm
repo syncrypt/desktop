@@ -1,5 +1,6 @@
 module View.VaultList exposing (..)
 
+import Set
 import Date exposing (Date)
 import Html exposing (Html, button, canvas, div, hr, node, text, h1)
 import Html.Attributes exposing (attribute, class, height, id, width)
@@ -254,7 +255,23 @@ vaultList model =
 flyingVaultList : Model -> Html Msg
 flyingVaultList model =
     div [ class [ FlyingVaultList ] ]
-        (List.map (flyingVaultItem model) model.flyingVaults)
+        (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
+
+
+unsyncedFlyingVaults : Model -> List FlyingVault
+unsyncedFlyingVaults model =
+    let
+        vaultIds =
+            Set.fromList (List.map (\v -> v.id) model.vaults)
+
+        flyingVaultIds =
+            Set.fromList (List.map (\v -> v.id) model.flyingVaults)
+
+        diff =
+            Set.diff flyingVaultIds vaultIds
+    in
+        model.flyingVaults
+            |> List.filter (\fv -> Set.member fv.id diff)
 
 
 view : Model -> Html Msg
