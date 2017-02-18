@@ -48,11 +48,8 @@ layout model nodes =
     div [ class (currentClass model) ]
         [ header
         , div [ class [ Container ] ]
-            ((View.VaultList.view model
-                :: nodes
-             )
-                ++ [ footer model ]
-            )
+            (View.VaultList.view model :: nodes)
+        , footer model
         ]
 
 

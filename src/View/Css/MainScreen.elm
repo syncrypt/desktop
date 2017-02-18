@@ -64,7 +64,10 @@ general =
         ]
     , Css.id Root (fullSize ++ [ children [ div fullSize ] ])
     , class Container
-        [ width (pct 100) ]
+        [ width (pct 100)
+        , paddingTop (px 30)
+        , paddingBottom (px 45)
+        ]
     , class ModalContent
         [ borderRadius (px 0) ]
     ]
@@ -128,15 +131,17 @@ mainScreen =
 header : Snippet
 header =
     class Header
-        [ height (px 64)
-        , position relative
+        [ position fixed
+        , top (px 0)
+        , zIndex (int 1)
+        , height (px 64)
+        , width (pct 100)
         , backgroundColor (hex "a07f78")
         , marginBottom (px 10)
         , backgroundImage (url "../assets/logo.png")
         , backgroundRepeat noRepeat
         , backgroundPosition2 (px 20) (px 2)
         , backgroundSize (px 170)
-        , width (pct 100)
         , descendants
             [ h1
                 [ -- fontSize (Css.rem 3.0)
@@ -156,7 +161,7 @@ stats =
     class Stats
         [ position absolute
         , right (px 20)
-        , top (px 10)
+        , top (px 7)
         ]
 
 
@@ -174,11 +179,12 @@ footer : Snippet
 footer =
     class Footer
         [ position fixed
+        , zIndex (int 1)
         , fontSize (px 14)
         , left (px 0)
         , right (px 0)
         , bottom (px 0)
-        , height (px 26)
+        , height (px 20)
         , backgroundColor (hex "4d4d4d")
         , color (hex "fff")
         , padding (px 5)
