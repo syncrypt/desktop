@@ -4,13 +4,14 @@ module Util
         , ByteUnitPrecision
         , delay
         , attemptDelayed
+        , performDelayed
         , skipCharsWhile
         , removeTrailingZeroes
         , bytesReadable
         )
 
 import Time exposing (Time)
-import Task exposing (Task, andThen, attempt)
+import Task exposing (Task, andThen, attempt, perform)
 import Process
 import Model exposing (Msg)
 import Result exposing (Result)
@@ -39,6 +40,25 @@ attemptDelayed time msg task =
     task
         |> delay time
         |> attempt msg
+
+
+{-| Attempts to perform a `Task` after a given delay.
+
+    let
+        request = Daemon.getVaults model.config
+    in
+        attemptDelayed 1000 UpdatedVaultsFromApi request
+-}
+
+
+
+--performDelayed : Time -> (Task err a -> Msg) -> Task err a -> Cmd Msg
+
+
+performDelayed time msg task =
+    task
+        |> delay time
+        |> perform msg
 
 
 type alias ByteUnit =
