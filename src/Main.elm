@@ -2,9 +2,12 @@ module Main exposing (..)
 
 import Config exposing (Config)
 import Daemon exposing (attempt, attemptDelayed)
+import Date exposing (Date)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Model exposing (..)
+import Task
+import Util
 import View.MainScreen
 
 
@@ -27,8 +30,11 @@ init =
     let
         model =
             initialModel
+
+        initialActions =
+            updateNow :: (updateAllVaults model.config)
     in
-        model ! (updateAllVaults model.config)
+        model ! initialActions
 
 
 initialModel : Model
@@ -41,6 +47,7 @@ initialModel =
         -- TODO: get these from stats api
         { stats = 0, downloads = 0, uploads = 0 }
     , sidebarOpen = False
+    , now = Nothing
     }
 
 
@@ -60,6 +67,9 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
+        SetDate date ->
+            { model | now = Just date } ! [ updateNowIn 1000 ]
+
         UpdateVaults ->
             { model | state = UpdatingVaults model.vaults }
                 ! (updateAllVaults model.config)
@@ -122,6 +132,14 @@ updateAllVaults config =
         |> Daemon.getFlyingVaults
         |> attempt UpdatedFlyingVaultsFromApi
     ]
+
+
+updateNow =
+    Task.perform SetDate Date.now
+
+
+updateNowIn time =
+    Util.performDelayed time SetDate Date.now
 
 
 

@@ -22,7 +22,6 @@ type CssClass
     | VaultUpdatedAt
     | VaultInfoItem
     | VaultActivity
-    | FlyingVaultInfoItem
     | VaultRemoveButton
     | VaultFolderButton
     | VaultTitle
@@ -34,7 +33,6 @@ type CssClass
     | FlyingVaultSeparator
     | Title
     | Subtitle
-    | StatusName
 
 
 
@@ -58,7 +56,11 @@ css =
                , vaultInfo
                , vaultIcon
                , vaultTitle
-               , class VaultId [ fontSize (px 8) ]
+               , class VaultId
+                    [ fontSize (px 8)
+                    , paddingTop (px 5)
+                    , paddingBottom (px 2)
+                    ]
                , vaultInfoItem
                , vaultUpdatedAt
                , vaultUsers
@@ -105,7 +107,7 @@ flyingVaultSeperator =
         , borderColor (hex "efddda")
         , borderWidth "thin"
         , borderCollapse collapse
-        , property "opacity" "0.66"
+        , opacity (num 0.66)
         , marginTop (px 50)
         , marginBottom (px 50)
         ]
@@ -115,7 +117,7 @@ vaultStatusWith : CssClass -> List Mixin -> Snippet
 vaultStatusWith status additionalRules =
     let
         defaultRules =
-            [ backgroundSize2 (px 22) (px 22)
+            [ backgroundSize (px 22)
             , marginLeft (px -2)
             , marginTop (px -5)
             , marginRight (px 5)
@@ -310,17 +312,9 @@ vaultTitle =
 vaultInfoItem : Snippet
 vaultInfoItem =
     class VaultInfoItem
-        [ paddingBottom (px 25)
-        , position relative
-        , top (px -12)
-        , descendants
-            [ class StatusName
-                [ fontSize (px 15)
-                , top (px 16)
-                , paddingLeft (px 25)
-                , position relative
-                ]
-            ]
+        [ position relative
+        , paddingTop (px 5)
+        , paddingBottom (px 5)
         ]
 
 
@@ -328,42 +322,33 @@ vaultUpdatedAt : Snippet
 vaultUpdatedAt =
     class VaultUpdatedAt
         [ fontSize (px 12)
-        , width (px 140)
+          -- , width (px 140)
         ]
 
 
 vaultUsers : Snippet
 vaultUsers =
     class VaultUsers
-        [ backgroundImage (url "../assets/avatar.png")
-        , backgroundSize (px 20)
-        , backgroundRepeat noRepeat
-        , paddingLeft (px 25)
-        , fontWeight (int 300)
-        , fontSize (px 15)
-        , color (hex "888888")
-        , width (px 80)
-          --, marginLeft (px 120)
-          --, position relative
-          --, top (px -20)
-        ]
+        (vaultInfoIcon "avatar")
 
 
 vaultActivity : Snippet
 vaultActivity =
     class VaultActivity
-        [ backgroundImage (url "../assets/vault.png")
-        , backgroundSize (px 18)
-        , backgroundRepeat noRepeat
-        , paddingLeft (px 25)
-        , fontWeight (int 300)
-        , fontSize (px 15)
-        , color (hex "666666")
-        , width (px 80)
-        , whiteSpace noWrap
-        , position relative
-        , top (px -15)
-        ]
+        (vaultInfoIcon "vault")
+
+
+vaultInfoIcon iconName =
+    [ backgroundImage (url <| "../assets/" ++ iconName ++ ".png")
+    , backgroundSize (px 18)
+    , backgroundRepeat noRepeat
+    , paddingLeft (px 25)
+    , fontWeight (int 300)
+    , fontSize (px 15)
+    , color (hex "666666")
+    , width (px 80)
+    , whiteSpace noWrap
+    ]
 
 
 
@@ -419,6 +404,7 @@ vaultFolderButton =
 -- Mixins
 
 
+buttonHover : Mixin
 buttonHover =
     mixin
         [ hover

@@ -11,6 +11,7 @@ import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, NameOrId, nameOr
 import Util exposing (bytesReadable)
 import View.Css.VaultList exposing (..)
 import Html.CssHelpers
+import Date.Distance as Distance
 
 
 {-| Custom HTML helpers using our CSS types
@@ -45,28 +46,27 @@ vaultItemSyncStateClass vault =
     VaultStatus vault.status
 
 
-updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Html msg
-updatedAtInfo vault updatedAtHeader =
+updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
+updatedAtInfo vault updatedAtHeader model =
     let
         header =
             Maybe.withDefault (text "") updatedAtHeader
     in
         div [ class [ VaultUpdatedAt ] ]
             [ header
-            , case vault.modificationDate of
-                Nothing ->
+            , case ( vault.modificationDate, model.now ) of
+                ( Nothing, _ ) ->
                     text ""
 
-                Just date ->
-                    node "TimeAgo"
-                        [ attribute "data-tip" "Time since last file was uploaded"
-                        , attribute "date" (toString date)
-                        ]
-                        []
+                ( Just date, Nothing ) ->
+                    text ""
+
+                ( Just date, Just now ) ->
+                    text <| (Distance.inWords date now) ++ " ago"
             ]
 
 
-vaultUpdatedAtInfo : Vault -> Html msg
+vaultUpdatedAtInfo : Vault -> Model -> Html msg
 vaultUpdatedAtInfo vault =
     updatedAtInfo vault
         (Just
@@ -76,9 +76,9 @@ vaultUpdatedAtInfo vault =
         )
 
 
-flyingVaultUpdatedAtInfo : FlyingVault -> Html msg
+flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
 flyingVaultUpdatedAtInfo flyingVault =
-    updatedAtInfo flyingVault Nothing
+    updatedAtInfo flyingVault <| Just <| text "Updated "
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
@@ -87,28 +87,11 @@ vaultInfoItem vault bodyItems =
         bodyItems
 
 
-vaultStatus : Vault -> Html msg
-vaultStatus vault =
-    let
-        statusName =
-            span [ class [ StatusName ] ]
-                [ text (toString vault.status) ]
-
-        updatedAt =
-            vaultUpdatedAtInfo vault
-    in
-        case vault.status of
-            Initializing ->
-                vaultInfoItem vault
-                    [ statusName
-                    , updatedAt
-                    ]
-
-            _ ->
-                vaultInfoItem vault
-                    [ statusName
-                    , updatedAt
-                    ]
+vaultStatus : Vault -> Model -> Html msg
+vaultStatus vault model =
+    vaultInfoItem vault
+        [ vaultUpdatedAtInfo vault model
+        ]
 
 
 vaultActivity : Vault -> Html msg
@@ -127,10 +110,10 @@ vaultUserCount vault =
         ]
 
 
-flyingVaultInfoItem : FlyingVault -> Html msg
-flyingVaultInfoItem vault =
-    div [ class [ FlyingVaultInfoItem ] ]
-        [ flyingVaultUpdatedAtInfo vault
+flyingVaultInfoItem : FlyingVault -> Model -> Html msg
+flyingVaultInfoItem vault model =
+    div [ class [ VaultInfoItem ] ]
+        [ flyingVaultUpdatedAtInfo vault model
         ]
 
 
@@ -210,7 +193,7 @@ vaultItem model vault =
     div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
         [ vaultIcon vault
         , vaultInfo vault
-            [ vaultStatus vault
+            [ vaultStatus vault model
             , vaultUserCount vault
             , vaultActivity vault
             , vaultRemoveFromSyncButton vault
@@ -224,7 +207,7 @@ flyingVaultItem model flyingVault =
     div [ class (flyingVaultItemClass model flyingVault), onClick (flyingVaultItemOnClick model flyingVault) ]
         [ vaultIcon flyingVault
         , vaultInfo flyingVault
-            [ flyingVaultInfoItem flyingVault
+            [ flyingVaultInfoItem flyingVault model
             , vaultActivity (flyingVault |> asVault)
             , vaultUserCount (flyingVault |> asVault)
             ]
