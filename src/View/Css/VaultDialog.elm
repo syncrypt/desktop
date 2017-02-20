@@ -41,7 +41,7 @@ modal =
         , height (pct 100)
         , overflow auto
         , backgroundColor (rgb 0 0 0)
-        , backgroundColor (rgba 0 0 0 0.4)
+        , backgroundColor (rgba 0 0 0 0.5)
         ]
 
 
