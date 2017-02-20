@@ -42,18 +42,8 @@ layout model nodes =
         , div [ class [ Container ] ]
             (nodes ++ [ View.VaultList.view model ])
         , footer model
-        , modal model
+        , View.VaultDialog.view model
         ]
-
-
-modal model =
-    case model.state of
-        ShowingVaultDetails vault ->
-            model
-                |> View.VaultDialog.view vault
-
-        _ ->
-            text ""
 
 
 header : Html Msg

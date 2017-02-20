@@ -17,6 +17,8 @@ type CssClasses
     = Modal
     | Content
     | Close
+    | Hidden
+    | Visible
 
 
 type CssIds
@@ -26,14 +28,18 @@ type CssIds
 css : Stylesheet
 css =
     (stylesheet << namespace classNamespace) <|
-        [ modal, content, close ]
+        [ modal
+        , hidden
+        , visible
+        , content
+        , close
+        ]
 
 
 modal : Snippet
 modal =
     class Modal
-        [ display block
-        , position fixed
+        [ position fixed
         , zIndex (int 5)
         , left (px 0)
         , top (px 0)
@@ -42,6 +48,25 @@ modal =
         , overflow auto
         , backgroundColor (rgb 0 0 0)
         , backgroundColor (rgba 0 0 0 0.5)
+        ]
+
+
+hidden : Snippet
+hidden =
+    class Hidden
+        [ display block
+        , height (pct 0)
+        , opacity (num 0.0)
+        ]
+
+
+visible : Snippet
+visible =
+    class Visible
+        [ display block
+        , height (pct 100)
+        , opacity (num 1.0)
+        , transition "opacity 0.25s"
         ]
 
 

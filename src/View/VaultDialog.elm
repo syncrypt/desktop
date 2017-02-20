@@ -1,25 +1,21 @@
 module View.VaultDialog exposing (..)
 
-import Date exposing (Date)
-import Html exposing (Html, button, div, hr, node, text, h1, span)
-import Html.Attributes exposing (attribute, class, height, id, width)
+import Html exposing (Html, button, div, h1, hr, node, span, text)
+import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
-import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, NameOrId, nameOrId, asVault)
 import View.Css.VaultDialog exposing (..)
-import Html.CssHelpers
-import Date.Distance
 
 
 { id, class, classList } =
     Html.CssHelpers.withNamespace View.Css.VaultDialog.classNamespace
 
 
-view : Vault -> Model -> Html Msg
-view vault model =
+view : Model -> Html Msg
+view model =
     case model.state of
         ShowingVaultDetails vault ->
-            div [ id VaultDialogModal, class [ Modal ] ]
+            div [ id VaultDialogModal, class [ Modal, Visible ] ]
                 [ div [ class [ Content ] ]
                     [ div [ class [ Close ], onClick CloseVaultDetails ]
                         []
@@ -28,4 +24,31 @@ view vault model =
                 ]
 
         _ ->
-            text "nothing!"
+            div [ id VaultDialogModal, class [ Modal, Hidden ] ]
+                [ div [ class [ Content ] ]
+                    [ div [ class [ Close ], onClick CloseVaultDetails ]
+                        []
+                    , text ""
+                    ]
+                ]
+
+
+layout : List (Html Msg) -> Model -> Html Msg
+layout body model =
+    let
+        visible =
+            case body of
+                [] ->
+                    Hidden
+
+                _ ->
+                    Visible
+    in
+        div [ id VaultDialogModal, class [ Modal, visible ] ]
+            [ div [ class [ Content ] ]
+                ((div [ class [ Close ], onClick CloseVaultDetails ]
+                    []
+                 )
+                    :: body
+                )
+            ]
