@@ -61,28 +61,6 @@ performDelayed time msg task =
         |> perform msg
 
 
-type alias ByteUnit =
-    String
-
-
-type alias ByteUnitPrecision =
-    Int
-
-
-byteUnitsWithPrecision : List ( ByteUnit, ByteUnitPrecision )
-byteUnitsWithPrecision =
-    [ ( "Bytes", 0 )
-    , ( "kB", 0 )
-    , ( "MB", 1 )
-    , ( "GB", 2 )
-    , ( "TB", 2 )
-    , ( "PB", 2 )
-    , ( "EB", 2 )
-    , ( "ZB", 2 )
-    , ( "YB", 2 )
-    ]
-
-
 skipCharsWhile : (Char -> Bool) -> String -> String
 skipCharsWhile f string =
     case string |> String.uncons of
@@ -113,6 +91,28 @@ removeTrailing char string =
 removeTrailingZeroes : String -> String
 removeTrailingZeroes =
     removeTrailing '0'
+
+
+type alias ByteUnit =
+    String
+
+
+type alias ByteUnitPrecision =
+    Int
+
+
+byteUnitsWithPrecision : List ( ByteUnit, ByteUnitPrecision )
+byteUnitsWithPrecision =
+    [ ( "Bytes", 0 )
+    , ( "kB", 0 )
+    , ( "MB", 1 )
+    , ( "GB", 2 )
+    , ( "TB", 2 )
+    , ( "PB", 2 )
+    , ( "EB", 2 )
+    , ( "ZB", 2 )
+    , ( "YB", 2 )
+    ]
 
 
 {-| Returns a human readable version of a storage size in bytes.
