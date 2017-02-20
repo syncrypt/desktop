@@ -247,7 +247,7 @@ vaultPlusIcon =
         , backgroundRepeat noRepeat
         , display inlineBlock
         , position relative
-        , top (px 20)
+        , top (px 0)
         , left (px 80)
         , opacity (num 0.5)
         , mixin
