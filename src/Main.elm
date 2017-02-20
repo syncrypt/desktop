@@ -9,6 +9,7 @@ import Model exposing (..)
 import Task
 import Util
 import View.MainScreen
+import Debug
 
 
 main : Program Never Model Msg
@@ -32,7 +33,14 @@ init =
             initialModel
 
         initialActions =
-            updateNow :: (updateAllVaults model.config)
+            [ updateNow
+            , model.config
+                |> Daemon.getVaults
+                |> attempt FetchedVaultsFromApi
+            , model.config
+                |> Daemon.getFlyingVaults
+                |> attempt UpdatedFlyingVaultsFromApi
+            ]
     in
         model ! initialActions
 
@@ -72,7 +80,13 @@ update action model =
 
         UpdateVaults ->
             { model | state = UpdatingVaults model.vaults }
-                ! (updateAllVaults model.config)
+                ! [ model.config
+                        |> Daemon.getVaults
+                        |> attempt UpdatedVaultsFromApi
+                  , model.config
+                        |> Daemon.getFlyingVaults
+                        |> attempt UpdatedFlyingVaultsFromApi
+                  ]
 
         UpdateFlyingVaults ->
             model
@@ -81,8 +95,22 @@ update action model =
                         |> attempt UpdatedFlyingVaultsFromApi
                   ]
 
-        UpdatedVaultsFromApi (Ok vaults) ->
+        FetchedVaultsFromApi (Ok vaults) ->
             { model | state = ShowingAllVaults, vaults = vaults }
+                ! [ model.config
+                        |> Daemon.getVaults
+                        |> attemptDelayed model.config.updateInterval UpdatedVaultsFromApi
+                  ]
+
+        FetchedVaultsFromApi (Err reason) ->
+            model
+                ! [ model.config
+                        |> Daemon.getVaults
+                        |> attemptDelayed 1000 FetchedVaultsFromApi
+                  ]
+
+        UpdatedVaultsFromApi (Ok vaults) ->
+            { model | vaults = vaults }
                 ! [ model.config
                         |> Daemon.getVaults
                         |> attemptDelayed model.config.updateInterval UpdatedVaultsFromApi
@@ -97,7 +125,7 @@ update action model =
                   ]
 
         UpdatedFlyingVaultsFromApi (Ok vaults) ->
-            { model | state = ShowingAllVaults, flyingVaults = vaults }
+            { model | flyingVaults = vaults }
                 ! []
 
         UpdatedFlyingVaultsFromApi (Err reason) ->
@@ -119,19 +147,8 @@ update action model =
             { model | state = ShowingAllVaults } ! []
 
         _ ->
-            { model | state = LoadingVaults }
+            model
                 ! []
-
-
-updateAllVaults : Config -> List (Cmd Msg)
-updateAllVaults config =
-    [ config
-        |> Daemon.getVaults
-        |> attempt UpdatedVaultsFromApi
-    , config
-        |> Daemon.getFlyingVaults
-        |> attempt UpdatedFlyingVaultsFromApi
-    ]
 
 
 updateNow =
@@ -148,13 +165,8 @@ updateNowIn time =
 
 view : Model -> Html.Html Msg
 view model =
-    case model.state of
-        LoadingVaults ->
-            div [ class "vault-list" ]
-                [ Html.text "Loading Vaults" ]
-
-        UpdatingVaults vaults ->
-            text ("Updating vaults: " ++ (vaults |> List.length |> toString))
-
-        _ ->
-            View.MainScreen.view model
+    let
+        _ =
+            Debug.log "state: " model.state
+    in
+        View.MainScreen.view model

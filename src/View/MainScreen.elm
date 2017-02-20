@@ -6,8 +6,8 @@ import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import View.Css.MainScreen exposing (..)
-import View.VaultDetailsDialog
 import View.VaultList
+import View.VaultDialog
 
 
 {-| Custom HTML helpers using our CSS types
@@ -21,15 +21,7 @@ view model =
     case model.state of
         ShowingVaultDetails vault ->
             layout model
-                [ model
-                    |> View.VaultDetailsDialog.view vault
-                ]
-
-        ShowingFlyingVaultDetails vault ->
-            layout model
-                [ model
-                    |> View.VaultDetailsDialog.view vault
-                ]
+                []
 
         _ ->
             layout model []
@@ -48,9 +40,20 @@ layout model nodes =
     div [ class (currentClass model) ]
         [ header
         , div [ class [ Container ] ]
-            (View.VaultList.view model :: nodes)
+            (nodes ++ [ View.VaultList.view model ])
         , footer model
+        , modal model
         ]
+
+
+modal model =
+    case model.state of
+        ShowingVaultDetails vault ->
+            model
+                |> View.VaultDialog.view vault
+
+        _ ->
+            text ""
 
 
 header : Html Msg

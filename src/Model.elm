@@ -29,6 +29,7 @@ type Msg
     = SetDate Date
     | UpdateVaults
     | UpdateFlyingVaults
+    | FetchedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
     | OpenVaultDetails Vault

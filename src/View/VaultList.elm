@@ -220,7 +220,7 @@ newVaultItem =
         [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
         , attribute "data-offset" "{'bottom': -15, 'left': 0}"
         , attribute "data-for" "new-vault-item-tooltip"
-        , attribute "className" "vault-plus"
+        , class [ VaultPlus ]
         ]
         [ div [ class [ VaultPlusIcon ] ]
             []
@@ -241,7 +241,7 @@ vaultList model =
                     [ text "These vaults are cloned and synchronized on this computer." ]
                 ]
     in
-        div [ class [ VaultList ], onClick CloseVaultDetails ]
+        div [ class [ VaultList ] ]
             ((vaultListInfo :: vaultItems) ++ [ newVaultItem ])
 
 
