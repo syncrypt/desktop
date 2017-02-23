@@ -10,6 +10,7 @@ import Task
 import Util
 import View.MainScreen
 import Debug
+import Time exposing (Time)
 
 
 main : Program Never Model Msg
@@ -151,10 +152,12 @@ update action model =
                 ! []
 
 
+updateNow : Cmd Msg
 updateNow =
     Task.perform SetDate Date.now
 
 
+updateNowIn : Time -> Cmd Msg
 updateNowIn time =
     Util.performDelayed time SetDate Date.now
 
