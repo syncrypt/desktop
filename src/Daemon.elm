@@ -16,12 +16,12 @@ import Time exposing (Time)
 
 getVaults : Config -> Http.Request (List Vault)
 getVaults config =
-    apiRequest config Get "vault" vaultsDecoder
+    apiRequest config Get "vault" Nothing vaultsDecoder
 
 
 getFlyingVaults : Config -> Http.Request (List FlyingVault)
 getFlyingVaults config =
-    apiRequest config Get "flying-vault" flyingVaultsDecoder
+    apiRequest config Get "flying-vault" Nothing flyingVaultsDecoder
 
 
 type alias Path =
@@ -71,17 +71,26 @@ requestMethod rm =
     in
         apiRequest config Get "vault" vaultsDecoder
 -}
-apiRequest : Config -> RequestMethod -> Path -> Json.Decoder a -> Http.Request a
-apiRequest config method path decoder =
-    Http.request
-        { method = requestMethod method
-        , headers = apiHeaders config
-        , url = apiUrl config path
-        , body = Http.emptyBody
-        , expect = Http.expectJson decoder
-        , timeout = Nothing
-        , withCredentials = False
-        }
+apiRequest : Config -> RequestMethod -> Path -> Maybe Http.Body -> Json.Decoder a -> Http.Request a
+apiRequest config method path maybeBody decoder =
+    let
+        body =
+            case maybeBody of
+                Nothing ->
+                    Http.emptyBody
+
+                Just body ->
+                    body
+    in
+        Http.request
+            { method = requestMethod method
+            , headers = apiHeaders config
+            , url = apiUrl config path
+            , body = body
+            , expect = Http.expectJson decoder
+            , timeout = Nothing
+            , withCredentials = False
+            }
 
 
 {-| Create a `Task.Task` from an api request (`Http.Request`)
