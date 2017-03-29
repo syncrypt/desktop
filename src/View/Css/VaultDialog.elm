@@ -2,13 +2,11 @@ module View.Css.VaultDialog exposing (..)
 
 import Css exposing (..)
 import Css.Colors
-import Css.Elements exposing (canvas, hr)
 import Css.Namespace exposing (namespace)
-import Model exposing (..)
-import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault)
 import View.Css.Util exposing (..)
 
 
+classNamespace : String
 classNamespace =
     "VaultDialog-"
 
