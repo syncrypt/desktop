@@ -4,7 +4,6 @@ import Config exposing (Config)
 import Daemon exposing (attempt, attemptDelayed)
 import Date exposing (Date)
 import Html exposing (Html, div, text)
-import Html.Attributes exposing (class)
 import Model exposing (..)
 import Task
 import Util
