@@ -3,6 +3,19 @@
 This is a WIP version of a rewrite of the Syncrypt Desktop UI in Elm.
 Just me trying out Elm for now.
 
+## Setup
+
+Install Elm - see: https://guide.elm-lang.org/install.html
+
+Install elm-github-install (needed for elm-ui):
+
+    $ npm install elm-github-install -g
+
+Install dependencies (including elm-ui) using elm-github-install:
+
+    $ elm-install
+
+
 ## Build target HTML, JS & CSS
     $ make
     # Generates build/index.html with JS & CSS
