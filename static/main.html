@@ -10,8 +10,15 @@
     <div id="Root">
     </div>
     <script type="text/javascript">
+      // TODO: get this from syncrypt daemon config file
+      var daemonApiToken = "my-api-token";
       var mainContainer = document.getElementById("Root");
-      Elm.Main.embed(mainContainer);
+
+      Elm.Main.embed(mainContainer, {
+        apiAuthToken: daemonApiToken,
+        apiUrl: "http://127.0.0.1:28080/v1/",
+        updateInterval: 5000
+      });
     </script>
   </body>
 </html>

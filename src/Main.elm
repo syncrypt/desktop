@@ -12,9 +12,9 @@ import Debug
 import Time exposing (Time)
 
 
-main : Program Never Model Msg
+main : Program Config Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , subscriptions = subscriptions
         , view = view
@@ -26,11 +26,11 @@ main =
 -- INIT
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Config -> ( Model, Cmd Msg )
+init config =
     let
         model =
-            initialModel
+            initialModel config
 
         initialActions =
             [ updateNow
@@ -45,9 +45,9 @@ init =
         model ! initialActions
 
 
-initialModel : Model
-initialModel =
-    { config = Config.initialConfig
+initialModel : Config -> Model
+initialModel config =
+    { config = config
     , vaults = []
     , flyingVaults = []
     , state = LoadingVaults
