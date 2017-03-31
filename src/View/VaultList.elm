@@ -222,7 +222,7 @@ newVaultItem =
         , attribute "data-for" "new-vault-item-tooltip"
         , class [ VaultPlus ]
         ]
-        [ div [ class [ VaultPlusIcon ] ]
+        [ div [ class [ VaultPlusIcon ], onClick CreateNewVault ]
             []
         ]
 

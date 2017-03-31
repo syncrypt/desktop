@@ -4,6 +4,7 @@ import Syncrypt.Vault exposing (Vault, FlyingVault)
 import Config exposing (Config)
 import Http
 import Date exposing (Date)
+import View.VaultCreationDialog as VaultCreationDialog
 
 
 type alias Model =
@@ -14,6 +15,7 @@ type alias Model =
     , stats : { stats : Int, downloads : Int, uploads : Int }
     , sidebarOpen : Bool
     , now : Maybe Date
+    , vaultCreationDialog : VaultCreationDialog.State
     }
 
 
@@ -23,6 +25,7 @@ type State
     | ShowingAllVaults
     | ShowingVaultDetails Vault
     | ShowingFlyingVaultDetails FlyingVault
+    | CreatingNewVault
 
 
 type Msg
@@ -40,6 +43,8 @@ type Msg
     | OpenAccountSettings
     | RemoveVaultFromSync Vault
     | Logout
+    | CreateNewVault
+    | VaultCreationDialog VaultCreationDialog.Msg
 
 
 init : Config -> Model
@@ -53,4 +58,5 @@ init config =
         { stats = 0, downloads = 0, uploads = 0 }
     , sidebarOpen = False
     , now = Nothing
+    , vaultCreationDialog = VaultCreationDialog.init
     }

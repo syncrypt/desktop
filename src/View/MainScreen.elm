@@ -8,6 +8,7 @@ import Model exposing (..)
 import View.Css.MainScreen exposing (..)
 import View.VaultList
 import View.VaultDialog
+import View.VaultCreationDialog
 
 
 {-| Custom HTML helpers using our CSS types
@@ -43,6 +44,7 @@ layout model nodes =
             (nodes ++ [ View.VaultList.view model ])
         , footer model
         , View.VaultDialog.view model
+        , Html.map VaultCreationDialog (View.VaultCreationDialog.view model.vaultCreationDialog)
         ]
 
 

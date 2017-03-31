@@ -6,10 +6,10 @@ import Date exposing (Date)
 import Html exposing (Html, div, text)
 import Model exposing (..)
 import Task
+import Time exposing (Time)
 import Util
 import View.MainScreen
-import Debug
-import Time exposing (Time)
+import View.VaultCreationDialog
 
 
 main : Program Config Model Msg
@@ -131,6 +131,22 @@ update action model =
 
         CloseVaultDetails ->
             { model | state = ShowingAllVaults } ! []
+
+        CreateNewVault ->
+            { model
+                | state = CreatingNewVault
+                , vaultCreationDialog =
+                    View.VaultCreationDialog.open model.vaultCreationDialog
+            }
+                ! []
+
+        VaultCreationDialog msg ->
+            let
+                ( state, cmd ) =
+                    View.VaultCreationDialog.update msg model.vaultCreationDialog
+            in
+                { model | vaultCreationDialog = state }
+                    ! [ Cmd.map VaultCreationDialog cmd ]
 
         _ ->
             model
