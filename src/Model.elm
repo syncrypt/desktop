@@ -40,3 +40,17 @@ type Msg
     | OpenAccountSettings
     | RemoveVaultFromSync Vault
     | Logout
+
+
+init : Config -> Model
+init config =
+    { config = config
+    , vaults = []
+    , flyingVaults = []
+    , state = LoadingVaults
+    , stats =
+        -- TODO: get these from stats api
+        { stats = 0, downloads = 0, uploads = 0 }
+    , sidebarOpen = False
+    , now = Nothing
+    }
