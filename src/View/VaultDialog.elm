@@ -4,11 +4,12 @@ import Html exposing (Html, button, div, h1, hr, node, span, text)
 import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
+import View.Css.Util
 import View.Css.VaultDialog exposing (..)
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace View.Css.VaultDialog.classNamespace
+    View.Css.Util.namespacedHelpers View.Css.VaultDialog.namespace
 
 
 view : Model -> Html Msg

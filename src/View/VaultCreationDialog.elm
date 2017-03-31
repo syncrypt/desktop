@@ -1,7 +1,16 @@
 module View.VaultCreationDialog exposing (..)
 
+import Html exposing (Html, button, div, form, input, label, span, text)
+import Html.Attributes exposing (class, for, type_, width)
+import Html.CssHelpers
+import Html.Events exposing (onClick)
 import Ui.Modal as Modal
-import Html exposing (Html)
+import View.Css.VaultCreationDialog exposing (..)
+import View.Css.Util
+
+
+{ id, class, classList } =
+    View.Css.Util.namespacedHelpers View.Css.VaultCreationDialog.namespace
 
 
 type alias State =
@@ -20,7 +29,7 @@ init =
     , modal =
         Modal.init
             |> Modal.closable True
-            |> Modal.backdrop True
+            |> Modal.backdrop False
     }
 
 
@@ -47,10 +56,32 @@ view : State -> Html Msg
 view state =
     let
         viewConfig =
-            { contents = []
+            { contents = contents
             , footer = []
             , title = "Create New Vault"
             , address = \msg -> msg
             }
     in
         Modal.view viewConfig state.modal
+
+
+contents : List (Html Msg)
+contents =
+    [ div [ class [ Content ] ]
+        [ form []
+            [ textField "Name"
+            ]
+        ]
+    ]
+
+
+textField : String -> Html msg
+textField description =
+    div [ class [ FormInput ] ]
+        [ label []
+            [ span [ class [ FormLabel ] ]
+                [ text description ]
+            , input [ type_ "text" ]
+                []
+            ]
+        ]

@@ -6,6 +6,11 @@ import Css.Elements exposing (body, h1, h2, a, p, li, div)
 import View.Css.Util exposing (..)
 
 
+namespace : String
+namespace =
+    "MainScreen-"
+
+
 type alias CssMixin =
     List Css.Mixin -> Css.Snippet
 
@@ -25,7 +30,7 @@ type CssClass
 
 css : Stylesheet
 css =
-    (stylesheet << namespace "MainScreenView-") <|
+    cssNamespace namespace <|
         general
             ++ [ mainScreen
                , header

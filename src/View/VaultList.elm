@@ -1,23 +1,24 @@
 module View.VaultList exposing (..)
 
-import Set
 import Date exposing (Date)
-import Html exposing (Html, button, canvas, div, hr, node, text, h1, span)
+import Date.Distance as Distance
+import Html exposing (Html, button, canvas, div, h1, hr, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, width)
+import Html.CssHelpers
 import Html.Events exposing (onClick)
 import MD5
 import Model exposing (..)
-import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault, NameOrId, nameOrId, asVault)
+import Set
+import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
 import Util exposing (bytesReadable)
+import View.Css.Util
 import View.Css.VaultList exposing (..)
-import Html.CssHelpers
-import Date.Distance as Distance
 
 
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "VaultListView-"
+    View.Css.Util.namespacedHelpers View.Css.VaultList.namespace
 
 
 type alias HasId a =

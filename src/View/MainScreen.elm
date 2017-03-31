@@ -2,19 +2,19 @@ module View.MainScreen exposing (..)
 
 import Html exposing (Html, button, div, h1, node, span, text)
 import Html.Attributes exposing (..)
-import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import View.Css.MainScreen exposing (..)
-import View.VaultList
-import View.VaultDialog
+import View.Css.Util
 import View.VaultCreationDialog
+import View.VaultDialog
+import View.VaultList
 
 
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "MainScreenView-"
+    View.Css.Util.namespacedHelpers View.Css.MainScreen.namespace
 
 
 view : Model -> Html Msg

@@ -2,10 +2,13 @@ module View.Css.VaultList exposing (..)
 
 import Css exposing (..)
 import Css.Elements exposing (canvas, hr)
-import Css.Namespace exposing (namespace)
 import Model exposing (..)
 import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault)
 import View.Css.Util exposing (..)
+
+
+namespace =
+    "VaultList-"
 
 
 type CssClass
@@ -42,7 +45,7 @@ type CssClass
 
 css : Stylesheet
 css =
-    (stylesheet << namespace "VaultListView-") <|
+    cssNamespace namespace <|
         vaultStatuses
             ++ [ vaultList
                , card

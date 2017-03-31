@@ -2,12 +2,11 @@ module View.Css.VaultDialog exposing (..)
 
 import Css exposing (..)
 import Css.Colors
-import Css.Namespace exposing (namespace)
 import View.Css.Util exposing (..)
 
 
-classNamespace : String
-classNamespace =
+namespace : String
+namespace =
     "VaultDialog-"
 
 
@@ -25,7 +24,7 @@ type CssIds
 
 css : Stylesheet
 css =
-    (stylesheet << namespace classNamespace) <|
+    cssNamespace namespace <|
         [ modal
         , hidden
         , visible
