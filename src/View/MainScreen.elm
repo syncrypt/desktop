@@ -156,7 +156,7 @@ update action model =
 
 updateNow : Cmd Msg
 updateNow =
-    Task.perform SetDate Date.now
+    updateNowIn 0
 
 
 updateNowIn : Time -> Cmd Msg
