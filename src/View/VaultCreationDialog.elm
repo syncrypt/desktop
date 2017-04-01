@@ -39,13 +39,13 @@ init =
 
 
 open : State -> State
-open model =
-    { model | modal = Ui.Modal.open model.modal }
+open state =
+    { state | modal = Ui.Modal.open state.modal }
 
 
 close : State -> State
-close model =
-    { model | modal = Ui.Modal.close model.modal }
+close state =
+    { state | modal = Ui.Modal.close state.modal }
 
 
 update : Msg -> State -> ( State, Cmd Msg )
