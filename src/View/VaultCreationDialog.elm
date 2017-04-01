@@ -1,7 +1,6 @@
 module View.VaultCreationDialog exposing (..)
 
 import Html exposing (Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (class, for, type_, value, width)
 import Ui.Modal
 import Ui.Input
 import View.Css.Util

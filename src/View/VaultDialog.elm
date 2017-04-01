@@ -1,7 +1,6 @@
 module View.VaultDialog exposing (..)
 
 import Html exposing (Html, button, div, h1, hr, node, span, text)
-import Html.CssHelpers
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import View.Css.Util
