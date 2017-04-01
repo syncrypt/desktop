@@ -1,12 +1,11 @@
 module View.VaultCreationDialog exposing (..)
 
 import Html exposing (Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (class, for, type_, width)
-import Html.CssHelpers
-import Html.Events exposing (onClick)
-import Ui.Modal as Modal
-import View.Css.VaultCreationDialog exposing (..)
+import Html.Attributes exposing (class, for, type_, value, width)
+import Ui.Modal
+import Ui.Input
 import View.Css.Util
+import View.Css.VaultCreationDialog exposing (..)
 
 
 { id, class, classList } =
@@ -15,73 +14,78 @@ import View.Css.Util
 
 type alias State =
     { title : String
-    , modal : Modal.Model
+    , modal : Ui.Modal.Model
+    , nameInput : Ui.Input.Model
     }
 
 
-type alias Msg =
-    Modal.Msg
+type Msg
+    = Modal Ui.Modal.Msg
+    | NameInput Ui.Input.Msg
 
 
 init : State
 init =
     { title = "Untitled Vault"
     , modal =
-        Modal.init
-            |> Modal.closable True
-            |> Modal.backdrop False
+        Ui.Modal.init
+            |> Ui.Modal.closable True
+            |> Ui.Modal.backdrop False
+    , nameInput =
+        Ui.Input.init ()
+            |> Ui.Input.placeholder "Vault Name"
+            |> Ui.Input.showClearIcon True
     }
 
 
 open : State -> State
 open model =
-    { model | modal = Modal.open model.modal }
+    { model | modal = Ui.Modal.open model.modal }
 
 
 close : State -> State
 close model =
-    { model | modal = Modal.close model.modal }
+    { model | modal = Ui.Modal.close model.modal }
 
 
 update : Msg -> State -> ( State, Cmd Msg )
 update msg state =
-    let
-        newState =
-            Modal.update msg state.modal
-    in
-        { state | modal = newState } ! []
+    case msg of
+        Modal msg ->
+            { state | modal = Ui.Modal.update msg state.modal }
+                ! []
+
+        NameInput msg ->
+            let
+                ( nameInput, cmd ) =
+                    Ui.Input.update msg state.nameInput
+            in
+                { state | nameInput = nameInput }
+                    ! [ Cmd.map NameInput cmd ]
 
 
 view : State -> Html Msg
 view state =
     let
         viewConfig =
-            { contents = contents
+            { address = Modal
+            , contents = contents state
             , footer = []
             , title = "Create New Vault"
-            , address = \msg -> msg
             }
     in
-        Modal.view viewConfig state.modal
+        Ui.Modal.view viewConfig state.modal
 
 
-contents : List (Html Msg)
-contents =
+contents : State -> List (Html Msg)
+contents state =
     [ div [ class [ Content ] ]
-        [ form []
-            [ textField "Name"
-            ]
+        [ nameInput state
         ]
     ]
 
 
-textField : String -> Html msg
-textField description =
-    div [ class [ FormInput ] ]
-        [ label []
-            [ span [ class [ FormLabel ] ]
-                [ text description ]
-            , input [ type_ "text" ]
-                []
-            ]
-        ]
+nameInput : State -> Html Msg
+nameInput { nameInput } =
+    Ui.Input.view nameInput
+        |> Html.map NameInput
