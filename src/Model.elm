@@ -5,6 +5,7 @@ import Config exposing (Config)
 import Http
 import Date exposing (Date)
 import View.VaultCreationDialog as VaultCreationDialog
+import View.VaultDialog as VaultDialog
 
 
 type alias Model =
@@ -16,6 +17,7 @@ type alias Model =
     , sidebarOpen : Bool
     , now : Maybe Date
     , vaultCreationDialog : VaultCreationDialog.State
+    , vaultDialog : Maybe VaultDialog.State
     }
 
 
@@ -45,6 +47,7 @@ type Msg
     | Logout
     | CreateNewVault
     | VaultCreationDialog VaultCreationDialog.Msg
+    | VaultDialog VaultDialog.Msg
 
 
 init : Config -> Model
@@ -59,4 +62,5 @@ init config =
     , sidebarOpen = False
     , now = Nothing
     , vaultCreationDialog = VaultCreationDialog.init
+    , vaultDialog = Nothing
     }

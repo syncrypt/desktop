@@ -14,7 +14,6 @@ import View.VaultCreationDialog
 import View.VaultDialog
 import View.VaultList
 import Time exposing (Time)
-import Task
 
 
 {-| Custom HTML helpers using our CSS types
@@ -123,15 +122,31 @@ update action model =
                   ]
 
         OpenVaultDetails vault ->
-            { model | state = ShowingVaultDetails vault }
-                ! []
+            let
+                vaultDialog =
+                    case model.vaultDialog of
+                        Nothing ->
+                            View.VaultDialog.init vault
+
+                        Just vd ->
+                            vd
+            in
+                { model
+                    | state = ShowingVaultDetails vault
+                    , vaultDialog = Just (View.VaultDialog.open vault vaultDialog)
+                }
+                    ! []
 
         OpenFlyingVaultDetails flyingVault ->
             { model | state = ShowingFlyingVaultDetails flyingVault }
                 ! []
 
         CloseVaultDetails ->
-            { model | state = ShowingAllVaults } ! []
+            { model
+                | state = ShowingAllVaults
+                , vaultDialog = Nothing
+            }
+                ! []
 
         CreateNewVault ->
             { model
@@ -148,6 +163,20 @@ update action model =
             in
                 { model | vaultCreationDialog = state }
                     ! [ Cmd.map VaultCreationDialog cmd ]
+
+        VaultDialog msg ->
+            case model.vaultDialog of
+                Nothing ->
+                    model
+                        ! []
+
+                Just vaultDialog ->
+                    let
+                        ( state, cmd ) =
+                            View.VaultDialog.update msg vaultDialog
+                    in
+                        { model | vaultDialog = Just state }
+                            ! [ Cmd.map VaultDialog cmd ]
 
         _ ->
             model
@@ -198,9 +227,20 @@ layout model nodes =
         , div [ class [ Container ] ]
             (nodes ++ [ View.VaultList.view model ])
         , footer model
-        , View.VaultDialog.view model
-        , Html.map VaultCreationDialog (View.VaultCreationDialog.view model.vaultCreationDialog)
+        , viewVaultDialog model
+        , View.VaultCreationDialog.view model.vaultCreationDialog
+            |> Html.map VaultCreationDialog
         ]
+
+
+viewVaultDialog { vaultDialog } =
+    case vaultDialog of
+        Nothing ->
+            span [] []
+
+        Just vaultDialog ->
+            View.VaultDialog.view vaultDialog
+                |> Html.map VaultDialog
 
 
 header : Html Msg

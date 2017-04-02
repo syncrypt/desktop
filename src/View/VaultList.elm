@@ -4,7 +4,6 @@ import Date exposing (Date)
 import Date.Distance as Distance
 import Html exposing (Html, button, canvas, div, h1, hr, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, width)
-import Html.CssHelpers
 import Html.Events exposing (onClick)
 import MD5
 import Model exposing (..)
