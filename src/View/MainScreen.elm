@@ -10,7 +10,8 @@ import Model exposing (..)
 import Util
 import View.Css.MainScreen exposing (..)
 import View.Css.Util
-import View.VaultCreationDialog
+import VaultCreationDialog
+import VaultCreationDialog.Update
 import View.VaultDialog
 import View.VaultList
 import Time exposing (Time)
@@ -149,19 +150,15 @@ update action model =
                 ! []
 
         CreateNewVault ->
-            { model
-                | state = CreatingNewVault
-                , vaultCreationDialog =
-                    View.VaultCreationDialog.open model.vaultCreationDialog
-            }
+            VaultCreationDialog.Update.open { model | state = CreatingNewVault }
                 ! []
 
         VaultCreationDialog msg ->
             let
-                ( state, cmd ) =
-                    View.VaultCreationDialog.update msg model.vaultCreationDialog
+                ( newModel, cmd ) =
+                    VaultCreationDialog.Update.update msg model
             in
-                { model | vaultCreationDialog = state }
+                newModel
                     ! [ Cmd.map VaultCreationDialog cmd ]
 
         VaultDialog msg ->
@@ -228,7 +225,7 @@ layout model nodes =
             (nodes ++ [ View.VaultList.view model ])
         , footer model
         , viewVaultDialog model
-        , View.VaultCreationDialog.view model.vaultCreationDialog
+        , VaultCreationDialog.view model
             |> Html.map VaultCreationDialog
         ]
 

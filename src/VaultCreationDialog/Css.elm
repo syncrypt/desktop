@@ -1,4 +1,4 @@
-module View.Css.VaultCreationDialog exposing (..)
+module VaultCreationDialog.Css exposing (..)
 
 import Css exposing (..)
 import Css.Colors
