@@ -1,7 +1,7 @@
 module VaultDialog.Css exposing (..)
 
 import Css exposing (..)
-import View.Css.Util exposing (..)
+import Css.Util exposing (..)
 
 
 namespace : String

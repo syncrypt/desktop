@@ -10,14 +10,14 @@ import Model exposing (..)
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
 import Util exposing (bytesReadable)
-import View.Css.Util
+import Css.Util
 import VaultList.Css exposing (..)
 
 
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers VaultList.Css.namespace
+    Css.Util.namespacedHelpers VaultList.Css.namespace
 
 
 type alias HasId a =

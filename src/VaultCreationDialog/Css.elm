@@ -4,7 +4,7 @@ import Css exposing (..)
 import Css.Colors
 import Css.Elements exposing (form, input, label)
 import Css.Namespace exposing (namespace)
-import View.Css.Util exposing (..)
+import Css.Util exposing (..)
 
 
 namespace : String

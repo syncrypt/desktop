@@ -4,7 +4,7 @@ import Css exposing (..)
 import Css.Elements exposing (canvas, hr)
 import Model exposing (..)
 import Syncrypt.Vault exposing (FlyingVault, Status(..), Vault)
-import View.Css.Util exposing (..)
+import Css.Util exposing (..)
 
 
 namespace =

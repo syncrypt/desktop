@@ -9,7 +9,7 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import Util
 import MainScreen.Css exposing (..)
-import View.Css.Util
+import Css.Util
 import VaultCreationDialog
 import VaultCreationDialog.Update
 import VaultDialog
@@ -21,7 +21,7 @@ import Time exposing (Time)
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers MainScreen.Css.namespace
+    Css.Util.namespacedHelpers MainScreen.Css.namespace
 
 
 

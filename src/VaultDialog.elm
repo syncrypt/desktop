@@ -2,7 +2,7 @@ module VaultDialog exposing (..)
 
 import Html exposing (Html, button, div, h1, hr, node, span, text)
 import Html.Events exposing (onClick)
-import View.Css.Util
+import Css.Util
 import VaultDialog.Css exposing (..)
 import Ui.Modal
 import Ui.Input
@@ -12,7 +12,7 @@ import VaultDialog.Model exposing (Msg(Modal, NameInput))
 
 
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers VaultDialog.Css.namespace
+    Css.Util.namespacedHelpers VaultDialog.Css.namespace
 
 
 view : Model -> Html Msg

@@ -3,7 +3,7 @@ module MainScreen.Css exposing (..)
 import Css exposing (..)
 import Css.Namespace exposing (namespace)
 import Css.Elements exposing (body, h1, h2, a, p, li, div)
-import View.Css.Util exposing (..)
+import Css.Util exposing (..)
 
 
 namespace : String

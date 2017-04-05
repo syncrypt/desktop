@@ -3,14 +3,14 @@ module VaultCreationDialog exposing (..)
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Ui.Modal
 import Ui.Input
-import View.Css.Util
+import Css.Util
 import VaultCreationDialog.Model exposing (..)
 import VaultCreationDialog.Css exposing (..)
 import Model exposing (Model)
 
 
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers VaultCreationDialog.Css.namespace
+    Css.Util.namespacedHelpers VaultCreationDialog.Css.namespace
 
 
 view : Model -> Html Msg

@@ -1,4 +1,4 @@
-module View.Css.Util exposing (..)
+module Css.Util exposing (..)
 
 import Css
 import Css.Namespace
