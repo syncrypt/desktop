@@ -12,7 +12,8 @@ import View.Css.MainScreen exposing (..)
 import View.Css.Util
 import VaultCreationDialog
 import VaultCreationDialog.Update
-import View.VaultDialog
+import VaultDialog
+import VaultDialog.Update
 import View.VaultList
 import Time exposing (Time)
 
@@ -123,30 +124,19 @@ update action model =
                   ]
 
         OpenVaultDetails vault ->
-            let
-                vaultDialog =
-                    case model.vaultDialog of
-                        Nothing ->
-                            View.VaultDialog.init vault
-
-                        Just vd ->
-                            vd
-            in
-                { model
-                    | state = ShowingVaultDetails vault
-                    , vaultDialog = Just (View.VaultDialog.open vault vaultDialog)
-                }
-                    ! []
+            ({ model | state = ShowingVaultDetails vault }
+                |> VaultDialog.Update.open vault
+            )
+                ! []
 
         OpenFlyingVaultDetails flyingVault ->
             { model | state = ShowingFlyingVaultDetails flyingVault }
                 ! []
 
         CloseVaultDetails ->
-            { model
-                | state = ShowingAllVaults
-                , vaultDialog = Nothing
-            }
+            ({ model | state = ShowingAllVaults }
+                |> VaultDialog.Update.close
+            )
                 ! []
 
         CreateNewVault ->
@@ -162,18 +152,12 @@ update action model =
                     ! [ Cmd.map VaultCreationDialog cmd ]
 
         VaultDialog msg ->
-            case model.vaultDialog of
-                Nothing ->
-                    model
-                        ! []
-
-                Just vaultDialog ->
-                    let
-                        ( state, cmd ) =
-                            View.VaultDialog.update msg vaultDialog
-                    in
-                        { model | vaultDialog = Just state }
-                            ! [ Cmd.map VaultDialog cmd ]
+            let
+                ( newModel, cmd ) =
+                    VaultDialog.Update.update msg model
+            in
+                newModel
+                    ! [ Cmd.map VaultDialog cmd ]
 
         _ ->
             model
@@ -224,20 +208,11 @@ layout model nodes =
         , div [ class [ Container ] ]
             (nodes ++ [ View.VaultList.view model ])
         , footer model
-        , viewVaultDialog model
+        , VaultDialog.view model
+            |> Html.map VaultDialog
         , VaultCreationDialog.view model
             |> Html.map VaultCreationDialog
         ]
-
-
-viewVaultDialog { vaultDialog } =
-    case vaultDialog of
-        Nothing ->
-            span [] []
-
-        Just vaultDialog ->
-            View.VaultDialog.view vaultDialog
-                |> Html.map VaultDialog
 
 
 header : Html Msg
