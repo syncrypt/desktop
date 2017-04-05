@@ -124,40 +124,25 @@ update action model =
                   ]
 
         OpenVaultDetails vault ->
-            ({ model | state = ShowingVaultDetails vault }
+            { model | state = ShowingVaultDetails vault }
                 |> VaultDialog.Update.open vault
-            )
-                ! []
 
         OpenFlyingVaultDetails flyingVault ->
             { model | state = ShowingFlyingVaultDetails flyingVault }
                 ! []
 
         CloseVaultDetails ->
-            ({ model | state = ShowingAllVaults }
+            { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close
-            )
-                ! []
 
         CreateNewVault ->
             VaultCreationDialog.Update.open { model | state = CreatingNewVault }
-                ! []
 
         VaultCreationDialog msg ->
-            let
-                ( newModel, cmd ) =
-                    VaultCreationDialog.Update.update msg model
-            in
-                newModel
-                    ! [ Cmd.map VaultCreationDialog cmd ]
+            VaultCreationDialog.Update.update msg model
 
         VaultDialog msg ->
-            let
-                ( newModel, cmd ) =
-                    VaultDialog.Update.update msg model
-            in
-                newModel
-                    ! [ Cmd.map VaultDialog cmd ]
+            VaultDialog.Update.update msg model
 
         _ ->
             model

@@ -6,31 +6,19 @@ import Ui.Input
 import VaultCreationDialog.Model exposing (Msg(Modal, NameInput), State)
 
 
-open : Model -> Model
+open : Model -> ( Model, Cmd Model.Msg )
 open model =
-    updateModal model <| Ui.Modal.open model.vaultCreationDialog.modal
+    (updateModal model <| Ui.Modal.open model.vaultCreationDialog.modal)
+        ! []
 
 
-close : Model -> Model
+close : Model -> ( Model, Cmd Model.Msg )
 close model =
-    updateModal model <| Ui.Modal.close model.vaultCreationDialog.modal
+    (updateModal model <| Ui.Modal.close model.vaultCreationDialog.modal)
+        ! []
 
 
-updateModal : Model -> Ui.Modal.Model -> Model
-updateModal model modalState =
-    let
-        oldState =
-            model.vaultCreationDialog
-    in
-        { model | vaultCreationDialog = { oldState | modal = modalState } }
-
-
-updateState : Model -> State -> Model
-updateState model vaultCreationState =
-    { model | vaultCreationDialog = vaultCreationState }
-
-
-update : VaultCreationDialog.Model.Msg -> Model -> ( Model, Cmd Msg )
+update : VaultCreationDialog.Model.Msg -> Model -> ( Model, Cmd Model.Msg )
 update msg model =
     case msg of
         Modal msg ->
@@ -49,4 +37,21 @@ update msg model =
                     model.vaultCreationDialog
             in
                 updateState model { oldState | nameInput = nameInput }
-                    ! [ Cmd.map NameInput cmd ]
+                    ! [ cmd
+                            |> Cmd.map NameInput
+                            |> Cmd.map Model.VaultCreationDialog
+                      ]
+
+
+updateModal : Model -> Ui.Modal.Model -> Model
+updateModal model modalState =
+    let
+        oldState =
+            model.vaultCreationDialog
+    in
+        { model | vaultCreationDialog = { oldState | modal = modalState } }
+
+
+updateState : Model -> State -> Model
+updateState model vaultCreationState =
+    { model | vaultCreationDialog = vaultCreationState }
