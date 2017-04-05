@@ -136,13 +136,16 @@ update action model =
                 |> VaultDialog.Update.close
 
         CreateNewVault ->
-            VaultCreationDialog.Update.open { model | state = CreatingNewVault }
+            { model | state = CreatingNewVault }
+                |> VaultCreationDialog.Update.open
 
         VaultCreationDialog msg ->
-            VaultCreationDialog.Update.update msg model
+            model
+                |> VaultCreationDialog.Update.update msg
 
         VaultDialog msg ->
-            VaultDialog.Update.update msg model
+            model
+                |> VaultDialog.Update.update msg
 
         _ ->
             model
