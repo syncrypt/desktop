@@ -1,4 +1,4 @@
-module View.Css.MainScreen exposing (..)
+module MainScreen.Css exposing (..)
 
 import Css exposing (..)
 import Css.Namespace exposing (namespace)

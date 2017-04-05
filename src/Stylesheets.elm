@@ -2,7 +2,7 @@ port module Stylesheets exposing (..)
 
 import Css.File exposing (CssFileStructure, CssCompilerProgram)
 import View.Css.VaultList
-import View.Css.MainScreen
+import MainScreen.Css
 import VaultDialog.Css
 import VaultCreationDialog.Css
 
@@ -16,7 +16,7 @@ fileStructure =
         [ ( "index.css"
           , Css.File.compile
                 [ View.Css.VaultList.css
-                , View.Css.MainScreen.css
+                , MainScreen.Css.css
                 , VaultDialog.Css.css
                 , VaultCreationDialog.Css.css
                 ]

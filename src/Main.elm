@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html
 import Model exposing (Model, Msg)
-import View.MainScreen as MainScreen
+import MainScreen
 import Config exposing (Config)
 
 

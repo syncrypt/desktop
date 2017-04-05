@@ -1,4 +1,4 @@
-module View.MainScreen exposing (..)
+module MainScreen exposing (..)
 
 import Config exposing (Config)
 import Daemon exposing (attempt, attemptDelayed)
@@ -8,7 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Util
-import View.Css.MainScreen exposing (..)
+import MainScreen.Css exposing (..)
 import View.Css.Util
 import VaultCreationDialog
 import VaultCreationDialog.Update
@@ -21,7 +21,7 @@ import Time exposing (Time)
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers View.Css.MainScreen.namespace
+    View.Css.Util.namespacedHelpers MainScreen.Css.namespace
 
 
 
