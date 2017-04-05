@@ -4,17 +4,26 @@ import Model exposing (Model)
 import Ui.Modal
 import Ui.Input
 import VaultCreationDialog.Model exposing (Msg(Modal, NameInput), State)
+import Dialog exposing (asModalIn)
 
 
 open : Model -> ( Model, Cmd Model.Msg )
 open model =
-    (updateModal model <| Ui.Modal.open model.vaultCreationDialog.modal)
+    (model.vaultCreationDialog.modal
+        |> Ui.Modal.open
+        |> asModalIn model.vaultCreationDialog
+        |> asStateIn model
+    )
         ! []
 
 
 close : Model -> ( Model, Cmd Model.Msg )
 close model =
-    (updateModal model <| Ui.Modal.close model.vaultCreationDialog.modal)
+    (model.vaultCreationDialog.modal
+        |> Ui.Modal.close
+        |> asModalIn model.vaultCreationDialog
+        |> asStateIn model
+    )
         ! []
 
 
@@ -24,7 +33,10 @@ update msg model =
         Modal msg ->
             let
                 newModel =
-                    updateModal model <| Ui.Modal.update msg model.vaultCreationDialog.modal
+                    model.vaultCreationDialog.modal
+                        |> Ui.Modal.update msg
+                        |> asModalIn model.vaultCreationDialog
+                        |> asStateIn model
             in
                 newModel ! []
 
@@ -36,22 +48,15 @@ update msg model =
                 oldState =
                     model.vaultCreationDialog
             in
-                updateState model { oldState | nameInput = nameInput }
+                ({ oldState | nameInput = nameInput }
+                    |> asStateIn model
+                )
                     ! [ cmd
                             |> Cmd.map NameInput
                             |> Cmd.map Model.VaultCreationDialog
                       ]
 
 
-updateModal : Model -> Ui.Modal.Model -> Model
-updateModal model modalState =
-    let
-        oldState =
-            model.vaultCreationDialog
-    in
-        { model | vaultCreationDialog = { oldState | modal = modalState } }
-
-
-updateState : Model -> State -> Model
-updateState model vaultCreationState =
-    { model | vaultCreationDialog = vaultCreationState }
+asStateIn : Model -> State -> Model
+asStateIn model state =
+    { model | vaultCreationDialog = state }

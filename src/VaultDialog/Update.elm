@@ -5,72 +5,69 @@ import VaultDialog.Model exposing (..)
 import Ui.Input
 import Ui.Modal
 import Model exposing (Model, State(ShowingVaultDetails))
+import Dialog exposing (asModalIn)
 
 
 open : Vault -> Model -> ( Model, Cmd Model.Msg )
-open vault model =
+open vault ({ vaultDialog } as model) =
     let
-        -- ignore cmd for now
         ( nameInput, cmd ) =
-            model.vaultDialog.nameInput
+            vaultDialog.nameInput
                 |> Ui.Input.placeholder (Maybe.withDefault "N/A" vault.name)
                 |> Ui.Input.setValue (Maybe.withDefault "" vault.name)
-
-        state =
-            model.vaultDialog
-
-        newState =
-            { state
-                | modal = Ui.Modal.open state.modal
-                , nameInput = nameInput
-            }
     in
-        ( { model | vaultDialog = newState }
-        , cmd
-            |> Cmd.map NameInput
-            |> Cmd.map Model.VaultDialog
+        (vaultDialog.modal
+            |> Ui.Modal.open
+            |> asModalIn (nameInput |> asNameInputIn vaultDialog)
+            |> asStateIn model
         )
+            ! [ cmd
+                    |> Cmd.map NameInput
+                    |> Cmd.map Model.VaultDialog
+              ]
 
 
 close : Model -> ( Model, Cmd Model.Msg )
 close model =
-    ( updateModal model <| Ui.Modal.close model.vaultDialog.modal, Cmd.none )
+    (model.vaultDialog.modal
+        |> Ui.Modal.close
+        |> asModalIn model.vaultDialog
+        |> asStateIn model
+    )
+        ! [ Cmd.none ]
 
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
 update msg model =
     case msg of
         Modal msg ->
-            (updateModal model <| Ui.Modal.update msg model.vaultDialog.modal)
+            (model.vaultDialog.modal
+                |> Ui.Modal.update msg
+                |> asModalIn model.vaultDialog
+                |> asStateIn model
+            )
                 ! []
 
         NameInput msg ->
             let
                 ( nameInput, cmd ) =
-                    Ui.Input.update msg state.nameInput
-
-                state =
-                    model.vaultDialog
-
-                newState =
-                    { state | nameInput = nameInput }
+                    Ui.Input.update msg model.vaultDialog.nameInput
             in
-                (updateState model newState)
+                (nameInput
+                    |> asNameInputIn model.vaultDialog
+                    |> asStateIn model
+                )
                     ! [ cmd
                             |> Cmd.map NameInput
                             |> Cmd.map Model.VaultDialog
                       ]
 
 
-updateModal : Model -> Ui.Modal.Model -> Model
-updateModal model modalState =
-    let
-        oldState =
-            model.vaultDialog
-    in
-        { model | vaultDialog = { oldState | modal = modalState } }
+asStateIn : Model -> VaultDialog.Model.State -> Model
+asStateIn model state =
+    { model | vaultDialog = state }
 
 
-updateState : Model -> VaultDialog.Model.State -> Model
-updateState model dialogState =
-    { model | vaultDialog = dialogState }
+asNameInputIn : VaultDialog.Model.State -> Ui.Input.Model -> VaultDialog.Model.State
+asNameInputIn state nameInput =
+    { state | nameInput = nameInput }
