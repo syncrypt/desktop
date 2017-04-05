@@ -4,7 +4,7 @@ import Html exposing (Html, button, div, form, input, label, span, text)
 import Ui.Modal
 import Ui.Input
 import Css.Util
-import VaultCreationDialog.Model exposing (..)
+import VaultCreationDialog.Model exposing (State, Msg(Modal, NameInput))
 import VaultCreationDialog.Css exposing (..)
 import Model exposing (Model)
 
@@ -13,11 +13,11 @@ import Model exposing (Model)
     Css.Util.namespacedHelpers VaultCreationDialog.Css.namespace
 
 
-view : Model -> Html Msg
+view : Model -> Html Model.Msg
 view { vaultCreationDialog } =
     let
         viewConfig =
-            { address = Modal
+            { address = (Modal >> Model.VaultCreationDialog)
             , contents = contents vaultCreationDialog
             , footer = []
             , title = "Create New Vault"
@@ -26,7 +26,7 @@ view { vaultCreationDialog } =
         Ui.Modal.view viewConfig vaultCreationDialog.modal
 
 
-contents : State -> List (Html Msg)
+contents : State -> List (Html Model.Msg)
 contents state =
     [ div [ class [ Content ] ]
         [ nameInput state
@@ -34,7 +34,7 @@ contents state =
     ]
 
 
-nameInput : State -> Html Msg
+nameInput : State -> Html Model.Msg
 nameInput { nameInput } =
     Ui.Input.view nameInput
-        |> Html.map NameInput
+        |> Html.map (NameInput >> Model.VaultCreationDialog)

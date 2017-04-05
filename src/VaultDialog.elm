@@ -7,7 +7,6 @@ import VaultDialog.Css exposing (..)
 import Ui.Modal
 import Ui.Input
 import Model exposing (Model, State(ShowingVaultDetails))
-import Syncrypt.Vault exposing (Vault)
 import VaultDialog.Model exposing (Msg(Modal, NameInput))
 
 
@@ -15,19 +14,20 @@ import VaultDialog.Model exposing (Msg(Modal, NameInput))
     Css.Util.namespacedHelpers VaultDialog.Css.namespace
 
 
-view : Model -> Html Msg
-view model =
+view : Model -> Html Model.Msg
+view ({ vaultDialog } as model) =
     let
         viewConfig =
-            { address = Modal
+            { address = (Modal >> Model.VaultDialog)
             , contents = contents model
             , footer = []
             , title = "Vault Details for " ++ currentVaultId model
             }
     in
-        Ui.Modal.view viewConfig model.vaultDialog.modal
+        Ui.Modal.view viewConfig vaultDialog.modal
 
 
+currentVaultId : Model -> String
 currentVaultId model =
     case model.state of
         ShowingVaultDetails v ->
@@ -37,7 +37,7 @@ currentVaultId model =
             "Unknown ID"
 
 
-contents : Model -> List (Html Msg)
+contents : Model -> List (Html Model.Msg)
 contents model =
     [ div [ class [ Content ] ]
         [ text <| "Modal content for vault: " ++ currentVaultId model
@@ -46,7 +46,7 @@ contents model =
     ]
 
 
-nameInput : VaultDialog.Model.State -> Html Msg
+nameInput : VaultDialog.Model.State -> Html Model.Msg
 nameInput { nameInput } =
     Ui.Input.view nameInput
-        |> Html.map NameInput
+        |> Html.map (NameInput >> Model.VaultDialog)

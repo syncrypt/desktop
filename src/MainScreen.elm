@@ -194,9 +194,7 @@ layout model nodes =
             (nodes ++ [ VaultList.view model ])
         , footer model
         , VaultDialog.view model
-            |> Html.map VaultDialog
         , VaultCreationDialog.view model
-            |> Html.map VaultCreationDialog
         ]
 
 
