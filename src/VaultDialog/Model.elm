@@ -24,7 +24,5 @@ init =
             |> Ui.Modal.backdrop False
     , nameInput =
         Ui.Input.init ()
-            -- |> Ui.Input.placeholder (Maybe.withDefault "" vault.name)
-            |>
-                Ui.Input.showClearIcon True
+            |> Ui.Input.showClearIcon True
     }
