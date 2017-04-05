@@ -18,43 +18,35 @@ open model =
 
 
 close : Model -> ( Model, Cmd Model.Msg )
-close model =
-    (model.vaultCreationDialog.modal
+close ({ vaultCreationDialog } as model) =
+    (vaultCreationDialog.modal
         |> Ui.Modal.close
-        |> asModalIn model.vaultCreationDialog
+        |> asModalIn vaultCreationDialog
         |> asStateIn model
     )
         ! []
 
 
 update : VaultCreationDialog.Model.Msg -> Model -> ( Model, Cmd Model.Msg )
-update msg model =
+update msg ({ vaultCreationDialog } as model) =
     case msg of
         Modal msg ->
-            let
-                newModel =
-                    model.vaultCreationDialog.modal
-                        |> Ui.Modal.update msg
-                        |> asModalIn model.vaultCreationDialog
-                        |> asStateIn model
-            in
-                newModel ! []
+            (vaultCreationDialog.modal
+                |> Ui.Modal.update msg
+                |> asModalIn vaultCreationDialog
+                |> asStateIn model
+            )
+                ! []
 
         NameInput msg ->
             let
                 ( nameInput, cmd ) =
-                    Ui.Input.update msg model.vaultCreationDialog.nameInput
-
-                oldState =
-                    model.vaultCreationDialog
+                    Ui.Input.update msg vaultCreationDialog.nameInput
             in
-                ({ oldState | nameInput = nameInput }
+                ({ vaultCreationDialog | nameInput = nameInput }
                     |> asStateIn model
                 )
-                    ! [ cmd
-                            |> Cmd.map NameInput
-                            |> Cmd.map Model.VaultCreationDialog
-                      ]
+                    ! [ cmd |> Cmd.map (NameInput >> Model.VaultCreationDialog) ]
 
 
 asStateIn : Model -> State -> Model

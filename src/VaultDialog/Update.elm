@@ -21,10 +21,7 @@ open vault ({ vaultDialog } as model) =
             |> asModalIn (nameInput |> asNameInputIn vaultDialog)
             |> asStateIn model
         )
-            ! [ cmd
-                    |> Cmd.map NameInput
-                    |> Cmd.map Model.VaultDialog
-              ]
+            ! [ cmd |> Cmd.map (NameInput >> Model.VaultDialog) ]
 
 
 close : Model -> ( Model, Cmd Model.Msg )
@@ -34,16 +31,16 @@ close model =
         |> asModalIn model.vaultDialog
         |> asStateIn model
     )
-        ! [ Cmd.none ]
+        ! []
 
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
-update msg model =
+update msg ({ vaultDialog } as model) =
     case msg of
         Modal msg ->
-            (model.vaultDialog.modal
+            (vaultDialog.modal
                 |> Ui.Modal.update msg
-                |> asModalIn model.vaultDialog
+                |> asModalIn vaultDialog
                 |> asStateIn model
             )
                 ! []
@@ -51,16 +48,13 @@ update msg model =
         NameInput msg ->
             let
                 ( nameInput, cmd ) =
-                    Ui.Input.update msg model.vaultDialog.nameInput
+                    Ui.Input.update msg vaultDialog.nameInput
             in
                 (nameInput
-                    |> asNameInputIn model.vaultDialog
+                    |> asNameInputIn vaultDialog
                     |> asStateIn model
                 )
-                    ! [ cmd
-                            |> Cmd.map NameInput
-                            |> Cmd.map Model.VaultDialog
-                      ]
+                    ! [ cmd |> Cmd.map (NameInput >> Model.VaultDialog) ]
 
 
 asStateIn : Model -> VaultDialog.Model.State -> Model
