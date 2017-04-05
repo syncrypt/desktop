@@ -14,7 +14,7 @@ import VaultCreationDialog
 import VaultCreationDialog.Update
 import VaultDialog
 import VaultDialog.Update
-import View.VaultList
+import VaultList
 import Time exposing (Time)
 
 
@@ -191,7 +191,7 @@ layout model nodes =
     div [ class (currentClass model) ]
         [ header
         , div [ class [ Container ] ]
-            (nodes ++ [ View.VaultList.view model ])
+            (nodes ++ [ VaultList.view model ])
         , footer model
         , VaultDialog.view model
             |> Html.map VaultDialog

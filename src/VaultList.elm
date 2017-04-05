@@ -1,4 +1,4 @@
-module View.VaultList exposing (..)
+module VaultList exposing (..)
 
 import Date exposing (Date)
 import Date.Distance as Distance
@@ -11,13 +11,13 @@ import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
 import Util exposing (bytesReadable)
 import View.Css.Util
-import View.Css.VaultList exposing (..)
+import VaultList.Css exposing (..)
 
 
 {-| Custom HTML helpers using our CSS types
 -}
 { id, class, classList } =
-    View.Css.Util.namespacedHelpers View.Css.VaultList.namespace
+    View.Css.Util.namespacedHelpers VaultList.Css.namespace
 
 
 type alias HasId a =

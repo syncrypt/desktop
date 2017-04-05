@@ -1,4 +1,4 @@
-module View.Css.VaultList exposing (..)
+module VaultList.Css exposing (..)
 
 import Css exposing (..)
 import Css.Elements exposing (canvas, hr)
