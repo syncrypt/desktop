@@ -10,14 +10,6 @@ import Model exposing (..)
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
 import Util exposing (bytesReadable)
-import Css.Util
-import VaultList.Css exposing (..)
-
-
-{-| Custom HTML helpers using our CSS types
--}
-{ id, class, classList } =
-    Css.Util.namespacedHelpers VaultList.Css.namespace
 
 
 type alias HasId a =
@@ -35,15 +27,15 @@ jdenticonAttr vault =
 
 vaultIcon : HasId a -> Html msg
 vaultIcon vault =
-    div [ class [ VaultIcon ] ]
+    div [ class "VaultList-VaultIcon" ]
         [ canvas [ width 100, height 100, jdenticonAttr vault ]
             []
         ]
 
 
-vaultItemSyncStateClass : Vault -> CssClass
+vaultItemSyncStateClass : Vault -> String
 vaultItemSyncStateClass vault =
-    VaultStatus vault.status
+    "VaultList-VaultStatus-" ++ (toString vault.status)
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
@@ -52,7 +44,7 @@ updatedAtInfo vault updatedAtHeader model =
         header =
             Maybe.withDefault (text "") updatedAtHeader
     in
-        div [ class [ VaultUpdatedAt ] ]
+        div [ class "VaultList-VaultUpdatedAt" ]
             [ header
             , case ( vault.modificationDate, model.now ) of
                 ( Nothing, _ ) ->
@@ -70,7 +62,7 @@ vaultUpdatedAtInfo : Vault -> Model -> Html msg
 vaultUpdatedAtInfo vault =
     updatedAtInfo vault
         (Just
-            (div [ class [ vaultItemSyncStateClass vault ] ]
+            (div [ class (vaultItemSyncStateClass vault) ]
                 []
             )
         )
@@ -83,7 +75,7 @@ flyingVaultUpdatedAtInfo flyingVault =
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
 vaultInfoItem vault bodyItems =
-    div [ class [ VaultInfoItem ] ]
+    div [ class "VaultList-VaultInfoItem" ]
         bodyItems
 
 
@@ -97,7 +89,7 @@ vaultStatus vault model =
 vaultActivity : Vault -> Html msg
 vaultActivity vault =
     vaultInfoItem vault
-        [ div [ class [ VaultActivity ], attribute "data-tip" "Total vault size with all file revisions" ]
+        [ div [ class "VaultList-VaultActivity", attribute "data-tip" "Total vault size with all file revisions" ]
             [ text (bytesReadable vault.size) ]
         ]
 
@@ -105,14 +97,14 @@ vaultActivity vault =
 vaultUserCount : Vault -> Html msg
 vaultUserCount vault =
     vaultInfoItem vault
-        [ div [ class [ VaultUsers ], attribute "data-tip" "Users with access to vault" ]
+        [ div [ class "VaultList-VaultUsers", attribute "data-tip" "Users with access to vault" ]
             [ text (toString vault.userCount) ]
         ]
 
 
 flyingVaultInfoItem : FlyingVault -> Model -> Html msg
 flyingVaultInfoItem vault model =
-    div [ class [ VaultInfoItem ] ]
+    div [ class "VaultList-VaultInfoItem" ]
         [ flyingVaultUpdatedAtInfo vault model
         ]
 
@@ -120,7 +112,7 @@ flyingVaultInfoItem vault model =
 vaultRemoveFromSyncButton : Vault -> Html Msg
 vaultRemoveFromSyncButton vault =
     div
-        [ class [ VaultRemoveButton ]
+        [ class "VaultList-VaultRemoveButton"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Remove vault from sync"
         , onClick (RemoveVaultFromSync vault)
@@ -131,7 +123,7 @@ vaultRemoveFromSyncButton vault =
 openVaultFolderButton : Vault -> Html Msg
 openVaultFolderButton vault =
     div
-        [ class [ VaultFolderButton ]
+        [ class "VaultList-VaultFolderButton"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Open Vault Folder"
         , onClick (OpenVaultFolder vault)
@@ -143,14 +135,14 @@ vaultInfo : NameOrId vault -> List (Html msg) -> Html msg
 vaultInfo vault nodes =
     let
         vaultHeader =
-            [ div [ class [ VaultTitle ] ]
+            [ div [ class "VaultList-VaultTitle" ]
                 [ text (nameOrId vault) ]
-            , div [ class [ VaultId ] ]
+            , div [ class "VaultList-VaultId" ]
                 [ text vault.id ]
             , hr [] []
             ]
     in
-        div [ class [ VaultInfo ] ]
+        div [ class "VaultList-VaultInfo" ]
             (vaultHeader ++ nodes)
 
 
@@ -220,9 +212,9 @@ newVaultItem =
         [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
         , attribute "data-offset" "{'bottom': -15, 'left': 0}"
         , attribute "data-for" "new-vault-item-tooltip"
-        , class [ VaultPlus ]
+        , class "VaultList-VaultPlus"
         ]
-        [ div [ class [ VaultPlusIcon ], onClick CreateNewVault ]
+        [ div [ class "VaultList-VaultPlusIcon", onClick CreateNewVault ]
             []
         ]
 
@@ -234,14 +226,14 @@ vaultList model =
             List.map (vaultItem model) model.vaults
 
         vaultListInfo =
-            div [ class [ VaultListInfo ] ]
-                [ span [ class [ Title ] ]
+            div [ class "VaultList-VaultListInfo" ]
+                [ span [ class "VaultList-Title" ]
                     [ text "Local Vaults" ]
-                , span [ class [ Subtitle ] ]
+                , span [ class "VaultList-Subtitle" ]
                     [ text "These vaults are cloned and synchronized on this computer." ]
                 ]
     in
-        div [ class [ VaultList ] ]
+        div [ class "VaultList-VaultList" ]
             ((vaultListInfo :: vaultItems) ++ [ newVaultItem ])
 
 
@@ -251,13 +243,13 @@ flyingVaultList model =
         flyingVaultItems =
             (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
     in
-        div [ class [ FlyingVaultList ] ]
-            ([ hr [ class [ FlyingVaultSeparator ] ]
+        div [ class "VaultList-FlyingVaultList" ]
+            ([ hr [ class "VaultList-FlyingVaultSeparator" ]
                 []
-             , div [ class [ VaultListInfo ] ]
-                [ span [ class [ Title ] ]
+             , div [ class "VaultList-VaultListInfo" ]
+                [ span [ class "VaultList-Title" ]
                     [ text "Available Vaults" ]
-                , span [ class [ Subtitle ] ]
+                , span [ class "VaultList-Subtitle" ]
                     [ text "Click on a vault to clone it to your computer" ]
                 ]
              ]
@@ -287,3 +279,37 @@ view model =
         [ vaultList model
         , flyingVaultList model
         ]
+
+
+vaultItemClass : Model -> Vault -> String
+vaultItemClass model vault =
+    let
+        defaultClass =
+            "VaultList-Card VaultList-VaultCard"
+    in
+        case model.state of
+            ShowingVaultDetails selectedVault ->
+                if vault == selectedVault then
+                    "VaultList-Card VaultList-VaultCardSelected"
+                else
+                    defaultClass
+
+            _ ->
+                defaultClass
+
+
+flyingVaultItemClass : Model -> FlyingVault -> String
+flyingVaultItemClass model flyingVault =
+    let
+        defaultClass =
+            "VaultList-Card VaultList-FlyingVaultCard"
+    in
+        case model.state of
+            ShowingFlyingVaultDetails selectedVault ->
+                if flyingVault == selectedVault then
+                    "VaultList-Card VaultList-VaultCardSelected"
+                else
+                    defaultClass
+
+            _ ->
+                defaultClass

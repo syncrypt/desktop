@@ -1,16 +1,11 @@
 module VaultCreationDialog exposing (..)
 
 import Html exposing (Html, button, div, form, input, label, span, text)
+import Html.Attributes exposing (class)
 import Ui.Modal
 import Ui.Input
-import Css.Util
 import VaultCreationDialog.Model exposing (State, Msg(Modal, NameInput))
-import VaultCreationDialog.Css exposing (..)
 import Model exposing (Model)
-
-
-{ id, class, classList } =
-    Css.Util.namespacedHelpers VaultCreationDialog.Css.namespace
 
 
 view : Model -> Html Model.Msg
@@ -28,7 +23,7 @@ view { vaultCreationDialog } =
 
 contents : State -> List (Html Model.Msg)
 contents state =
-    [ div [ class [ Content ] ]
+    [ div [ class "VaultCreationDialog-Content" ]
         [ nameInput state
         ]
     ]

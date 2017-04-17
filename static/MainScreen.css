@@ -1,0 +1,132 @@
+body {
+  position: relative;
+  color: #333;
+  height: 100vh;
+  background-color: #fff;
+  overflow-y: hidden;
+  font-family: Hind, Arial, Helvetica, Helvetica Neue;
+  margin: 0px;
+  background: linear-gradient(0deg, #404f60, #c17d6f);
+  background-attachment: fixed;
+}
+
+h2 {
+  margin: 0px;
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.25rem;
+  color: #333;
+}
+
+p {
+  font-size: 24px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: #555;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#Root {
+  height: 100%;
+  width: 100%;
+}
+
+#Root > div {
+  height: 100%;
+  width: 100%;
+}
+
+.MainScreen-Container {
+  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 45px;
+}
+
+.MainScreen-ModalContent {
+  border-radius: 0px;
+}
+
+.MainScreen-MainScreen {
+  width: 70%;
+  -webkit-transition: width 0.5s;
+}
+
+.MainScreen-MainScreen > .MainScreen-Container {
+  width: 70%;
+  height: 100%;
+  position: absolute;
+  top: 64px;
+  bottom: 26px;
+  overflow-y: auto;
+  transition: width 0.5s;
+}
+
+.MainScreen-MainScreen .MainScreen-Expanded {
+  width: 100%;
+  transition: width 0.5s;
+}
+
+.MainScreen-MainScreen .MainScreen-Expanded > .MainScreen-Container {
+  width: 100%;
+  transition: width 0.5s;
+}
+
+.MainScreen-Header {
+  position: fixed;
+  top: 0px;
+  z-index: 1;
+  height: 64px;
+  width: 100%;
+  background-color: #a07f78;
+  margin-bottom: 10px;
+  background-image: url(assets/logo.png);
+  background-repeat: no-repeat;
+  background-position: 20px 2px;
+  background-size: 170px;
+}
+
+.MainScreen-Header h1 {
+  font-size: 100px;
+  color: #f00;
+}
+
+.MainScreen-Header  a {
+  font-size: 1.4rem;
+}
+
+.MainScreen-Footer {
+  position: fixed;
+  z-index: 1;
+  font-size: 14px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 20px;
+  background-color: #4d4d4d;
+  color: #fff;
+  padding: 5px;
+}
+
+.MainScreen-Stats {
+  position: absolute;
+  right: 20px;
+  top: 7px;
+}
+
+.MainScreen-Buttons {
+  position: absolute;
+  right: 10px;
+  top: 17px;
+}

@@ -8,21 +8,12 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Util
-import MainScreen.Css exposing (..)
-import Css.Util
 import VaultCreationDialog
 import VaultCreationDialog.Update
 import VaultDialog
 import VaultDialog.Update
 import VaultList
 import Time exposing (Time)
-
-
-{-| Custom HTML helpers using our CSS types
--}
-{ id, class, classList } =
-    Css.Util.namespacedHelpers MainScreen.Css.namespace
-
 
 
 -- INIT
@@ -181,19 +172,19 @@ view model =
                 layout model []
 
 
-currentClass : Model -> List CssClass
+currentClass : Model -> String
 currentClass model =
     if model.sidebarOpen then
-        [ Container ]
+        "MainScreen-Container"
     else
-        [ Container, Expanded ]
+        "MainScreen-Container MainScreen-Expanded"
 
 
 layout : Model -> List (Html Msg) -> Html Msg
 layout model nodes =
     div [ class (currentClass model) ]
         [ header
-        , div [ class [ Container ] ]
+        , div [ class "MainScreen-Container" ]
             (nodes ++ [ VaultList.view model ])
         , footer model
         , VaultDialog.view model
@@ -203,8 +194,8 @@ layout model nodes =
 
 header : Html Msg
 header =
-    div [ class [ Header ] ]
-        [ div [ class [ Buttons ] ]
+    div [ class "MainScreen-Header" ]
+        [ div [ class "MainScreen-Buttons" ]
             [ node "ReactTooltip"
                 [ attribute "delayShow" "250"
                 , attribute "effect" "solid"
@@ -244,8 +235,8 @@ footer { stats, vaults } =
                 |> List.map toString
                 |> String.join " / "
     in
-        div [ class [ Footer ] ]
-            [ span [ class [ Stats ] ]
+        div [ class "MainScreen-Footer" ]
+            [ span [ class "MainScreen-Stats" ]
                 [ text <|
                     (vaults |> List.length |> toString)
                         ++ " Vault(s) / "

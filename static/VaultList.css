@@ -1,0 +1,304 @@
+.VaultList-VaultStatus-Synced {
+  background-size: 22px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  float: left;
+  animation: rotating 2s linear infinite;
+  background-image: url(assets/check.png);
+}
+
+.VaultList-VaultStatus-Initializing {
+  background-size: 22px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  float: left;
+  animation: rotating 2s linear infinite;
+  background-image: url(assets/update_vault.png);
+}
+
+.VaultList-VaultStatus-Syncing {
+  background-size: 22px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  float: left;
+  animation: rotating 2s linear infinite;
+  background-image: url(assets/update_vault.png);
+}
+
+.VaultList-VaultStatus-Initializing {
+  background-size: 22px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  float: left;
+  animation: rotating 2s linear infinite;
+  background-image: url(assets/update_vault.png);
+}
+
+.VaultList-VaultStatus-Ready {
+  background-size: 22px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 22px;
+  height: 22px;
+  background-repeat: no-repeat;
+  float: left;
+  animation: rotating 2s linear infinite;
+  background-image: url(assets/check.png);
+}
+
+.VaultList-VaultList {
+  margin-top: 10px;
+  margin-bottom: 80px;
+}
+
+.VaultList-Card {
+  display: inline-block;
+  border: 1px solid #e6e6e6;
+  height: 130px;
+  width: 250px;
+  overflow: hidden;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding: 10px;
+  position: relative;
+  transition: all 0.25s;
+  background-color: #efddda;
+}
+
+.VaultList-Card:hover {
+  opacity: 0.7;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+
+.VaultList-FlyingVaultSeparator {
+  width: 50%;
+  border-color: #efddda;
+  border-width: thin;
+  border-collapse: collapse;
+  opacity: 0.66;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.VaultList-FlyingVaultCard {
+  border: 1px dashed #e6e6e6;
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: all 0.5s;
+  background-color: #aaa;
+}
+
+.VaultList-FlyingVaultCard:hover {
+  background-color: #efddda;
+}
+
+.VaultList-FlyingVaultCard canvas {
+  opacity: 0.3;
+}
+
+.VaultList-VaultCardSelected {
+  display: inline-block;
+  background-color: #efeeea;
+}
+
+.VaultList-VaultCardSelected .VaultList-VaultTitle {
+  color: #000;
+}
+
+.VaultList-VaultCard {
+  transition: all 0.25s;
+}
+
+.VaultList-VaultCard:hover {
+  opacity: 0.7;
+  transition: all 0.25s;
+  cursor: pointer;
+  color: #000;
+}
+
+.VaultList-VaultCard .VaultList-VaultTitle {
+  color: #000;
+}
+
+.VaultList-VaultListInfo {
+  overflow: hidden;
+  margin-left: 20px;
+  color: #eee;
+}
+
+.VaultList-VaultListInfo .VaultList-Title {
+  font-size: 25px;
+  display: block;
+}
+
+.VaultList-VaultListInfo .VaultList-Subtitle {
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.VaultList-VaultPlus {
+  display: inline-block;
+  height: 130px;
+  width: 250px;
+  overflow: hidden;
+  margin-left: 20px;
+  margin-top: 10px;
+  padding: 10px;
+  position: relative;
+  transition: all 0.25s;
+}
+
+.VaultList-VaultPlusIcon {
+  height: 90px;
+  width: 90px;
+  background-image: url(assets/add_orange.png);
+  background-size: 90px 90px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+  top: 0px;
+  left: 80px;
+  opacity: 0.5;
+}
+
+.VaultList-VaultPlusIcon:hover {
+  background-image: url(assets/add.png);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.VaultList-VaultInfo {
+  padding-left: 70px;
+  margin-right: 18px;
+}
+
+.VaultList-VaultInfo hr {
+  border-color: #d1c8c6;
+  margin-top: 4px;
+}
+
+.VaultList-VaultIcon {
+  height: 50px;
+  width: 50px;
+  float: left;
+}
+
+.VaultList-VaultIcon canvas {
+  height: 50px;
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 20px;
+  margin-top: 15px;
+  padding: 0px;
+}
+
+.VaultList-VaultTitle {
+  font-weight: 600;
+  font-size: 14px;
+  color: #666;
+  text-align: left;
+  width: 100%;
+  height: 1em;
+  margin-top: 10px;
+  margin-right: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.VaultList-VaultId {
+  font-size: 8px;
+  padding-top: 5px;
+  padding-bottom: 2px;
+}
+
+.VaultList-VaultInfoItem {
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.VaultList-VaultUpdatedAt {
+  font-size: 12px;
+}
+
+.VaultList-VaultUsers {
+  background-image: url(assets/avatar.png);
+  background-size: 18px;
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  font-weight: 300;
+  font-size: 15px;
+  color: #666666;
+  width: 80px;
+  white-space: nowrap;
+}
+
+.VaultList-VaultActivity {
+  background-image: url(assets/vault.png);
+  background-size: 18px;
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  font-weight: 300;
+  font-size: 15px;
+  color: #666666;
+  width: 80px;
+  white-space: nowrap;
+}
+
+.VaultList-VaultRemoveButton {
+  display: none;
+  background-image: url(assets/remove_vault.png);
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  width: 25px;
+  height: 25px;
+  opacity: 0.44;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.VaultList-VaultRemoveButton:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.VaultList-VaultFolderButton {
+  display: none;
+  background-image: url(assets/folder.png);
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  width: 20px;
+  height: 20px;
+  opacity: 0.44;
+  position: absolute;
+  bottom: 10px;
+  right: 4px;
+}
+
+.VaultList-VaultFolderButton:hover {
+  cursor: pointer;
+  opacity: 1;
+}

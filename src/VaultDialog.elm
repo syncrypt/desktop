@@ -1,17 +1,12 @@
 module VaultDialog exposing (..)
 
 import Html exposing (Html, button, div, h1, hr, node, span, text)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import Css.Util
-import VaultDialog.Css exposing (..)
 import Ui.Modal
 import Ui.Input
 import Model exposing (Model, State(ShowingVaultDetails))
 import VaultDialog.Model exposing (Msg(Modal, NameInput))
-
-
-{ id, class, classList } =
-    Css.Util.namespacedHelpers VaultDialog.Css.namespace
 
 
 view : Model -> Html Model.Msg
@@ -39,7 +34,7 @@ currentVaultId model =
 
 contents : Model -> List (Html Model.Msg)
 contents model =
-    [ div [ class [ Content ] ]
+    [ div [ class "VaultDialog-Content" ]
         [ text <| "Modal content for vault: " ++ currentVaultId model
         , nameInput model.vaultDialog
         ]
