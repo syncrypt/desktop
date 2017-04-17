@@ -15,7 +15,7 @@ type alias JSFolderContent =
 
 type FolderContent
     = File Path
-    | Folder Path
+    | Folder Path (List FolderContent)
 
 
 type alias State =
@@ -31,8 +31,9 @@ type alias State =
 type Msg
     = Modal Ui.Modal.Msg
     | NameInput Ui.Input.Msg
-    | FileList String (List FolderContent)
+    | FileList Path (List FolderContent)
     | FileCheckBox FolderContent Ui.Checkbox.Msg
+    | NestedFileList FolderContent (List FolderContent)
 
 
 init : State
@@ -42,10 +43,16 @@ init =
     , localFolderPath = Just "/tmp/foo"
     , localFolderContents =
         Just
-            [ Folder "Folder 1"
-            , File "File 1"
-            , File "File 2"
-            , File "File 3"
+            [ Folder "Research" []
+            , Folder "Music"
+                [ File "Song 1.mp3"
+                , File "Song 2.mp3"
+                , Folder "Pictures"
+                    [ File "Party.jpg"
+                    , File "Logo.png"
+                    ]
+                ]
+            , File "Docs"
             ]
     , modal =
         Ui.Modal.init
@@ -64,13 +71,45 @@ parseFolderContents =
 
 
 parseFolderContent : JSFolderContent -> FolderContent
-parseFolderContent fc =
-    if fc.isDir then
-        File fc.path
+parseFolderContent { isDir, path } =
+    if isDir then
+        File path
     else
-        Folder fc.path
+        Folder path []
+
+
+parseFolderWithChildContents : Path -> List JSFolderContent -> FolderContent
+parseFolderWithChildContents path folderContents =
+    Folder path (parseFolderContents folderContents)
 
 
 isIgnored : FolderContent -> State -> Bool
 isIgnored fc state =
     List.member fc state.ignoreFiles
+
+
+addNestedFolderContents : FolderContent -> List FolderContent -> State -> State
+addNestedFolderContents fc fcs ({ localFolderContents } as state) =
+    let
+        appendChildrenToFolder : FolderContent -> FolderContent
+        appendChildrenToFolder x =
+            case ( x, fc ) of
+                ( Folder path1 children1, Folder path2 children2 ) ->
+                    if path1 == path2 then
+                        Folder path1 (children1 ++ children2)
+                    else
+                        fc
+
+                _ ->
+                    fc
+
+        contents =
+            case localFolderContents of
+                Nothing ->
+                    fcs
+
+                Just contents ->
+                    contents
+                        |> List.map appendChildrenToFolder
+    in
+        { state | localFolderContents = Just contents }

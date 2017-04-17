@@ -1,5 +1,5 @@
 .VaultCreationDialog-Content {
-  width: 1000px;
+  width: 700px;
   height: 500px;
 }
 
@@ -8,11 +8,13 @@
   padding: 10px;
 }
 
+
 .VaultCreationDialog-FolderContent-Checkbox {
   display: inline-flex;
   padding-right: 10px;
 }
 
-.VaultCreationDialog-FolderContent-Name {
-  display: inline-block;
+.VaultCreationDialog-FolderContentWithChildren .VaultCreationDialog-FolderContent {
+  padding-top: 10px;
+  padding-left: 45px;
 }

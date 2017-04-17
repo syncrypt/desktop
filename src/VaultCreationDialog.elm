@@ -92,10 +92,26 @@ folderContents contents state =
 folderContent : FolderContent -> State -> Html Model.Msg
 folderContent fc state =
     div [ class "VaultCreationDialog-FolderContent" ]
-        [ checkbox fc state
-        , div [ class "VaultCreationDialog-FolderContent-Name" ]
-            [ text (name fc) ]
+        [ div [ class "VaultCreationDialog-FolderContent-Name" ]
+            [ checkbox fc state
+            , text (name fc)
+            , div [ class "VaultCreationDialog-FolderContentWithChildren" ]
+                (folderChildContents fc state)
+            ]
         ]
+
+
+folderChildContents : FolderContent -> State -> List (Html Model.Msg)
+folderChildContents fc state =
+    case fc of
+        Folder path children ->
+            if isIgnored fc state then
+                []
+            else
+                folderContents children state
+
+        _ ->
+            []
 
 
 checkbox : FolderContent -> State -> Html Model.Msg
@@ -120,5 +136,5 @@ name fc =
         File name ->
             name
 
-        Folder name ->
+        Folder name _ ->
             name
