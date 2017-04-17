@@ -70,7 +70,16 @@ vaultUpdatedAtInfo vault =
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
 flyingVaultUpdatedAtInfo flyingVault =
-    updatedAtInfo flyingVault <| Just <| text "Updated "
+    let
+        updatedText =
+            case flyingVault.modificationDate of
+                Nothing ->
+                    "No Updates"
+
+                Just _ ->
+                    "Updated "
+    in
+        updatedAtInfo flyingVault <| Just <| text updatedText
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
