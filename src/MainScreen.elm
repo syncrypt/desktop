@@ -44,7 +44,7 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    VaultCreationDialog.subscriptions
 
 
 
