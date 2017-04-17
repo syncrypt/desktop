@@ -3,7 +3,7 @@ HTML_FILE=$(BUILD_DIR)/index.html
 JS_FILE=$(BUILD_DIR)/elm.js
 ASSETS_PATH = $(BUILD_DIR)/assets
 
-JS_SOURCES = $(shell find src/ -type f -name '*.elm' | grep -v Css | grep -v Stylesheets.elm)
+JS_SOURCES = $(shell find src/ -type f -name '*.elm')
 ASSET_FILES = $(shell find assets -type f)
 
 all: $(BUILD_DIR) static $(JS_FILE)
