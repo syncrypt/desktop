@@ -1,0 +1,23 @@
+{
+  "name": "syncrypt-desktop",
+  "version": "1.0.0",
+  "description": "Syncrypt platform independent desktop client",
+  "main": "build/main.js",
+  "dependencies": {
+    "expand-home-dir": "^0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syncrypt/elm-desktop.git"
+  },
+  "author": "Syncrypt UG",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/syncrypt/elm-desktop/issues"
+  },
+  "homepage": "https://github.com/syncrypt/elm-desktop#readme"
+}

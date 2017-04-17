@@ -7,21 +7,10 @@
     <link rel="stylesheet" href="VaultList.css">
     <link rel="stylesheet" href="VaultDialog.css">
     <link rel="stylesheet" href="VaultCreationDialog.css">
-    <script type="text/javascript" src="elm.js"></script>
   </head>
   <body>
     <div id="Root">
     </div>
-    <script type="text/javascript">
-      // TODO: get this from syncrypt daemon config file
-      var daemonApiToken = "my-api-token";
-      var mainContainer = document.getElementById("Root");
-
-      Elm.Main.embed(mainContainer, {
-        apiAuthToken: daemonApiToken,
-        apiUrl: "http://127.0.0.1:28080/v1/",
-        updateInterval: 5000
-      });
-    </script>
   </body>
+  <script type="text/javascript" src="ports.js"></script>
 </html>
