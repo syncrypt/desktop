@@ -5,11 +5,13 @@ import Ui.Modal
 import Ui.Input
 import VaultCreationDialog.Model
     exposing
-        ( Msg(Modal, NameInput, FileList, FileCheckBox)
+        ( FolderContent
+        , Msg(Modal, NameInput, FileList, FileCheckBox)
         , State
         , isIgnored
         )
 import Dialog exposing (asModalIn)
+import Platform.Cmd exposing (map)
 
 
 open : Model -> ( Model, Cmd Model.Msg )
@@ -51,7 +53,7 @@ update msg ({ vaultCreationDialog } as model) =
                 ({ vaultCreationDialog | nameInput = nameInput }
                     |> asStateIn model
                 )
-                    ! [ cmd |> Cmd.map (NameInput >> Model.VaultCreationDialog) ]
+                    ! [ cmd |> map (NameInput >> Model.VaultCreationDialog) ]
 
         FileList path contents ->
             ({ vaultCreationDialog
@@ -62,17 +64,18 @@ update msg ({ vaultCreationDialog } as model) =
             )
                 ! []
 
-        FileCheckBox folderContent _ ->
-            (toggleIgnoreFile folderContent model)
+        FileCheckBox fc _ ->
+            (model |> toggleIgnoreFile fc)
                 ! []
 
 
+toggleIgnoreFile : FolderContent -> Model -> Model
 toggleIgnoreFile fc ({ vaultCreationDialog } as model) =
     let
         ignoreFiles =
             if isIgnored fc vaultCreationDialog then
-                List.filter ((/=) fc)
-                    vaultCreationDialog.ignoreFiles
+                vaultCreationDialog.ignoreFiles
+                    |> List.filter ((/=) fc)
             else
                 fc :: vaultCreationDialog.ignoreFiles
     in
