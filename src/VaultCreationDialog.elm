@@ -93,7 +93,7 @@ folderContent : FolderContent -> State -> Html Model.Msg
 folderContent fc state =
     div [ class "VaultCreationDialog-FolderContent" ]
         [ div [ class "VaultCreationDialog-FolderContent-Name" ]
-            [ checkbox fc state
+            [ fileCheckbox fc state
             , text (name fc)
             , div [ class "VaultCreationDialog-FolderContentWithChildren" ]
                 (folderChildContents fc state)
@@ -114,20 +114,24 @@ folderChildContents fc state =
             []
 
 
-checkbox : FolderContent -> State -> Html Model.Msg
-checkbox fc state =
+fileCheckbox : FolderContent -> State -> Html Model.Msg
+fileCheckbox fc state =
     let
-        checkboxSettings =
-            { disabled = False
-            , readonly = False
-            , value = not (isIgnored fc state)
-            , uid = name fc
-            }
+        checkbox =
+            Ui.Checkbox.view (fileCheckboxSettings fc state)
+                |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
     in
         div [ class "VaultCreationDialog-FolderContent-Checkbox" ]
-            [ Ui.Checkbox.view checkboxSettings
-                |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
-            ]
+            [ checkbox ]
+
+
+fileCheckboxSettings : FolderContent -> State -> Ui.Checkbox.Model
+fileCheckboxSettings fc state =
+    { disabled = False
+    , readonly = False
+    , value = not (isIgnored fc state)
+    , uid = name fc
+    }
 
 
 name : FolderContent -> String
