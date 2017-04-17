@@ -36,7 +36,13 @@ init =
     { title = "Untitled Vault"
     , ignoreFiles = []
     , localFolderPath = Just "/tmp/foo"
-    , localFolderContents = Just [ Folder "Folder 1", File "File 1", File "File 2", File "File 3" ]
+    , localFolderContents =
+        Just
+            [ Folder "Folder 1"
+            , File "File 1"
+            , File "File 2"
+            , File "File 3"
+            ]
     , modal =
         Ui.Modal.init
             |> Ui.Modal.closable True
@@ -49,8 +55,8 @@ init =
 
 
 parseFolderContents : List JSFolderContent -> List FolderContent
-parseFolderContents contents =
-    contents |> List.map parseFolderContent
+parseFolderContents =
+    List.map parseFolderContent
 
 
 parseFolderContent : JSFolderContent -> FolderContent

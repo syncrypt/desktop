@@ -26,8 +26,12 @@ port fileList : (( String, List JSFolderContent ) -> msg) -> Sub msg
 
 subscriptions : Sub Model.Msg
 subscriptions =
-    Sub.map Model.VaultCreationDialog
-        (fileList (\( path, files ) -> FileList path (parseFolderContents files)))
+    let
+        fileListMsg ( path, files ) =
+            FileList path (parseFolderContents files)
+    in
+        fileList fileListMsg
+            |> Sub.map Model.VaultCreationDialog
 
 
 view : Model -> Html Model.Msg
@@ -68,36 +72,49 @@ fileSelectionContainer { vaultCreationDialog } =
 
                 Just contents ->
                     folderContents contents vaultCreationDialog
+
+        settings =
+            { direction = "column"
+            , compact = False
+            , align = "start"
+            }
     in
-        Ui.Container.view { direction = "column", compact = False, align = "start" }
-            []
-            contents
+        Ui.Container.view settings [] contents
 
 
+folderContents : List FolderContent -> State -> List (Html Model.Msg)
 folderContents contents state =
     List.map
-        (\fc -> folderContent fc (isIgnored fc state))
+        (\fc -> folderContent fc state)
         contents
 
 
-folderContent : FolderContent -> Bool -> Html Model.Msg
-folderContent fc isIgnored =
+folderContent : FolderContent -> State -> Html Model.Msg
+folderContent fc state =
     div [ class "VaultCreationDialog-FolderContent" ]
-        [ checkbox fc isIgnored
+        [ checkbox fc state
         , div [ class "VaultCreationDialog-FolderContent-Name" ]
             [ text (name fc) ]
         ]
 
 
-checkbox : FolderContent -> Bool -> Html Model.Msg
-checkbox fc isIgnored =
-    div [ class "VaultCreationDialog-FolderContent-Checkbox" ]
-        [ Ui.Checkbox.view
-            { disabled = False, readonly = False, value = not isIgnored, uid = name fc }
-            |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
-        ]
+checkbox : FolderContent -> State -> Html Model.Msg
+checkbox fc state =
+    let
+        checkboxSettings =
+            { disabled = False
+            , readonly = False
+            , value = not (isIgnored fc state)
+            , uid = name fc
+            }
+    in
+        div [ class "VaultCreationDialog-FolderContent-Checkbox" ]
+            [ Ui.Checkbox.view checkboxSettings
+                |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
+            ]
 
 
+name : FolderContent -> String
 name fc =
     case fc of
         File name ->
