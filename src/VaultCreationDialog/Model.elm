@@ -5,13 +5,17 @@ import Ui.Input
 import Ui.Checkbox
 
 
+type alias Path =
+    String
+
+
 type alias JSFolderContent =
-    { isDir : Bool, name : String }
+    { isDir : Bool, path : Path }
 
 
 type FolderContent
-    = File String
-    | Folder String
+    = File Path
+    | Folder Path
 
 
 type alias State =
@@ -62,9 +66,9 @@ parseFolderContents =
 parseFolderContent : JSFolderContent -> FolderContent
 parseFolderContent fc =
     if fc.isDir then
-        File fc.name
+        File fc.path
     else
-        Folder fc.name
+        Folder fc.path
 
 
 isIgnored : FolderContent -> State -> Bool
