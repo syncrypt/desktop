@@ -82,23 +82,23 @@ folderContents contents state =
 
 folderContent : FolderContent -> Bool -> Html Model.Msg
 folderContent fc isIgnored =
-    case fc of
-        File name ->
-            div [ class "VaultCreationDialog-FileIcon" ]
-                [ checkbox fc isIgnored, text name ]
-
-        Folder name ->
-            div [ class "VaultCreationDialog-FolderIcon" ]
-                [ checkbox fc isIgnored, text name ]
+    div [ class "VaultCreationDialog-FolderContent" ]
+        [ checkbox fc isIgnored
+        , div [ class "VaultCreationDialog-FolderContent-Name" ]
+            [ text (name fc) ]
+        ]
 
 
 checkbox : FolderContent -> Bool -> Html Model.Msg
 checkbox fc isIgnored =
-    Ui.Checkbox.view { disabled = False, readonly = False, value = not isIgnored, uid = uid fc }
-        |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
+    div [ class "VaultCreationDialog-FolderContent-Checkbox" ]
+        [ Ui.Checkbox.view
+            { disabled = False, readonly = False, value = not isIgnored, uid = name fc }
+            |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
+        ]
 
 
-uid fc =
+name fc =
     case fc of
         File name ->
             name
