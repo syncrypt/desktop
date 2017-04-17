@@ -183,7 +183,7 @@ vaultDecoder =
         |> required "revision_count" Json.int
         |> required "resource_uri" Json.string
         |> required "folder" Json.string
-        |> required "modification_date" date
+        |> optional "modification_date" date Nothing
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.
@@ -198,7 +198,7 @@ flyingVaultDecoder =
         |> required "file_count" Json.int
         |> required "revision_count" Json.int
         |> required "resource_uri" Json.string
-        |> required "modification_date" date
+        |> optional "modification_date" date Nothing
 
 
 {-| Decodes a `Syncrypt.Vault.Status`.
