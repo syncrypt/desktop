@@ -3,7 +3,7 @@ body {
   color: #333;
   height: 100vh;
   background-color: #fff;
-  overflow-y: auto;
+  overflow-y: hidden;
   font-family: Hind, Arial, Helvetica, Helvetica Neue;
   margin: 0px;
   background: linear-gradient(0deg, #404f60, #c17d6f);
@@ -48,22 +48,24 @@ a:hover {
   width: 100%;
 }
 
+.MainScreen {
+  width: 70%;
+  height: 100%;
+  -webkit-transition: width 0.5s;
+  margin-top: -60px;
+}
+
 .MainScreen-Container {
   width: 100%;
   padding-top: 30px;
-  padding-bottom: 45px;
+  padding-bottom: 75px;
 }
 
 .MainScreen-ModalContent {
   border-radius: 0px;
 }
 
-.MainScreen-MainScreen {
-  width: 70%;
-  -webkit-transition: width 0.5s;
-}
-
-.MainScreen-MainScreen > .MainScreen-Container {
+.MainScreen > .MainScreen-Container {
   width: 70%;
   height: 100%;
   position: absolute;
@@ -73,12 +75,12 @@ a:hover {
   transition: width 0.5s;
 }
 
-.MainScreen-MainScreen .MainScreen-Expanded {
+.MainScreen .MainScreen-Expanded {
   width: 100%;
   transition: width 0.5s;
 }
 
-.MainScreen-MainScreen .MainScreen-Expanded > .MainScreen-Container {
+.MainScreen .MainScreen-Expanded > .MainScreen-Container {
   width: 100%;
   transition: width 0.5s;
 }

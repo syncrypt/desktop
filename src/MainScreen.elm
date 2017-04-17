@@ -182,13 +182,15 @@ currentClass model =
 
 layout : Model -> List (Html Msg) -> Html Msg
 layout model nodes =
-    div [ class (currentClass model) ]
-        [ header
-        , div [ class "MainScreen-Container" ]
-            (nodes ++ [ VaultList.view model ])
-        , footer model
-        , VaultDialog.view model
-        , VaultCreationDialog.view model
+    div [ class "MainScreen" ]
+        [ div [ class (currentClass model) ]
+            [ header
+            , div [ class "MainScreen-Container" ]
+                (nodes ++ [ VaultList.view model ])
+            , footer model
+            , VaultDialog.view model
+            , VaultCreationDialog.view model
+            ]
         ]
 
 
