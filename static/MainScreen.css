@@ -3,7 +3,7 @@ body {
   color: #333;
   height: 100vh;
   background-color: #fff;
-  overflow-y: hidden;
+  overflow-y: auto;
   font-family: Hind, Arial, Helvetica, Helvetica Neue;
   margin: 0px;
   background: linear-gradient(0deg, #404f60, #c17d6f);
