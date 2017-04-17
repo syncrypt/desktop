@@ -28,3 +28,6 @@ Install dependencies (including elm-ui) using elm-github-install:
 ## Build target HTML, JS & CSS
     $ make
     # Generates build/index.html with JS & CSS
+
+## Run with Electron
+    $ make run
