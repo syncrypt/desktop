@@ -143,7 +143,7 @@ header =
         , width (pct 100)
         , backgroundColor (hex "a07f78")
         , marginBottom (px 10)
-        , backgroundImage (url "../assets/logo.png")
+        , backgroundImage (url "assets/logo.png")
         , backgroundRepeat noRepeat
         , backgroundPosition2 (px 20) (px 2)
         , backgroundSize (px 170)

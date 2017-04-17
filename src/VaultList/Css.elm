@@ -137,15 +137,15 @@ vaultStatusWith status additionalRules =
 vaultStatuses : List Snippet
 vaultStatuses =
     [ vaultStatusWith (VaultStatus Synced)
-        [ backgroundImage (url "../assets/check.png") ]
+        [ backgroundImage (url "assets/check.png") ]
     , vaultStatusWith (VaultStatus Initializing)
-        [ backgroundImage (url "../assets/update_vault.png") ]
+        [ backgroundImage (url "assets/update_vault.png") ]
     , vaultStatusWith (VaultStatus Syncing)
-        [ backgroundImage (url "../assets/update_vault.png") ]
+        [ backgroundImage (url "assets/update_vault.png") ]
     , vaultStatusWith (VaultStatus Initializing)
-        [ backgroundImage (url "../assets/update_vault.png") ]
+        [ backgroundImage (url "assets/update_vault.png") ]
     , vaultStatusWith (VaultStatus Ready)
-        [ backgroundImage (url "../assets/check.png") ]
+        [ backgroundImage (url "assets/check.png") ]
     ]
 
 
@@ -245,7 +245,7 @@ vaultPlusIcon =
     class VaultPlusIcon
         [ height (px 90)
         , width (px 90)
-        , backgroundImage (url "../assets/add_orange.png")
+        , backgroundImage (url "assets/add_orange.png")
         , backgroundSize2 (px 90) (px 90)
         , backgroundRepeat noRepeat
         , display inlineBlock
@@ -255,7 +255,7 @@ vaultPlusIcon =
         , opacity (num 0.5)
         , mixin
             [ hover
-                [ backgroundImage (url "../assets/add.png")
+                [ backgroundImage (url "assets/add.png")
                 , opacity (num 1.0)
                 , cursor pointer
                 ]
@@ -342,7 +342,7 @@ vaultActivity =
 
 
 vaultInfoIcon iconName =
-    [ backgroundImage (url <| "../assets/" ++ iconName ++ ".png")
+    [ backgroundImage (url <| "assets/" ++ iconName ++ ".png")
     , backgroundSize (px 18)
     , backgroundRepeat noRepeat
     , paddingLeft (px 25)
@@ -373,7 +373,7 @@ vaultRemoveButton : Snippet
 vaultRemoveButton =
     class VaultRemoveButton
         [ display none
-        , backgroundImage (url "../assets/remove_vault.png")
+        , backgroundImage (url "assets/remove_vault.png")
         , backgroundRepeat noRepeat
         , backgroundSize2 (px 25) (px 25)
         , width (px 25)
@@ -390,7 +390,7 @@ vaultFolderButton : Snippet
 vaultFolderButton =
     class VaultFolderButton
         [ display none
-        , backgroundImage (url "../assets/folder.png")
+        , backgroundImage (url "assets/folder.png")
         , backgroundRepeat noRepeat
         , backgroundSize2 (px 20) (px 20)
         , width (px 20)
