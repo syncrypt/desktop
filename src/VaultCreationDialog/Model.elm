@@ -42,6 +42,7 @@ init =
     , ignoreFiles = []
     , localFolderPath = Just "/tmp/foo"
     , localFolderContents =
+        -- TODO: load these from file system
         Just
             [ Folder "Research" []
             , Folder "Music"
