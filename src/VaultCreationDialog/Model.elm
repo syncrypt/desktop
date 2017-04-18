@@ -89,11 +89,11 @@ isIgnored fc state =
 
 
 addNestedFolderContents : FolderContent -> List FolderContent -> State -> State
-addNestedFolderContents fc fcs ({ localFolderContents } as state) =
+addNestedFolderContents parent children ({ localFolderContents } as state) =
     let
         appendChildrenToFolder : FolderContent -> FolderContent
-        appendChildrenToFolder x =
-            case ( x, fc ) of
+        appendChildrenToFolder fc =
+            case ( fc, parent ) of
                 ( Folder path1 children1, Folder path2 children2 ) ->
                     if path1 == path2 then
                         Folder path1 (children1 ++ children2)
@@ -106,7 +106,7 @@ addNestedFolderContents fc fcs ({ localFolderContents } as state) =
         contents =
             case localFolderContents of
                 Nothing ->
-                    fcs
+                    children
 
                 Just contents ->
                     contents
