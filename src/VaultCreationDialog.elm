@@ -91,24 +91,31 @@ folderContents contents state =
 
 folderContent : FolderContent -> State -> Html Model.Msg
 folderContent fc state =
-    div [ class "VaultCreationDialog-FolderContent" ]
-        [ div [ class "VaultCreationDialog-FolderContent-Name" ]
-            [ fileCheckbox fc state
-            , text (name fc)
-            , div [ class "VaultCreationDialog-FolderContentWithChildren" ]
-                (folderChildContents fc state)
-            ]
-        ]
+    let
+        content =
+            [ fileCheckbox fc state, text (name fc) ]
+
+        childContents =
+            folderChildContents fc state
+    in
+        div [ class "VaultCreationDialog-FolderContent" ]
+            (content ++ childContents)
 
 
 folderChildContents : FolderContent -> State -> List (Html Model.Msg)
 folderChildContents fc state =
     case fc of
         Folder path children ->
-            if isIgnored fc state then
-                []
-            else
-                folderContents children state
+            let
+                className =
+                    if isIgnored fc state then
+                        "VaultCreationDialog-FolderChildContent-Hidden"
+                    else
+                        "VaultCreationDialog-FolderChildContent"
+            in
+                [ div [ class className ]
+                    (folderContents children state)
+                ]
 
         _ ->
             []

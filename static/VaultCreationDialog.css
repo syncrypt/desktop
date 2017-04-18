@@ -3,6 +3,14 @@
   height: 500px;
 }
 
+.VaultCreationDialog-FolderContent {
+  position: relative;
+}
+
+.VaultCreationDialog-FolderChildContent-Hidden {
+  display: none;
+}
+
 .VaultCreationDialog-Content ui-container {
   border: 1px solid #ddd;
   padding: 10px;
@@ -14,7 +22,7 @@
   padding-right: 10px;
 }
 
-.VaultCreationDialog-FolderContentWithChildren .VaultCreationDialog-FolderContent {
+.VaultCreationDialog-FolderChildContent .VaultCreationDialog-FolderContent {
   padding-top: 10px;
   padding-left: 45px;
 }
