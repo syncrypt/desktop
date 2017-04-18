@@ -3,11 +3,11 @@
   height: 500px;
 }
 
-.VaultCreationDialog-FolderContent {
+.VaultCreationDialog-FolderItem {
   position: relative;
 }
 
-.VaultCreationDialog-FolderChildContent-Hidden {
+.VaultCreationDialog-FolderChildItem-Hidden {
   display: none;
 }
 
@@ -17,12 +17,12 @@
 }
 
 
-.VaultCreationDialog-FolderContent-Checkbox {
+.VaultCreationDialog-FolderItem-Checkbox {
   display: inline-flex;
   padding-right: 10px;
 }
 
-.VaultCreationDialog-FolderChildContent .VaultCreationDialog-FolderContent {
+.VaultCreationDialog-FolderChildItem .VaultCreationDialog-FolderItem {
   padding-top: 10px;
   padding-left: 45px;
 }

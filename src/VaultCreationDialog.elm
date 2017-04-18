@@ -8,9 +8,9 @@ import Ui.Container
 import Ui.Checkbox
 import VaultCreationDialog.Model
     exposing
-        ( parseFolderContents
-        , FolderContent(..)
-        , JSFolderContent
+        ( parseFolderItems
+        , FolderItem(..)
+        , JSFolderItem
         , State
         , Msg(Modal, NameInput, FileList, FileCheckBox)
         , isIgnored
@@ -21,14 +21,14 @@ import Model exposing (Model)
 port getFileList : String -> Cmd msg
 
 
-port fileList : (( String, List JSFolderContent ) -> msg) -> Sub msg
+port fileList : (( String, List JSFolderItem ) -> msg) -> Sub msg
 
 
 subscriptions : Sub Model.Msg
 subscriptions =
     let
         fileListMsg ( path, files ) =
-            FileList path (parseFolderContents files)
+            FileList path (parseFolderItems files)
     in
         fileList fileListMsg
             |> Sub.map Model.VaultCreationDialog
@@ -65,13 +65,13 @@ nameInput { nameInput } =
 fileSelectionContainer : Model -> Html Model.Msg
 fileSelectionContainer { vaultCreationDialog } =
     let
-        contents =
-            case vaultCreationDialog.localFolderContents of
+        items =
+            case vaultCreationDialog.localFolderItems of
                 Nothing ->
                     []
 
-                Just contents ->
-                    folderContents contents vaultCreationDialog
+                Just items ->
+                    folderItems items vaultCreationDialog
 
         settings =
             { direction = "column"
@@ -79,71 +79,71 @@ fileSelectionContainer { vaultCreationDialog } =
             , align = "start"
             }
     in
-        Ui.Container.view settings [] contents
+        Ui.Container.view settings [] items
 
 
-folderContents : List FolderContent -> State -> List (Html Model.Msg)
-folderContents contents state =
+folderItems : List FolderItem -> State -> List (Html Model.Msg)
+folderItems items state =
     List.map
-        (\fc -> folderContent fc state)
-        contents
+        (\fi -> folderItem fi state)
+        items
 
 
-folderContent : FolderContent -> State -> Html Model.Msg
-folderContent fc state =
+folderItem : FolderItem -> State -> Html Model.Msg
+folderItem fi state =
     let
-        content =
-            [ fileCheckbox fc state, text (name fc) ]
+        item =
+            [ fileCheckbox fi state, text (name fi) ]
 
-        childContents =
-            folderChildContents fc state
+        childItems =
+            folderChildItems fi state
     in
-        div [ class "VaultCreationDialog-FolderContent" ]
-            (content ++ childContents)
+        div [ class "VaultCreationDialog-FolderItem" ]
+            (item ++ childItems)
 
 
-folderChildContents : FolderContent -> State -> List (Html Model.Msg)
-folderChildContents fc state =
-    case fc of
+folderChildItems : FolderItem -> State -> List (Html Model.Msg)
+folderChildItems fi state =
+    case fi of
         Folder path children ->
             let
                 className =
-                    if isIgnored fc state then
-                        "VaultCreationDialog-FolderChildContent-Hidden"
+                    if isIgnored fi state then
+                        "VaultCreationDialog-FolderChildItem-Hidden"
                     else
-                        "VaultCreationDialog-FolderChildContent"
+                        "VaultCreationDialog-FolderChildItem"
             in
                 [ div [ class className ]
-                    (folderContents children state)
+                    (folderItems children state)
                 ]
 
         _ ->
             []
 
 
-fileCheckbox : FolderContent -> State -> Html Model.Msg
-fileCheckbox fc state =
+fileCheckbox : FolderItem -> State -> Html Model.Msg
+fileCheckbox fi state =
     let
         checkbox =
-            Ui.Checkbox.view (fileCheckboxSettings fc state)
-                |> Html.map (FileCheckBox fc >> Model.VaultCreationDialog)
+            Ui.Checkbox.view (fileCheckboxSettings fi state)
+                |> Html.map (FileCheckBox fi >> Model.VaultCreationDialog)
     in
-        div [ class "VaultCreationDialog-FolderContent-Checkbox" ]
+        div [ class "VaultCreationDialog-FolderItem-Checkbox" ]
             [ checkbox ]
 
 
-fileCheckboxSettings : FolderContent -> State -> Ui.Checkbox.Model
-fileCheckboxSettings fc state =
+fileCheckboxSettings : FolderItem -> State -> Ui.Checkbox.Model
+fileCheckboxSettings fi state =
     { disabled = False
     , readonly = False
-    , value = not (isIgnored fc state)
-    , uid = name fc
+    , value = not (isIgnored fi state)
+    , uid = name fi
     }
 
 
-name : FolderContent -> String
-name fc =
-    case fc of
+name : FolderItem -> String
+name fi =
+    case fi of
         File name ->
             name
 

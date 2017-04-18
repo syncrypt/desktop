@@ -9,13 +9,13 @@ type alias Path =
     String
 
 
-type alias JSFolderContent =
+type alias JSFolderItem =
     { isDir : Bool, path : Path }
 
 
-type FolderContent
+type FolderItem
     = File Path
-    | Folder Path (List FolderContent)
+    | Folder Path (List FolderItem)
 
 
 type alias State =
@@ -23,17 +23,17 @@ type alias State =
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
     , localFolderPath : Maybe String
-    , localFolderContents : Maybe (List FolderContent)
-    , ignoreFiles : List FolderContent
+    , localFolderItems : Maybe (List FolderItem)
+    , ignoreFiles : List FolderItem
     }
 
 
 type Msg
     = Modal Ui.Modal.Msg
     | NameInput Ui.Input.Msg
-    | FileList Path (List FolderContent)
-    | FileCheckBox FolderContent Ui.Checkbox.Msg
-    | NestedFileList FolderContent (List FolderContent)
+    | FileList Path (List FolderItem)
+    | FileCheckBox FolderItem Ui.Checkbox.Msg
+    | NestedFileList FolderItem (List FolderItem)
 
 
 init : State
@@ -41,7 +41,7 @@ init =
     { title = "Untitled Vault"
     , ignoreFiles = []
     , localFolderPath = Just "/tmp/foo"
-    , localFolderContents =
+    , localFolderItems =
         -- TODO: load these from file system
         Just
             [ Folder "Research" []
@@ -66,46 +66,46 @@ init =
     }
 
 
-parseFolderContents : List JSFolderContent -> List FolderContent
-parseFolderContents =
-    List.map parseFolderContent
+parseFolderItems : List JSFolderItem -> List FolderItem
+parseFolderItems =
+    List.map parseFolderItem
 
 
-parseFolderContent : JSFolderContent -> FolderContent
-parseFolderContent { isDir, path } =
+parseFolderItem : JSFolderItem -> FolderItem
+parseFolderItem { isDir, path } =
     if isDir then
         File path
     else
         Folder path []
 
 
-parseFolderWithChildContents : Path -> List JSFolderContent -> FolderContent
+parseFolderWithChildContents : Path -> List JSFolderItem -> FolderItem
 parseFolderWithChildContents path folderContents =
-    Folder path (parseFolderContents folderContents)
+    Folder path (parseFolderItems folderContents)
 
 
-isIgnored : FolderContent -> State -> Bool
-isIgnored fc state =
-    List.member fc state.ignoreFiles
+isIgnored : FolderItem -> State -> Bool
+isIgnored fi state =
+    List.member fi state.ignoreFiles
 
 
-addNestedFolderContents : FolderContent -> List FolderContent -> State -> State
-addNestedFolderContents parent children ({ localFolderContents } as state) =
+addNestedFolderItems : FolderItem -> List FolderItem -> State -> State
+addNestedFolderItems parent children ({ localFolderItems } as state) =
     let
-        appendChildrenToFolder : FolderContent -> FolderContent
-        appendChildrenToFolder fc =
-            case ( fc, parent ) of
+        appendChildrenToFolder : FolderItem -> FolderItem
+        appendChildrenToFolder fi =
+            case ( fi, parent ) of
                 ( Folder path1 children1, Folder path2 children2 ) ->
                     if path1 == path2 then
                         Folder path1 (children1 ++ children2)
                     else
-                        fc
+                        fi
 
                 _ ->
-                    fc
+                    fi
 
         contents =
-            case localFolderContents of
+            case localFolderItems of
                 Nothing ->
                     children
 
@@ -113,4 +113,4 @@ addNestedFolderContents parent children ({ localFolderContents } as state) =
                     contents
                         |> List.map appendChildrenToFolder
     in
-        { state | localFolderContents = Just contents }
+        { state | localFolderItems = Just contents }
