@@ -79,9 +79,9 @@ parseFolderItem { isDir, path } =
         Folder path []
 
 
-parseFolderWithChildContents : Path -> List JSFolderItem -> FolderItem
-parseFolderWithChildContents path folderContents =
-    Folder path (parseFolderItems folderContents)
+parseFolderWithChildItems : Path -> List JSFolderItem -> FolderItem
+parseFolderWithChildItems path folderItems =
+    Folder path (parseFolderItems folderItems)
 
 
 isIgnored : FolderItem -> State -> Bool
@@ -104,13 +104,13 @@ addNestedFolderItems parent children ({ localFolderItems } as state) =
                 _ ->
                     fi
 
-        contents =
+        items =
             case localFolderItems of
                 Nothing ->
                     children
 
-                Just contents ->
-                    contents
+                Just items ->
+                    items
                         |> List.map appendChildrenToFolder
     in
-        { state | localFolderItems = Just contents }
+        { state | localFolderItems = Just items }
