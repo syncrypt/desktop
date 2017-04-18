@@ -65,13 +65,13 @@ update msg ({ vaultCreationDialog } as model) =
             )
                 ! []
 
-        FileCheckBox fc _ ->
-            (model |> toggleIgnoreFile fc)
+        FileCheckBox fi _ ->
+            (model |> toggleIgnoreFile fi)
                 ! []
 
-        NestedFileList fc fcs ->
+        NestedFileList fi fis ->
             (vaultCreationDialog
-                |> addNestedFolderItems fc fcs
+                |> addNestedFolderItems fi fis
                 |> asStateIn model
             )
                 ! []
@@ -82,14 +82,14 @@ update msg ({ vaultCreationDialog } as model) =
 
 
 toggleIgnoreFile : FolderItem -> Model -> Model
-toggleIgnoreFile fc ({ vaultCreationDialog } as model) =
+toggleIgnoreFile fi ({ vaultCreationDialog } as model) =
     let
         ignoreFiles =
-            if isIgnored fc vaultCreationDialog then
+            if isIgnored fi vaultCreationDialog then
                 vaultCreationDialog.ignoreFiles
-                    |> List.filter ((/=) fc)
+                    |> List.filter ((/=) fi)
             else
-                fc :: vaultCreationDialog.ignoreFiles
+                fi :: vaultCreationDialog.ignoreFiles
     in
         { vaultCreationDialog | ignoreFiles = ignoreFiles }
             |> asStateIn model
