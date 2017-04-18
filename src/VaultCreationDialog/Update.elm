@@ -6,7 +6,7 @@ import Ui.Input
 import VaultCreationDialog.Model
     exposing
         ( FolderItem
-        , Msg(Modal, NameInput, FileList, FileCheckBox, NestedFileList)
+        , Msg(Modal, NameInput, FileList, FileCheckBox, NestedFileList, FolderItemToggle)
         , State
         , isIgnored
         , addNestedFolderItems
@@ -74,6 +74,10 @@ update msg ({ vaultCreationDialog } as model) =
                 |> addNestedFolderItems fc fcs
                 |> asStateIn model
             )
+                ! []
+
+        FolderItemToggle fi ->
+            (toggleIgnoreFile fi model)
                 ! []
 
 

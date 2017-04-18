@@ -34,6 +34,7 @@ type Msg
     | FileList Path (List FolderItem)
     | FileCheckBox FolderItem Ui.Checkbox.Msg
     | NestedFileList FolderItem (List FolderItem)
+    | FolderItemToggle FolderItem
 
 
 init : State

@@ -48,6 +48,12 @@ a:hover {
   width: 100%;
 }
 
+.Dialog-Label {
+  cursor: pointer;
+  padding: 10px;
+}
+
+
 .MainScreen {
   width: 70%;
   height: 100%;

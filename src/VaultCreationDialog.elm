@@ -1,21 +1,23 @@
 port module VaultCreationDialog exposing (..)
 
 import Html exposing (Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (class)
-import Ui.Modal
-import Ui.Input
-import Ui.Container
+import Html.Attributes exposing (class, for, id)
+import Html.Events exposing (onClick)
+import Model exposing (Model)
 import Ui.Checkbox
+import Ui.Container
+import Ui.Input
+import Ui.Modal
+import Dialog exposing (labeledRight)
 import VaultCreationDialog.Model
     exposing
         ( parseFolderItems
         , FolderItem(..)
         , JSFolderItem
         , State
-        , Msg(Modal, NameInput, FileList, FileCheckBox)
+        , Msg(Modal, NameInput, FileList, FileCheckBox, FolderItemToggle)
         , isIgnored
         )
-import Model exposing (Model)
 
 
 port getFileList : String -> Cmd msg
@@ -92,14 +94,20 @@ folderItems items state =
 folderItem : FolderItem -> State -> Html Model.Msg
 folderItem fi state =
     let
+        checkbox =
+            fileCheckbox fi state
+
         item =
-            [ fileCheckbox fi state, text (name fi) ]
+            checkbox
+                |> labeledRight
+                    [ onClick (Model.VaultCreationDialog (FolderItemToggle fi)) ]
+                    (name fi)
 
         childItems =
             folderChildItems fi state
     in
         div [ class "VaultCreationDialog-FolderItem" ]
-            (item ++ childItems)
+            (item :: childItems)
 
 
 folderChildItems : FolderItem -> State -> List (Html Model.Msg)
