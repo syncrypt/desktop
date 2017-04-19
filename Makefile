@@ -9,7 +9,10 @@ ASSET_FILES = $(shell find assets -type f)
 all: $(BUILD_DIR) static $(JS_FILE)
 
 run: all
-	electron build/main.js
+	NODE_ENV=development electron build/main.js
+
+run-prod: all
+	NODE_ENV=production electron build/main.js
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
