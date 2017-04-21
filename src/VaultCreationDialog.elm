@@ -126,16 +126,12 @@ renderFolder : FolderItem -> State -> Html Msg
 renderFolder (( path, files ) as fi) state =
     div [ class "VaultCreationDialog-FolderItem" ] <|
         (inFolderPath path
-            ((span []
-                [ fileCheckbox path state
+            [ span [] [ fileCheckbox path state ]
+            , div (hiddenIfIgnored path state [])
+                [ div [ class "VaultCreationDialog-FolderItem-Nested" ]
+                    (List.map (renderFile state path) files)
                 ]
-             )
-                :: [ div (hiddenIfIgnored path state [])
-                        [ div [ class "VaultCreationDialog-FolderItem-Nested" ]
-                            (List.map (renderFile state path) files)
-                        ]
-                   ]
-            )
+            ]
         )
 
 
