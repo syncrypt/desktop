@@ -7,40 +7,36 @@ import Ui.Modal
 import Set exposing (Set)
 
 
-type alias Path =
+type alias FileName =
     String
 
 
-type alias FolderPath =
-    List Path
-
-
-type alias FolderFiles =
-    List Path
+type alias Path =
+    List String
 
 
 type alias FolderItem =
-    ( FolderPath, List Path )
+    ( Path, List FileName )
 
 
 type alias State =
     { title : String
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
-    , localFolderPath : Maybe FolderPath
-    , localFolderItems : Dict FolderPath (List Path)
-    , ignoredFolderItems : Set (List Path)
+    , localFolderPath : Maybe Path
+    , localFolderItems : Dict Path (List String)
+    , ignoredFolderItems : Set Path
     }
 
 
 type Msg
     = Modal Ui.Modal.Msg
     | NameInput Ui.Input.Msg
-    | FileCheckBox (List Path) Ui.Checkbox.Msg
-    | NestedFileList FolderPath FolderItem
-    | ToggleIgnorePath (List Path)
+    | FileCheckBox Path Ui.Checkbox.Msg
+    | NestedFileList Path FolderItem
+    | ToggleIgnorePath Path
     | OpenFolderDialog
-    | SelectedFolder FolderPath
+    | SelectedFolder Path
 
 
 init : State
@@ -80,7 +76,7 @@ sortedFolders { localFolderItems } =
         |> List.sortBy (\( k, v ) -> k)
 
 
-isIgnored : List Path -> State -> Bool
+isIgnored : Path -> State -> Bool
 isIgnored path { ignoredFolderItems } =
     (Set.member path ignoredFolderItems)
         || (ignoredFolderItems
@@ -126,7 +122,7 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
         { state | localFolderItems = addPathToLocalItems path files localFolderItems }
 
 
-toggleIgnorePath : FolderPath -> State -> State
+toggleIgnorePath : Path -> State -> State
 toggleIgnorePath path ({ ignoredFolderItems } as model) =
     case Set.member path model.ignoredFolderItems of
         True ->
@@ -136,7 +132,7 @@ toggleIgnorePath path ({ ignoredFolderItems } as model) =
             { model | ignoredFolderItems = Set.insert path ignoredFolderItems }
 
 
-folderName : FolderPath -> String
+folderName : Path -> String
 folderName path =
     case path of
         [] ->
@@ -149,7 +145,7 @@ folderName path =
             folderName rest
 
 
-name : List Path -> String
+name : Path -> String
 name path =
     case path of
         [] ->
@@ -162,7 +158,7 @@ name path =
             name rest
 
 
-inRoot : FolderPath -> Bool
+inRoot : Path -> Bool
 inRoot path =
     List.length path == 1
 

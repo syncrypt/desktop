@@ -13,8 +13,8 @@ import Ui.Modal
 import VaultCreationDialog.Model
     exposing
         ( Path
+        , FileName
         , FolderItem
-        , FolderPath
         , State
         , Msg(..)
         , isIgnored
@@ -28,13 +28,13 @@ import VaultCreationDialog.Model
 port openFolder : () -> Cmd msg
 
 
-port selectedFolder : (FolderPath -> msg) -> Sub msg
+port selectedFolder : (Path -> msg) -> Sub msg
 
 
-port getFileList : FolderPath -> Cmd msg
+port getFileList : Path -> Cmd msg
 
 
-port fileList : (( FolderPath, FolderItem ) -> msg) -> Sub msg
+port fileList : (( Path, FolderItem ) -> msg) -> Sub msg
 
 
 subscriptions : Sub Model.Msg
@@ -135,7 +135,7 @@ renderFolder (( path, files ) as fi) state =
         )
 
 
-renderFile : State -> FolderPath -> Path -> Html Msg
+renderFile : State -> Path -> FileName -> Html Msg
 renderFile state folderPath path =
     let
         filePath =
@@ -146,7 +146,7 @@ renderFile state folderPath path =
             ]
 
 
-hiddenIfIgnored : FolderPath -> State -> List (Html.Attribute msg) -> List (Html.Attribute msg)
+hiddenIfIgnored : Path -> State -> List (Html.Attribute msg) -> List (Html.Attribute msg)
 hiddenIfIgnored path state attributes =
     if isIgnored path state then
         (class "VaultCreationDialog-FolderItem-Hidden") :: attributes
@@ -154,7 +154,7 @@ hiddenIfIgnored path state attributes =
         attributes
 
 
-inFolderPath : FolderPath -> List (Html Msg) -> List (Html Msg)
+inFolderPath : Path -> List (Html Msg) -> List (Html Msg)
 inFolderPath path contents =
     case path of
         [] ->
@@ -169,7 +169,7 @@ inFolderPath path contents =
             ]
 
 
-fileCheckbox : List Path -> State -> Html Msg
+fileCheckbox : Path -> State -> Html Msg
 fileCheckbox path state =
     let
         checkbox =
@@ -186,7 +186,7 @@ fileCheckbox path state =
             [ checkboxWithLabel ]
 
 
-fileCheckboxSettings : List Path -> State -> Ui.Checkbox.Model
+fileCheckboxSettings : Path -> State -> Ui.Checkbox.Model
 fileCheckboxSettings path state =
     { disabled = False
     , readonly = False
