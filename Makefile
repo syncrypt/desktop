@@ -5,14 +5,19 @@ ASSETS_PATH = $(BUILD_DIR)/assets
 
 JS_SOURCES = $(shell find src/ -type f -name '*.elm')
 ASSET_FILES = $(shell find assets -type f)
+MAIN_FILE = build/main.js
 
 all: $(BUILD_DIR) static $(JS_FILE)
 
 run: all
-	NODE_ENV=development electron build/main.js
+	NODE_ENV=development electron $(MAIN_FILE)
 
 run-prod: all
-	NODE_ENV=production electron build/main.js
+	NODE_ENV=production electron $(MAIN_FILE)
+
+run-debug: $(BUILD_DIR) static
+	elm make src/Main.elm --output $(JS_FILE) --debug
+	NODE_ENV=development electron $(MAIN_FILE)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -32,7 +37,7 @@ $(ASSETS_PATH): $(ASSET_FILES)
 	cp -r assets/* $(ASSETS_PATH)
 
 $(JS_FILE): $(JS_SOURCES)
-	elm make src/Main.elm --output $(BUILD_DIR)/elm.js
+	elm make src/Main.elm --output $(BUILD_DIR)/elm.js $(DEBUG)
 
 clean-deps:
 	rm -rf elm-stuff
