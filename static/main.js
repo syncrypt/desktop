@@ -2,6 +2,7 @@
 const electron = require('electron')
 
 const app = electron.app // this is our app
+const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow // This is a Module that creates windows
 const path = require('path')
 const child_process = require('child_process').child_process

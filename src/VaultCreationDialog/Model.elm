@@ -1,61 +1,54 @@
 module VaultCreationDialog.Model exposing (..)
 
-import Ui.Modal
-import Ui.Input
+import Dict exposing (Dict)
 import Ui.Checkbox
+import Ui.Input
+import Ui.Modal
+import Set exposing (Set)
 
 
 type alias Path =
     String
 
 
-type alias JSFolderItem =
-    { isDir : Bool, path : Path }
+type alias FolderPath =
+    List Path
 
 
-type FolderItem
-    = File Path
-    | Folder Path (List FolderItem)
+type alias FolderFiles =
+    List Path
+
+
+type alias FolderItem =
+    ( FolderPath, List Path )
 
 
 type alias State =
     { title : String
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
-    , localFolderPath : Maybe String
-    , localFolderItems : Maybe (List FolderItem)
-    , ignoreFiles : List FolderItem
+    , localFolderPath : Maybe FolderPath
+    , localFolderItems : Dict FolderPath (List Path)
+    , ignoredFolderItems : Set (List Path)
     }
 
 
 type Msg
     = Modal Ui.Modal.Msg
     | NameInput Ui.Input.Msg
-    | FileList Path (List FolderItem)
-    | FileCheckBox FolderItem Ui.Checkbox.Msg
-    | NestedFileList FolderItem (List FolderItem)
-    | FolderItemToggle FolderItem
+    | FileCheckBox (List Path) Ui.Checkbox.Msg
+    | NestedFileList FolderPath FolderItem
+    | ToggleIgnorePath (List Path)
+    | OpenFolderDialog
+    | SelectedFolder FolderPath
 
 
 init : State
 init =
     { title = "Untitled Vault"
-    , ignoreFiles = []
-    , localFolderPath = Just "/tmp/foo"
-    , localFolderItems =
-        -- TODO: load these from file system
-        Just
-            [ Folder "Research" []
-            , Folder "Music"
-                [ File "Song 1.mp3"
-                , File "Song 2.mp3"
-                , Folder "Pictures"
-                    [ File "Party.jpg"
-                    , File "Logo.png"
-                    ]
-                ]
-            , File "Docs"
-            ]
+    , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
+    , localFolderPath = Nothing
+    , localFolderItems = Dict.empty
     , modal =
         Ui.Modal.init
             |> Ui.Modal.closable True
@@ -67,51 +60,120 @@ init =
     }
 
 
-parseFolderItems : List JSFolderItem -> List FolderItem
-parseFolderItems =
-    List.map parseFolderItem
+findFirst : (a -> Bool) -> List a -> Maybe a
+findFirst check list =
+    case list of
+        [] ->
+            Nothing
+
+        val :: rest ->
+            if check val then
+                Just val
+            else
+                findFirst check rest
 
 
-parseFolderItem : JSFolderItem -> FolderItem
-parseFolderItem { isDir, path } =
-    if isDir then
-        File path
-    else
-        Folder path []
+sortedFolders : State -> List FolderItem
+sortedFolders { localFolderItems } =
+    localFolderItems
+        |> Dict.toList
+        |> List.sortBy (\( k, v ) -> k)
 
 
-parseFolderWithChildItems : Path -> List JSFolderItem -> FolderItem
-parseFolderWithChildItems path folderItems =
-    Folder path (parseFolderItems folderItems)
+isIgnored : List Path -> State -> Bool
+isIgnored path { ignoredFolderItems } =
+    (Set.member path ignoredFolderItems)
+        || (ignoredFolderItems
+                |> Set.filter (\p -> (List.take (List.length p) path) == p)
+                |> Set.isEmpty
+                |> not
+           )
 
 
-isIgnored : FolderItem -> State -> Bool
-isIgnored fi state =
-    List.member fi state.ignoreFiles
-
-
-addNestedFolderItems : FolderItem -> List FolderItem -> State -> State
-addNestedFolderItems parent children ({ localFolderItems } as state) =
+addFolder : FolderItem -> State -> State
+addFolder (( path, files ) as f) ({ localFolderItems } as state) =
     let
-        appendChildrenToFolder : FolderItem -> FolderItem
-        appendChildrenToFolder fi =
-            case ( fi, parent ) of
-                ( Folder path1 children1, Folder path2 children2 ) ->
-                    if path1 == path2 then
-                        Folder path1 (children1 ++ children2)
-                    else
-                        fi
+        addPathToLocalItems path files items =
+            let
+                isRoot =
+                    path == []
 
-                _ ->
-                    fi
+                parentPath =
+                    path
+                        |> List.reverse
+                        |> List.drop 1
+                        |> List.reverse
+            in
+                case ( parentPath, Dict.get path items ) of
+                    ( [], Nothing ) ->
+                        items
+                            |> Dict.insert path files
 
-        items =
-            case localFolderItems of
-                Nothing ->
-                    children
+                    ( [], Just existingFiles ) ->
+                        items
+                            |> Dict.insert path (files ++ existingFiles)
 
-                Just items ->
-                    items
-                        |> List.map appendChildrenToFolder
+                    ( _, Nothing ) ->
+                        items
+                            |> Dict.insert path files
+                            |> addPathToLocalItems parentPath []
+
+                    ( _, Just existingFiles ) ->
+                        items
+                            |> Dict.insert path (files ++ existingFiles)
+                            |> addPathToLocalItems parentPath []
     in
-        { state | localFolderItems = Just items }
+        { state | localFolderItems = addPathToLocalItems path files localFolderItems }
+
+
+toggleIgnorePath : FolderPath -> State -> State
+toggleIgnorePath path ({ ignoredFolderItems } as model) =
+    case Set.member path model.ignoredFolderItems of
+        True ->
+            { model | ignoredFolderItems = Set.remove path ignoredFolderItems }
+
+        False ->
+            { model | ignoredFolderItems = Set.insert path ignoredFolderItems }
+
+
+folderName : FolderPath -> String
+folderName path =
+    case path of
+        [] ->
+            "./"
+
+        [ x ] ->
+            x
+
+        _ :: rest ->
+            folderName rest
+
+
+name : List Path -> String
+name path =
+    case path of
+        [] ->
+            "."
+
+        [ f ] ->
+            f
+
+        _ :: rest ->
+            name rest
+
+
+inRoot : FolderPath -> Bool
+inRoot path =
+    List.length path == 1
+
+
+parentPath path =
+    case path of
+        [] ->
+            []
+
+        [ x ] ->
+            []
+
+        x :: rest ->
+            parentPath rest

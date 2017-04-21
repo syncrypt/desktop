@@ -1,13 +1,21 @@
 .VaultCreationDialog-Content {
   width: 700px;
   height: 500px;
+  overflow-y: scroll;
+  font-size: 13px;
 }
 
 .VaultCreationDialog-FolderItem {
+  padding-top: 5px;
   position: relative;
 }
 
-.VaultCreationDialog-FolderChildItem-Hidden {
+.VaultCreationDialog-File {
+  padding-top: 5px;
+  position: relative;
+}
+
+.VaultCreationDialog-FolderItem-Hidden {
   display: none;
 }
 
@@ -19,9 +27,20 @@
 
 .VaultCreationDialog-FolderItem-Checkbox {
   display: inline-flex;
+  /*height: 20px;
+  width: 20px;*/
 }
 
-.VaultCreationDialog-FolderChildItem .VaultCreationDialog-FolderItem {
-  padding-top: 10px;
-  padding-left: 45px;
+.VaultCreationDialog-FolderItem-Checkbox ui-checkbox {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-flex !important;
+}
+.VaultCreationDialog-FolderItem-Checkbox ui-checkbox svg {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.VaultCreationDialog-FolderItem-Nested {
+  padding-left: 22px;
 }

@@ -3,16 +3,20 @@ module VaultCreationDialog.Update exposing (..)
 import Model exposing (Model)
 import Ui.Modal
 import Ui.Input
+import VaultCreationDialog
 import VaultCreationDialog.Model
     exposing
         ( FolderItem
-        , Msg(Modal, NameInput, FileList, FileCheckBox, NestedFileList, FolderItemToggle)
+        , Msg(..)
         , State
         , isIgnored
-        , addNestedFolderItems
+        , addFolder
+        , toggleIgnorePath
+        , folderName
         )
 import Dialog exposing (asModalIn)
 import Platform.Cmd exposing (map)
+import Dict
 
 
 open : Model -> ( Model, Cmd Model.Msg )
@@ -56,43 +60,50 @@ update msg ({ vaultCreationDialog } as model) =
                 )
                     ! [ cmd |> map (NameInput >> Model.VaultCreationDialog) ]
 
-        FileList path items ->
-            ({ vaultCreationDialog
-                | localFolderItems = Just items
-                , localFolderPath = Just path
-             }
-                |> asStateIn model
-            )
-                ! []
-
-        FileCheckBox fi _ ->
-            (model |> toggleIgnoreFile fi)
-                ! []
-
-        NestedFileList fi fis ->
+        FileCheckBox path _ ->
             (vaultCreationDialog
-                |> addNestedFolderItems fi fis
+                |> toggleIgnorePath path
                 |> asStateIn model
             )
                 ! []
 
-        FolderItemToggle fi ->
-            (toggleIgnoreFile fi model)
+        NestedFileList rootPath f ->
+            if Just rootPath /= vaultCreationDialog.localFolderPath then
+                model
+                    ! []
+            else
+                (vaultCreationDialog
+                    |> addFolder f
+                    |> asStateIn model
+                )
+                    ! []
+
+        ToggleIgnorePath path ->
+            (vaultCreationDialog
+                |> toggleIgnorePath path
+                |> asStateIn model
+            )
                 ! []
 
+        OpenFolderDialog ->
+            model
+                ! [ VaultCreationDialog.openFolder () ]
 
-toggleIgnoreFile : FolderItem -> Model -> Model
-toggleIgnoreFile fi ({ vaultCreationDialog } as model) =
-    let
-        ignoreFiles =
-            if isIgnored fi vaultCreationDialog then
-                vaultCreationDialog.ignoreFiles
-                    |> List.filter ((/=) fi)
-            else
-                fi :: vaultCreationDialog.ignoreFiles
-    in
-        { vaultCreationDialog | ignoreFiles = ignoreFiles }
-            |> asStateIn model
+        SelectedFolder path ->
+            let
+                ( nameInput, nameInputMsg ) =
+                    Ui.Input.setValue (folderName path) vaultCreationDialog.nameInput
+            in
+                ({ vaultCreationDialog
+                    | localFolderPath = Just path
+                    , localFolderItems = Dict.empty
+                    , nameInput = nameInput
+                 }
+                    |> asStateIn model
+                )
+                    ! [ VaultCreationDialog.getFileList path
+                      , Cmd.map (NameInput >> Model.VaultCreationDialog) nameInputMsg
+                      ]
 
 
 asStateIn : Model -> State -> Model

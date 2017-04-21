@@ -4,7 +4,8 @@
   "description": "Syncrypt platform independent desktop client",
   "main": "build/main.js",
   "dependencies": {
-    "expand-home-dir": "^0.0.3"
+    "expand-home-dir": "^0.0.3",
+    "file": "^0.2.2"
   },
   "devDependencies": {},
   "scripts": {
