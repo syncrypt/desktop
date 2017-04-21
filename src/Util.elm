@@ -8,12 +8,14 @@ module Util
         , skipCharsWhile
         , removeTrailingZeroes
         , bytesReadable
+        , surround
+        , last
+        , allButLast
         )
 
 import Time exposing (Time)
 import Task exposing (Task, andThen, attempt, perform)
 import Process
-import Model exposing (Msg)
 import Result exposing (Result)
 import Round
 
@@ -35,7 +37,7 @@ delay time task =
     in
         attemptDelayed 1000 UpdatedVaultsFromApi request
 -}
-attemptDelayed : Time -> (Result err a -> Msg) -> Task err a -> Cmd Msg
+attemptDelayed : Time -> (Result err a -> msg) -> Task err a -> Cmd msg
 attemptDelayed time msg task =
     task
         |> delay time
@@ -163,3 +165,23 @@ bytesReadable_ size units =
                     ( Round.round precision size, unit )
                 else
                     bytesReadable_ rem units
+
+
+surround : (List a -> List b) -> (List b -> List a) -> List a -> List b
+surround f body val =
+    val
+        |> f
+        |> body
+        |> f
+
+
+last : Int -> List a -> List a
+last amount list =
+    list
+        |> surround List.reverse (List.take amount)
+
+
+allButLast : List a -> List a
+allButLast list =
+    list
+        |> surround List.reverse (List.take 1)

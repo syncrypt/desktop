@@ -5,6 +5,7 @@ import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
 import Set exposing (Set)
+import Util
 
 
 type alias FileName =
@@ -163,14 +164,7 @@ inRoot path =
     List.length path == 1
 
 
-parentPath : List a -> List b
+parentPath : Path -> Path
 parentPath path =
-    case path of
-        [] ->
-            []
-
-        [ x ] ->
-            []
-
-        x :: rest ->
-            parentPath rest
+    path
+        |> Util.allButLast
