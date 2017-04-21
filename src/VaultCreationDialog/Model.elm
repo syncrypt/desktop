@@ -163,6 +163,7 @@ inRoot path =
     List.length path == 1
 
 
+parentPath : List a -> List b
 parentPath path =
     case path of
         [] ->

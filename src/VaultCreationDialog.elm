@@ -109,7 +109,7 @@ renderFolders state =
                     List.map (renderFile state []) rootFileNames
 
                 rootFolders =
-                    List.map (\f -> renderFolder f state) folders
+                    List.map (renderFolder state) folders
             in
                 [ div []
                     (List.foldr (::)
@@ -122,8 +122,8 @@ renderFolders state =
             []
 
 
-renderFolder : FolderItem -> State -> Html Msg
-renderFolder (( path, files ) as fi) state =
+renderFolder : State -> FolderItem -> Html Msg
+renderFolder state (( path, files ) as fi) =
     div [ class "VaultCreationDialog-FolderItem" ] <|
         (inFolderPath path
             [ span [] [ fileCheckbox path state ]
