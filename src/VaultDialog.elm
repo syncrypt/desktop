@@ -63,15 +63,25 @@ contents vaultId model =
         state =
             dialogState vaultId model
 
+        msg =
+            Html.map (Model.VaultDialog vaultId)
+
         html =
-            [ div [ class "VaultCreationDialog-Content" ]
-                [ nameInput state
-                , openFolderButton
-                , fileSelectionContainer state
+            [ div [ class "VaultDialog-Content" ]
+                [ msg <| nameInput state
+                , msg <| openFolderButton
+                , msg <| fileSelectionContainer state
+                , closeButton vaultId
                 ]
             ]
     in
-        List.map (Html.map (Model.VaultDialog vaultId)) html
+        html
+
+
+closeButton : VaultId -> Html Model.Msg
+closeButton vaultId =
+    Ui.Button.model "Close" "primary" "medium"
+        |> Ui.Button.view (Model.CloseVaultDetails vaultId)
 
 
 openFolderButton : Html Msg
@@ -122,11 +132,11 @@ renderFolders state =
 
 renderFolder : State -> FolderItem -> Html Msg
 renderFolder state (( path, files ) as fi) =
-    div [ class "VaultCreationDialog-FolderItem" ] <|
+    div [ class "VaultDialog-FolderItem" ] <|
         (inFolderPath path
             [ span [] [ fileCheckbox path state ]
             , div (hiddenIfIgnored path state [])
-                [ div [ class "VaultCreationDialog-FolderItem-Nested" ]
+                [ div [ class "VaultDialog-FolderItem-Nested" ]
                     (List.map (renderFile state path) files)
                 ]
             ]
@@ -139,7 +149,7 @@ renderFile state folderPath path =
         filePath =
             folderPath ++ [ path ]
     in
-        div [ class "VaultCreationDialog-File" ] <|
+        div [ class "VaultDialog-File" ] <|
             [ fileCheckbox filePath state
             ]
 
@@ -147,7 +157,7 @@ renderFile state folderPath path =
 hiddenIfIgnored : Path -> State -> List (Html.Attribute msg) -> List (Html.Attribute msg)
 hiddenIfIgnored path state attributes =
     if isIgnored path state then
-        (class "VaultCreationDialog-FolderItem-Hidden") :: attributes
+        (class "VaultDialog-FolderItem-Hidden") :: attributes
     else
         attributes
 
@@ -162,7 +172,7 @@ inFolderPath path contents =
             contents
 
         x :: rest ->
-            [ div [ class "VaultCreationDialog-FolderItem-Nested" ]
+            [ div [ class "VaultDialog-FolderItem-Nested" ]
                 (inFolderPath rest contents)
             ]
 
@@ -180,7 +190,7 @@ fileCheckbox path state =
                     [ onClick (ToggleIgnorePath path) ]
                     (folderName path)
     in
-        span [ class "VaultCreationDialog-FolderItem-Checkbox" ]
+        span [ class "VaultDialog-FolderItem-Checkbox" ]
             [ checkboxWithLabel ]
 
 
