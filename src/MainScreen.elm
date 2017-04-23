@@ -135,9 +135,25 @@ update action model =
             model
                 |> VaultDialog.Update.update msg vaultId
 
-        _ ->
-            model
-                ! []
+        OpenVaultFolder _ ->
+            -- TODO: open folder in file browser
+            model ! []
+
+        OpenProgramSettings ->
+            -- TODO
+            model ! []
+
+        OpenAccountSettings ->
+            -- TODO
+            model ! []
+
+        RemoveVaultFromSync _ ->
+            -- TODO
+            model ! []
+
+        Logout ->
+            -- TODO
+            model ! []
 
 
 updateNow : Cmd Msg
