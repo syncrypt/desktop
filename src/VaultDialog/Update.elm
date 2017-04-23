@@ -1,67 +1,171 @@
 module VaultDialog.Update exposing (..)
 
-import Syncrypt.Vault exposing (Vault)
-import VaultDialog.Model exposing (..)
-import Ui.Input
+import Model exposing (Model, vaultWithId)
 import Ui.Modal
-import Model exposing (Model, State(ShowingVaultDetails))
-import Dialog exposing (asModalIn)
-
-
-open : Vault -> Model -> ( Model, Cmd Model.Msg )
-open vault ({ vaultDialog } as model) =
-    let
-        ( nameInput, cmd ) =
-            vaultDialog.nameInput
-                |> Ui.Input.placeholder (Maybe.withDefault "N/A" vault.name)
-                |> Ui.Input.setValue (Maybe.withDefault "" vault.name)
-    in
-        (vaultDialog.modal
-            |> Ui.Modal.open
-            |> asModalIn (nameInput |> asNameInputIn vaultDialog)
-            |> asStateIn model
+import Ui.Input
+import VaultDialog.Ports
+import VaultDialog.Model
+    exposing
+        ( FolderItem
+        , Msg(..)
+        , State
+        , isIgnored
+        , addFolder
+        , toggleIgnorePath
+        , folderName
         )
-            ! [ cmd |> Cmd.map (NameInput >> Model.VaultDialog) ]
+import Dialog exposing (asModalIn)
+import Platform.Cmd exposing (map)
+import Dict
+import Syncrypt.Vault exposing (VaultId, Vault)
 
 
-close : Model -> ( Model, Cmd Model.Msg )
-close model =
-    (model.vaultDialog.modal
-        |> Ui.Modal.close
-        |> asModalIn model.vaultDialog
-        |> asStateIn model
-    )
-        ! []
+open : Model -> ( Model, Cmd Model.Msg )
+open model =
+    case model.state of
+        Model.CreatingNewVault ->
+            openNew model
 
+        Model.ShowingVaultDetails vault ->
+            openForVault vault model
 
-update : Msg -> Model -> ( Model, Cmd Model.Msg )
-update msg ({ vaultDialog } as model) =
-    case msg of
-        Modal msg ->
-            (vaultDialog.modal
-                |> Ui.Modal.update msg
-                |> asModalIn vaultDialog
-                |> asStateIn model
-            )
+        _ ->
+            model
                 ! []
 
-        NameInput msg ->
-            let
-                ( nameInput, cmd ) =
-                    Ui.Input.update msg vaultDialog.nameInput
-            in
-                (nameInput
-                    |> asNameInputIn vaultDialog
-                    |> asStateIn model
+
+openNew : Model -> ( Model, Cmd Model.Msg )
+openNew model =
+    let
+        state =
+            dialogState "" model
+    in
+        (state.modal
+            |> Ui.Modal.open
+            |> asModalIn state
+            |> asStateIn "" model
+        )
+            ! []
+
+
+openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
+openForVault vault model =
+    let
+        state =
+            case Dict.get vault.id model.vaultDialogs of
+                Nothing ->
+                    VaultDialog.Model.initForVault vault
+
+                Just state ->
+                    state
+
+        modal =
+            state.modal |> Ui.Modal.open
+    in
+        (modal
+            |> asModalIn state
+            |> asStateIn vault.id model
+        )
+            ! []
+
+
+close : VaultId -> Model -> ( Model, Cmd Model.Msg )
+close vaultId model =
+    let
+        state =
+            dialogState vaultId model
+    in
+        (state.modal
+            |> Ui.Modal.close
+            |> asModalIn state
+            |> asStateIn vaultId model
+        )
+            ! []
+
+
+dialogState vaultId model =
+    case Dict.get vaultId model.vaultDialogs of
+        Just state ->
+            state
+
+        Nothing ->
+            VaultDialog.Model.initForVault (vaultWithId vaultId model)
+
+
+update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )
+update msg vaultId ({ vaultDialogs } as model) =
+    let
+        state =
+            dialogState vaultId model
+    in
+        case msg of
+            Modal msg ->
+                (state.modal
+                    |> Ui.Modal.update msg
+                    |> asModalIn state
+                    |> asStateIn vaultId model
                 )
-                    ! [ cmd |> Cmd.map (NameInput >> Model.VaultDialog) ]
+                    ! []
+
+            NameInput msg ->
+                let
+                    ( nameInput, cmd ) =
+                        Ui.Input.update msg state.nameInput
+                in
+                    ({ state | nameInput = nameInput }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd |> map (NameInput >> Model.VaultDialog vaultId) ]
+
+            FileCheckBox path _ ->
+                (state
+                    |> toggleIgnorePath path
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            NestedFileList rootPath f ->
+                if Just rootPath /= state.localFolderPath then
+                    model
+                        ! []
+                else
+                    (state
+                        |> addFolder f
+                        |> asStateIn vaultId model
+                    )
+                        ! []
+
+            ToggleIgnorePath path ->
+                (state
+                    |> toggleIgnorePath path
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            OpenFolderDialog ->
+                model
+                    ! [ VaultDialog.Ports.openFolder () ]
+
+            SelectedFolder path ->
+                let
+                    ( nameInput, nameInputMsg ) =
+                        Ui.Input.setValue (folderName path) state.nameInput
+                in
+                    ({ state
+                        | localFolderPath = Just path
+                        , localFolderItems = Dict.empty
+                        , nameInput = nameInput
+                     }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ VaultDialog.Ports.getFileList path
+                          , Cmd.map (NameInput >> Model.VaultDialog vaultId) nameInputMsg
+                          ]
 
 
-asStateIn : Model -> VaultDialog.Model.State -> Model
-asStateIn model state =
-    { model | vaultDialog = state }
-
-
-asNameInputIn : VaultDialog.Model.State -> Ui.Input.Model -> VaultDialog.Model.State
-asNameInputIn state nameInput =
-    { state | nameInput = nameInput }
+asStateIn : VaultId -> Model -> State -> Model
+asStateIn id model state =
+    { model
+        | vaultDialogs =
+            Dict.insert id state model.vaultDialogs
+    }

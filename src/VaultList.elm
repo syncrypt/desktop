@@ -164,7 +164,7 @@ vaultItemOnClick model vault =
         case model.state of
             ShowingVaultDetails v ->
                 if vault == v then
-                    CloseVaultDetails
+                    CloseVaultDetails v.id
                 else
                     openVault
 
@@ -181,7 +181,7 @@ flyingVaultItemOnClick model flyingVault =
         case model.state of
             ShowingFlyingVaultDetails v ->
                 if flyingVault == v then
-                    CloseVaultDetails
+                    CloseVaultDetails v.id
                 else
                     openFlyingVault
 

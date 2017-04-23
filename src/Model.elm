@@ -4,8 +4,11 @@ import Syncrypt.Vault exposing (Vault, FlyingVault)
 import Config exposing (Config)
 import Http
 import Date exposing (Date)
-import VaultCreationDialog.Model
 import VaultDialog.Model
+import VaultDialog.Model
+import Syncrypt.Vault exposing (VaultId)
+import Dict exposing (Dict)
+import Util exposing (findFirst)
 
 
 type alias Model =
@@ -16,8 +19,7 @@ type alias Model =
     , stats : { stats : Int, downloads : Int, uploads : Int }
     , sidebarOpen : Bool
     , now : Maybe Date
-    , vaultCreationDialog : VaultCreationDialog.Model.State
-    , vaultDialog : VaultDialog.Model.State
+    , vaultDialogs : Dict VaultId VaultDialog.Model.State
     }
 
 
@@ -40,14 +42,13 @@ type Msg
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
-    | CloseVaultDetails
+    | CloseVaultDetails VaultId
     | OpenProgramSettings
     | OpenAccountSettings
     | RemoveVaultFromSync Vault
     | Logout
     | CreateNewVault
-    | VaultCreationDialog VaultCreationDialog.Model.Msg
-    | VaultDialog VaultDialog.Model.Msg
+    | VaultDialog VaultId VaultDialog.Model.Msg
 
 
 init : Config -> Model
@@ -61,6 +62,30 @@ init config =
         { stats = 0, downloads = 0, uploads = 0 }
     , sidebarOpen = False
     , now = Nothing
-    , vaultCreationDialog = VaultCreationDialog.Model.init
-    , vaultDialog = VaultDialog.Model.init
+    , vaultDialogs = Dict.empty
     }
+
+
+vaultWithId : VaultId -> Model -> Vault
+vaultWithId vaultId { vaults, flyingVaults } =
+    let
+        hasId =
+            \v -> v.id == vaultId
+    in
+        case findFirst hasId vaults of
+            Nothing ->
+                case findFirst hasId flyingVaults of
+                    Nothing ->
+                        Syncrypt.Vault.init vaultId
+
+                    Just fv ->
+                        fv |> Syncrypt.Vault.asVault
+
+            Just v ->
+                v
+
+
+vaultIds : Model -> List VaultId
+vaultIds { vaults, flyingVaults } =
+    (List.map .id vaults)
+        ++ (List.map .id flyingVaults)

@@ -8,8 +8,6 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Util
-import VaultCreationDialog
-import VaultCreationDialog.Update
 import VaultDialog
 import VaultDialog.Update
 import VaultList
@@ -44,7 +42,13 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    VaultCreationDialog.subscriptions
+    let
+        subs =
+            model
+                |> Model.vaultIds
+                |> List.map VaultDialog.subscriptions
+    in
+        Sub.batch subs
 
 
 
@@ -116,27 +120,23 @@ update action model =
 
         OpenVaultDetails vault ->
             { model | state = ShowingVaultDetails vault }
-                |> VaultDialog.Update.open vault
+                |> VaultDialog.Update.open
 
         OpenFlyingVaultDetails flyingVault ->
             { model | state = ShowingFlyingVaultDetails flyingVault }
                 ! []
 
-        CloseVaultDetails ->
+        CloseVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
-                |> VaultDialog.Update.close
+                |> VaultDialog.Update.close vaultId
 
         CreateNewVault ->
             { model | state = CreatingNewVault }
-                |> VaultCreationDialog.Update.open
+                |> VaultDialog.Update.open
 
-        VaultCreationDialog msg ->
+        VaultDialog vaultId msg ->
             model
-                |> VaultCreationDialog.Update.update msg
-
-        VaultDialog msg ->
-            model
-                |> VaultDialog.Update.update msg
+                |> VaultDialog.Update.update msg vaultId
 
         _ ->
             model
@@ -163,13 +163,8 @@ view model =
         _ =
             Debug.log "state: " model.state
     in
-        case model.state of
-            ShowingVaultDetails vault ->
-                layout model
-                    []
-
-            _ ->
-                layout model []
+        layout model
+            []
 
 
 currentClass : Model -> String
@@ -183,14 +178,13 @@ currentClass model =
 layout : Model -> List (Html Msg) -> Html Msg
 layout model nodes =
     div [ class "MainScreen" ]
-        [ div [ class (currentClass model) ]
+        [ div [ class (currentClass model) ] <|
             [ header
             , div [ class "MainScreen-Container" ]
                 (nodes ++ [ VaultList.view model ])
             , footer model
-            , VaultDialog.view model
-            , VaultCreationDialog.view model
             ]
+                ++ VaultDialog.viewAll model
         ]
 
 

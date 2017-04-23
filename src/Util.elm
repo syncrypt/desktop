@@ -11,6 +11,7 @@ module Util
         , surround
         , last
         , allButLast
+        , findFirst
         )
 
 import Time exposing (Time)
@@ -23,6 +24,7 @@ import Round
 {-| Creates a new `Task` that delays a given `Task` by a given time.
 
     delay 1000 (Task.succeed "Done!")
+
 -}
 delay : Time -> Task err a -> Task err a
 delay time task =
@@ -36,6 +38,7 @@ delay time task =
         request = Daemon.getVaults model.config
     in
         attemptDelayed 1000 UpdatedVaultsFromApi request
+
 -}
 attemptDelayed : Time -> (Result err a -> msg) -> Task err a -> Cmd msg
 attemptDelayed time msg task =
@@ -47,6 +50,7 @@ attemptDelayed time msg task =
 {-| Attempts to perform a `Task` after a given delay.
 
     Util.performDelayed 1000 SetDate Date.now
+
 -}
 performDelayed : Time -> (a -> msg) -> Task Never a -> Cmd msg
 performDelayed time msg task =
@@ -116,6 +120,7 @@ byteUnitsWithPrecision =
     bytesReadable 2048 -- -> "2 kb"
     mb n = 1024.0 * 1024.0 * n
     bytesReadable (round (mb 42.3)) -- -> "42.3 MB"
+
 -}
 bytesReadable : Int -> String
 bytesReadable x =
@@ -185,3 +190,16 @@ allButLast : List a -> List a
 allButLast list =
     list
         |> surround List.reverse (List.take 1)
+
+
+findFirst : (a -> Bool) -> List a -> Maybe a
+findFirst check list =
+    case list of
+        [] ->
+            Nothing
+
+        val :: rest ->
+            if check val then
+                Just val
+            else
+                findFirst check rest
