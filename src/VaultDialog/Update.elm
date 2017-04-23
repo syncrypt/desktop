@@ -30,8 +30,12 @@ open model =
             openForVault vault model
 
         _ ->
-            model
-                ! []
+            let
+                _ =
+                    Debug.log "Invalid state for VaultDialog.open: " model.state
+            in
+                model
+                    ! []
 
 
 openNew : Model -> ( Model, Cmd Model.Msg )
@@ -164,8 +168,8 @@ update msg vaultId ({ vaultDialogs } as model) =
 
 
 asStateIn : VaultId -> Model -> State -> Model
-asStateIn id model state =
+asStateIn vaultId model state =
     { model
         | vaultDialogs =
-            Dict.insert id state model.vaultDialogs
+            Dict.insert vaultId state model.vaultDialogs
     }

@@ -42,13 +42,10 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    let
-        subs =
-            model
-                |> Model.vaultIds
-                |> List.map VaultDialog.subscriptions
-    in
-        Sub.batch subs
+    model
+        |> Model.vaultIds
+        |> List.map VaultDialog.subscriptions
+        |> Sub.batch
 
 
 
