@@ -65,12 +65,15 @@ openForVault vault model =
 
         modal =
             state.modal |> Ui.Modal.open
+
+        path =
+            Maybe.withDefault [] state.localFolderPath
     in
         (modal
             |> asModalIn state
             |> asStateIn vault.id model
         )
-            ! []
+            ! [ VaultDialog.Ports.getFileList path ]
 
 
 close : VaultId -> Model -> ( Model, Cmd Model.Msg )

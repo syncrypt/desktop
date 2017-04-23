@@ -45,7 +45,13 @@ view vaultId model =
             { address = (Modal >> Model.VaultDialog vaultId)
             , contents = contents vaultId model
             , footer = []
-            , title = "Create New Vault"
+            , title =
+                case vaultId of
+                    "" ->
+                        "Create New Vault"
+
+                    id ->
+                        "Vault " ++ id
             }
     in
         Ui.Modal.view viewConfig (dialogState vaultId model).modal

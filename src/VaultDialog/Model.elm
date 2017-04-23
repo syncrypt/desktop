@@ -64,7 +64,12 @@ initForVault vault =
         default =
             init
     in
-        { default | title = nameOrId (vault) }
+        { default
+            | title = nameOrId (vault)
+
+            -- TODO: make this work with windows paths
+            , localFolderPath = Just (String.split ("/") vault.folderPath)
+        }
 
 
 sortedFolders : State -> List FolderItem
