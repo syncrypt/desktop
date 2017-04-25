@@ -111,14 +111,8 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
             let
                 isRoot =
                     path == []
-
-                parentPath =
-                    path
-                        |> List.reverse
-                        |> List.drop 1
-                        |> List.reverse
             in
-                case ( parentPath, Dict.get path items ) of
+                case ( parentPath path, Dict.get path items ) of
                     ( [], Nothing ) ->
                         items
                             |> Dict.insert path files
@@ -127,15 +121,15 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
                         items
                             |> Dict.insert path (files ++ existingFiles)
 
-                    ( _, Nothing ) ->
+                    ( pp, Nothing ) ->
                         items
                             |> Dict.insert path files
-                            |> addPathToLocalItems parentPath []
+                            |> addPathToLocalItems pp []
 
-                    ( _, Just existingFiles ) ->
+                    ( pp, Just existingFiles ) ->
                         items
                             |> Dict.insert path (files ++ existingFiles)
-                            |> addPathToLocalItems parentPath []
+                            |> addPathToLocalItems pp []
     in
         { state | localFolderItems = addPathToLocalItems path files localFolderItems }
 

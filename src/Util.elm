@@ -189,7 +189,7 @@ last amount list =
 allButLast : List a -> List a
 allButLast list =
     list
-        |> surround List.reverse (List.take 1)
+        |> surround List.reverse (List.drop 1)
 
 
 findFirst : (a -> Bool) -> List a -> Maybe a
