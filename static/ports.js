@@ -64,8 +64,9 @@ var getFileList = function([vaultId, rootPathList]) {
 
 var focusOn = function(id) {
   var elem = document.getElementById(id);
-  console.log("got: ", id, elem)
-  elem.focus();
+  if(elem) {
+    elem.focus();
+  }
 }
 
 var setupElmApp = function(daemonApiToken) {
