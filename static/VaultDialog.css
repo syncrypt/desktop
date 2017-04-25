@@ -1,8 +1,6 @@
 .VaultDialog ui-tabs-content {
-  min-width: 370px;
-  max-width: 800px;
-  min-height: 300px;
-  max-height: 400px;
+  width: 600px;
+  height: 400px;
   overflow-y: auto;
   overflow-x: auto;
   font-size: 15px;
