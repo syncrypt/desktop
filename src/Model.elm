@@ -50,6 +50,7 @@ type Msg
     | Logout
     | CreateNewVault
     | VaultDialog VaultId VaultDialog.Model.Msg
+    | FocusOn String
 
 
 init : Config -> Model

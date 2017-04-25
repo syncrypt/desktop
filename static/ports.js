@@ -62,6 +62,12 @@ var getFileList = function([vaultId, rootPathList]) {
   })
 }
 
+var focusOn = function(id) {
+  var elem = document.getElementById(id);
+  console.log("got: ", id, elem)
+  elem.focus();
+}
+
 var setupElmApp = function(daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -71,6 +77,7 @@ var setupElmApp = function(daemonApiToken) {
 
   elmApp.ports.openFolder.subscribe(openFolderDialog)
   elmApp.ports.getFileList.subscribe(getFileList)
+  elmApp.ports.focusOn.subscribe(focusOn)
 }
 
 readAuthToken(setupElmApp)

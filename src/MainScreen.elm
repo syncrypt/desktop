@@ -12,6 +12,7 @@ import VaultDialog
 import VaultDialog.Update
 import VaultList
 import Time exposing (Time)
+import Ports
 
 
 -- INIT
@@ -156,6 +157,10 @@ update action model =
         Logout ->
             -- TODO
             model ! []
+
+        FocusOn id ->
+            model
+                ! [ Ports.focusOn id ]
 
 
 updateNow : Cmd Msg
