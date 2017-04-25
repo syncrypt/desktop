@@ -55,26 +55,40 @@ openNew model =
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
 openForVault vault model =
     let
-        ( state, cmd ) =
+        ( newlyCreated, ( state, cmd ) ) =
             case Dict.get vault.id model.vaultDialogs of
                 Nothing ->
-                    VaultDialog.Model.initForVault vault
-                        |> setNameInputValue (nameOrId vault)
+                    let
+                        ( state, cmd ) =
+                            VaultDialog.Model.initForVault vault
+                                |> setNameInputValue (nameOrId vault)
+                    in
+                        ( True
+                        , ( state, Cmd.map (Model.VaultDialog vault.id) cmd )
+                        )
 
                 Just s ->
-                    ( s, Cmd.none )
+                    ( False
+                    , ( s, Cmd.none )
+                    )
 
         path =
             Maybe.withDefault [] state.localFolderPath
+
+        commands =
+            if newlyCreated then
+                [ cmd
+                , VaultDialog.Ports.getFileList ( vault.id, path )
+                ]
+            else
+                [ cmd ]
     in
         (state.modal
             |> Ui.Modal.open
             |> asModalIn state
             |> asStateIn vault.id model
         )
-            ! [ Cmd.map (Model.VaultDialog vault.id) cmd
-              , VaultDialog.Ports.getFileList ( vault.id, path )
-              ]
+            ! commands
 
 
 close : VaultId -> Model -> ( Model, Cmd Model.Msg )
@@ -91,6 +105,7 @@ close vaultId model =
             ! []
 
 
+dialogState : VaultId -> Model -> State
 dialogState vaultId model =
     case Dict.get vaultId model.vaultDialogs of
         Just state ->
