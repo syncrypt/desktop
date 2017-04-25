@@ -5,10 +5,23 @@
   font-size: 17px;
 }
 
+.Dialog-Label-Left.VaultDialog-InputLabel,
+.Dialog-Label-Right.VaultDialog-InputLabel {
+  font-weight: bold;
+  width: 60px;
+  display: inline-block;
+}
+
+.VaultDialog-Input {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .VaultDialog-FolderItem {
   padding-top: 5px;
   position: relative;
 }
+
 
 .VaultDialog-File {
   padding-top: 5px;
@@ -22,6 +35,10 @@
 .VaultDialog-Tab-Content ui-container {
   border: 1px solid #ddd;
   padding: 10px;
+}
+
+.VaultDialog-FileSelection ui-container {
+  margin-top: 5px;
 }
 
 .VaultDialog-FolderItem-Checkbox ui-checkbox {

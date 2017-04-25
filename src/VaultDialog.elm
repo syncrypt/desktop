@@ -93,9 +93,9 @@ tabContents vaultId state model =
     in
         [ ( "Basic"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ nameInput vaultId state
-                , msg <| openFolderButton vaultId
-                , msg <| fileSelectionContainer state
+                [ dialogInput <| nameInput vaultId state
+                , dialogInput <| msg <| openFolderButton vaultId
+                , dialogInput <| msg <| fileSelectionContainer state
                 ]
           )
         , ( "Users"
@@ -104,6 +104,11 @@ tabContents vaultId state model =
                 ]
           )
         ]
+
+
+dialogInput body =
+    div [ class "VaultDialog-Input" ]
+        [ body ]
 
 
 cancelButton : VaultId -> Html Model.Msg
@@ -124,17 +129,24 @@ saveButton vaultId =
 
 openFolderButton : VaultId -> Html Msg
 openFolderButton vaultId =
-    Ui.Button.model "Select Folder" "primary" "medium"
-        |> Ui.Button.view (OpenFolderDialog vaultId)
+    let
+        msg =
+            OpenFolderDialog vaultId
+    in
+        Ui.Button.model "Select Folder" "primary" "medium"
+            |> Ui.Button.view msg
+            |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                Nothing
+                "Folder"
 
 
 nameInput : VaultId -> State -> Html Model.Msg
 nameInput vaultId state =
     Ui.Input.view state.nameInput
         |> Html.map (NameInput >> Model.VaultDialog vaultId)
-        |> labeledLeft
-            [ onClick (Model.FocusOn state.nameInput.uid) ]
-            "Vault Name"
+        |> labeledLeft [ class "VaultDialog-InputLabel" ]
+            (Just (Model.FocusOn state.nameInput.uid))
+            "Name"
 
 
 fileSelectionContainer : State -> Html Msg
@@ -146,7 +158,12 @@ fileSelectionContainer state =
             , align = "start"
             }
     in
-        Ui.Container.view settings [] (renderFolders state)
+        div [ class "VaultDialog-FileSelection" ]
+            [ Ui.Container.view settings [] (renderFolders state)
+                |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                    Nothing
+                    "Files"
+            ]
 
 
 renderFolders : State -> List (Html Msg)
@@ -227,8 +244,8 @@ fileCheckbox path state =
 
         checkboxWithLabel =
             checkbox
-                |> labeledRight
-                    [ onClick (ToggleIgnorePath path) ]
+                |> labeledRight []
+                    (Just (ToggleIgnorePath path))
                     (folderName path)
     in
         span [ class "VaultDialog-FolderItem-Checkbox" ]

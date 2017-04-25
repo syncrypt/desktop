@@ -48,6 +48,10 @@ a:hover {
   width: 100%;
 }
 
+.Default-Cursor {
+  cursor: default !important;
+}
+
 .Dialog-Label-Left {
   cursor: pointer;
   padding: 3px;

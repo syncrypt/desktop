@@ -2,6 +2,7 @@ module Dialog exposing (..)
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
+import Html.Events exposing (onClick)
 import Ui.Modal
 
 
@@ -19,8 +20,8 @@ asModalIn state modal =
     { state | modal = modal }
 
 
-labeled : LabelSide -> List (Html.Attribute msg) -> String -> Html msg -> Html msg
-labeled side attributes labelString content =
+labeled : LabelSide -> List (Html.Attribute msg) -> Maybe msg -> String -> Html msg -> Html msg
+labeled side attributes onClickMsg labelString content =
     let
         className =
             case side of
@@ -30,8 +31,16 @@ labeled side attributes labelString content =
                 Right ->
                     "Dialog-Label-Right"
 
+        attrs =
+            case onClickMsg of
+                Nothing ->
+                    (class "Default-Cursor") :: attributes
+
+                Just msg ->
+                    (onClick msg) :: attributes
+
         label =
-            span (class className :: attributes)
+            span (class className :: attrs)
                 [ text labelString ]
     in
         orderedLabeling side label content
