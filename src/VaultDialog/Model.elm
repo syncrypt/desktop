@@ -54,7 +54,7 @@ init =
     , localFolderItems = Dict.empty
     , modal =
         Ui.Modal.init
-            |> Ui.Modal.closable True
+            |> Ui.Modal.closable False
             |> Ui.Modal.backdrop False
     , nameInput =
         Ui.Input.init ()
