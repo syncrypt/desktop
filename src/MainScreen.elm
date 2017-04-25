@@ -42,10 +42,7 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    model
-        |> Model.vaultIds
-        |> List.map VaultDialog.subscriptions
-        |> Sub.batch
+    VaultDialog.subscriptions model
 
 
 
@@ -129,7 +126,7 @@ update action model =
 
         CreateNewVault ->
             { model | state = CreatingNewVault }
-                |> VaultDialog.Update.open
+                |> VaultDialog.Update.openNew
 
         VaultDialog vaultId msg ->
             model

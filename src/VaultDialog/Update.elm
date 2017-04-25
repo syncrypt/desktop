@@ -17,7 +17,7 @@ import VaultDialog.Model
 import Dialog exposing (asModalIn)
 import Platform.Cmd exposing (map)
 import Dict
-import Syncrypt.Vault exposing (VaultId, Vault)
+import Syncrypt.Vault exposing (VaultId, Vault, nameOrId)
 
 
 open : Model -> ( Model, Cmd Model.Msg )
@@ -55,25 +55,26 @@ openNew model =
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
 openForVault vault model =
     let
-        state =
+        ( state, cmd ) =
             case Dict.get vault.id model.vaultDialogs of
                 Nothing ->
                     VaultDialog.Model.initForVault vault
+                        |> setNameInputValue (nameOrId vault)
 
-                Just state ->
-                    state
-
-        modal =
-            state.modal |> Ui.Modal.open
+                Just s ->
+                    ( s, Cmd.none )
 
         path =
             Maybe.withDefault [] state.localFolderPath
     in
-        (modal
+        (state.modal
+            |> Ui.Modal.open
             |> asModalIn state
             |> asStateIn vault.id model
         )
-            ! [ VaultDialog.Ports.getFileList path ]
+            ! [ Cmd.map (Model.VaultDialog vault.id) cmd
+              , VaultDialog.Ports.getFileList ( vault.id, path )
+              ]
 
 
 close : VaultId -> Model -> ( Model, Cmd Model.Msg )
@@ -149,13 +150,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            OpenFolderDialog ->
+            OpenFolderDialog vaultId ->
                 model
-                    ! [ VaultDialog.Ports.openFolder () ]
+                    ! [ VaultDialog.Ports.openFolder vaultId ]
 
             SelectedFolder path ->
                 let
-                    ( nameInput, nameInputMsg ) =
+                    ( nameInput, nameInputCmd ) =
                         Ui.Input.setValue (folderName path) state.nameInput
                 in
                     ({ state
@@ -165,8 +166,8 @@ update msg vaultId ({ vaultDialogs } as model) =
                      }
                         |> asStateIn vaultId model
                     )
-                        ! [ VaultDialog.Ports.getFileList path
-                          , Cmd.map (NameInput >> Model.VaultDialog vaultId) nameInputMsg
+                        ! [ VaultDialog.Ports.getFileList ( vaultId, path )
+                          , Cmd.map (NameInput >> Model.VaultDialog vaultId) nameInputCmd
                           ]
 
 
@@ -176,3 +177,15 @@ asStateIn vaultId model state =
         | vaultDialogs =
             Dict.insert vaultId state model.vaultDialogs
     }
+
+
+setNameInputValue : String -> State -> ( State, Cmd Msg )
+setNameInputValue value state =
+    let
+        ( nameInput, cmd ) =
+            state.nameInput
+                |> Ui.Input.setValue value
+    in
+        ( { state | nameInput = nameInput }
+        , Cmd.map NameInput cmd
+        )

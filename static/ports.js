@@ -30,17 +30,17 @@ var readAuthToken = function(resolve, reject) {
 var mainContainer = window.document.getElementById("Root");
 var elmApp = null;
 
-var openFolderDialog = function() {
+var openFolderDialog = function(vaultId) {
   var folders = Electron.remote.dialog.showOpenDialog({properties: ['openDirectory']});
   if(folders && folders.length == 1) {
     var folderPath = folders[0].split(Path.sep);
-    elmApp.ports.selectedFolder.send(folderPath)
+    elmApp.ports.selectedFolder.send([vaultId, folderPath])
   }
 }
 
 const IGNORE_FILES = [".DS_Store", ".vault"];
 
-var getFileList = function(rootPathList) {
+var getFileList = function([vaultId, rootPathList]) {
   var rootPath = rootPathList.join(Path.sep)
   File.walk(rootPath, function(_, dirPath, dirs, files) {
     var path = Path.relative(rootPath, dirPath).split(Path.sep);
@@ -50,6 +50,7 @@ var getFileList = function(rootPathList) {
     }
 
     var data = [
+      vaultId,
       rootPathList,
       [
         path,

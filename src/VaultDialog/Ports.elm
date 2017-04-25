@@ -1,15 +1,16 @@
 port module VaultDialog.Ports exposing (..)
 
 import VaultDialog.Model exposing (FolderItem, Path)
+import Syncrypt.Vault exposing (VaultId)
 
 
-port openFolder : () -> Cmd msg
+port openFolder : VaultId -> Cmd msg
 
 
-port selectedFolder : (Path -> msg) -> Sub msg
+port selectedFolder : (( VaultId, Path ) -> msg) -> Sub msg
 
 
-port getFileList : Path -> Cmd msg
+port getFileList : ( VaultId, Path ) -> Cmd msg
 
 
-port fileList : (( Path, FolderItem ) -> msg) -> Sub msg
+port fileList : (( VaultId, Path, FolderItem ) -> msg) -> Sub msg

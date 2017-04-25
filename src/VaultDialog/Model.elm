@@ -6,7 +6,7 @@ import Ui.Input
 import Ui.Modal
 import Set exposing (Set)
 import Util
-import Syncrypt.Vault exposing (Vault, nameOrId)
+import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
 
 
 type alias FileName =
@@ -22,7 +22,8 @@ type alias FolderItem =
 
 
 type alias State =
-    { title : String
+    { id : VaultId
+    , title : String
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
     , localFolderPath : Maybe Path
@@ -37,13 +38,14 @@ type Msg
     | FileCheckBox Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
     | ToggleIgnorePath Path
-    | OpenFolderDialog
+    | OpenFolderDialog VaultId
     | SelectedFolder Path
 
 
 init : State
 init =
-    { title = "Untitled Vault"
+    { id = ""
+    , title = "Untitled Vault"
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
     , localFolderPath = Nothing
     , localFolderItems = Dict.empty
@@ -63,12 +65,20 @@ initForVault vault =
     let
         default =
             init
+
+        name =
+            nameOrId vault
+
+        nameInput =
+            Ui.Input.init ()
+                |> Ui.Input.placeholder name
+                |> Ui.Input.showClearIcon True
     in
         { default
-            | title = nameOrId (vault)
-
-            -- TODO: make this work with windows paths
-            , localFolderPath = Just (String.split ("/") vault.folderPath)
+            | id = vault.id
+            , title = name
+            , nameInput = nameInput
+            , localFolderPath = Just (asPath vault.folderPath)
         }
 
 
@@ -159,6 +169,14 @@ name path =
 
         _ :: rest ->
             name rest
+
+
+asPath : String -> Path
+asPath pathString =
+    if String.startsWith "/" pathString then
+        String.split ("/") pathString
+    else
+        String.split "\\" pathString
 
 
 inRoot : Path -> Bool

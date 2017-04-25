@@ -17,17 +17,18 @@ import VaultDialog.Ports
 import Dict
 
 
-subscriptions : VaultId -> Sub Model.Msg
-subscriptions vaultId =
+subscriptions : Model -> Sub Model.Msg
+subscriptions _ =
     let
-        fileListMsg ( rootPath, folderItem ) =
-            NestedFileList rootPath folderItem
+        fileListMsg ( vaultId, rootPath, folderItem ) =
+            Model.VaultDialog vaultId (NestedFileList rootPath folderItem)
+
+        selectedFolderMsg ( vaultId, path ) =
+            Model.VaultDialog vaultId (SelectedFolder path)
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
-                |> Sub.map (Model.VaultDialog vaultId)
-            , VaultDialog.Ports.selectedFolder SelectedFolder
-                |> Sub.map (Model.VaultDialog vaultId)
+            , VaultDialog.Ports.selectedFolder selectedFolderMsg
             ]
 
 
@@ -53,8 +54,11 @@ view vaultId model =
                     id ->
                         "Vault " ++ id
             }
+
+        state =
+            dialogState vaultId model
     in
-        Ui.Modal.view viewConfig (dialogState vaultId model).modal
+        Ui.Modal.view viewConfig state.modal
 
 
 contents : VaultId -> Model -> List (Html Model.Msg)
@@ -69,7 +73,7 @@ contents vaultId model =
         html =
             [ div [ class "VaultDialog-Content" ]
                 [ msg <| nameInput state
-                , msg <| openFolderButton
+                , msg <| openFolderButton vaultId
                 , msg <| fileSelectionContainer state
                 , closeButton vaultId
                 ]
@@ -84,10 +88,10 @@ closeButton vaultId =
         |> Ui.Button.view (Model.CloseVaultDetails vaultId)
 
 
-openFolderButton : Html Msg
-openFolderButton =
+openFolderButton : VaultId -> Html Msg
+openFolderButton vaultId =
     Ui.Button.model "Select Folder" "primary" "medium"
-        |> Ui.Button.view OpenFolderDialog
+        |> Ui.Button.view (OpenFolderDialog vaultId)
 
 
 nameInput : State -> Html Msg

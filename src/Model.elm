@@ -62,7 +62,7 @@ init config =
         { stats = 0, downloads = 0, uploads = 0 }
     , sidebarOpen = False
     , now = Nothing
-    , vaultDialogs = Dict.empty
+    , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
     }
 
 
@@ -87,5 +87,8 @@ vaultWithId vaultId { vaults, flyingVaults } =
 
 vaultIds : Model -> List VaultId
 vaultIds { vaults, flyingVaults } =
-    (List.map .id vaults)
-        ++ (List.map .id flyingVaults)
+    let
+        idsOf =
+            List.map .id
+    in
+        (idsOf vaults) ++ (idsOf flyingVaults)
