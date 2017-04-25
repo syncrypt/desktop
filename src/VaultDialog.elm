@@ -1,6 +1,6 @@
 module VaultDialog exposing (..)
 
-import Dialog exposing (labeledRight)
+import Dialog exposing (labeledLeft, labeledRight)
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, for, id, style)
 import Html.Events exposing (onClick)
@@ -93,7 +93,7 @@ tabContents vaultId state model =
     in
         [ ( "Basic"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ msg <| nameInput state
+                [ nameInput vaultId state
                 , msg <| openFolderButton vaultId
                 , msg <| fileSelectionContainer state
                 ]
@@ -108,7 +108,7 @@ tabContents vaultId state model =
 
 cancelButton : VaultId -> Html Model.Msg
 cancelButton vaultId =
-    span [ class "VaultDialog-CancelButton" ]
+    span [ class "VaultDialog-Button-Cancel" ]
         [ Ui.Button.model "Cancel" "secondary" "medium"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
@@ -116,7 +116,7 @@ cancelButton vaultId =
 
 saveButton : VaultId -> Html Model.Msg
 saveButton vaultId =
-    span [ class "VaultDialog-SaveButton" ]
+    span [ class "VaultDialog-Button-Save" ]
         [ Ui.Button.model "Save" "primary" "medium"
             |> Ui.Button.view (Model.SaveVaultDetails vaultId)
         ]
@@ -128,10 +128,13 @@ openFolderButton vaultId =
         |> Ui.Button.view (OpenFolderDialog vaultId)
 
 
-nameInput : State -> Html Msg
-nameInput state =
+nameInput : VaultId -> State -> Html Model.Msg
+nameInput vaultId state =
     Ui.Input.view state.nameInput
-        |> Html.map NameInput
+        |> Html.map (NameInput >> Model.VaultDialog vaultId)
+        |> labeledLeft
+            [ onClick (Model.FocusOn state.nameInput.uid) ]
+            "Vault Name"
 
 
 fileSelectionContainer : State -> Html Msg

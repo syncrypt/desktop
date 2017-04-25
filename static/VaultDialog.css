@@ -24,13 +24,6 @@
   padding: 10px;
 }
 
-.VaultDialog-FolderItem-Checkbox .Dialog-Label {
-  display: inline-flex;
-  /*height: 20px;
-  width: 20px;*/
-  padding-left: 10px;
-}
-
 .VaultDialog-FolderItem-Checkbox ui-checkbox {
   width: 28px !important;
   height: 28px !important;
@@ -49,13 +42,12 @@
   padding-top: 20px;
 }
 
-.VaultDialog-CancelButton {
+.VaultDialog-Button-Cancel {
   float: right;
   padding-bottom: 20px;
 }
 
-
-.VaultDialog-SaveButton {
+.VaultDialog-Button-Save {
   float: right;
   padding-bottom: 20px;
   padding-left: 10px;

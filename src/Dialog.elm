@@ -22,8 +22,16 @@ asModalIn state modal =
 labeled : LabelSide -> List (Html.Attribute msg) -> String -> Html msg -> Html msg
 labeled side attributes labelString content =
     let
+        className =
+            case side of
+                Left ->
+                    "Dialog-Label-Left"
+
+                Right ->
+                    "Dialog-Label-Right"
+
         label =
-            span (class "Dialog-Label" :: attributes)
+            span (class className :: attributes)
                 [ text labelString ]
     in
         orderedLabeling side label content
