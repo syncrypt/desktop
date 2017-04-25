@@ -172,12 +172,9 @@ bytesReadable_ size units =
                     bytesReadable_ rem units
 
 
-surround : (List a -> List b) -> (List b -> List a) -> List a -> List b
-surround f body val =
-    val
-        |> f
-        |> body
-        |> f
+surround : (a -> b) -> (b -> a) -> a -> b
+surround f g =
+    f >> g >> f
 
 
 last : Int -> List a -> List a
