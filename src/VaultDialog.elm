@@ -59,7 +59,9 @@ view vaultId model =
         state =
             dialogState vaultId model
     in
-        Ui.Modal.view viewConfig state.modal
+        div [ class "VaultDialog" ]
+            [ Ui.Modal.view viewConfig state.modal
+            ]
 
 
 contents : VaultId -> Model -> List (Html Model.Msg)
@@ -72,16 +74,13 @@ contents vaultId model =
             { address = (Tabs >> Model.VaultDialog vaultId)
             , contents = tabContents vaultId state model
             }
-
-        html =
-            [ Ui.Tabs.view tabsViewConfig state.tabs
-            , div [ class "VaultDialog-Buttons" ]
-                [ saveButton vaultId
-                , cancelButton vaultId
-                ]
-            ]
     in
-        html
+        [ Ui.Tabs.view tabsViewConfig state.tabs
+        , div [ class "VaultDialog-Buttons" ]
+            [ saveButton vaultId
+            , cancelButton vaultId
+            ]
+        ]
 
 
 tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
@@ -114,7 +113,7 @@ dialogInput body =
 cancelButton : VaultId -> Html Model.Msg
 cancelButton vaultId =
     span [ class "VaultDialog-Button-Cancel" ]
-        [ Ui.Button.model "Cancel" "secondary" "medium"
+        [ Ui.Button.model "Cancel" "secondary" "small"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
 
@@ -122,7 +121,7 @@ cancelButton vaultId =
 saveButton : VaultId -> Html Model.Msg
 saveButton vaultId =
     span [ class "VaultDialog-Button-Save" ]
-        [ Ui.Button.model "Save" "primary" "medium"
+        [ Ui.Button.model "Save" "primary" "small"
             |> Ui.Button.view (Model.SaveVaultDetails vaultId)
         ]
 
@@ -133,7 +132,7 @@ openFolderButton vaultId =
         msg =
             OpenFolderDialog vaultId
     in
-        Ui.Button.model "Select Folder" "primary" "medium"
+        Ui.Button.model "Select Folder" "primary" "small"
             |> Ui.Button.view msg
             |> labeledLeft [ class "VaultDialog-InputLabel" ]
                 Nothing
@@ -157,13 +156,22 @@ fileSelectionContainer state =
             , compact = False
             , align = "start"
             }
+
+        hasFiles =
+            not <| Dict.isEmpty state.localFolderItems
+
+        body =
+            if hasFiles then
+                [ Ui.Container.view settings [] (renderFolders state)
+                    |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                        Nothing
+                        "Files"
+                ]
+            else
+                []
     in
         div [ class "VaultDialog-FileSelection" ]
-            [ Ui.Container.view settings [] (renderFolders state)
-                |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                    Nothing
-                    "Files"
-            ]
+            body
 
 
 renderFolders : State -> List (Html Msg)

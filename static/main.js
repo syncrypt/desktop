@@ -18,8 +18,10 @@ app.on('ready', createWindow) // called when electron has initialized
 // This will create our app window, no surprise there
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 1135,
-    height: 728,
+    width: 1024,
+    minWidth: 900,
+    height: 768,
+    minHeight: 750,
     title: "Syncrypt",
     frame: true,
     resizable: true

@@ -1,8 +1,11 @@
-.VaultDialog-Tab-Content {
-  width: 700px;
-  height: 500px;
+.VaultDialog ui-tabs-content {
+  min-width: 370px;
+  max-width: 800px;
+  min-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
-  font-size: 17px;
+  overflow-x: auto;
+  font-size: 15px;
 }
 
 .Dialog-Label-Left.VaultDialog-InputLabel,
@@ -15,6 +18,16 @@
 .VaultDialog-Input {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+
+.VaultDialog-Input ui-input {
+  max-width: 500px;
+  width: 80%;
+}
+
+.VaultDialog-Input ui-input input {
+  font-size: 15px;
 }
 
 .VaultDialog-FolderItem {
