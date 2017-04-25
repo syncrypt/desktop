@@ -4,6 +4,7 @@ import Model exposing (Model, vaultWithId)
 import Ui.Modal
 import Ui.Input
 import Ui.Tabs
+import Ui.Image
 import VaultDialog.Ports
 import VaultDialog.Model
     exposing
@@ -14,6 +15,8 @@ import VaultDialog.Model
         , addFolder
         , toggleIgnorePath
         , folderName
+        , expandFolder
+        , collapseFolder
         )
 import Dialog exposing (asModalIn)
 import Platform.Cmd exposing (map)
@@ -205,6 +208,20 @@ update msg vaultId ({ vaultDialogs } as model) =
                         ! [ VaultDialog.Ports.getFileList ( vaultId, path )
                           , Cmd.map (NameInput >> Model.VaultDialog vaultId) nameInputCmd
                           ]
+
+            CollapseFolder path ->
+                (state
+                    |> collapseFolder path
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            ExpandFolder path ->
+                (state
+                    |> expandFolder path
+                    |> asStateIn vaultId model
+                )
+                    ! []
 
 
 asStateIn : VaultId -> Model -> State -> Model

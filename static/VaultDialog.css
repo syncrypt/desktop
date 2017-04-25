@@ -66,6 +66,18 @@
   padding-left: 30px;
 }
 
+.VaultDialog-FolderItem-Collapsed .VaultDialog-FolderItem-Nested {
+  /*display: none;*/
+}
+
+.VaultDialog-File span .VaultDialog-FolderItem-Collapse-Toggle {
+  display: none;
+}
+
+.VaultDialog-FolderItem-Collapse-Toggle {
+  font-size: 10px;
+}
+
 .VaultDialog-Buttons {
   padding-top: 20px;
 }

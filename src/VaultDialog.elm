@@ -11,7 +11,22 @@ import Ui.Container
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import VaultDialog.Model exposing (FileName, FolderItem, Msg(..), Path, State, folderName, inRoot, isIgnored, name, sortedFolders)
+import Ui.Image
+import VaultDialog.Model
+    exposing
+        ( FileName
+        , FolderItem
+        , Msg(..)
+        , Path
+        , State
+        , folderName
+        , inRoot
+        , parentPath
+        , isIgnored
+        , isExpanded
+        , name
+        , sortedFolders
+        )
 import VaultDialog.Update exposing (dialogState)
 import Syncrypt.Vault exposing (VaultId)
 import VaultDialog.Ports
@@ -197,16 +212,29 @@ renderFolders state =
 
 
 renderFolder : State -> FolderItem -> Html Msg
-renderFolder state (( path, files ) as fi) =
-    div [ class "VaultDialog-FolderItem" ] <|
-        (inFolderPath path
-            [ span [] [ fileCheckbox path state ]
-            , div (hiddenIfIgnored path state [])
-                [ div [ class "VaultDialog-FolderItem-Nested" ]
-                    (List.map (renderFile state path) files)
+renderFolder state ( path, files ) =
+    if isExpanded path state then
+        div [ class "VaultDialog-FolderItem" ] <|
+            (inFolderPath path
+                [ span []
+                    [ fileCheckbox path state
+                    , folderCollapseToggle path state
+                    ]
+                , div (hiddenIfIgnored path state [])
+                    [ div [ class "VaultDialog-FolderItem-Nested" ]
+                        (List.map (renderFile state path) files)
+                    ]
                 ]
-            ]
-        )
+            )
+    else
+        div [ class "VaultDialog-FolderItem-Collapsed" ]
+            (inFolderPath path
+                [ span []
+                    [ fileCheckbox path state
+                    , folderCollapseToggle path state
+                    ]
+                ]
+            )
 
 
 renderFile : State -> Path -> FileName -> Html Msg
@@ -241,6 +269,22 @@ inFolderPath path contents =
             [ div [ class "VaultDialog-FolderItem-Nested" ]
                 (inFolderPath rest contents)
             ]
+
+
+folderCollapseToggle : Path -> State -> Html Msg
+folderCollapseToggle path state =
+    if isExpanded path state then
+        button
+            [ onClick (CollapseFolder path)
+            , class "VaultDialog-FolderItem-Collapse-Toggle"
+            ]
+            [ text "-" ]
+    else
+        button
+            [ onClick (ExpandFolder path)
+            , class "VaultDialog-FolderItem-Collapse-Toggle"
+            ]
+            [ text "+" ]
 
 
 fileCheckbox : Path -> State -> Html Msg

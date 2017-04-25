@@ -31,6 +31,7 @@ type alias State =
     , localFolderPath : Maybe Path
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
+    , expandedFolders : Set Path
     }
 
 
@@ -43,6 +44,8 @@ type Msg
     | OpenFolderDialog VaultId
     | SelectedFolder Path
     | Tabs Ui.Tabs.Msg
+    | CollapseFolder Path
+    | ExpandFolder Path
 
 
 init : State
@@ -52,6 +55,7 @@ init =
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
     , localFolderPath = Nothing
     , localFolderItems = Dict.empty
+    , expandedFolders = Set.fromList [ [] ]
     , modal =
         Ui.Modal.init
             |> Ui.Modal.closable False
@@ -102,6 +106,21 @@ isIgnored path { ignoredFolderItems } =
                 |> Set.isEmpty
                 |> not
            )
+
+
+isExpanded : Path -> State -> Bool
+isExpanded path ({ expandedFolders } as state) =
+    Set.member path expandedFolders
+
+
+collapseFolder : Path -> State -> State
+collapseFolder path ({ expandedFolders } as state) =
+    { state | expandedFolders = Set.remove path expandedFolders }
+
+
+expandFolder : Path -> State -> State
+expandFolder path ({ expandedFolders } as state) =
+    { state | expandedFolders = Set.insert path expandedFolders }
 
 
 addFolder : FolderItem -> State -> State
