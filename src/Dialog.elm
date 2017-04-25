@@ -64,5 +64,5 @@ orderedLabeling side label content =
                 Right ->
                     [ content, label ]
     in
-        div []
+        span []
             labelBody
