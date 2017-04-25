@@ -3,6 +3,7 @@ module VaultDialog.Update exposing (..)
 import Model exposing (Model, vaultWithId)
 import Ui.Modal
 import Ui.Input
+import Ui.Tabs
 import VaultDialog.Ports
 import VaultDialog.Model
     exposing
@@ -139,6 +140,16 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! [ cmd |> map (NameInput >> Model.VaultDialog vaultId) ]
+
+            Tabs msg ->
+                let
+                    ( tabs, cmd ) =
+                        Ui.Tabs.update msg state.tabs
+                in
+                    ({ state | tabs = tabs }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd |> map (Tabs >> Model.VaultDialog vaultId) ]
 
             FileCheckBox path _ ->
                 (state

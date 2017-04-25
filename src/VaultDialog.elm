@@ -10,6 +10,7 @@ import Ui.Checkbox
 import Ui.Container
 import Ui.Input
 import Ui.Modal
+import Ui.Tabs
 import VaultDialog.Model exposing (FileName, FolderItem, Msg(..), Path, State, folderName, inRoot, isIgnored, name, sortedFolders)
 import VaultDialog.Update exposing (dialogState)
 import Syncrypt.Vault exposing (VaultId)
@@ -67,25 +68,58 @@ contents vaultId model =
         state =
             dialogState vaultId model
 
-        msg =
-            Html.map (Model.VaultDialog vaultId)
+        tabsViewConfig =
+            { address = (Tabs >> Model.VaultDialog vaultId)
+            , contents = tabContents vaultId state model
+            }
 
         html =
-            [ div [ class "VaultDialog-Content" ]
-                [ msg <| nameInput state
-                , msg <| openFolderButton vaultId
-                , msg <| fileSelectionContainer state
-                , closeButton vaultId
+            [ Ui.Tabs.view tabsViewConfig state.tabs
+            , div [ class "VaultDialog-Buttons" ]
+                [ saveButton vaultId
+                , cancelButton vaultId
                 ]
             ]
     in
         html
 
 
-closeButton : VaultId -> Html Model.Msg
-closeButton vaultId =
-    Ui.Button.model "Close" "primary" "medium"
-        |> Ui.Button.view (Model.CloseVaultDetails vaultId)
+tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
+tabContents vaultId state model =
+    let
+        -- converter from Msg -> Model.Msg
+        msg =
+            Html.map (Model.VaultDialog vaultId)
+    in
+        [ ( "Basic"
+          , div [ class "VaultDialog-Tab-Content" ]
+                [ msg <| nameInput state
+                , msg <| openFolderButton vaultId
+                , msg <| fileSelectionContainer state
+                ]
+          )
+        , ( "Users"
+          , div [ class "VaultDialog-Tab-Content" ]
+                [ msg <| text "Vault Users:"
+                ]
+          )
+        ]
+
+
+cancelButton : VaultId -> Html Model.Msg
+cancelButton vaultId =
+    span [ class "VaultDialog-CancelButton" ]
+        [ Ui.Button.model "Cancel" "secondary" "medium"
+            |> Ui.Button.view (Model.CloseVaultDetails vaultId)
+        ]
+
+
+saveButton : VaultId -> Html Model.Msg
+saveButton vaultId =
+    span [ class "VaultDialog-SaveButton" ]
+        [ Ui.Button.model "Save" "primary" "medium"
+            |> Ui.Button.view (Model.SaveVaultDetails vaultId)
+        ]
 
 
 openFolderButton : VaultId -> Html Msg

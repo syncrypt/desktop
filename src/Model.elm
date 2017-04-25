@@ -43,6 +43,7 @@ type Msg
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
     | CloseVaultDetails VaultId
+    | SaveVaultDetails VaultId
     | OpenProgramSettings
     | OpenAccountSettings
     | RemoveVaultFromSync Vault

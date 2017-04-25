@@ -4,6 +4,7 @@ import Dict exposing (Dict)
 import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
+import Ui.Tabs
 import Set exposing (Set)
 import Util
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
@@ -26,6 +27,7 @@ type alias State =
     , title : String
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
+    , tabs : Ui.Tabs.Model
     , localFolderPath : Maybe Path
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
@@ -40,6 +42,7 @@ type Msg
     | ToggleIgnorePath Path
     | OpenFolderDialog VaultId
     | SelectedFolder Path
+    | Tabs Ui.Tabs.Msg
 
 
 init : State
@@ -57,6 +60,8 @@ init =
         Ui.Input.init ()
             |> Ui.Input.placeholder "Vault Name"
             |> Ui.Input.showClearIcon True
+    , tabs =
+        Ui.Tabs.init ()
     }
 
 

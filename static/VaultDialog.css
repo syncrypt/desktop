@@ -1,15 +1,9 @@
-.VaultDialog-Content {
+.VaultDialog-Tab-Content {
   width: 700px;
   height: 500px;
-  overflow-y: scroll;
+  overflow-y: auto;
   font-size: 17px;
 }
-
-.VaultDialog-Content {
-  width: 87.5%;
-  height: 500px;
-}
-
 
 .VaultDialog-FolderItem {
   padding-top: 5px;
@@ -25,7 +19,7 @@
   display: none;
 }
 
-.VaultDialog-Content ui-container {
+.VaultDialog-Tab-Content ui-container {
   border: 1px solid #ddd;
   padding: 10px;
 }
@@ -49,4 +43,20 @@
 
 .VaultDialog-FolderItem-Nested {
   padding-left: 40px;
+}
+
+.VaultDialog-Buttons {
+  padding-top: 20px;
+}
+
+.VaultDialog-CancelButton {
+  float: right;
+  padding-bottom: 20px;
+}
+
+
+.VaultDialog-SaveButton {
+  float: right;
+  padding-bottom: 20px;
+  padding-left: 10px;
 }
