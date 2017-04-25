@@ -92,6 +92,16 @@ openForVault vault model =
             ! commands
 
 
+cancel : VaultId -> Model -> ( Model, Cmd Model.Msg )
+cancel vaultId model =
+    let
+        state =
+            dialogState vaultId model
+    in
+        { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
+            ! []
+
+
 close : VaultId -> Model -> ( Model, Cmd Model.Msg )
 close vaultId model =
     let
