@@ -53,17 +53,17 @@
 }
 
 .VaultDialog-FolderItem-Checkbox ui-checkbox {
-  width: 28px !important;
-  height: 28px !important;
+  width:  20px !important;
+  height: 20px !important;
   display: inline-flex !important;
 }
 .VaultDialog-FolderItem-Checkbox ui-checkbox svg {
-  width: 14px !important;
-  height: 14px !important;
+  width:  10px !important;
+  height: 10px !important;
 }
 
 .VaultDialog-FolderItem-Nested {
-  padding-left: 40px;
+  padding-left: 30px;
 }
 
 .VaultDialog-Buttons {

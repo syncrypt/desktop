@@ -54,13 +54,11 @@ a:hover {
 
 .Dialog-Label-Left {
   cursor: pointer;
-  padding: 3px;
   padding-right: 10px;
 }
 
 .Dialog-Label-Right {
   cursor: pointer;
-  padding: 3px;
   padding-left: 10px;
 }
 
