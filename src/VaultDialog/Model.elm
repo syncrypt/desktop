@@ -131,17 +131,23 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
                             |> Dict.insert path (files ++ existingFiles)
                             |> addPathToLocalItems pp []
     in
-        { state | localFolderItems = addPathToLocalItems path files localFolderItems }
+        { state
+            | localFolderItems = addPathToLocalItems path files localFolderItems
+        }
 
 
 toggleIgnorePath : Path -> State -> State
 toggleIgnorePath path ({ ignoredFolderItems } as model) =
     case Set.member path model.ignoredFolderItems of
         True ->
-            { model | ignoredFolderItems = Set.remove path ignoredFolderItems }
+            { model
+                | ignoredFolderItems = Set.remove path ignoredFolderItems
+            }
 
         False ->
-            { model | ignoredFolderItems = Set.insert path ignoredFolderItems }
+            { model
+                | ignoredFolderItems = Set.insert path ignoredFolderItems
+            }
 
 
 folderName : Path -> String
