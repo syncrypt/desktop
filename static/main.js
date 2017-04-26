@@ -4,19 +4,34 @@ const electron = require('electron')
 const app = electron.app // this is our app
 const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow // This is a Module that creates windows
-const path = require('path')
-const child_process = require('child_process').child_process
-
+const Path = require('path')
+const ChildProcess = require('child_process')
 
 var mainWindow; // saves a global reference to mainWindow so it doesn't get garbage collected
 
-const appPath = path.dirname(app.getAppPath());
-const daemonPath = path.join(appPath, "app", "client", "syncrypt_daemon");
+const appPath = Path.dirname(app.getAppPath());
+var daemonPath = Path.join(appPath, "app", "syncrypt", "syncrypt_daemon");
+
+if (process.env.NODE_ENV === "development") {
+  daemonPath = "client/syncrypt_daemon"
+}
+
 
 app.on('ready', createWindow) // called when electron has initialized
 
 // This will create our app window, no surprise there
 function createWindow () {
+  const daemon = ChildProcess.spawn(daemonPath);
+
+  daemon.on('data', (data) => {
+    console.log("daemon: ", data)
+  })
+
+  daemon.on('close', (code) => {
+    const msg  = `child process exited with code ${code}`
+    console.log(msg);
+  });
+
   mainWindow = new BrowserWindow({
     width: 1024,
     minWidth: 900,

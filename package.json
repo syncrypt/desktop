@@ -1,24 +1,59 @@
 {
   "name": "syncrypt-desktop",
-  "version": "1.0.0",
+  "productName": "syncrypt-desktop",
+  "version": "0.4.0",
   "description": "Syncrypt platform independent desktop client",
   "main": "build/main.js",
-  "dependencies": {
-    "expand-home-dir": "^0.0.3",
-    "file": "^0.2.2"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make-installer": "electron-forge make",
+    "lint": "eslint src"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/syncrypt/elm-desktop.git"
-  },
+  "keywords": [],
   "author": "Syncrypt UG",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/syncrypt/elm-desktop/issues"
   },
-  "homepage": "https://github.com/syncrypt/elm-desktop#readme"
+  "homepage": "https://github.com/syncrypt/elm-desktop#readme",
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {},
+      "electronWinstallerConfig": {
+        "name": "Syncrypt"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "Syncrypt"
+      }
+    }
+  },
+  "dependencies": {
+    "electron-compile": "^6.4.0",
+    "expand-home-dir": "^0.0.3",
+    "file": "^0.2.2"
+  },
+  "devDependencies": {
+    "electron-forge": "^2.12.0",
+    "electron-prebuilt-compile": "1.6.2"
+  }
 }

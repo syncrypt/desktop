@@ -3,3 +3,5 @@ elm.js
 index.html
 build/
 node_modules/
+release/
+client/
