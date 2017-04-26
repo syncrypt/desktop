@@ -61,7 +61,7 @@ clean-deps:
 
 clean:
 	rm -rf $(BUILD_DIR)/
-	rm -rf $(RELEASE_DIR)/
+	rm -rf $(RELEASE_DIR)/tmp/
 
 distclean: clean
 	rm -rf elm-stuff/
