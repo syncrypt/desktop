@@ -65,3 +65,4 @@ clean:
 
 distclean: clean
 	rm -rf elm-stuff/
+	rm -rf release/
