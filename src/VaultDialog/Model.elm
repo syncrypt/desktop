@@ -212,3 +212,13 @@ parentPath : Path -> Path
 parentPath path =
     path
         |> Util.allButLast
+
+
+folderIsEmpty : Path -> State -> Bool
+folderIsEmpty path state =
+    case Dict.get path state.localFolderItems of
+        Nothing ->
+            True
+
+        Just files ->
+            List.isEmpty files

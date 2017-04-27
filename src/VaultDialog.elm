@@ -2,7 +2,7 @@ module VaultDialog exposing (..)
 
 import Dialog exposing (labeledLeft, labeledRight)
 import Html exposing (Html, button, div, form, input, label, span, text)
-import Html.Attributes exposing (class, for, id, style)
+import Html.Attributes exposing (class, classList, for, id, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Ui.Button
@@ -26,6 +26,7 @@ import VaultDialog.Model
         , isExpanded
         , name
         , sortedFolders
+        , folderIsEmpty
         )
 import VaultDialog.Update exposing (dialogState)
 import Syncrypt.Vault exposing (VaultId)
@@ -282,7 +283,10 @@ folderCollapseToggle path state =
     else
         button
             [ onClick (ExpandFolder path)
-            , class "VaultDialog-FolderItem-Collapse-Toggle"
+            , classList
+                [ ( "VaultDialog-FolderItem-Collapse-Toggle", True )
+                , ( "Hidden", isIgnored path state || folderIsEmpty path state )
+                ]
             ]
             [ text "+" ]
 

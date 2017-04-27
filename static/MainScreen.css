@@ -146,3 +146,7 @@ a:hover {
   right: 10px;
   top: 17px;
 }
+
+.Hidden {
+  display: none;
+}

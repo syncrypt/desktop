@@ -33,6 +33,11 @@
   position: relative;
 }
 
+.VaultDialog-FolderItem-Collapsed {
+  padding-top: 5px;
+  position: relative;
+}
+
 
 .VaultDialog-File {
   padding-top: 5px;
@@ -75,7 +80,9 @@
 }
 
 .VaultDialog-FolderItem-Collapse-Toggle {
-  font-size: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 .VaultDialog-Buttons {
