@@ -229,17 +229,14 @@ layout model nodes =
             , div [ class "MainScreen-Container" ]
                 (nodes ++ [ VaultList.view model ])
             , footer model
-            , viewNofiticationCenter model
+            , viewNotificationCenter model
             ]
                 ++ VaultDialog.viewAll model
         ]
 
 
-
--- viewNofiticationCenter : Model -> Html Msg
-
-
-viewNofiticationCenter { notificationCenter } =
+viewNotificationCenter : Model -> Html Msg
+viewNotificationCenter { notificationCenter } =
     Ui.NotificationCenter.view NotificationCenter notificationCenter
 
 
