@@ -1,5 +1,6 @@
 module Model exposing (..)
 
+import Syncrypt.User exposing (User)
 import Syncrypt.Vault exposing (Vault, FlyingVault)
 import Config exposing (Config)
 import Http
@@ -9,6 +10,7 @@ import VaultDialog.Model
 import Syncrypt.Vault exposing (VaultId)
 import Dict exposing (Dict)
 import Util exposing (findFirst)
+import Ui.NotificationCenter
 
 
 type alias Model =
@@ -20,6 +22,7 @@ type alias Model =
     , sidebarOpen : Bool
     , now : Maybe Date
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
+    , notificationCenter : Ui.NotificationCenter.Model Msg
     }
 
 
@@ -51,6 +54,12 @@ type Msg
     | CreateNewVault
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
+    | NotificationCenter Ui.NotificationCenter.Msg
+
+
+type NotificationMsg
+    = InvitedToVault User FlyingVault -- inviter, vault info
+    | UpdateAvailable String (Maybe String) -- version, changelog / info text
 
 
 init : Config -> Model
@@ -65,6 +74,10 @@ init config =
     , sidebarOpen = False
     , now = Nothing
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
+    , notificationCenter =
+        Ui.NotificationCenter.init ()
+            |> Ui.NotificationCenter.timeout 2500
+            |> Ui.NotificationCenter.duration 1000
     }
 
 

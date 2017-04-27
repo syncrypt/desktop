@@ -7,12 +7,13 @@ import Html exposing (Html, button, div, h1, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
-import Util
+import Util exposing (andAlso)
 import VaultDialog
 import VaultDialog.Update
 import VaultList
 import Time exposing (Time)
 import Ports
+import Ui.NotificationCenter
 
 
 -- INIT
@@ -81,11 +82,13 @@ update action model =
                   ]
 
         FetchedVaultsFromApi (Err reason) ->
-            model
+            (model
                 ! [ model.config
                         |> Daemon.getVaults
                         |> attemptDelayed 1000 FetchedVaultsFromApi
                   ]
+            )
+                |> Util.andAlso (notify ("Error fetching vaults: " ++ toString (reason)))
 
         UpdatedVaultsFromApi (Ok vaults) ->
             { model | vaults = vaults }
@@ -127,8 +130,10 @@ update action model =
 
         SaveVaultDetails vaultId ->
             -- TODO: persist config changes to daemon from model.vaultDialogs[vaultId]
-            { model | state = ShowingAllVaults }
+            ({ model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
+            )
+                |> andAlso (notify "Vault updated")
 
         CreateNewVault ->
             { model | state = CreatingNewVault }
@@ -162,6 +167,14 @@ update action model =
             model
                 ! [ Ports.focusOn id ]
 
+        NotificationCenter msg ->
+            let
+                ( state, cmd ) =
+                    Ui.NotificationCenter.update msg model.notificationCenter
+            in
+                { model | notificationCenter = state }
+                    ! [ Cmd.map NotificationCenter cmd ]
+
 
 updateNow : Cmd Msg
 updateNow =
@@ -171,6 +184,19 @@ updateNow =
 updateNowIn : Time -> Cmd Msg
 updateNowIn time =
     Util.performDelayed time SetDate Date.now
+
+
+notify : String -> Model -> ( Model, Cmd Msg )
+notify message model =
+    let
+        content =
+            div [ class "MainScreen-NotificationCenter" ] [ text message ]
+
+        ( state, cmd ) =
+            Ui.NotificationCenter.notify content model.notificationCenter
+    in
+        { model | notificationCenter = state }
+            ! [ Cmd.map NotificationCenter cmd ]
 
 
 
@@ -203,9 +229,18 @@ layout model nodes =
             , div [ class "MainScreen-Container" ]
                 (nodes ++ [ VaultList.view model ])
             , footer model
+            , viewNofiticationCenter model
             ]
                 ++ VaultDialog.viewAll model
         ]
+
+
+
+-- viewNofiticationCenter : Model -> Html Msg
+
+
+viewNofiticationCenter { notificationCenter } =
+    Ui.NotificationCenter.view NotificationCenter notificationCenter
 
 
 header : Html Msg

@@ -12,6 +12,7 @@ module Util
         , last
         , allButLast
         , findFirst
+        , andAlso
         )
 
 import Time exposing (Time)
@@ -200,3 +201,12 @@ findFirst check list =
                 Just val
             else
                 findFirst check rest
+
+
+andAlso : (model -> ( model, Cmd msg )) -> ( model, Cmd msg ) -> ( model, Cmd msg )
+andAlso f ( m1, cmd1 ) =
+    let
+        ( m2, cmd2 ) =
+            f m1
+    in
+        m2 ! [ cmd1, cmd2 ]

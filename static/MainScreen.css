@@ -150,3 +150,7 @@ a:hover {
 .Hidden {
   display: none;
 }
+
+.MainScreen-NotificationCenter {
+  font-size: 13px;
+}
