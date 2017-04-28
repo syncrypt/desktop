@@ -52,6 +52,7 @@ type Msg
     | RemoveVaultFromSync Vault
     | Logout
     | CreateNewVault
+    | CreatedVault (Result Http.Error Vault)
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg

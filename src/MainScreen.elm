@@ -7,13 +7,15 @@ import Html exposing (Html, button, div, h1, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
+import Ports
+import Time exposing (Time)
+import Ui.NotificationCenter
 import Util exposing (andAlso)
 import VaultDialog
-import VaultDialog.Update
+import VaultDialog.Update exposing (dialogState)
 import VaultList
-import Time exposing (Time)
-import Ports
-import Ui.NotificationCenter
+import Syncrypt.Vault exposing (VaultOptions(..))
+import Set
 
 
 -- INIT
@@ -133,11 +135,19 @@ update action model =
             ({ model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
             )
-                |> andAlso (notify "Vault updated")
+                |> andAlso (saveVault vaultId)
 
         CreateNewVault ->
             { model | state = CreatingNewVault }
                 |> VaultDialog.Update.openNew
+
+        CreatedVault (Ok vault) ->
+            (model ! [])
+                |> andAlso (notify ("Vault created: " ++ vault.id))
+
+        CreatedVault (Err reason) ->
+            (model ! [])
+                |> andAlso (notify ("Vault creation failed: " ++ (toString reason)))
 
         VaultDialog vaultId msg ->
             model
@@ -197,6 +207,35 @@ notify message model =
     in
         { model | notificationCenter = state }
             ! [ Cmd.map NotificationCenter cmd ]
+
+
+saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
+saveVault vaultId model =
+    let
+        ds =
+            dialogState vaultId model
+    in
+        if ds.isNew then
+            case ds.localFolderPath of
+                Just folderPath ->
+                    model
+                        ! [ model.config
+                                |> Daemon.createVault
+                                    (Create
+                                        { folder = folderPath
+                                        , ignorePaths = Set.toList ds.ignoredFolderItems
+                                        , userKeys = [] -- TODO
+                                        }
+                                    )
+                                |> attempt CreatedVault
+                          ]
+
+                Nothing ->
+                    model
+                        |> notify "No path selected - Vault not created"
+        else
+            model
+                |> notify "Vault updated"
 
 
 

@@ -48,10 +48,10 @@ updatedAtInfo vault updatedAtHeader model =
             [ header
             , case ( vault.modificationDate, model.now ) of
                 ( Nothing, _ ) ->
-                    text ""
+                    text "No files uploaded yet"
 
                 ( Just date, Nothing ) ->
-                    text ""
+                    text (toString date)
 
                 ( Just date, Just now ) ->
                     text <| (Distance.inWords date now) ++ " ago"

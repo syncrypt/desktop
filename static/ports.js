@@ -73,6 +73,7 @@ var setupElmApp = function(daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",
+    pathSeparator: Path.sep,
     updateInterval: 5000
   });
 

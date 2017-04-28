@@ -1,6 +1,9 @@
 module Syncrypt.Vault exposing (..)
 
 import Date exposing (Date)
+import Syncrypt.User exposing (User, UserKey, Fingerprint, EmailWithFingerPrint)
+import Json.Encode as Json
+import Config exposing (Config)
 
 
 type alias VaultId =
@@ -21,6 +24,15 @@ type Status
     | Initializing
     | Synced
     | Ready
+
+
+type VaultOptions
+    = Create
+        { folder : List String
+        , userKeys : List Fingerprint
+        , ignorePaths : List (List String)
+        }
+    | Clone VaultId String
 
 
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
@@ -92,3 +104,26 @@ asVault fv =
     , folderPath = ""
     , modificationDate = fv.modificationDate
     }
+
+
+jsonOptions : Config -> VaultOptions -> Json.Value
+jsonOptions config options =
+    case options of
+        Create { folder, userKeys, ignorePaths } ->
+            Json.object
+                [ ( "folder", Json.string (String.join config.pathSeparator folder) )
+                , ( "userKeys", Json.list (List.map Json.string userKeys) )
+                , ( "ignorePaths"
+                  , Json.list
+                        (List.map
+                            (\p -> Json.list (List.map Json.string p))
+                            ignorePaths
+                        )
+                  )
+                ]
+
+        Clone vaultId folder ->
+            Json.object
+                [ ( "id", Json.string vaultId )
+                , ( "folder", Json.string folder )
+                ]

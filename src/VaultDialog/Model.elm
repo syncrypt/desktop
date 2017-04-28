@@ -24,6 +24,7 @@ type alias FolderItem =
 
 type alias State =
     { id : VaultId
+    , isNew : Bool
     , title : String
     , modal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
@@ -51,6 +52,7 @@ type Msg
 init : State
 init =
     { id = ""
+    , isNew = True
     , title = "Untitled Vault"
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
     , localFolderPath = Nothing
@@ -85,6 +87,7 @@ initForVault vault =
     in
         { default
             | id = vault.id
+            , isNew = False
             , title = name
             , nameInput = nameInput
             , localFolderPath = Just (asPath vault.folderPath)

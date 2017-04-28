@@ -24,6 +24,15 @@ getFlyingVaults config =
     apiRequest config Get "flying-vault" Nothing flyingVaultsDecoder
 
 
+createVault : VaultOptions -> Config -> Http.Request Vault
+createVault options config =
+    apiRequest config
+        Post
+        "vault"
+        (Just (Http.jsonBody (jsonOptions config options)))
+        vaultDecoder
+
+
 type alias Path =
     String
 
@@ -44,6 +53,7 @@ type RequestMethod
 
     requestMethod Get  -- -> "GET"
     requestMethod Post -- -> "POST"
+
 -}
 requestMethod : RequestMethod -> String
 requestMethod rm =
@@ -70,6 +80,7 @@ requestMethod rm =
         config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
     in
         apiRequest config Get "vault" vaultsDecoder
+
 -}
 apiRequest : Config -> RequestMethod -> Path -> Maybe Http.Body -> Json.Decoder a -> Http.Request a
 apiRequest config method path maybeBody decoder =
@@ -121,6 +132,7 @@ attemptDelayed time msg request =
     in
         apiUrl config "foo"  -- -> "http://localhost:28080/foo/"
         apiUrl config "/bar" -- -> "http://localhost:28080/bar/"
+
 -}
 apiUrl : Config -> Path -> Url
 apiUrl config path =
@@ -177,7 +189,7 @@ vaultDecoder =
         |> required "id" Json.string
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> required "size" Json.int
-        |> required "status" vaultStatus
+        |> required "state" vaultStatus
         |> required "user_count" Json.int
         |> required "file_count" Json.int
         |> required "revision_count" Json.int

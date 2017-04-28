@@ -7,4 +7,5 @@ type alias Config =
     { apiUrl : String
     , apiAuthToken : String
     , updateInterval : Time
+    , pathSeparator : String
     }
