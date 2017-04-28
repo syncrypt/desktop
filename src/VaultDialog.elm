@@ -149,6 +149,7 @@ tabContents vaultId state model =
         ]
 
 
+dialogInput : Html msg -> Html msg
 dialogInput body =
     div [ class "VaultDialog-Input" ]
         [ body ]
