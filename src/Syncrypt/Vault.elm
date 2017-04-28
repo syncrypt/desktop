@@ -110,17 +110,18 @@ jsonOptions : Config -> VaultOptions -> Json.Value
 jsonOptions config options =
     case options of
         Create { folder, userKeys, ignorePaths } ->
-            Json.object
-                [ ( "folder", Json.string (String.join config.pathSeparator folder) )
-                , ( "userKeys", Json.list (List.map Json.string userKeys) )
-                , ( "ignorePaths"
-                  , Json.list
-                        (List.map
-                            (\p -> Json.list (List.map Json.string p))
-                            ignorePaths
-                        )
-                  )
-                ]
+            let
+                pathString path =
+                    String.join config.pathSeparator path
+            in
+                Json.object
+                    [ ( "folder", Json.string (pathString folder) )
+                    , ( "userKeys", Json.list (List.map Json.string userKeys) )
+                    , ( "ignorePaths"
+                      , Json.list
+                            (List.map (pathString >> Json.string) ignorePaths)
+                      )
+                    ]
 
         Clone vaultId folder ->
             Json.object
