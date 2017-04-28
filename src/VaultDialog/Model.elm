@@ -23,7 +23,7 @@ type alias State =
     , isNew : Bool
     , title : String
     , modal : Ui.Modal.Model
-    , confirmationModal : Ui.Modal.Model
+    , deleteConfirmationModal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
     , tabs : Ui.Tabs.Model
     , localFolderPath : Maybe Path
@@ -62,7 +62,7 @@ init =
         Ui.Modal.init
             |> Ui.Modal.closable False
             |> Ui.Modal.backdrop False
-    , confirmationModal =
+    , deleteConfirmationModal =
         Ui.Modal.init
             |> Ui.Modal.closable False
             |> Ui.Modal.backdrop True

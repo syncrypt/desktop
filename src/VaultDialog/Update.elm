@@ -145,8 +145,8 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             ConfirmationModal msg ->
                 ({ state
-                    | confirmationModal =
-                        Ui.Modal.update msg state.confirmationModal
+                    | deleteConfirmationModal =
+                        Ui.Modal.update msg state.deleteConfirmationModal
                  }
                     |> asStateIn vaultId model
                 )
@@ -233,7 +233,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             AskDeleteVault ->
                 ({ state
-                    | confirmationModal = Ui.Modal.open state.confirmationModal
+                    | deleteConfirmationModal = Ui.Modal.open state.deleteConfirmationModal
                  }
                     |> asStateIn vaultId model
                 )
@@ -241,7 +241,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             CancelDeleteVault ->
                 ({ state
-                    | confirmationModal = Ui.Modal.close state.confirmationModal
+                    | deleteConfirmationModal = Ui.Modal.close state.deleteConfirmationModal
                  }
                     |> asStateIn vaultId model
                 )

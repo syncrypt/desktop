@@ -106,7 +106,7 @@ viewDeleteConfirmationModal state =
             , title = "Delete Vault?"
             }
     in
-        Ui.Modal.view viewConfig state.confirmationModal
+        Ui.Modal.view viewConfig state.deleteConfirmationModal
 
 
 deleteConfirmationModalContents : State -> List (Html Model.Msg)
