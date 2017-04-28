@@ -90,7 +90,7 @@ update action model =
                         |> attemptDelayed 1000 FetchedVaultsFromApi
                   ]
             )
-                |> Util.andAlso (notify ("Error fetching vaults: " ++ toString (reason)))
+                |> Util.andAlso (notifyText ("Error fetching vaults: " ++ toString (reason)))
 
         UpdatedVaultsFromApi (Ok vaults) ->
             { model | vaults = vaults }
@@ -141,11 +141,11 @@ update action model =
 
         CreatedVault (Ok vault) ->
             model
-                |> notify ("Vault created: " ++ vault.id)
+                |> notifyText ("Vault created: " ++ vault.id)
 
         CreatedVault (Err reason) ->
             model
-                |> notify ("Vault creation failed: " ++ (toString reason))
+                |> notifyText ("Vault creation failed: " ++ (toString reason))
 
         RemoveVault vaultId ->
             model
@@ -156,11 +156,11 @@ update action model =
 
         RemovedVault (Ok vaultId) ->
             model
-                |> notify ("Vault removed from sync: " ++ vaultId)
+                |> notifyText ("Vault removed from sync: " ++ vaultId)
 
         RemovedVault (Err reason) ->
             model
-                |> notify ("Vault removal failed: " ++ (toString reason))
+                |> notifyText ("Vault removal failed: " ++ (toString reason))
 
         DeleteVault vaultId ->
             model
@@ -184,11 +184,11 @@ update action model =
             in
                 newModel
                     |> VaultDialog.Update.close vaultId
-                    |> andAlso (notify ("Vault deleted from server: " ++ vaultId))
+                    |> andAlso (notifyText ("Vault deleted from server: " ++ vaultId))
 
         DeletedVault (Err reason) ->
             model
-                |> notify ("Vault deletion failed: " ++ (toString reason))
+                |> notifyText ("Vault deletion failed: " ++ (toString reason))
 
         VaultDialog vaultId msg ->
             model
@@ -237,17 +237,22 @@ updateNowIn time =
     Util.performDelayed time SetDate Date.now
 
 
-notify : String -> Model -> ( Model, Cmd Msg )
-notify message model =
+notify : Html Msg -> Model -> ( Model, Cmd Msg )
+notify body model =
     let
         content =
-            div [ class "MainScreen-NotificationCenter" ] [ text message ]
+            div [ class "MainScreen-NotificationCenter" ] [ body ]
 
         ( state, cmd ) =
             Ui.NotificationCenter.notify content model.notificationCenter
     in
         { model | notificationCenter = state }
             ! [ Cmd.map NotificationCenter cmd ]
+
+
+notifyText : String -> Model -> ( Model, Cmd Msg )
+notifyText message model =
+    notify (text message) model
 
 
 saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
@@ -273,10 +278,10 @@ saveVault vaultId model =
 
                 Nothing ->
                     model
-                        |> notify "No path selected - Vault not created"
+                        |> notifyText "No path selected - Vault not created"
         else
             model
-                |> notify "Vault updated"
+                |> notifyText "Vault updated"
 
 
 
