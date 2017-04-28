@@ -87,12 +87,40 @@ contents vaultId model =
             }
     in
         [ Ui.Tabs.view tabsViewConfig state.tabs
+        , viewConfirmationModal state
         , div [ class "VaultDialog-Buttons" ]
             [ deleteButton state vaultId
             , saveButton vaultId
             , cancelButton vaultId
             ]
         ]
+
+
+viewConfirmationModal : State -> Html Model.Msg
+viewConfirmationModal state =
+    let
+        viewConfig =
+            { address = (ConfirmationModal >> Model.VaultDialog state.id)
+            , contents =
+                [ div [ class "VaultDialog-Confirmation-Content" ]
+                    [ text "Do you really want to delete this vault from the server?"
+                    , div [ class "VaultDialog-Buttons" ]
+                        [ span [ class "VaultDialog-Confirmation-Button-Cancel" ]
+                            [ Ui.Button.model "Cancel" "secondary" "small"
+                                |> Ui.Button.view (Model.VaultDialog state.id CancelDeleteVault)
+                            ]
+                        , span [ class "VaultDialog-Confirmation-Button-Confirm" ]
+                            [ Ui.Button.model "Confirm" "primary" "small"
+                                |> Ui.Button.view (Model.DeleteVault state.id)
+                            ]
+                        ]
+                    ]
+                ]
+            , footer = []
+            , title = "Delete Vault?"
+            }
+    in
+        Ui.Modal.view viewConfig state.confirmationModal
 
 
 tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
@@ -139,7 +167,7 @@ deleteButton state vaultId =
             ]
         ]
         [ Ui.Button.model "Delete" "danger" "small"
-            |> Ui.Button.view (Model.DeleteVault vaultId)
+            |> Ui.Button.view (Model.VaultDialog vaultId AskDeleteVault)
         ]
 
 

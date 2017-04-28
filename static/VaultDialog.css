@@ -99,3 +99,12 @@
   padding-bottom: 20px;
   padding-left: 10px;
 }
+
+.VaultDialog-Confirmation-Button-Cancel{
+  float: left;
+  margin-bottom: 10px;
+}
+.VaultDialog-Confirmation-Button-Confirm {
+  float: right;
+  margin-bottom: 10px;
+}

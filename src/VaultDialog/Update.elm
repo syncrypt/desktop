@@ -143,6 +143,15 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
+            ConfirmationModal msg ->
+                ({ state
+                    | confirmationModal =
+                        Ui.Modal.update msg state.confirmationModal
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
             NameInput msg ->
                 let
                     ( nameInput, cmd ) =
@@ -218,6 +227,22 @@ update msg vaultId ({ vaultDialogs } as model) =
             ExpandFolder path ->
                 (state
                     |> expandFolder path
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            AskDeleteVault ->
+                ({ state
+                    | confirmationModal = Ui.Modal.open state.confirmationModal
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            CancelDeleteVault ->
+                ({ state
+                    | confirmationModal = Ui.Modal.close state.confirmationModal
+                 }
                     |> asStateIn vaultId model
                 )
                     ! []

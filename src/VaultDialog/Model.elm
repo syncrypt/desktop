@@ -23,6 +23,7 @@ type alias State =
     , isNew : Bool
     , title : String
     , modal : Ui.Modal.Model
+    , confirmationModal : Ui.Modal.Model
     , nameInput : Ui.Input.Model
     , tabs : Ui.Tabs.Model
     , localFolderPath : Maybe Path
@@ -34,6 +35,7 @@ type alias State =
 
 type Msg
     = Modal Ui.Modal.Msg
+    | ConfirmationModal Ui.Modal.Msg
     | NameInput Ui.Input.Msg
     | FileCheckBox Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
@@ -43,6 +45,8 @@ type Msg
     | Tabs Ui.Tabs.Msg
     | CollapseFolder Path
     | ExpandFolder Path
+    | AskDeleteVault
+    | CancelDeleteVault
 
 
 init : State
@@ -58,6 +62,10 @@ init =
         Ui.Modal.init
             |> Ui.Modal.closable False
             |> Ui.Modal.backdrop False
+    , confirmationModal =
+        Ui.Modal.init
+            |> Ui.Modal.closable False
+            |> Ui.Modal.backdrop True
     , nameInput =
         Ui.Input.init ()
             |> Ui.Input.placeholder "Vault Name"
