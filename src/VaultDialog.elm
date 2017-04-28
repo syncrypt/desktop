@@ -88,7 +88,8 @@ contents vaultId model =
     in
         [ Ui.Tabs.view tabsViewConfig state.tabs
         , div [ class "VaultDialog-Buttons" ]
-            [ saveButton vaultId
+            [ deleteButton state vaultId
+            , saveButton vaultId
             , cancelButton vaultId
             ]
         ]
@@ -126,6 +127,19 @@ cancelButton vaultId =
     span [ class "VaultDialog-Button-Cancel" ]
         [ Ui.Button.model "Cancel" "secondary" "small"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
+        ]
+
+
+deleteButton : State -> VaultId -> Html Model.Msg
+deleteButton state vaultId =
+    span
+        [ classList
+            [ ( "Hidden", state.isNew )
+            , ( "VaultDialog-Button-Delete", True )
+            ]
+        ]
+        [ Ui.Button.model "Delete" "danger" "small"
+            |> Ui.Button.view (Model.DeleteVault vaultId)
         ]
 
 

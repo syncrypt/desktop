@@ -147,6 +147,49 @@ update action model =
             (model ! [])
                 |> andAlso (notify ("Vault creation failed: " ++ (toString reason)))
 
+        RemoveVault vaultId ->
+            model
+                ! [ model.config
+                        |> Daemon.removeVault vaultId
+                        |> attempt RemovedVault
+                  ]
+
+        RemovedVault (Ok vaultId) ->
+            model
+                |> notify ("Vault removed from sync: " ++ vaultId)
+
+        RemovedVault (Err reason) ->
+            model
+                |> notify ("Vault removal failed: " ++ (toString reason))
+
+        DeleteVault vaultId ->
+            model
+                ! [ model.config
+                        |> Daemon.deleteVault vaultId
+                        |> attempt DeletedVault
+                  ]
+
+        DeletedVault (Ok vaultId) ->
+            let
+                newModel =
+                    case model.state of
+                        ShowingVaultDetails v ->
+                            if v.id == vaultId then
+                                { model | state = ShowingAllVaults }
+                            else
+                                model
+
+                        _ ->
+                            model
+            in
+                newModel
+                    |> VaultDialog.Update.close vaultId
+                    |> andAlso (notify ("Vault deleted from server: " ++ vaultId))
+
+        DeletedVault (Err reason) ->
+            model
+                |> notify ("Vault deletion failed: " ++ (toString reason))
+
         VaultDialog vaultId msg ->
             model
                 |> VaultDialog.Update.update msg vaultId

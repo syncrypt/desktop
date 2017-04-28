@@ -33,6 +33,24 @@ createVault options config =
         vaultDecoder
 
 
+removeVault : VaultId -> Config -> Http.Request VaultId
+removeVault vaultId config =
+    apiRequest config
+        Delete
+        ("vault/" ++ vaultId)
+        (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Remove vaultId))))
+        (decodeToVal vaultId)
+
+
+deleteVault : VaultId -> Config -> Http.Request VaultId
+deleteVault vaultId config =
+    apiRequest config
+        Delete
+        ("vault/" ++ vaultId)
+        (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Delete vaultId))))
+        (decodeToVal vaultId)
+
+
 type alias Path =
     String
 
@@ -165,6 +183,11 @@ apiHeaders : Config -> List Http.Header
 apiHeaders config =
     [ Http.header "X-Authtoken" config.apiAuthToken
     ]
+
+
+decodeToVal : a -> Json.Decoder a
+decodeToVal val =
+    Json.succeed val
 
 
 {-| Decodes an array of `Syncrypt.Vault.Vault`.

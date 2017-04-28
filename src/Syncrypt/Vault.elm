@@ -38,6 +38,8 @@ type VaultOptions
         , folder : Path
         , ignorePaths : List Path
         }
+    | Remove VaultId
+    | Delete VaultId
 
 
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
@@ -133,3 +135,9 @@ jsonOptions config options =
                     [ ( "id", Json.string id )
                     , ( "folder", Json.string (pathString folder) )
                     ]
+
+            Remove id ->
+                Json.object [ ( "id", Json.string id ) ]
+
+            Delete id ->
+                Json.object [ ( "id", Json.string id ), ( "wipe", Json.int 1 ) ]

@@ -56,6 +56,10 @@ type Msg
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg
+    | RemoveVault VaultId
+    | RemovedVault (Result Http.Error VaultId)
+    | DeleteVault VaultId
+    | DeletedVault (Result Http.Error VaultId)
 
 
 type NotificationMsg
