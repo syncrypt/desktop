@@ -124,7 +124,7 @@ vaultRemoveFromSyncButton vault =
         [ class "VaultList-VaultRemoveButton"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Remove vault from sync"
-        , onClick (RemoveVaultFromSync vault)
+        , onClick (RemoveVaultFromSync vault.id)
         ]
         []
 

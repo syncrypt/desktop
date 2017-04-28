@@ -147,18 +147,18 @@ update action model =
             model
                 |> notifyText ("Vault creation failed: " ++ (toString reason))
 
-        RemoveVault vaultId ->
+        RemoveVaultFromSync vaultId ->
             model
                 ! [ model.config
                         |> Daemon.removeVault vaultId
-                        |> attempt RemovedVault
+                        |> attempt RemovedVaultFromSync
                   ]
 
-        RemovedVault (Ok vaultId) ->
+        RemovedVaultFromSync (Ok vaultId) ->
             model
                 |> notifyText ("Vault removed from sync: " ++ vaultId)
 
-        RemovedVault (Err reason) ->
+        RemovedVaultFromSync (Err reason) ->
             model
                 |> notifyText ("Vault removal failed: " ++ (toString reason))
 
@@ -203,10 +203,6 @@ update action model =
             model ! []
 
         OpenAccountSettings ->
-            -- TODO
-            model ! []
-
-        RemoveVaultFromSync _ ->
             -- TODO
             model ! []
 

@@ -49,15 +49,14 @@ type Msg
     | SaveVaultDetails VaultId
     | OpenProgramSettings
     | OpenAccountSettings
-    | RemoveVaultFromSync Vault
     | Logout
     | CreateNewVault
     | CreatedVault (Result Http.Error Vault)
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg
-    | RemoveVault VaultId
-    | RemovedVault (Result Http.Error VaultId)
+    | RemoveVaultFromSync VaultId
+    | RemovedVaultFromSync (Result Http.Error VaultId)
     | DeleteVault VaultId
     | DeletedVault (Result Http.Error VaultId)
 
