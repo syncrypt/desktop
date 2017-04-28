@@ -78,7 +78,7 @@ init config =
     , notificationCenter =
         Ui.NotificationCenter.init ()
             |> Ui.NotificationCenter.timeout 2500
-            |> Ui.NotificationCenter.duration 1000
+            |> Ui.NotificationCenter.duration 2500
     }
 
 
