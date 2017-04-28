@@ -140,12 +140,12 @@ update action model =
                 |> VaultDialog.Update.openNew
 
         CreatedVault (Ok vault) ->
-            (model ! [])
-                |> andAlso (notify ("Vault created: " ++ vault.id))
+            model
+                |> notify ("Vault created: " ++ vault.id)
 
         CreatedVault (Err reason) ->
-            (model ! [])
-                |> andAlso (notify ("Vault creation failed: " ++ (toString reason)))
+            model
+                |> notify ("Vault creation failed: " ++ (toString reason))
 
         RemoveVault vaultId ->
             model
