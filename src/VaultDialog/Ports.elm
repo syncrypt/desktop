@@ -1,6 +1,7 @@
 port module VaultDialog.Ports exposing (..)
 
-import VaultDialog.Model exposing (FolderItem, Path)
+import VaultDialog.Model exposing (FolderItem)
+import Path exposing (Path)
 import Syncrypt.Vault exposing (VaultId)
 
 

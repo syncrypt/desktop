@@ -11,23 +11,18 @@ import Ui.Container
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Ui.Image
 import VaultDialog.Model
     exposing
         ( FileName
         , FolderItem
         , Msg(..)
-        , Path
         , State
-        , folderName
-        , inRoot
-        , parentPath
         , isIgnored
         , isExpanded
-        , name
         , sortedFolders
         , folderIsEmpty
         )
+import Path exposing (Path)
 import VaultDialog.Update exposing (dialogState)
 import Syncrypt.Vault exposing (VaultId)
 import VaultDialog.Ports
@@ -302,7 +297,7 @@ fileCheckbox path state =
             checkbox
                 |> labeledRight []
                     (Just (ToggleIgnorePath path))
-                    (folderName path)
+                    (Path.folderName path)
     in
         span [ class "VaultDialog-FolderItem-Checkbox" ]
             [ checkboxWithLabel ]
@@ -313,5 +308,5 @@ fileCheckboxSettings path state =
     { disabled = False
     , readonly = False
     , value = not (isIgnored path state)
-    , uid = name path
+    , uid = Path.name path
     }

@@ -6,16 +6,12 @@ import Ui.Input
 import Ui.Modal
 import Ui.Tabs
 import Set exposing (Set)
-import Util
+import Path exposing (Path, asPath)
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
 
 
 type alias FileName =
     String
-
-
-type alias Path =
-    List String
 
 
 type alias FolderItem =
@@ -134,7 +130,7 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
                 isRoot =
                     path == []
             in
-                case ( parentPath path, Dict.get path items ) of
+                case ( Path.parent path, Dict.get path items ) of
                     ( [], Nothing ) ->
                         items
                             |> Dict.insert path files
@@ -170,51 +166,6 @@ toggleIgnorePath path ({ ignoredFolderItems } as model) =
             { model
                 | ignoredFolderItems = Set.insert path ignoredFolderItems
             }
-
-
-folderName : Path -> String
-folderName path =
-    case path of
-        [] ->
-            "./"
-
-        [ x ] ->
-            x
-
-        _ :: rest ->
-            folderName rest
-
-
-name : Path -> String
-name path =
-    case path of
-        [] ->
-            "."
-
-        [ f ] ->
-            f
-
-        _ :: rest ->
-            name rest
-
-
-asPath : String -> Path
-asPath pathString =
-    if String.startsWith "/" pathString then
-        String.split ("/") pathString
-    else
-        String.split "\\" pathString
-
-
-inRoot : Path -> Bool
-inRoot path =
-    List.length path == 1
-
-
-parentPath : Path -> Path
-parentPath path =
-    path
-        |> Util.allButLast
 
 
 folderIsEmpty : Path -> State -> Bool

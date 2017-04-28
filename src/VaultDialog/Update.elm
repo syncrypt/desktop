@@ -4,7 +4,6 @@ import Model exposing (Model, vaultWithId)
 import Ui.Modal
 import Ui.Input
 import Ui.Tabs
-import Ui.Image
 import VaultDialog.Ports
 import VaultDialog.Model
     exposing
@@ -14,10 +13,10 @@ import VaultDialog.Model
         , isIgnored
         , addFolder
         , toggleIgnorePath
-        , folderName
         , expandFolder
         , collapseFolder
         )
+import Path exposing (folderName)
 import Dialog exposing (asModalIn)
 import Platform.Cmd exposing (map)
 import Dict
