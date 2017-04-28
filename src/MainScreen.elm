@@ -131,10 +131,8 @@ update action model =
                 |> VaultDialog.Update.cancel vaultId
 
         SaveVaultDetails vaultId ->
-            -- TODO: persist config changes to daemon from model.vaultDialogs[vaultId]
-            ({ model | state = ShowingAllVaults }
+            { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
-            )
                 |> andAlso (saveVault vaultId)
 
         CreateNewVault ->
