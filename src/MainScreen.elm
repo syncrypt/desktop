@@ -57,7 +57,8 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
         SetDate date ->
-            { model | now = Just date } ! [ updateNowIn 1000 ]
+            { model | now = Just date }
+                ! [ updateNowIn 1000 ]
 
         UpdateVaults ->
             { model | state = UpdatingVaults model.vaults }
