@@ -1,0 +1,13 @@
+.ConfirmationDialog-Buttons {
+  padding-top: 20px;
+}
+
+.ConfirmationDialog-Button-Cancel{
+  float: left;
+  margin-bottom: 10px;
+}
+
+.ConfirmationDialog-Button-Confirm {
+  float: right;
+  margin-bottom: 10px;
+}

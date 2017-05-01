@@ -163,13 +163,6 @@ update action model =
             model
                 |> notifyText ("Vault removal failed: " ++ (toString reason))
 
-        DeleteVault vaultId ->
-            model
-                ! [ model.config
-                        |> Daemon.deleteVault vaultId
-                        |> attempt DeletedVault
-                  ]
-
         DeletedVault (Ok vaultId) ->
             let
                 newModel =

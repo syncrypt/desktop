@@ -21,6 +21,8 @@ import Dialog exposing (asModalIn)
 import Platform.Cmd exposing (map)
 import Dict
 import Syncrypt.Vault exposing (VaultId, Vault, nameOrId)
+import ConfirmationDialog
+import Daemon
 
 
 open : Model -> ( Model, Cmd Model.Msg )
@@ -143,11 +145,9 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            ConfirmationModal msg ->
-                ({ state
-                    | deleteConfirmationModal =
-                        Ui.Modal.update msg state.deleteConfirmationModal
-                 }
+            ConfirmationDialog msg ->
+                (state
+                    |> ConfirmationDialog.update msg
                     |> asStateIn vaultId model
                 )
                     ! []
@@ -232,20 +232,28 @@ update msg vaultId ({ vaultDialogs } as model) =
                     ! []
 
             AskDeleteVault ->
-                ({ state
-                    | deleteConfirmationModal = Ui.Modal.open state.deleteConfirmationModal
-                 }
-                    |> asStateIn vaultId model
-                )
-                    ! []
+                let
+                    title =
+                        "Delete Vault?"
 
-            CancelDeleteVault ->
-                ({ state
-                    | deleteConfirmationModal = Ui.Modal.close state.deleteConfirmationModal
-                 }
-                    |> asStateIn vaultId model
-                )
-                    ! []
+                    question =
+                        "Do you really want to delete this vault from the server?"
+
+                    confirmMsg =
+                        ConfirmedVaultDeletion
+                in
+                    (state
+                        |> ConfirmationDialog.open title question confirmMsg
+                        |> asStateIn vaultId model
+                    )
+                        ! []
+
+            ConfirmedVaultDeletion ->
+                model
+                    ! [ model.config
+                            |> Daemon.deleteVault state.id
+                            |> Daemon.attempt Model.DeletedVault
+                      ]
 
 
 asStateIn : VaultId -> Model -> State -> Model

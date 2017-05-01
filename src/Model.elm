@@ -57,7 +57,6 @@ type Msg
     | NotificationCenter Ui.NotificationCenter.Msg
     | RemoveVaultFromSync VaultId
     | RemovedVaultFromSync (Result Http.Error VaultId)
-    | DeleteVault VaultId
     | DeletedVault (Result Http.Error VaultId)
 
 

@@ -8,6 +8,7 @@ import Ui.Tabs
 import Set exposing (Set)
 import Path exposing (Path, asPath)
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import ConfirmationDialog
 
 
 type alias FileName =
@@ -23,7 +24,7 @@ type alias State =
     , isNew : Bool
     , title : String
     , modal : Ui.Modal.Model
-    , deleteConfirmationModal : Ui.Modal.Model
+    , confirmationDialog : ConfirmationDialog.Model Msg
     , nameInput : Ui.Input.Model
     , tabs : Ui.Tabs.Model
     , localFolderPath : Maybe Path
@@ -35,7 +36,7 @@ type alias State =
 
 type Msg
     = Modal Ui.Modal.Msg
-    | ConfirmationModal Ui.Modal.Msg
+    | ConfirmationDialog ConfirmationDialog.Msg
     | NameInput Ui.Input.Msg
     | FileCheckBox Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
@@ -46,7 +47,7 @@ type Msg
     | CollapseFolder Path
     | ExpandFolder Path
     | AskDeleteVault
-    | CancelDeleteVault
+    | ConfirmedVaultDeletion
 
 
 init : State
@@ -62,10 +63,8 @@ init =
         Ui.Modal.init
             |> Ui.Modal.closable False
             |> Ui.Modal.backdrop False
-    , deleteConfirmationModal =
-        Ui.Modal.init
-            |> Ui.Modal.closable False
-            |> Ui.Modal.backdrop True
+    , confirmationDialog =
+        ConfirmationDialog.init ConfirmationDialog
     , nameInput =
         Ui.Input.init ()
             |> Ui.Input.placeholder "Vault Name"
