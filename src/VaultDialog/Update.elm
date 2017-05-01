@@ -58,7 +58,7 @@ openNew model =
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
 openForVault vault model =
     let
-        ( newlyCreated, ( state, cmd ) ) =
+        ( isNewlyCreated, ( state, cmd ) ) =
             case Dict.get vault.id model.vaultDialogs of
                 Nothing ->
                     let
@@ -79,7 +79,7 @@ openForVault vault model =
             Maybe.withDefault [] state.localFolderPath
 
         commands =
-            if newlyCreated then
+            if isNewlyCreated then
                 [ cmd
                 , VaultDialog.Ports.getFileList ( vault.id, path )
                 ]
