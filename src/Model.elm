@@ -61,11 +61,6 @@ type Msg
     | DeletedVault (Result Http.Error VaultId)
 
 
-type NotificationMsg
-    = InvitedToVault User FlyingVault -- inviter, vault info
-    | UpdateAvailable String (Maybe String) -- version, changelog / info text
-
-
 init : Config -> Model
 init config =
     { config = config
