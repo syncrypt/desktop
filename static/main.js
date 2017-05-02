@@ -6,6 +6,7 @@ const Menu = electron.Menu
 const BrowserWindow = electron.BrowserWindow // This is a Module that creates windows
 const Path = require('path')
 const ChildProcess = require('child_process')
+const FileSystem = require('fs')
 
 var mainWindow; // saves a global reference to mainWindow so it doesn't get garbage collected
 
@@ -17,21 +18,31 @@ if (process.env.NODE_ENV === "development") {
 }
 
 
-app.on('ready', createWindow) // called when electron has initialized
+// Launch the Syncrypt daemon, if it exists
+function launchDaemon() {
+
+  if (process.platform == 'win32') daemonPath += '.exe';
+
+  if (FileSystem.existsSync(daemonPath)) {
+    const daemon = ChildProcess.spawn(daemonPath);
+
+    daemon.on('data', (data) => {
+      console.log("daemon: ", data)
+    })
+
+    daemon.on('close', (code) => {
+      const msg  = `child process exited with code ${code}`
+      console.log(msg);
+    });
+  }
+  else {
+    console.warn('Did not start the daemon, because the following path does not ' +
+                 `exist: ${daemonPath}`)
+  }
+}
 
 // This will create our app window, no surprise there
 function createWindow () {
-  const daemon = ChildProcess.spawn(daemonPath);
-
-  daemon.on('data', (data) => {
-    console.log("daemon: ", data)
-  })
-
-  daemon.on('close', (code) => {
-    const msg  = `child process exited with code ${code}`
-    console.log(msg);
-  });
-
   mainWindow = new BrowserWindow({
     width: 1024,
     minWidth: 900,
@@ -69,6 +80,12 @@ function createWindow () {
   })
 }
 
+// called when electron has initialized
+app.on('ready', () => {
+  launchDaemon()
+  createWindow()
+})
+
 /* Mac Specific things */
 
 // when you close all the windows on a non-mac OS it quits the app
@@ -78,5 +95,7 @@ app.on('window-all-closed', () => {
 
 // if there is no mainWindow it creates one (like when you click the dock icon)
 app.on('activate', () => {
-  if (mainWindow === null) { createWindow() }
+  if (mainWindow === null) {
+    createWindow()
+  }
 })
