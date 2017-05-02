@@ -90,7 +90,7 @@ initForVault vault =
     in
         { default
             | id = vault.id
-            , isNew = False
+            , isNew = vault.id == ""
             , title = name
             , nameInput = nameInput
             , localFolderPath = Just (asPath vault.folderPath)
