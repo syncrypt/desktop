@@ -2,6 +2,8 @@ module Model exposing (..)
 
 import Config exposing (Config)
 import Date exposing (Date)
+import VaultDialog.Model
+import Syncrypt.Vault exposing (VaultId)
 import Dict exposing (Dict)
 import Http
 import Process
