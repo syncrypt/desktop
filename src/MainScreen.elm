@@ -217,35 +217,31 @@ update action model =
                 model ! []
 
         Model.LoginDialog loginMsg ->
-            let
-                _ =
-                    Debug.log "action: " loginMsg
-            in
-                case loginMsg of
-                    LoginDialog.Model.EmailInput msg ->
-                        let
-                            ( emailInput, cmd ) =
-                                Ui.Input.update msg model.loginDialog.emailInput
+            case loginMsg of
+                LoginDialog.Model.EmailInput msg ->
+                    let
+                        ( emailInput, cmd ) =
+                            Ui.Input.update msg model.loginDialog.emailInput
 
-                            loginDialog =
-                                model.loginDialog
-                        in
-                            ({ model | loginDialog = { loginDialog | emailInput = emailInput } })
-                                ! []
+                        loginDialog =
+                            model.loginDialog
+                    in
+                        ({ model | loginDialog = { loginDialog | emailInput = emailInput } })
+                            ! []
 
-                    LoginDialog.Model.PasswordInput msg ->
-                        let
-                            ( passwordInput, cmd ) =
-                                Ui.Input.update msg model.loginDialog.passwordInput
+                LoginDialog.Model.PasswordInput msg ->
+                    let
+                        ( passwordInput, cmd ) =
+                            Ui.Input.update msg model.loginDialog.passwordInput
 
-                            loginDialog =
-                                model.loginDialog
-                        in
-                            ({ model | loginDialog = { loginDialog | passwordInput = passwordInput } })
-                                ! []
+                        loginDialog =
+                            model.loginDialog
+                    in
+                        ({ model | loginDialog = { loginDialog | passwordInput = passwordInput } })
+                            ! []
 
-                    _ ->
-                        model ! []
+                LoginDialog.Model.Modal _ ->
+                    model ! []
 
         FocusOn id ->
             model
