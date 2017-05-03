@@ -18,7 +18,12 @@ import Util exposing (Direction(..), andAlso)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
+import LoginDialog
+import LoginDialog.Model
 import VaultList
+import Syncrypt.Vault exposing (VaultOptions(..))
+import Set
+import Ui.Input
 
 
 -- INIT
@@ -200,6 +205,47 @@ update action model =
         Logout ->
             -- TODO
             model ! []
+
+        Login ->
+            let
+                _ =
+                    Debug.log "logging in with email" model.loginDialog.emailInput.value
+
+                _ =
+                    Debug.log "logging in with password" model.loginDialog.passwordInput.value
+            in
+                model ! []
+
+        Model.LoginDialog loginMsg ->
+            let
+                _ =
+                    Debug.log "action: " loginMsg
+            in
+                case loginMsg of
+                    LoginDialog.Model.EmailInput msg ->
+                        let
+                            ( emailInput, cmd ) =
+                                Ui.Input.update msg model.loginDialog.emailInput
+
+                            loginDialog =
+                                model.loginDialog
+                        in
+                            ({ model | loginDialog = { loginDialog | emailInput = emailInput } })
+                                ! []
+
+                    LoginDialog.Model.PasswordInput msg ->
+                        let
+                            ( passwordInput, cmd ) =
+                                Ui.Input.update msg model.loginDialog.passwordInput
+
+                            loginDialog =
+                                model.loginDialog
+                        in
+                            ({ model | loginDialog = { loginDialog | passwordInput = passwordInput } })
+                                ! []
+
+                    _ ->
+                        model ! []
 
         FocusOn id ->
             model

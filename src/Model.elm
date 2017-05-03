@@ -39,6 +39,8 @@ type alias Model =
     , stats : WebData Stats
     , sidebarOpen : Bool
     , now : Maybe Date
+    , loggedIn : Bool
+    , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : WebData LoginState
@@ -96,6 +98,7 @@ init config =
     , stats = NotAsked
     , sidebarOpen = False
     , now = Nothing
+    , loginDialog = LoginDialog.Model.init
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
     , notificationCenter =
         Ui.NotificationCenter.init ()
