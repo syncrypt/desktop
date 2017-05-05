@@ -160,7 +160,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                     ({ state | nameInput = nameInput }
                         |> asStateIn vaultId model
                     )
-                        ! [ cmd |> map (NameInput >> Model.VaultDialog vaultId) ]
+                        ! [ cmd |> map (Model.VaultDialog vaultId << NameInput) ]
 
             Tabs msg ->
                 let
@@ -170,7 +170,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                     ({ state | tabs = tabs }
                         |> asStateIn vaultId model
                     )
-                        ! [ cmd |> map (Tabs >> Model.VaultDialog vaultId) ]
+                        ! [ cmd |> map (Model.VaultDialog vaultId << Tabs) ]
 
             FileCheckBox path _ ->
                 (state
@@ -214,7 +214,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! [ VaultDialog.Ports.getFileList ( vaultId, path )
-                          , Cmd.map (NameInput >> Model.VaultDialog vaultId) nameInputCmd
+                          , Cmd.map (Model.VaultDialog vaultId << NameInput) nameInputCmd
                           ]
 
             CollapseFolder path ->

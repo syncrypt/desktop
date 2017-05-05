@@ -102,7 +102,7 @@ view { confirmationDialog } =
         Just view ->
             let
                 viewConfig =
-                    { address = (Modal >> confirmationDialog.address)
+                    { address = (confirmationDialog.address << Modal)
                     , contents = contents confirmationDialog.address view
                     , footer = []
                     , title = view.title

@@ -56,7 +56,7 @@ view : VaultId -> Model -> Html Model.Msg
 view vaultId model =
     let
         viewConfig =
-            { address = (Modal >> Model.VaultDialog vaultId)
+            { address = (Model.VaultDialog vaultId << Modal)
             , contents = contents vaultId model
             , footer = []
             , title =
@@ -83,7 +83,7 @@ contents vaultId model =
             dialogState vaultId model
 
         tabsViewConfig =
-            { address = (Tabs >> Model.VaultDialog vaultId)
+            { address = (Model.VaultDialog vaultId << Tabs)
             , contents = tabContents vaultId state model
             }
     in
@@ -171,7 +171,7 @@ openFolderButton vaultId =
 nameInput : VaultId -> State -> Html Model.Msg
 nameInput vaultId state =
     Ui.Input.view state.nameInput
-        |> Html.map (NameInput >> Model.VaultDialog vaultId)
+        |> Html.map (Model.VaultDialog vaultId << NameInput)
         |> labeledLeft [ class "VaultDialog-InputLabel" ]
             (Just (Model.FocusOn state.nameInput.uid))
             "Name"
