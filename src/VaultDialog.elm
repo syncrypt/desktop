@@ -1,10 +1,14 @@
 module VaultDialog exposing (..)
 
+import ConfirmationDialog
 import Dialog exposing (labeledLeft, labeledRight)
+import Dict
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
+import Path exposing (Path)
+import Syncrypt.Vault exposing (Vault, VaultId)
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -17,17 +21,13 @@ import VaultDialog.Model
         , FolderItem
         , Msg(..)
         , State
-        , isIgnored
-        , isExpanded
-        , sortedFolders
         , folderIsEmpty
+        , isExpanded
+        , isIgnored
+        , sortedFolders
         )
-import Path exposing (Path)
-import VaultDialog.Update exposing (dialogState)
-import Syncrypt.Vault exposing (VaultId)
 import VaultDialog.Ports
-import Dict
-import ConfirmationDialog
+import VaultDialog.Update exposing (dialogState)
 
 
 subscriptions : Model -> Sub Model.Msg
@@ -108,7 +108,7 @@ tabContents vaultId state model =
         [ ( "Basic"
           , div [ class "VaultDialog-Tab-Content" ]
                 [ dialogInput <| nameInput vaultId state
-                , dialogInput <| msg <| openFolderButton vaultId
+                , dialogInput <| msg <| openFolderButton vaultId state model
                 , dialogInput <| msg <| fileSelectionContainer state
                 ]
           )
@@ -155,14 +155,22 @@ saveButton vaultId =
         ]
 
 
-openFolderButton : VaultId -> Html Msg
-openFolderButton vaultId =
+openFolderButton : VaultId -> State -> Model -> Html Msg
+openFolderButton vaultId state model =
     let
-        msg =
-            OpenFolderDialog vaultId
+        button =
+            if state.isNew then
+                Ui.Button.model "Select Folder" "primary" "small"
+                    |> Ui.Button.view (OpenFolderDialog vaultId)
+            else
+                let
+                    vault =
+                        Model.vaultWithId vaultId model
+                in
+                    Ui.Button.model "Open Folder" "primary" "small"
+                        |> Ui.Button.view (OpenFolder vault)
     in
-        Ui.Button.model "Select Folder" "primary" "small"
-            |> Ui.Button.view msg
+        button
             |> labeledLeft [ class "VaultDialog-InputLabel" ]
                 Nothing
                 "Folder"

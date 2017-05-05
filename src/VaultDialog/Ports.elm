@@ -5,7 +5,7 @@ import Path exposing (Path)
 import Syncrypt.Vault exposing (VaultId)
 
 
-port openFolder : VaultId -> Cmd msg
+port openFolderDialog : VaultId -> Cmd msg
 
 
 port selectedFolder : (( VaultId, Path ) -> msg) -> Sub msg

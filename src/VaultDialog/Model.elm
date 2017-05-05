@@ -42,6 +42,7 @@ type Msg
     | NestedFileList Path FolderItem
     | ToggleIgnorePath Path
     | OpenFolderDialog VaultId
+    | OpenFolder Vault
     | SelectedFolder Path
     | Tabs Ui.Tabs.Msg
     | CollapseFolder Path

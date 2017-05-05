@@ -69,6 +69,15 @@ var focusOn = function(id) {
   }
 }
 
+var openVaultFolder = function(path) {
+  console.log("open folder:", path);
+  if (process.platform === 'darwin') {
+    Electron.shell.openExternal("file://" + path);
+  } else {
+    Electron.shell.openItem(path);
+  }
+}
+
 var setupElmApp = function(daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -77,9 +86,10 @@ var setupElmApp = function(daemonApiToken) {
     updateInterval: 5000
   });
 
-  elmApp.ports.openFolder.subscribe(openFolderDialog)
+  elmApp.ports.openFolderDialog.subscribe(openFolderDialog)
   elmApp.ports.getFileList.subscribe(getFileList)
   elmApp.ports.focusOn.subscribe(focusOn)
+  elmApp.ports.openVaultFolder.subscribe(openVaultFolder)
 }
 
 readAuthToken(setupElmApp)

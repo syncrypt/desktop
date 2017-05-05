@@ -4,6 +4,7 @@ import Model exposing (Model, vaultWithId)
 import Ui.Modal
 import Ui.Input
 import Ui.Tabs
+import Ports
 import VaultDialog.Ports
 import VaultDialog.Model
     exposing
@@ -199,7 +200,11 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             OpenFolderDialog vaultId ->
                 model
-                    ! [ VaultDialog.Ports.openFolder vaultId ]
+                    ! [ VaultDialog.Ports.openFolderDialog vaultId ]
+
+            OpenFolder vault ->
+                model
+                    ! [ Ports.openVaultFolder vault.folderPath ]
 
             SelectedFolder path ->
                 let
