@@ -91,7 +91,7 @@ update action model =
                         |> attemptDelayed 1000 FetchedVaultsFromApi
                   ]
             )
-                |> Util.andAlso (notifyText ("Error fetching vaults: " ++ toString (reason)))
+                |> Util.andAlso (notifyText ("Error fetching vaults: " ++ (reason |> toString)))
 
         UpdatedVaultsFromApi (Ok vaults) ->
             { model | vaults = vaults }
