@@ -393,15 +393,23 @@ userKeySelection state model =
     let
         email =
             state.userInput.value
-    in
-        div [ class "VaultDialog-UserKeys" ] <|
-            case Dict.get email state.userKeys of
-                Nothing ->
-                    []
 
-                Just keys ->
-                    (h4 [] [ text "Select keys" ])
-                        :: List.map (\key -> userKeyCheckbox email key state model) keys
+        keys =
+            Dict.get email state.userKeys
+                |> Maybe.withDefault []
+
+        isHidden =
+            List.isEmpty keys
+    in
+        div
+            [ classList
+                [ ( "VaultDialog-UserKeys", not isHidden )
+                , ( "VaultDialog-UserKeys-Hidden", isHidden )
+                ]
+            ]
+        <|
+            (h4 [] [ text "Select keys" ])
+                :: List.map (\key -> userKeyCheckbox email key state model) keys
 
 
 userKeyCheckbox : String -> Syncrypt.User.UserKey -> State -> Model -> Html Msg

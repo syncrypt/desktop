@@ -132,6 +132,13 @@
 .VaultDialog-UserKeys {
   margin-top: 10px;
   margin-bottom: 10px;
+  transition: all 0.5s;
+}
+
+.VaultDialog-UserKeys-Hidden {
+  left: -150px;
+  position: absolute;
+  transition: all 0.5s;
 }
 
 .VaultDialog-UserKeyFingerprints {
