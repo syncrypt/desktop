@@ -57,12 +57,12 @@
   margin-top: 5px;
 }
 
-.VaultDialog-FolderItem-Checkbox ui-checkbox {
+.VaultDialog-Checkbox ui-checkbox {
   width:  20px !important;
   height: 20px !important;
   display: inline-flex !important;
 }
-.VaultDialog-FolderItem-Checkbox ui-checkbox svg {
+.VaultDialog-Checkbox ui-checkbox svg {
   width:  10px !important;
   height: 10px !important;
 }
@@ -98,4 +98,47 @@
   float: right;
   padding-bottom: 20px;
   padding-left: 10px;
+}
+
+.VaultDialog-User-Name {
+  font-size: 15px;
+}
+
+.VaultDialog-User-Email {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.VaultDialog-UserAddedTime {
+  float: right;
+  font-weight: normal;
+}
+
+.VaultDialog-Add-User {
+  display: flex;
+}
+
+.VaultDialog-Button-Add-User {
+  padding-top: 5px;
+  padding-left: 10px;
+}
+
+.VaultDialog-Button-Add-User ui-input {
+  max-width: 500px;
+  width: 80%;
+}
+
+.VaultDialog-UserKeys {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.VaultDialog-UserKeys .VaultDialog-Checkbox {
+  font-family: monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.VaultDialog-UserKeyCreatedTime {
+  float: right;
 }

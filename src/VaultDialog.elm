@@ -1,13 +1,15 @@
 module VaultDialog exposing (..)
 
 import ConfirmationDialog
+import Date.Distance
 import Dialog exposing (labeledLeft, labeledRight)
 import Dict
-import Html exposing (Html, button, div, form, input, label, span, text)
+import Html exposing (Html, button, div, form, h4, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
+import Syncrypt.User exposing (User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
 import Ui.Button
 import Ui.Checkbox
@@ -24,6 +26,7 @@ import VaultDialog.Model
         , folderIsEmpty
         , isExpanded
         , isIgnored
+        , isUserKeySelected
         , sortedFolders
         )
 import VaultDialog.Ports
@@ -114,7 +117,19 @@ tabContents vaultId state model =
           )
         , ( "Users"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ msg <| text "Vault Users:"
+                [ div []
+                    [ div [ class "VaultDialog-Add-User" ]
+                        [ userInput vaultId state
+                        , msg <| addUserButton vaultId state
+                        ]
+                    , div [ class "VaultDialog-UserKey-Selection" ]
+                        [ msg <| userKeySelection state model
+                        , msg <| confirmUserKeysButton state
+                        ]
+                    ]
+                , h4 []
+                    [ text "Vault Users:" ]
+                , userList vaultId state model
                 ]
           )
         ]
@@ -155,6 +170,33 @@ saveButton vaultId =
         ]
 
 
+addUserButton : VaultId -> State -> Html Msg
+addUserButton vaultId state =
+    span [ class "VaultDialog-Button-Add-User" ]
+        [ Ui.Button.model "+" "primary" "small"
+            |> Ui.Button.view (SearchFingerprints state.userInput.value)
+        ]
+
+
+confirmUserKeysButton : State -> Html Msg
+confirmUserKeysButton state =
+    let
+        email =
+            state.userInput.value
+
+        keys =
+            Dict.get email state.usersToAdd
+                |> Maybe.withDefault []
+    in
+        span [ class "VaultDialog-Button-Confirm-UserKeys" ] <|
+            if List.isEmpty keys then
+                []
+            else
+                [ Ui.Button.model "Invite User with selected keys" "primary" "small"
+                    |> Ui.Button.view ConfirmAddUser
+                ]
+
+
 openFolderButton : VaultId -> State -> Model -> Html Msg
 openFolderButton vaultId state model =
     let
@@ -168,7 +210,7 @@ openFolderButton vaultId state model =
                         Model.vaultWithId vaultId model
                 in
                     Ui.Button.model "Open Folder" "primary" "small"
-                        |> Ui.Button.view (OpenFolder vault)
+                        |> Ui.Button.view (OpenFolder vault.folderPath)
     in
         button
             |> labeledLeft [ class "VaultDialog-InputLabel" ]
@@ -183,6 +225,15 @@ nameInput vaultId state =
         |> labeledLeft [ class "VaultDialog-InputLabel" ]
             (Just (Model.FocusOn state.nameInput.uid))
             "Name"
+
+
+userInput : VaultId -> State -> Html Model.Msg
+userInput vaultId state =
+    Ui.Input.view state.userInput
+        |> Html.map (Model.VaultDialog vaultId << UserInput)
+        |> labeledLeft [ class "VaultDialog-InputLabel" ]
+            (Just (Model.FocusOn state.userInput.uid))
+            "Add User"
 
 
 fileSelectionContainer : State -> Html Msg
@@ -325,7 +376,7 @@ fileCheckbox path state =
                     (Just (ToggleIgnorePath path))
                     (Path.folderName path)
     in
-        span [ class "VaultDialog-FolderItem-Checkbox" ]
+        span [ class "VaultDialog-Checkbox" ]
             [ checkboxWithLabel ]
 
 
@@ -336,3 +387,91 @@ fileCheckboxSettings path state =
     , value = not (isIgnored path state)
     , uid = Path.name path
     }
+
+
+userKeySelection : State -> Model -> Html Msg
+userKeySelection state model =
+    let
+        email =
+            state.userInput.value
+    in
+        div [ class "VaultDialog-UserKeys" ] <|
+            case Dict.get email state.userKeys of
+                Nothing ->
+                    []
+
+                Just keys ->
+                    (h4 [] [ text "Select keys" ])
+                        :: List.map (\key -> userKeyCheckbox email key state model) keys
+
+
+userKeyCheckbox : String -> Syncrypt.User.UserKey -> State -> Model -> Html Msg
+userKeyCheckbox email userKey state model =
+    let
+        checkbox =
+            Ui.Checkbox.view (userKeyCheckboxSettings email userKey state)
+                |> Html.map (UserKeyCheckbox email userKey)
+
+        checkboxWithLabel =
+            checkbox
+                |> labeledRight []
+                    (Just (ToggleUserKey email userKey))
+                    (userKey.fingerprint ++ " - " ++ userKey.description)
+    in
+        div []
+            [ span [ class "VaultDialog-Checkbox" ] [ checkboxWithLabel ]
+            , keyCreatedTimestamp userKey model
+            ]
+
+
+userKeyCheckboxSettings email userKey state =
+    { disabled = False
+    , readonly = False
+    , value = isUserKeySelected email userKey state
+    , uid = userKey.fingerprint
+    }
+
+
+userList : VaultId -> State -> Model -> Html Model.Msg
+userList vaultId state model =
+    div [ class "VaultDialog-UserList" ]
+        (List.map (\u -> userItem u model) state.users)
+
+
+userItem : User -> Model -> Html msg
+userItem user model =
+    div [ class "VaultDialog-User" ]
+        [ span [ class "VaultDialog-User-Name" ]
+            [ text <| user.firstName ++ " " ++ user.lastName ]
+        , span [ class "VaultDialog-User-Email" ]
+            [ text <| " ( " ++ user.email ++ " )" ]
+        , userAddedTimestamp user model
+        ]
+
+
+userAddedTimestamp : User -> Model -> Html msg
+userAddedTimestamp user model =
+    span [ class "VaultDialog-UserAddedTime" ] <|
+        case ( user.accessGrantedAt, model.now ) of
+            ( Nothing, _ ) ->
+                []
+
+            ( Just date, Nothing ) ->
+                [ text <| toString date ]
+
+            ( Just date, Just now ) ->
+                [ text <| "Invited " ++ (Date.Distance.inWords date now) ++ " ago" ]
+
+
+keyCreatedTimestamp : UserKey -> Model -> Html msg
+keyCreatedTimestamp key model =
+    span [ class "VaultDialog-UserKeyCreatedTime" ] <|
+        case ( key.createdAt, model.now ) of
+            ( Nothing, _ ) ->
+                []
+
+            ( Just date, Nothing ) ->
+                [ text <| toString date ]
+
+            ( Just date, Just now ) ->
+                [ text <| "Created " ++ (Date.Distance.inWords date now) ++ " ago" ]

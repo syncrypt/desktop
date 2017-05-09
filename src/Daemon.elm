@@ -6,6 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, optional, optionalAt, ha
 import Http
 import Model exposing (..)
 import Syncrypt.Vault exposing (..)
+import Syncrypt.User exposing (User)
 import Date exposing (Date)
 import String
 import Task exposing (Task)
@@ -22,6 +23,16 @@ getVaults config =
 getFlyingVaults : Config -> Http.Request (List FlyingVault)
 getFlyingVaults config =
     apiRequest config Get "flying-vault" Nothing flyingVaultsDecoder
+
+
+getUsers : VaultId -> Config -> Http.Request (List User)
+getUsers vaultId config =
+    apiRequest config Get ("vault/" ++ vaultId ++ "/users") Nothing usersDecoder
+
+
+getUserKeys : Syncrypt.User.Email -> Config -> Http.Request (List Syncrypt.User.UserKey)
+getUserKeys email config =
+    apiRequest config Get ("user/" ++ email ++ "/keys") Nothing userKeysDecoder
 
 
 createVault : VaultOptions -> Config -> Http.Request Vault
@@ -192,21 +203,31 @@ decodeToVal val =
 
 {-| Decodes an array of `Syncrypt.Vault.Vault`.
 -}
-vaultsDecoder : Json.Decoder (List Syncrypt.Vault.Vault)
+vaultsDecoder : Json.Decoder (List Vault)
 vaultsDecoder =
     Json.list vaultDecoder
 
 
+usersDecoder : Json.Decoder (List User)
+usersDecoder =
+    Json.list userDecoder
+
+
+userKeysDecoder : Json.Decoder (List Syncrypt.User.UserKey)
+userKeysDecoder =
+    Json.list userKeyDecoder
+
+
 {-| Decodes an array of `Syncrypt.Vault.FlyingVault`.
 -}
-flyingVaultsDecoder : Json.Decoder (List Syncrypt.Vault.FlyingVault)
+flyingVaultsDecoder : Json.Decoder (List FlyingVault)
 flyingVaultsDecoder =
     Json.list flyingVaultDecoder
 
 
 {-| Decodes a `Syncrypt.Vault.Vault`.
 -}
-vaultDecoder : Json.Decoder Syncrypt.Vault.Vault
+vaultDecoder : Json.Decoder Vault
 vaultDecoder =
     decode Syncrypt.Vault.Vault
         |> required "id" Json.string
@@ -223,7 +244,7 @@ vaultDecoder =
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.
 -}
-flyingVaultDecoder : Json.Decoder Syncrypt.Vault.FlyingVault
+flyingVaultDecoder : Json.Decoder FlyingVault
 flyingVaultDecoder =
     decode Syncrypt.Vault.FlyingVault
         |> required "id" Json.string
@@ -234,6 +255,27 @@ flyingVaultDecoder =
         |> required "revision_count" Json.int
         |> required "resource_uri" Json.string
         |> optional "modification_date" date Nothing
+
+
+{-| Decodes a `Syncrypt.User.User`.
+-}
+userDecoder : Json.Decoder User
+userDecoder =
+    decode Syncrypt.User.User
+        |> required "first_name" Json.string
+        |> required "last_name" Json.string
+        |> required "email" Json.string
+        |> optional "access_granted_at" date Nothing
+
+
+{-| Decodes a `Syncrypt.User.UserKey`.
+-}
+userKeyDecoder : Json.Decoder Syncrypt.User.UserKey
+userKeyDecoder =
+    decode Syncrypt.User.UserKey
+        |> required "fingerprint" Json.string
+        |> required "description" Json.string
+        |> required "created_at" date
 
 
 {-| Decodes a `Syncrypt.Vault.Status`.

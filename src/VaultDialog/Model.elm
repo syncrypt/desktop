@@ -8,7 +8,9 @@ import Ui.Tabs
 import Set exposing (Set)
 import Path exposing (Path, asPath)
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import Syncrypt.User as User
 import ConfirmationDialog
+import Http
 
 
 type alias FileName =
@@ -26,11 +28,15 @@ type alias State =
     , modal : Ui.Modal.Model
     , confirmationDialog : ConfirmationDialog.Model Msg
     , nameInput : Ui.Input.Model
+    , userInput : Ui.Input.Model
     , tabs : Ui.Tabs.Model
     , localFolderPath : Maybe Path
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
+    , users : List User.User
+    , usersToAdd : Dict User.Email (List User.UserKey)
+    , userKeys : Dict User.Email (List User.UserKey)
     }
 
 
@@ -38,17 +44,25 @@ type Msg
     = Modal Ui.Modal.Msg
     | ConfirmationDialog ConfirmationDialog.Msg
     | NameInput Ui.Input.Msg
+    | UserInput Ui.Input.Msg
     | FileCheckBox Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
     | ToggleIgnorePath Path
     | OpenFolderDialog VaultId
-    | OpenFolder Vault
+    | OpenFolder String
     | SelectedFolder Path
     | Tabs Ui.Tabs.Msg
     | CollapseFolder Path
     | ExpandFolder Path
     | AskDeleteVault
     | ConfirmedVaultDeletion
+    | AddUserWithKeys User.Email (List User.UserKey)
+    | ToggleUserKey User.Email User.UserKey
+    | UserKeyCheckbox User.Email User.UserKey Ui.Checkbox.Msg
+    | SearchFingerprints User.Email
+    | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
+    | FetchedUsers (Result Http.Error (List User.User))
+    | ConfirmAddUser
 
 
 init : State
@@ -70,8 +84,16 @@ init =
         Ui.Input.init ()
             |> Ui.Input.placeholder "Vault Name"
             |> Ui.Input.showClearIcon True
+    , userInput =
+        Ui.Input.init ()
+            |> Ui.Input.kind "email"
+            |> Ui.Input.placeholder "user@example.com"
+            |> Ui.Input.showClearIcon True
     , tabs =
         Ui.Tabs.init ()
+    , users = []
+    , usersToAdd = Dict.empty
+    , userKeys = Dict.empty
     }
 
 
@@ -113,6 +135,16 @@ isIgnored path { ignoredFolderItems } =
                 |> Set.isEmpty
                 |> not
            )
+
+
+isUserKeySelected : User.Email -> User.UserKey -> State -> Bool
+isUserKeySelected email userKey state =
+    case Dict.get email state.usersToAdd of
+        Nothing ->
+            False
+
+        Just keys ->
+            List.member userKey keys
 
 
 isExpanded : Path -> State -> Bool
@@ -184,3 +216,20 @@ folderIsEmpty path state =
 
         Just files ->
             List.isEmpty files
+
+
+toggleUserKey : User.Email -> User.UserKey -> State -> State
+toggleUserKey email key state =
+    case Dict.get email state.usersToAdd of
+        Nothing ->
+            { state | usersToAdd = Dict.insert email [ key ] state.usersToAdd }
+
+        Just keys ->
+            let
+                userKeysSelected =
+                    if List.member key keys then
+                        List.filter (\k -> k /= key) keys
+                    else
+                        key :: keys
+            in
+                { state | usersToAdd = Dict.insert email userKeysSelected state.usersToAdd }

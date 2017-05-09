@@ -1,29 +1,30 @@
 module VaultDialog.Update exposing (..)
 
+import ConfirmationDialog
+import Daemon
+import Dialog exposing (asModalIn)
+import Dict
 import Model exposing (Model, vaultWithId)
-import Ui.Modal
-import Ui.Input
-import Ui.Tabs
+import Path exposing (folderName)
+import Platform.Cmd exposing (map)
 import Ports
-import VaultDialog.Ports
+import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import Ui.Input
+import Ui.Modal
+import Ui.Tabs
 import VaultDialog.Model
     exposing
         ( FolderItem
         , Msg(..)
         , State
-        , isIgnored
         , addFolder
-        , toggleIgnorePath
-        , expandFolder
         , collapseFolder
+        , expandFolder
+        , isIgnored
+        , toggleIgnorePath
+        , toggleUserKey
         )
-import Path exposing (folderName)
-import Dialog exposing (asModalIn)
-import Platform.Cmd exposing (map)
-import Dict
-import Syncrypt.Vault exposing (VaultId, Vault, nameOrId)
-import ConfirmationDialog
-import Daemon
+import VaultDialog.Ports
 
 
 open : Model -> ( Model, Cmd Model.Msg )
@@ -85,6 +86,8 @@ openForVault vault model =
             if isNewlyCreated then
                 [ cmd
                 , VaultDialog.Ports.getFileList ( vault.id, path )
+                , model
+                    |> fetchUsers vault.id Daemon.attempt
                 ]
             else
                 [ cmd ]
@@ -134,6 +137,12 @@ dialogState vaultId model =
 update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )
 update msg vaultId ({ vaultDialogs } as model) =
     let
+        dialogMsg msg =
+            (Model.VaultDialog vaultId) << msg
+
+        dialogCmd msg ( model, cmd ) =
+            ( model, cmd |> map (dialogMsg msg) )
+
         state =
             dialogState vaultId model
     in
@@ -157,21 +166,34 @@ update msg vaultId ({ vaultDialogs } as model) =
                 let
                     ( nameInput, cmd ) =
                         Ui.Input.update msg state.nameInput
+                            |> dialogCmd NameInput
                 in
                     ({ state | nameInput = nameInput }
                         |> asStateIn vaultId model
                     )
-                        ! [ cmd |> map (Model.VaultDialog vaultId << NameInput) ]
+                        ! [ cmd ]
+
+            UserInput msg ->
+                let
+                    ( userInput, cmd ) =
+                        Ui.Input.update msg state.userInput
+                            |> dialogCmd UserInput
+                in
+                    ({ state | userInput = userInput }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd ]
 
             Tabs msg ->
                 let
                     ( tabs, cmd ) =
                         Ui.Tabs.update msg state.tabs
+                            |> dialogCmd Tabs
                 in
                     ({ state | tabs = tabs }
                         |> asStateIn vaultId model
                     )
-                        ! [ cmd |> map (Model.VaultDialog vaultId << Tabs) ]
+                        ! [ cmd ]
 
             FileCheckBox path _ ->
                 (state
@@ -202,14 +224,15 @@ update msg vaultId ({ vaultDialogs } as model) =
                 model
                     ! [ VaultDialog.Ports.openFolderDialog vaultId ]
 
-            OpenFolder vault ->
+            OpenFolder folderPath ->
                 model
-                    ! [ Ports.openVaultFolder vault.folderPath ]
+                    ! [ Ports.openVaultFolder folderPath ]
 
             SelectedFolder path ->
                 let
                     ( nameInput, nameInputCmd ) =
                         Ui.Input.setValue (folderName path) state.nameInput
+                            |> dialogCmd NameInput
                 in
                     ({ state
                         | localFolderPath = Just path
@@ -219,7 +242,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! [ VaultDialog.Ports.getFileList ( vaultId, path )
-                          , Cmd.map (Model.VaultDialog vaultId << NameInput) nameInputCmd
+                          , nameInputCmd
                           ]
 
             CollapseFolder path ->
@@ -259,6 +282,88 @@ update msg vaultId ({ vaultDialogs } as model) =
                             |> Daemon.deleteVault state.id
                             |> Daemon.attempt Model.DeletedVault
                       ]
+
+            FetchedUsers (Ok users) ->
+                ({ state | users = users }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            FetchedUsers (Err reason) ->
+                ( model
+                , model
+                    |> fetchUsers vaultId (Daemon.attemptDelayed 1000)
+                )
+
+            UserKeyCheckbox email userKey _ ->
+                (state
+                    |> toggleUserKey email userKey
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            ToggleUserKey email key ->
+                (state
+                    |> toggleUserKey email key
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            AddUserWithKeys email keys ->
+                let
+                    usersToAdd =
+                        Dict.insert email keys state.usersToAdd
+                in
+                    ({ state | usersToAdd = usersToAdd }
+                        |> asStateIn vaultId model
+                    )
+                        ! []
+
+            ConfirmAddUser ->
+                let
+                    ( input, cmd ) =
+                        Ui.Input.setValue "" state.userInput
+                            |> dialogCmd UserInput
+                in
+                    ({ state | userInput = input }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd ]
+
+            SearchFingerprints email ->
+                ( model
+                , model
+                    |> searchFingerprints email vaultId Daemon.attempt
+                )
+
+            FoundUserKeys email (Ok keys) ->
+                ({ state
+                    | userKeys =
+                        Dict.insert email keys state.userKeys
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            FoundUserKeys email (Err reason) ->
+                let
+                    _ =
+                        Debug.log "No fingerprints found for email: " email
+                in
+                    model
+                        ! []
+
+
+searchFingerprints email vaultId attemptFunc model =
+    model.config
+        |> Daemon.getUserKeys email
+        |> attemptFunc (Model.VaultDialog vaultId << FoundUserKeys email)
+
+
+fetchUsers vaultId attemptFunc model =
+    model.config
+        |> Daemon.getUsers vaultId
+        |> attemptFunc (Model.VaultDialog vaultId << FetchedUsers)
 
 
 asStateIn : VaultId -> Model -> State -> Model
