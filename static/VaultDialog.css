@@ -107,6 +107,7 @@
 .VaultDialog-User-Email {
   font-weight: bold;
   font-size: 13px;
+  cursor: pointer;
 }
 
 .VaultDialog-UserAddedTime {
@@ -116,7 +117,7 @@
 }
 
 .VaultDialog-Add-User {
-  display: flex;
+  display: block;
 }
 
 .VaultDialog-Button-Add-User {
@@ -124,9 +125,8 @@
   padding-left: 10px;
 }
 
-.VaultDialog-Button-Add-User ui-input {
-  max-width: 500px;
-  width: 80%;
+.VaultDialog-Add-User ui-input {
+  width: 473px;
 }
 
 .VaultDialog-UserKeys {
@@ -141,6 +141,7 @@
   text-transform: uppercase;
   margin-top: 7px;
   font-size: 12px;
+  font-weight: bold;
 }
 
 .VaultDialog h4 {

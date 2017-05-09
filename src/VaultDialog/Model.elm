@@ -63,6 +63,7 @@ type Msg
     | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
     | FetchedUsers (Result Http.Error (List User.User))
     | ConfirmAddUser
+    | SetUserInput String
 
 
 init : State

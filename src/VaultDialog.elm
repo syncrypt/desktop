@@ -129,8 +129,8 @@ tabContents vaultId state model =
                     ]
                 , h4 []
                     [ text "Vault Users:" ]
-                , userList state model
-                , pendingUserList state model
+                , msg <| userList state model
+                , msg <| pendingUserList state
                 ]
           )
         ]
@@ -367,8 +367,15 @@ folderCollapseToggle path state =
 fileCheckbox : Path -> State -> Html Msg
 fileCheckbox path state =
     let
+        fileCheckboxSettings =
+            { disabled = False
+            , readonly = False
+            , value = not (isIgnored path state)
+            , uid = Path.name path
+            }
+
         checkbox =
-            Ui.Checkbox.view (fileCheckboxSettings path state)
+            Ui.Checkbox.view fileCheckboxSettings
                 |> Html.map (FileCheckBox path)
 
         checkboxWithLabel =
@@ -379,15 +386,6 @@ fileCheckbox path state =
     in
         span [ class "VaultDialog-Checkbox" ]
             [ checkboxWithLabel ]
-
-
-fileCheckboxSettings : Path -> State -> Ui.Checkbox.Model
-fileCheckboxSettings path state =
-    { disabled = False
-    , readonly = False
-    , value = not (isIgnored path state)
-    , uid = Path.name path
-    }
 
 
 userKeySelection : State -> Model -> Html Msg
@@ -409,8 +407,15 @@ userKeySelection state model =
 userKeyCheckbox : String -> Syncrypt.User.UserKey -> State -> Model -> Html Msg
 userKeyCheckbox email userKey state model =
     let
+        checkboxViewSettings =
+            { disabled = False
+            , readonly = False
+            , value = isUserKeySelected email userKey state
+            , uid = userKey.fingerprint
+            }
+
         checkbox =
-            Ui.Checkbox.view (userKeyCheckboxSettings email userKey state)
+            Ui.Checkbox.view checkboxViewSettings
                 |> Html.map (UserKeyCheckbox email userKey)
 
         checkboxWithLabel =
@@ -425,22 +430,14 @@ userKeyCheckbox email userKey state model =
             ]
 
 
-userKeyCheckboxSettings email userKey state =
-    { disabled = False
-    , readonly = False
-    , value = isUserKeySelected email userKey state
-    , uid = userKey.fingerprint
-    }
-
-
-userList : State -> Model -> Html Model.Msg
+userList : State -> Model -> Html Msg
 userList state model =
     div [ class "VaultDialog-UserList" ]
         (List.map (\u -> userItem u model) state.users)
 
 
-pendingUserList : State -> Model -> Html Model.Msg
-pendingUserList state model =
+pendingUserList : State -> Html Msg
+pendingUserList state =
     let
         hasPendingKeys email keys =
             keys
@@ -457,32 +454,31 @@ pendingUserList state model =
                 []
             else
                 (h4 [] [ text "Pending Users:" ])
-                    :: (List.map (\( email, keys ) -> pendingUserItem email keys model) pendingUsers)
+                    :: (List.map (\( email, keys ) -> pendingUserItem email keys) pendingUsers)
 
 
-userItem : User -> Model -> Html msg
+userItem : User -> Model -> Html Msg
 userItem user model =
     div [ class "VaultDialog-User" ]
         [ span [ class "VaultDialog-User-Name" ]
             [ text <| user.firstName ++ " " ++ user.lastName ]
-        , span [ class "VaultDialog-User-Email" ]
+        , span [ class "VaultDialog-User-Email", onClick (SetUserInput user.email) ]
             [ text <| " ( " ++ user.email ++ " )" ]
         , userAddedTimestamp user model
         ]
 
 
-pendingUserItem : Email -> List UserKey -> Model -> Html msg
-pendingUserItem email keys model =
+pendingUserItem : Email -> List UserKey -> Html Msg
+pendingUserItem email keys =
     div [ class "VaultDialog-PendingUser" ]
-        [ span [ class "VaultDialog-User-Email" ]
-            [ text email
-            , span [ class "VaultDialog-UserKeyFingerprints" ]
-                [ text
-                    (keys
-                        |> List.map (\key -> key.fingerprint)
-                        |> String.join ", "
-                    )
-                ]
+        [ span [ class "VaultDialog-User-Email", onClick (SetUserInput email) ]
+            [ text email ]
+        , span [ class "VaultDialog-UserKeyFingerprints" ]
+            [ text
+                (keys
+                    |> List.map (\key -> key.fingerprint)
+                    |> String.join ", "
+                )
             ]
         ]
 

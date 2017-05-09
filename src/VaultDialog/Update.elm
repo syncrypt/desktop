@@ -353,6 +353,19 @@ update msg vaultId ({ vaultDialogs } as model) =
                     model
                         ! []
 
+            SetUserInput email ->
+                let
+                    ( userInput, cmd ) =
+                        Ui.Input.setValue email state.userInput
+                            |> dialogCmd UserInput
+                in
+                    ({ state | userInput = userInput }
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd
+                          , searchFingerprints email vaultId Daemon.attempt model
+                          ]
+
 
 searchFingerprints email vaultId attemptFunc model =
     model.config
