@@ -9,7 +9,7 @@ import Html.Attributes exposing (class, classList, for, id, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
-import Syncrypt.User exposing (User, UserKey)
+import Syncrypt.User exposing (User, UserKey, Email)
 import Syncrypt.Vault exposing (Vault, VaultId)
 import Ui.Button
 import Ui.Checkbox
@@ -129,7 +129,8 @@ tabContents vaultId state model =
                     ]
                 , h4 []
                     [ text "Vault Users:" ]
-                , userList vaultId state model
+                , userList state model
+                , pendingUserList state model
                 ]
           )
         ]
@@ -432,10 +433,31 @@ userKeyCheckboxSettings email userKey state =
     }
 
 
-userList : VaultId -> State -> Model -> Html Model.Msg
-userList vaultId state model =
+userList : State -> Model -> Html Model.Msg
+userList state model =
     div [ class "VaultDialog-UserList" ]
         (List.map (\u -> userItem u model) state.users)
+
+
+pendingUserList : State -> Model -> Html Model.Msg
+pendingUserList state model =
+    let
+        hasPendingKeys email keys =
+            keys
+                |> List.isEmpty
+                |> not
+
+        pendingUsers =
+            state.usersToAdd
+                |> Dict.filter hasPendingKeys
+                |> Dict.toList
+    in
+        div [ class "VaultDialog-PendingUserList" ] <|
+            if List.isEmpty pendingUsers then
+                []
+            else
+                (h4 [] [ text "Pending Users:" ])
+                    :: (List.map (\( email, keys ) -> pendingUserItem email keys model) pendingUsers)
 
 
 userItem : User -> Model -> Html msg
@@ -446,6 +468,22 @@ userItem user model =
         , span [ class "VaultDialog-User-Email" ]
             [ text <| " ( " ++ user.email ++ " )" ]
         , userAddedTimestamp user model
+        ]
+
+
+pendingUserItem : Email -> List UserKey -> Model -> Html msg
+pendingUserItem email keys model =
+    div [ class "VaultDialog-PendingUser" ]
+        [ span [ class "VaultDialog-User-Email" ]
+            [ text email
+            , span [ class "VaultDialog-UserKeyFingerprints" ]
+                [ text
+                    (keys
+                        |> List.map (\key -> key.fingerprint)
+                        |> String.join ", "
+                    )
+                ]
+            ]
         ]
 
 

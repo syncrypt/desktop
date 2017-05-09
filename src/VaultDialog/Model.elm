@@ -230,6 +230,6 @@ toggleUserKey email key state =
                     if List.member key keys then
                         List.filter (\k -> k /= key) keys
                     else
-                        key :: keys
+                        keys ++ [ key ]
             in
                 { state | usersToAdd = Dict.insert email userKeysSelected state.usersToAdd }

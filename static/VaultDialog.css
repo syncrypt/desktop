@@ -110,7 +110,8 @@
 }
 
 .VaultDialog-UserAddedTime {
-  float: right;
+  right: 20px;
+  position: absolute;
   font-weight: normal;
 }
 
@@ -133,6 +134,20 @@
   margin-bottom: 10px;
 }
 
+.VaultDialog-UserKeyFingerprints {
+  right: 20px;
+  position: absolute;
+  font-family: monospace;
+  text-transform: uppercase;
+  margin-top: 7px;
+  font-size: 12px;
+}
+
+.VaultDialog h4 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
 .VaultDialog-UserKeys .VaultDialog-Checkbox {
   font-family: monospace;
   font-weight: bold;
@@ -140,5 +155,6 @@
 }
 
 .VaultDialog-UserKeyCreatedTime {
-  float: right;
+  right: 20px;
+  position: absolute;
 }
