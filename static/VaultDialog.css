@@ -9,7 +9,7 @@
 .Dialog-Label-Left.VaultDialog-InputLabel,
 .Dialog-Label-Right.VaultDialog-InputLabel {
   font-weight: bold;
-  width: 60px;
+  min-width: 60px;
   display: inline-block;
 }
 
