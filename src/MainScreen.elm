@@ -32,7 +32,7 @@ init config =
             , model.config
                 |> Daemon.getVaults
                 |> attempt FetchedVaultsFromApi
-            , updateStats model
+            , updateStatsIn 0 model
             ]
     in
         model ! initialActions
@@ -238,10 +238,15 @@ updateNowIn time =
 
 
 updateStats : Model -> Cmd Msg
-updateStats model =
+updateStats =
+    updateStatsIn 10000
+
+
+updateStatsIn : Time -> Model -> Cmd Msg
+updateStatsIn delay model =
     model.config
         |> Daemon.getStats
-        |> attemptDelayed 1000 UpdatedStatsFromApi
+        |> attemptDelayed delay UpdatedStatsFromApi
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
