@@ -25,31 +25,6 @@ type ApiPath
     | VaultUserKeys VaultId Email
 
 
-apiPath : ApiPath -> Path
-apiPath apiPath =
-    case apiPath of
-        Vaults ->
-            "vault"
-
-        FlyingVaults ->
-            "flying-vault"
-
-        Vault vaultId ->
-            "vault/" ++ vaultId
-
-        FlyingVault vaultId ->
-            "flying-vault/" ++ vaultId
-
-        VaultUsers vaultId ->
-            "vault/" ++ vaultId ++ "/users"
-
-        UserKeys email ->
-            "user/" ++ email ++ "/keys"
-
-        VaultUserKeys vaultId email ->
-            "vault/" ++ vaultId ++ "/user/" ++ email ++ "/keys"
-
-
 getVaults : Config -> Http.Request (List Vault)
 getVaults config =
     apiRequest config Get Vaults Nothing vaultsDecoder
@@ -116,6 +91,37 @@ type RequestMethod
     | Post
     | Patch
     | Delete
+
+
+{-| Converts `ApiPath` into `Path` (`String`).
+
+    apiPath Vaults  -- -> "vaults"
+    apiPath (Vault "foobaruuid") -- -> "vaults/foobaruuid"
+
+-}
+apiPath : ApiPath -> Path
+apiPath apiPath =
+    case apiPath of
+        Vaults ->
+            "vault"
+
+        FlyingVaults ->
+            "flying-vault"
+
+        Vault vaultId ->
+            "vault/" ++ vaultId
+
+        FlyingVault vaultId ->
+            "flying-vault/" ++ vaultId
+
+        VaultUsers vaultId ->
+            "vault/" ++ vaultId ++ "/users"
+
+        UserKeys email ->
+            "user/" ++ email ++ "/keys"
+
+        VaultUserKeys vaultId email ->
+            "vault/" ++ vaultId ++ "/user/" ++ email ++ "/keys"
 
 
 {-| Converts `RequestMethod` into `String`.
