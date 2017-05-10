@@ -6,7 +6,7 @@ import Json.Decode.Pipeline exposing (decode, required, optional, optionalAt, ha
 import Http
 import Model exposing (..)
 import Syncrypt.Vault exposing (..)
-import Syncrypt.User exposing (User)
+import Syncrypt.User exposing (User, Email, UserKey)
 import Date exposing (Date)
 import String
 import Task exposing (Task)
@@ -15,31 +15,71 @@ import Result exposing (Result)
 import Time exposing (Time)
 
 
+type ApiPath
+    = Vaults
+    | FlyingVaults
+    | Vault VaultId
+    | FlyingVault VaultId
+    | VaultUsers VaultId
+    | UserKeys Email
+    | VaultUserKeys VaultId Email
+
+
+apiPath : ApiPath -> Path
+apiPath apiPath =
+    case apiPath of
+        Vaults ->
+            "vault"
+
+        FlyingVaults ->
+            "flying-vault"
+
+        Vault vaultId ->
+            "vault/" ++ vaultId
+
+        FlyingVault vaultId ->
+            "flying-vault/" ++ vaultId
+
+        VaultUsers vaultId ->
+            "vault/" ++ vaultId ++ "/users"
+
+        UserKeys email ->
+            "user/" ++ email ++ "/keys"
+
+        VaultUserKeys vaultId email ->
+            "vault/" ++ vaultId ++ "/user/" ++ email ++ "/keys"
+
+
 getVaults : Config -> Http.Request (List Vault)
 getVaults config =
-    apiRequest config Get "vault" Nothing vaultsDecoder
+    apiRequest config Get Vaults Nothing vaultsDecoder
 
 
 getFlyingVaults : Config -> Http.Request (List FlyingVault)
 getFlyingVaults config =
-    apiRequest config Get "flying-vault" Nothing flyingVaultsDecoder
+    apiRequest config Get FlyingVaults Nothing flyingVaultsDecoder
 
 
 getUsers : VaultId -> Config -> Http.Request (List User)
 getUsers vaultId config =
-    apiRequest config Get ("vault/" ++ vaultId ++ "/users") Nothing usersDecoder
+    apiRequest config Get (VaultUsers vaultId) Nothing usersDecoder
 
 
-getUserKeys : Syncrypt.User.Email -> Config -> Http.Request (List Syncrypt.User.UserKey)
+getUserKeys : Email -> Config -> Http.Request (List UserKey)
 getUserKeys email config =
-    apiRequest config Get ("user/" ++ email ++ "/keys") Nothing userKeysDecoder
+    apiRequest config Get (UserKeys email) Nothing userKeysDecoder
+
+
+getVaultUserKeys : Email -> VaultId -> Config -> Http.Request (List UserKey)
+getVaultUserKeys email vaultId config =
+    apiRequest config Get (VaultUserKeys vaultId email) Nothing userKeysDecoder
 
 
 createVault : VaultOptions -> Config -> Http.Request Vault
 createVault options config =
     apiRequest config
         Post
-        "vault"
+        Vaults
         (Just (Http.jsonBody (jsonOptions config options)))
         vaultDecoder
 
@@ -48,7 +88,7 @@ removeVault : VaultId -> Config -> Http.Request VaultId
 removeVault vaultId config =
     apiRequest config
         Delete
-        ("vault/" ++ vaultId)
+        (Vault vaultId)
         (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Remove vaultId))))
         (decodeToVal vaultId)
 
@@ -57,7 +97,7 @@ deleteVault : VaultId -> Config -> Http.Request VaultId
 deleteVault vaultId config =
     apiRequest config
         Delete
-        ("vault/" ++ vaultId)
+        (Vault vaultId)
         (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Delete vaultId))))
         (decodeToVal vaultId)
 
@@ -111,7 +151,7 @@ requestMethod rm =
         apiRequest config Get "vault" vaultsDecoder
 
 -}
-apiRequest : Config -> RequestMethod -> Path -> Maybe Http.Body -> Json.Decoder a -> Http.Request a
+apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Http.Request a
 apiRequest config method path maybeBody decoder =
     let
         body =
@@ -125,7 +165,7 @@ apiRequest config method path maybeBody decoder =
         Http.request
             { method = requestMethod method
             , headers = apiHeaders config
-            , url = apiUrl config path
+            , url = apiUrl config (apiPath path)
             , body = body
             , expect = Http.expectJson decoder
             , timeout = Nothing
