@@ -6,8 +6,8 @@ import Config exposing (Config)
 import Http
 import Date exposing (Date)
 import VaultDialog.Model
-import VaultDialog.Model
 import Syncrypt.Vault exposing (VaultId)
+import Syncrypt.User exposing (Email)
 import Dict exposing (Dict)
 import Util exposing (findFirst)
 import Ui.NotificationCenter
@@ -63,6 +63,8 @@ type Msg
     | RemoveVaultFromSync VaultId
     | RemovedVaultFromSync (Result Http.Error VaultId)
     | DeletedVault (Result Http.Error VaultId)
+    | VaultUserAdded VaultId Email (Result Http.Error Email)
+    | VaultMetadataUpdated VaultId (Result Http.Error Vault)
 
 
 init : Config -> Model

@@ -4,11 +4,13 @@ import ConfirmationDialog
 import Daemon
 import Dialog exposing (asModalIn)
 import Dict
+import Http
 import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import Task
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
@@ -132,6 +134,32 @@ dialogState vaultId model =
 
         Nothing ->
             VaultDialog.Model.initForVault (vaultWithId vaultId model)
+
+
+saveVaultChanges : VaultId -> State -> Model -> ( Model, Cmd Model.Msg )
+saveVaultChanges vaultId state model =
+    let
+        addUserCmds =
+            (state.usersToAdd
+                |> Dict.toList
+                |> List.map
+                    (\( email, keys ) ->
+                        model.config
+                            |> Daemon.addVaultUser vaultId email keys
+                            |> Daemon.attempt (Model.VaultUserAdded vaultId email)
+                    )
+            )
+
+        updateMetadataCmd =
+            model.config
+                |> Daemon.updateVaultMetadata vaultId { name = state.nameInput.value }
+                |> Daemon.attempt (Model.VaultMetadataUpdated vaultId)
+
+        ( newModel, modalCmd ) =
+            cancel vaultId model
+    in
+        model
+            ! (modalCmd :: updateMetadataCmd :: addUserCmds)
 
 
 update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )

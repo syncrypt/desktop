@@ -9,7 +9,7 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import Ports
 import Set
-import Syncrypt.Vault exposing (VaultOptions(..))
+import Syncrypt.Vault exposing (VaultId, VaultOptions(..))
 import Time exposing (Time)
 import Ui.NotificationCenter
 import Util exposing (andAlso)
@@ -89,7 +89,7 @@ update action model =
                         |> attemptDelayed 1000 FetchedVaultsFromApi
                   ]
             )
-                |> Util.andAlso (notifyText ("Error fetching vaults: " ++ (reason |> toString)))
+                |> andAlso (notifyText ("Error fetching vaults: " ++ (reason |> toString)))
 
         UpdatedVaultsFromApi (Ok vaults) ->
             { model | vaults = vaults }
@@ -226,6 +226,29 @@ update action model =
                 model
                     ! [ updateStats model ]
 
+        VaultUserAdded vaultId email (Ok _) ->
+            model
+                ! []
+
+        VaultUserAdded vaultId email (Err reason) ->
+            let
+                _ =
+                    Debug.log "Could not add user to vault: " ( vaultId, email )
+            in
+                model
+                    |> notifyText ("Failed to add user " ++ email ++ " to vault " ++ vaultId)
+
+        VaultMetadataUpdated vaultId (Ok _) ->
+            model
+                ! [ model.config
+                        |> Daemon.getVaults
+                        |> attempt FetchedVaultsFromApi
+                  ]
+
+        VaultMetadataUpdated vaultId (Err _) ->
+            model
+                |> notifyText ("Failed to update metadata for vault " ++ vaultId)
+
 
 updateNow : Cmd Msg
 updateNow =
@@ -270,18 +293,18 @@ notifyText message model =
 saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
 saveVault vaultId model =
     let
-        ds =
+        state =
             dialogState vaultId model
     in
-        if ds.isNew then
-            case ds.localFolderPath of
+        if state.isNew then
+            case state.localFolderPath of
                 Just folderPath ->
                     model
                         ! [ model.config
                                 |> Daemon.createVault
                                     (Create
                                         { folder = folderPath
-                                        , ignorePaths = Set.toList ds.ignoredFolderItems
+                                        , ignorePaths = Set.toList state.ignoredFolderItems
                                         , userKeys = [] -- TODO
                                         }
                                     )
@@ -293,7 +316,8 @@ saveVault vaultId model =
                         |> notifyText "No path selected - Vault not created"
         else
             model
-                |> notifyText "Vault updated"
+                |> VaultDialog.Update.saveVaultChanges vaultId state
+                |> andAlso (notifyText "Vault updated")
 
 
 

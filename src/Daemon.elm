@@ -52,9 +52,16 @@ getVault vaultId config =
     apiRequest config Get (Vault vaultId) Nothing vaultDecoder
 
 
-updateVaultMetadata : VaultId -> Json.Value -> Config -> Http.Request Vault
+updateVaultMetadata : VaultId -> Metadata -> Config -> Http.Request Vault
 updateVaultMetadata vaultId metadata config =
-    apiRequest config Put (Vault vaultId) (Just (Http.jsonBody metadata)) vaultDecoder
+    let
+        metadataJson =
+            Json.Encode.object [ ( "name", Json.Encode.string metadata.name ) ]
+
+        json =
+            Json.Encode.object [ ( "metadata", metadataJson ) ]
+    in
+        apiRequest config Put (Vault vaultId) (Just (Http.jsonBody json)) vaultDecoder
 
 
 getFlyingVault : VaultId -> Config -> Http.Request FlyingVault
@@ -70,6 +77,25 @@ getVaultUsers vaultId config =
 getVaultUser : VaultId -> Email -> Config -> Http.Request User
 getVaultUser vaultId email config =
     apiRequest config Get (VaultUser vaultId email) Nothing userDecoder
+
+
+addVaultUser : VaultId -> Email -> List UserKey -> Config -> Http.Request Email
+addVaultUser vaultId email keys config =
+    let
+        fingerprints =
+            List.map .fingerprint keys
+
+        json =
+            Json.Encode.object
+                [ ( "email", Json.Encode.string email )
+                , ( "fingerprints", Json.Encode.list (List.map Json.Encode.string fingerprints) )
+                ]
+    in
+        apiRequest config
+            Post
+            (VaultUsers vaultId)
+            (Just (Http.jsonBody json))
+            (Json.succeed email)
 
 
 getUserKeys : Email -> Config -> Http.Request (List UserKey)
@@ -121,6 +147,38 @@ sendFeedback text config =
         Feedback
         (Just (Http.jsonBody (Json.Encode.string text)))
         (decodeToVal "")
+
+
+getVersion : Config -> Http.Request String
+getVersion config =
+    apiRequest config Get Version Nothing Json.string
+
+
+login : Email -> Password -> Config -> Http.Request String
+login email password config =
+    let
+        json =
+            (Json.Encode.object
+                [ ( "email", Json.Encode.string email )
+                , ( "password", Json.Encode.string password )
+                ]
+            )
+    in
+        apiRequest config
+            Post
+            Login
+            (Just (Http.jsonBody json))
+            Json.string
+
+
+loginCheck : Config -> Http.Request String
+loginCheck config =
+    apiRequest config Post LoginCheck Nothing Json.string
+
+
+logout : Config -> Http.Request String
+logout config =
+    apiRequest config Post Logout Nothing Json.string
 
 
 type alias Path =

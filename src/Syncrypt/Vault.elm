@@ -42,6 +42,10 @@ type VaultOptions
     | Delete VaultId
 
 
+type alias Metadata =
+    { name : String }
+
+
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
 -}
 type alias Vault =
