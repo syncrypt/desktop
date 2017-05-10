@@ -13,13 +13,16 @@ module Util
         , allButLast
         , findFirst
         , andAlso
+        , onEnter
         )
 
-import Time exposing (Time)
-import Task exposing (Task, andThen, attempt, perform)
+import Html
+import Html.Events
+import Json.Decode
 import Process
-import Result exposing (Result)
 import Round
+import Task exposing (Task, andThen, attempt, perform)
+import Time exposing (Time)
 
 
 {-| Creates a new `Task` that delays a given `Task` by a given time.
@@ -210,3 +213,15 @@ andAlso f ( m1, cmd1 ) =
             f m1
     in
         m2 ! [ cmd1, cmd2 ]
+
+
+onEnter : msg -> Html.Attribute msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.Decode.succeed msg
+            else
+                Json.Decode.fail "not ENTER"
+    in
+        Html.Events.on "keydown" (Json.Decode.andThen isEnter Html.Events.keyCode)
