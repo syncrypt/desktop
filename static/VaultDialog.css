@@ -20,8 +20,8 @@
 
 
 .VaultDialog-Input ui-input {
-  max-width: 500px;
-  width: 80%;
+  max-width: 530px;
+  width: 90%;
 }
 
 .VaultDialog-Input ui-input input {
@@ -126,7 +126,7 @@
 }
 
 .VaultDialog-Add-User ui-input {
-  width: 463px;
+  width: 514px;
 }
 
 .VaultDialog-UserKeys {

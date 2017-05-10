@@ -59,7 +59,7 @@ type Msg
     | AddUserWithKeys User.Email (List User.UserKey)
     | ToggleUserKey User.Email User.UserKey
     | UserKeyCheckbox User.Email User.UserKey Ui.Checkbox.Msg
-    | SearchFingerprints User.Email
+    | SearchUserKeys User.Email
     | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
     | FetchedUsers (Result Http.Error (List User.User))
     | ConfirmAddUser
@@ -234,3 +234,20 @@ toggleUserKey email key state =
                         keys ++ [ key ]
             in
                 { state | usersToAdd = Dict.insert email userKeysSelected state.usersToAdd }
+
+
+userInputEmail : State -> User.Email
+userInputEmail state =
+    state.userInput.value
+
+
+keysToAdd : User.Email -> State -> List User.UserKey
+keysToAdd email state =
+    Dict.get email state.usersToAdd
+        |> Maybe.withDefault []
+
+
+userKeys : User.Email -> State -> List User.UserKey
+userKeys email state =
+    Dict.get email state.userKeys
+        |> Maybe.withDefault []

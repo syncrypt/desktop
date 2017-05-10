@@ -330,7 +330,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                     )
                         ! [ cmd ]
 
-            SearchFingerprints email ->
+            SearchUserKeys email ->
                 ( model
                 , model
                     |> searchFingerprints email vaultId Daemon.attempt

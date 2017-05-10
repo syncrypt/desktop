@@ -9,7 +9,7 @@ import Html.Attributes exposing (class, classList, for, id, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
-import Syncrypt.User exposing (User, UserKey, Email)
+import Syncrypt.User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
 import Ui.Button
 import Ui.Checkbox
@@ -17,6 +17,7 @@ import Ui.Container
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
+import Util exposing (onEnter)
 import VaultDialog.Model
     exposing
         ( FileName
@@ -27,7 +28,10 @@ import VaultDialog.Model
         , isExpanded
         , isIgnored
         , isUserKeySelected
+        , keysToAdd
         , sortedFolders
+        , userInputEmail
+        , userKeys
         )
 import VaultDialog.Ports
 import VaultDialog.Update exposing (dialogState)
@@ -104,9 +108,13 @@ contents vaultId model =
 tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
 tabContents vaultId state model =
     let
-        -- converter from Msg -> Model.Msg
+        -- converter from Html Msg -> Html Model.Msg
         msg =
             Html.map (Model.VaultDialog vaultId)
+
+        searchKeys =
+            Model.VaultDialog vaultId <|
+                SearchUserKeys (userInputEmail state)
     in
         [ ( "Basic"
           , div [ class "VaultDialog-Tab-Content" ]
@@ -118,9 +126,9 @@ tabContents vaultId state model =
         , ( "Users"
           , div [ class "VaultDialog-Tab-Content" ]
                 [ div []
-                    [ div [ class "VaultDialog-Add-User" ]
-                        [ userInput vaultId state
-                        , msg <| addUserButton vaultId state
+                    [ div
+                        [ class "VaultDialog-Add-User", onEnter searchKeys ]
+                        [ dialogInput <| userInput vaultId state
                         ]
                     , div [ class "VaultDialog-UserKey-Selection" ]
                         [ msg <| userKeySelection state model
@@ -171,26 +179,14 @@ saveButton vaultId =
         ]
 
 
-addUserButton : VaultId -> State -> Html Msg
-addUserButton vaultId state =
-    span [ class "VaultDialog-Button-Add-User" ]
-        [ Ui.Button.model "+" "primary" "small"
-            |> Ui.Button.view (SearchFingerprints state.userInput.value)
-        ]
-
-
 confirmUserKeysButton : State -> Html Msg
 confirmUserKeysButton state =
     let
         email =
-            state.userInput.value
-
-        keys =
-            Dict.get email state.usersToAdd
-                |> Maybe.withDefault []
+            userInputEmail state
     in
         span [ class "VaultDialog-Button-Confirm-UserKeys" ] <|
-            if List.isEmpty keys then
+            if List.isEmpty (keysToAdd email state) then
                 []
             else
                 [ Ui.Button.model "Invite with selected keys" "primary" "small"
@@ -392,11 +388,10 @@ userKeySelection : State -> Model -> Html Msg
 userKeySelection state model =
     let
         email =
-            state.userInput.value
+            userInputEmail state
 
         keys =
-            Dict.get email state.userKeys
-                |> Maybe.withDefault []
+            userKeys email state
 
         isHidden =
             List.isEmpty keys
@@ -412,7 +407,7 @@ userKeySelection state model =
                 :: List.map (\key -> userKeyCheckbox email key state model) keys
 
 
-userKeyCheckbox : String -> Syncrypt.User.UserKey -> State -> Model -> Html Msg
+userKeyCheckbox : String -> UserKey -> State -> Model -> Html Msg
 userKeyCheckbox email userKey state model =
     let
         checkboxViewSettings =
