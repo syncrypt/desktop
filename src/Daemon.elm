@@ -1,28 +1,40 @@
 module Daemon exposing (..)
 
 import Config exposing (..)
-import Json.Decode as Json exposing (succeed, andThen, fail)
-import Json.Decode.Pipeline exposing (decode, required, optional, optionalAt, hardcoded, custom)
-import Http
-import Model exposing (..)
-import Syncrypt.Vault exposing (..)
-import Syncrypt.User exposing (User, Email, UserKey)
 import Date exposing (Date)
-import String
+import Http
+import Json.Encode
+import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Model exposing (..)
+import Syncrypt.User exposing (Email, Password, User, UserKey)
+import Syncrypt.Vault exposing (..)
 import Task exposing (Task)
-import Util
-import Result exposing (Result)
 import Time exposing (Time)
+import Util
 
 
 type ApiPath
-    = Vaults
+    = Stats
+    | Vaults
     | FlyingVaults
     | Vault VaultId
     | FlyingVault VaultId
     | VaultUsers VaultId
+    | VaultUser VaultId Email
     | UserKeys Email
     | VaultUserKeys VaultId Email
+    | User
+    | Feedback
+    | Version
+    | Login
+    | LoginCheck
+    | Logout
+
+
+getStats : Config -> Http.Request Stats
+getStats config =
+    apiRequest config Get Stats Nothing statsDecoder
 
 
 getVaults : Config -> Http.Request (List Vault)
@@ -35,14 +47,39 @@ getFlyingVaults config =
     apiRequest config Get FlyingVaults Nothing flyingVaultsDecoder
 
 
-getUsers : VaultId -> Config -> Http.Request (List User)
-getUsers vaultId config =
+getVault : VaultId -> Config -> Http.Request Vault
+getVault vaultId config =
+    apiRequest config Get (Vault vaultId) Nothing vaultDecoder
+
+
+updateVaultMetadata : VaultId -> Json.Value -> Config -> Http.Request Vault
+updateVaultMetadata vaultId metadata config =
+    apiRequest config Put (Vault vaultId) (Just (Http.jsonBody metadata)) vaultDecoder
+
+
+getFlyingVault : VaultId -> Config -> Http.Request FlyingVault
+getFlyingVault vaultId config =
+    apiRequest config Get (FlyingVault vaultId) Nothing flyingVaultDecoder
+
+
+getVaultUsers : VaultId -> Config -> Http.Request (List User)
+getVaultUsers vaultId config =
     apiRequest config Get (VaultUsers vaultId) Nothing usersDecoder
+
+
+getVaultUser : VaultId -> Email -> Config -> Http.Request User
+getVaultUser vaultId email config =
+    apiRequest config Get (VaultUser vaultId email) Nothing userDecoder
 
 
 getUserKeys : Email -> Config -> Http.Request (List UserKey)
 getUserKeys email config =
     apiRequest config Get (UserKeys email) Nothing userKeysDecoder
+
+
+getUser : Email -> Config -> Http.Request User
+getUser email config =
+    apiRequest config Get User Nothing userDecoder
 
 
 getVaultUserKeys : Email -> VaultId -> Config -> Http.Request (List UserKey)
@@ -77,6 +114,15 @@ deleteVault vaultId config =
         (decodeToVal vaultId)
 
 
+sendFeedback : String -> Config -> Http.Request String
+sendFeedback text config =
+    apiRequest config
+        Post
+        Feedback
+        (Just (Http.jsonBody (Json.Encode.string text)))
+        (decodeToVal "")
+
+
 type alias Path =
     String
 
@@ -102,6 +148,9 @@ type RequestMethod
 apiPath : ApiPath -> Path
 apiPath apiPath =
     case apiPath of
+        Stats ->
+            "stats"
+
         Vaults ->
             "vault"
 
@@ -117,11 +166,32 @@ apiPath apiPath =
         VaultUsers vaultId ->
             "vault/" ++ vaultId ++ "/users"
 
+        VaultUser vaultId email ->
+            "vault/" ++ vaultId ++ "/users/" ++ email
+
         UserKeys email ->
             "user/" ++ email ++ "/keys"
 
         VaultUserKeys vaultId email ->
             "vault/" ++ vaultId ++ "/user/" ++ email ++ "/keys"
+
+        User ->
+            "auth/user"
+
+        Feedback ->
+            "feedback"
+
+        Version ->
+            "version"
+
+        Login ->
+            "auth/login"
+
+        LoginCheck ->
+            "auth/check"
+
+        Logout ->
+            "auth/logout"
 
 
 {-| Converts `RequestMethod` into `String`.
@@ -228,7 +298,7 @@ apiUrl config path =
     in
         -- the daemon API expects requests URLs to end with "/"
         -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
-        if String.endsWith "/" path then
+        if String.endsWith "/" path || path == "stats" then
             rootUrl ++ path
         else
             rootUrl ++ path ++ "/"
@@ -245,6 +315,14 @@ apiHeaders config =
 decodeToVal : a -> Json.Decoder a
 decodeToVal val =
     Json.succeed val
+
+
+statsDecoder : Json.Decoder Model.Stats
+statsDecoder =
+    decode Model.Stats
+        |> requiredAt [ "stats", "stats" ] Json.int
+        |> requiredAt [ "stats", "downloads" ] Json.int
+        |> requiredAt [ "stats", "uploads" ] Json.int
 
 
 {-| Decodes an array of `Syncrypt.Vault.Vault`.

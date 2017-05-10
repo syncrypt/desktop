@@ -8,14 +8,14 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Ports
+import Set
+import Syncrypt.Vault exposing (VaultOptions(..))
 import Time exposing (Time)
 import Ui.NotificationCenter
 import Util exposing (andAlso)
 import VaultDialog
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import Syncrypt.Vault exposing (VaultOptions(..))
-import Set
 
 
 -- INIT
@@ -32,9 +32,7 @@ init config =
             , model.config
                 |> Daemon.getVaults
                 |> attempt FetchedVaultsFromApi
-            , model.config
-                |> Daemon.getFlyingVaults
-                |> attempt UpdatedFlyingVaultsFromApi
+            , updateStats model
             ]
     in
         model ! initialActions
@@ -216,6 +214,18 @@ update action model =
                 { model | notificationCenter = state }
                     ! [ Cmd.map NotificationCenter cmd ]
 
+        UpdatedStatsFromApi (Ok stats) ->
+            { model | stats = stats }
+                ! [ updateStats model ]
+
+        UpdatedStatsFromApi (Err reason) ->
+            let
+                _ =
+                    Debug.log "Updating stats failed: " reason
+            in
+                model
+                    ! [ updateStats model ]
+
 
 updateNow : Cmd Msg
 updateNow =
@@ -225,6 +235,13 @@ updateNow =
 updateNowIn : Time -> Cmd Msg
 updateNowIn time =
     Util.performDelayed time SetDate Date.now
+
+
+updateStats : Model -> Cmd Msg
+updateStats model =
+    model.config
+        |> Daemon.getStats
+        |> attemptDelayed 1000 UpdatedStatsFromApi
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
@@ -354,15 +371,24 @@ footer : Model -> Html Msg
 footer { stats, vaults } =
     let
         statsStr =
-            [ stats.stats, stats.downloads, stats.uploads ]
-                |> List.map toString
-                |> String.join " / "
+            (toString stats.stats)
+                ++ " File Stats / "
+                ++ (toString stats.downloads)
+                ++ " Downloads / "
+                ++ (toString stats.uploads)
+                ++ " Uploads"
+
+        syncedVaults =
+            if List.length vaults == 1 then
+                " Synced Vault / "
+            else
+                " Synced Vaults / "
     in
         div [ class "MainScreen-Footer" ]
             [ span [ class "MainScreen-Stats" ]
                 [ text <|
                     (vaults |> List.length |> toString)
-                        ++ " Vault(s) / "
+                        ++ syncedVaults
                         ++ statsStr
                 ]
             ]

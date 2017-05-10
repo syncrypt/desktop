@@ -21,6 +21,10 @@ type alias Email =
     String
 
 
+type alias Password =
+    String
+
+
 type alias UserKey =
     { fingerprint : Fingerprint
     , description : String

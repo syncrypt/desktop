@@ -13,12 +13,16 @@ import Util exposing (findFirst)
 import Ui.NotificationCenter
 
 
+type alias Stats =
+    { stats : Int, downloads : Int, uploads : Int }
+
+
 type alias Model =
     { config : Config
     , vaults : List Vault
     , flyingVaults : List FlyingVault
     , state : State
-    , stats : { stats : Int, downloads : Int, uploads : Int }
+    , stats : Stats
     , sidebarOpen : Bool
     , now : Maybe Date
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
@@ -42,6 +46,7 @@ type Msg
     | FetchedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
+    | UpdatedStatsFromApi (Result Http.Error Stats)
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
@@ -66,9 +71,7 @@ init config =
     , vaults = []
     , flyingVaults = []
     , state = LoadingVaults
-    , stats =
-        -- TODO: get these from stats api
-        { stats = 0, downloads = 0, uploads = 0 }
+    , stats = { stats = 0, downloads = 0, uploads = 0 }
     , sidebarOpen = False
     , now = Nothing
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]

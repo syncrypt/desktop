@@ -375,7 +375,7 @@ searchFingerprints email vaultId attemptFunc model =
 
 fetchUsers vaultId attemptFunc model =
     model.config
-        |> Daemon.getUsers vaultId
+        |> Daemon.getVaultUsers vaultId
         |> attemptFunc (Model.VaultDialog vaultId << FetchedUsers)
 
 
