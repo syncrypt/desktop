@@ -193,7 +193,7 @@ confirmUserKeysButton state =
             if List.isEmpty keys then
                 []
             else
-                [ Ui.Button.model "Invite User with selected keys" "primary" "small"
+                [ Ui.Button.model "Invite with selected keys" "primary" "small"
                     |> Ui.Button.view ConfirmAddUser
                 ]
 
@@ -234,7 +234,7 @@ userInput vaultId state =
         |> Html.map (Model.VaultDialog vaultId << UserInput)
         |> labeledLeft [ class "VaultDialog-InputLabel" ]
             (Just (Model.FocusOn state.userInput.uid))
-            "Add User"
+            "Invite User"
 
 
 fileSelectionContainer : State -> Html Msg
