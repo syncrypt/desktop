@@ -323,7 +323,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         "Remove vault from sync?"
 
                     question =
-                        "By clicking OK this vault will stop to synchronize to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
+                        "This vault will stop being synchronized to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
 
                     confirmMsg =
                         Confirmed RemoveVault
