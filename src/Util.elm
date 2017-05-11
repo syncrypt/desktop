@@ -14,6 +14,8 @@ module Util
         , findFirst
         , andAlso
         , onEnter
+        , onKeyDown
+        , onAnyKeyDown
         )
 
 import Html
@@ -217,11 +219,21 @@ andAlso f ( m1, cmd1 ) =
 
 onEnter : msg -> Html.Attribute msg
 onEnter msg =
+    onKeyDown 13 msg
+
+
+onKeyDown : Int -> msg -> Html.Attribute msg
+onKeyDown keyCode msg =
     let
-        isEnter code =
-            if code == 13 then
+        isKey code =
+            if code == keyCode then
                 Json.Decode.succeed msg
             else
-                Json.Decode.fail "not ENTER"
+                Json.Decode.fail ""
     in
-        Html.Events.on "keydown" (Json.Decode.andThen isEnter Html.Events.keyCode)
+        Html.Events.on "keydown" (Json.Decode.andThen isKey Html.Events.keyCode)
+
+
+onAnyKeyDown : msg -> Html.Attribute msg
+onAnyKeyDown msg =
+    Html.Events.on "keydown" (Json.Decode.andThen (\_ -> Json.Decode.succeed msg) Html.Events.keyCode)
