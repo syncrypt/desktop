@@ -112,9 +112,9 @@ view { confirmationDialog } =
 
 
 contents : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
-contents address { title, question, confirmMsg } =
+contents address { question, confirmMsg } =
     [ div [ class "ConfirmationDialog-Content" ]
-        [ text "Do you really want to delete this vault from the server?"
+        [ text question
         , div [ class "ConfirmationDialog-Buttons" ]
             [ span [ class "ConfirmationDialog-Button-Cancel" ]
                 [ Ui.Button.model "Cancel" "secondary" "small"
