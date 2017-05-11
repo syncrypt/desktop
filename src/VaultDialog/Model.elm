@@ -37,6 +37,7 @@ type alias State =
     , users : List User.User
     , usersToAdd : Dict User.Email (List User.UserKey)
     , userKeys : Dict User.Email (List User.UserKey)
+    , vaultFingerprints : Set User.Fingerprint
     }
 
 
@@ -61,6 +62,7 @@ type Msg
     | UserKeyCheckbox User.Email User.UserKey Ui.Checkbox.Msg
     | SearchUserKeys User.Email
     | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
+    | FoundVaultFingerprints (Result Http.Error (List User.Fingerprint))
     | FetchedUsers (Result Http.Error (List User.User))
     | ConfirmAddUser
     | SetUserInput String
@@ -95,6 +97,7 @@ init =
     , users = []
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
+    , vaultFingerprints = Set.empty
     }
 
 
@@ -138,14 +141,23 @@ isIgnored path { ignoredFolderItems } =
            )
 
 
-isUserKeySelected : User.Email -> User.UserKey -> State -> Bool
-isUserKeySelected email userKey state =
+isUserKeyPending email userKey state =
     case Dict.get email state.usersToAdd of
         Nothing ->
             False
 
         Just keys ->
             List.member userKey keys
+
+
+isUserKeyAlreadyAdded userKey state =
+    Set.member userKey.fingerprint state.vaultFingerprints
+
+
+isUserKeySelected : User.Email -> User.UserKey -> State -> Bool
+isUserKeySelected email userKey state =
+    isUserKeyPending email userKey state
+        || isUserKeyAlreadyAdded userKey state
 
 
 isExpanded : Path -> State -> Bool

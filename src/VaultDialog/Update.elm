@@ -9,6 +9,7 @@ import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
+import Set
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
 import Task
 import Ui.Input
@@ -90,6 +91,8 @@ openForVault vault model =
                 , VaultDialog.Ports.getFileList ( vault.id, path )
                 , model
                     |> fetchUsers vault.id Daemon.attempt
+                , model
+                    |> getVaultFingerprints vault.id Daemon.attempt
                 ]
             else
                 [ cmd ]
@@ -359,10 +362,10 @@ update msg vaultId ({ vaultDialogs } as model) =
                         ! [ cmd ]
 
             SearchUserKeys email ->
-                ( model
-                , model
-                    |> searchFingerprints email vaultId Daemon.attempt
-                )
+                model
+                    ! [ model
+                            |> searchFingerprints email vaultId Daemon.attempt
+                      ]
 
             FoundUserKeys email (Ok keys) ->
                 ({ state
@@ -381,6 +384,22 @@ update msg vaultId ({ vaultDialogs } as model) =
                     model
                         ! []
 
+            FoundVaultFingerprints (Ok fingerprints) ->
+                ({ state | vaultFingerprints = Set.fromList fingerprints }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            FoundVaultFingerprints (Err reason) ->
+                let
+                    _ =
+                        Debug.log "Failed to find vault fingerprints " reason
+                in
+                    model
+                        ! [ model
+                                |> getVaultFingerprints vaultId (Daemon.attemptDelayed 1000)
+                          ]
+
             SetUserInput email ->
                 let
                     ( userInput, cmd ) =
@@ -393,6 +412,12 @@ update msg vaultId ({ vaultDialogs } as model) =
                         ! [ cmd
                           , searchFingerprints email vaultId Daemon.attempt model
                           ]
+
+
+getVaultFingerprints vaultId attemptFunc model =
+    model.config
+        |> Daemon.getVaultFingerprints vaultId
+        |> attemptFunc (Model.VaultDialog vaultId << FoundVaultFingerprints)
 
 
 searchFingerprints email vaultId attemptFunc model =

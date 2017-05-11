@@ -7,7 +7,7 @@ import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
 import Model exposing (..)
-import Syncrypt.User exposing (Email, Password, User, UserKey)
+import Syncrypt.User exposing (Email, Password, User, UserKey, Fingerprint)
 import Syncrypt.Vault exposing (..)
 import Task exposing (Task)
 import Time exposing (Time)
@@ -23,7 +23,7 @@ type ApiPath
     | VaultUsers VaultId
     | VaultUser VaultId Email
     | UserKeys Email
-    | VaultUserKeys VaultId Email
+    | VaultFingerprints VaultId
     | User
     | Feedback
     | Version
@@ -95,7 +95,13 @@ addVaultUser vaultId email keys config =
             Post
             (VaultUsers vaultId)
             (Just (Http.jsonBody json))
-            (Json.succeed email)
+            (decode identity |> required "email" Json.string)
+
+
+removeVaultUser : VaultId -> Email -> Config -> Http.Request Email
+removeVaultUser vaultId email config =
+    -- TODO: check response data type
+    apiRequest config Delete (VaultUser vaultId email) Nothing Json.string
 
 
 getUserKeys : Email -> Config -> Http.Request (List UserKey)
@@ -108,9 +114,9 @@ getUser email config =
     apiRequest config Get User Nothing userDecoder
 
 
-getVaultUserKeys : Email -> VaultId -> Config -> Http.Request (List UserKey)
-getVaultUserKeys email vaultId config =
-    apiRequest config Get (VaultUserKeys vaultId email) Nothing userKeysDecoder
+getVaultFingerprints : VaultId -> Config -> Http.Request (List Fingerprint)
+getVaultFingerprints vaultId config =
+    apiRequest config Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
 
 
 createVault : VaultOptions -> Config -> Http.Request Vault
@@ -227,11 +233,11 @@ apiPath apiPath =
         VaultUser vaultId email ->
             "vault/" ++ vaultId ++ "/users/" ++ email
 
+        VaultFingerprints vaultId ->
+            "vault/" ++ vaultId ++ "/fingerprints"
+
         UserKeys email ->
             "user/" ++ email ++ "/keys"
-
-        VaultUserKeys vaultId email ->
-            "vault/" ++ vaultId ++ "/user/" ++ email ++ "/keys"
 
         User ->
             "auth/user"

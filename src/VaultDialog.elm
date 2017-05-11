@@ -27,6 +27,7 @@ import VaultDialog.Model
         , folderIsEmpty
         , isExpanded
         , isIgnored
+        , isUserKeyAlreadyAdded
         , isUserKeySelected
         , keysToAdd
         , sortedFolders
@@ -410,12 +411,21 @@ userKeySelection state model =
 userKeyCheckbox : String -> UserKey -> State -> Model -> Html Msg
 userKeyCheckbox email userKey state model =
     let
+        isDisabled =
+            isUserKeyAlreadyAdded userKey state
+
         checkboxViewSettings =
-            { disabled = False
+            { disabled = isDisabled
             , readonly = False
             , value = isUserKeySelected email userKey state
             , uid = userKey.fingerprint
             }
+
+        labelMsg =
+            if isDisabled then
+                Nothing
+            else
+                Just (ToggleUserKey email userKey)
 
         checkbox =
             Ui.Checkbox.view checkboxViewSettings
@@ -424,7 +434,7 @@ userKeyCheckbox email userKey state model =
         checkboxWithLabel =
             checkbox
                 |> labeledRight []
-                    (Just (ToggleUserKey email userKey))
+                    labelMsg
                     (userKey.fingerprint ++ " - " ++ userKey.description)
     in
         div []
