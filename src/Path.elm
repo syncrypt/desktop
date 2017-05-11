@@ -6,6 +6,7 @@ module Path
         , asPath
         , inRoot
         , parent
+        , toString
         )
 
 import Util
@@ -58,3 +59,8 @@ parent : Path -> Path
 parent path =
     path
         |> Util.allButLast
+
+
+toString : String -> Path -> String
+toString pathSeparator path =
+    String.join pathSeparator path

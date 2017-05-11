@@ -114,13 +114,22 @@ initForVault vault =
             Ui.Input.init ()
                 |> Ui.Input.placeholder name
                 |> Ui.Input.showClearIcon True
+
+        isNew =
+            vault.id == ""
+
+        folderPath =
+            if isNew then
+                Nothing
+            else
+                Just (asPath vault.folderPath)
     in
         { default
             | id = vault.id
-            , isNew = vault.id == ""
+            , isNew = isNew
             , title = name
             , nameInput = nameInput
-            , localFolderPath = Just (asPath vault.folderPath)
+            , localFolderPath = folderPath
         }
 
 

@@ -198,22 +198,35 @@ confirmUserKeysButton state =
 openFolderButton : VaultId -> State -> Model -> Html Msg
 openFolderButton vaultId state model =
     let
-        button =
-            if state.isNew then
-                Ui.Button.model "Select Folder" "primary" "small"
-                    |> Ui.Button.view (OpenFolderDialog vaultId)
-            else
-                let
-                    vault =
-                        Model.vaultWithId vaultId model
-                in
-                    Ui.Button.model "Open Folder" "primary" "small"
-                        |> Ui.Button.view (OpenFolder vault.folderPath)
+        pathString path =
+            path
+                |> Path.toString model.config.pathSeparator
+
+        ( folderPath, msg ) =
+            case ( state.isNew, state.localFolderPath ) of
+                ( _, Nothing ) ->
+                    ( "Select Folder"
+                    , OpenFolderDialog vaultId
+                    )
+
+                ( True, Just path ) ->
+                    ( pathString path
+                    , OpenFolderDialog vaultId
+                    )
+
+                ( False, Just path ) ->
+                    let
+                        ps =
+                            pathString path
+                    in
+                        ( ps
+                        , OpenFolder ps
+                        )
     in
-        button
-            |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                Nothing
-                "Folder"
+        span [ class "VaultDialog-Button-Folder" ]
+            [ Ui.Button.model folderPath "primary" "medium"
+                |> Ui.Button.view msg
+            ]
 
 
 nameInput : VaultId -> State -> Html Model.Msg

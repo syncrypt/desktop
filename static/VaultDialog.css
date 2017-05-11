@@ -20,8 +20,9 @@
 
 
 .VaultDialog-Input ui-input {
-  max-width: 530px;
-  width: 90%;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .VaultDialog-Input ui-input input {
@@ -46,6 +47,9 @@
 
 .VaultDialog-FolderItem-Hidden {
   display: none;
+}
+
+.VaultDialog-Tab-Content {
 }
 
 .VaultDialog-Tab-Content ui-container {
@@ -100,6 +104,10 @@
   padding-left: 10px;
 }
 
+.VaultDialog-Button-Folder ui-button {
+  max-width: 100%;
+}
+
 .VaultDialog-User-Name {
   font-size: 15px;
 }
@@ -114,19 +122,6 @@
   right: 20px;
   position: absolute;
   font-weight: normal;
-}
-
-.VaultDialog-Add-User {
-  display: block;
-}
-
-.VaultDialog-Button-Add-User {
-  padding-top: 5px;
-  padding-left: 10px;
-}
-
-.VaultDialog-Add-User ui-input {
-  width: 514px;
 }
 
 .VaultDialog-UserKeys {
