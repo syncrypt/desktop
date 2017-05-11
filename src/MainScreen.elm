@@ -80,6 +80,9 @@ update action model =
                 ! [ model.config
                         |> Daemon.getVaults
                         |> attemptDelayed model.config.updateInterval UpdatedVaultsFromApi
+                  , model.config
+                        |> Daemon.getFlyingVaults
+                        |> attempt UpdatedFlyingVaultsFromApi
                   ]
 
         FetchedVaultsFromApi (Err reason) ->
