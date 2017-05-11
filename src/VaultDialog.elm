@@ -17,12 +17,13 @@ import Ui.Container
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing (onEnter)
+import Util exposing (onAnyKeyDown, onEnter)
 import VaultDialog.Model
     exposing
         ( FileName
         , FolderItem
         , Msg(..)
+        , RequiresConfirmation(..)
         , State
         , folderIsEmpty
         , isExpanded
@@ -99,9 +100,10 @@ contents vaultId model =
         , ConfirmationDialog.view state
             |> Html.map (Model.VaultDialog state.id)
         , div [ class "VaultDialog-Buttons" ]
-            [ deleteButton state vaultId
-            , saveButton vaultId
-            , cancelButton vaultId
+            [ deleteButton vaultId state
+            , removeButton vaultId state
+            , saveButton vaultId state
+            , cancelButton vaultId state
             ]
         ]
 
@@ -151,33 +153,63 @@ dialogInput body =
         [ body ]
 
 
-cancelButton : VaultId -> Html Model.Msg
-cancelButton vaultId =
-    span [ class "VaultDialog-Button-Cancel" ]
-        [ Ui.Button.model "Cancel" "secondary" "small"
+cancelButton : VaultId -> State -> Html Model.Msg
+cancelButton vaultId state =
+    span
+        [ classList
+            [ ( "VaultDialog-Button-Cancel", True )
+            , ( "Hidden", not state.hasChangesPending )
+            ]
+        ]
+        [ Ui.Button.model "Cancel Changes" "secondary" "small"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
 
 
-deleteButton : State -> VaultId -> Html Model.Msg
-deleteButton state vaultId =
+deleteButton : VaultId -> State -> Html Model.Msg
+deleteButton vaultId state =
     span
         [ classList
             [ ( "Hidden", state.isNew )
             , ( "VaultDialog-Button-Delete", True )
             ]
         ]
-        [ Ui.Button.model "Delete" "danger" "small"
-            |> Ui.Button.view (Model.VaultDialog vaultId AskDeleteVault)
+        [ Ui.Button.model "Delete from Server" "danger" "small"
+            |> Ui.Button.view (Model.VaultDialog vaultId (Confirm DeleteVault))
         ]
 
 
-saveButton : VaultId -> Html Model.Msg
-saveButton vaultId =
-    span [ class "VaultDialog-Button-Save" ]
-        [ Ui.Button.model "Save" "primary" "small"
-            |> Ui.Button.view (Model.SaveVaultDetails vaultId)
+removeButton : VaultId -> State -> Html Model.Msg
+removeButton vaultId state =
+    span
+        [ classList
+            [ ( "Hidden", state.isNew )
+            , ( "VaultDialog-Button-Remove", True )
+            ]
         ]
+        [ Ui.Button.model "Stop Syncing" "warning" "small"
+            |> Ui.Button.view (Model.VaultDialog vaultId (Confirm RemoveVault))
+        ]
+
+
+saveButton : VaultId -> State -> Html Model.Msg
+saveButton vaultId state =
+    let
+        ( label, msg ) =
+            case ( state.isNew, state.hasChangesPending ) of
+                ( True, _ ) ->
+                    ( "Create", Model.SaveVaultDetails vaultId )
+
+                ( _, True ) ->
+                    ( "Save", Model.SaveVaultDetails vaultId )
+
+                _ ->
+                    ( "Close", Model.CloseVaultDetails vaultId )
+    in
+        span [ class "VaultDialog-Button-Save" ]
+            [ Ui.Button.model label "primary" "small"
+                |> Ui.Button.view msg
+            ]
 
 
 confirmUserKeysButton : State -> Html Msg
@@ -231,11 +263,13 @@ openFolderButton vaultId state model =
 
 nameInput : VaultId -> State -> Html Model.Msg
 nameInput vaultId state =
-    Ui.Input.view state.nameInput
-        |> Html.map (Model.VaultDialog vaultId << NameInput)
-        |> labeledLeft [ class "VaultDialog-InputLabel" ]
-            (Just (Model.FocusOn state.nameInput.uid))
-            "Name"
+    span [ onAnyKeyDown (Model.VaultDialog vaultId NameChanged) ]
+        [ Ui.Input.view state.nameInput
+            |> Html.map (Model.VaultDialog vaultId << NameInput)
+            |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                (Just (Model.FocusOn state.nameInput.uid))
+                "Name"
+        ]
 
 
 userInput : VaultId -> State -> Html Model.Msg

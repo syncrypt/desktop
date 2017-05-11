@@ -24,6 +24,7 @@ type alias FolderItem =
 type alias State =
     { id : VaultId
     , isNew : Bool
+    , hasChangesPending : Bool
     , title : String
     , modal : Ui.Modal.Model
     , confirmationDialog : ConfirmationDialog.Model Msg
@@ -41,9 +42,15 @@ type alias State =
     }
 
 
+type RequiresConfirmation
+    = DeleteVault
+    | RemoveVault
+
+
 type Msg
     = Modal Ui.Modal.Msg
     | ConfirmationDialog ConfirmationDialog.Msg
+    | NameChanged
     | NameInput Ui.Input.Msg
     | UserInput Ui.Input.Msg
     | FileCheckBox Path Ui.Checkbox.Msg
@@ -55,8 +62,8 @@ type Msg
     | Tabs Ui.Tabs.Msg
     | CollapseFolder Path
     | ExpandFolder Path
-    | AskDeleteVault
-    | ConfirmedVaultDeletion
+    | Confirm RequiresConfirmation
+    | Confirmed RequiresConfirmation
     | AddUserWithKeys User.Email (List User.UserKey)
     | ToggleUserKey User.Email User.UserKey
     | UserKeyCheckbox User.Email User.UserKey Ui.Checkbox.Msg
@@ -72,6 +79,7 @@ init : State
 init =
     { id = ""
     , isNew = True
+    , hasChangesPending = False
     , title = "Untitled Vault"
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
     , localFolderPath = Nothing
@@ -272,3 +280,8 @@ userKeys : User.Email -> State -> List User.UserKey
 userKeys email state =
     Dict.get email state.userKeys
         |> Maybe.withDefault []
+
+
+hasChanged : State -> State
+hasChanged state =
+    { state | hasChangesPending = True }

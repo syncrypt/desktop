@@ -104,6 +104,10 @@
   padding-left: 10px;
 }
 
+.VaultDialog-Button-Remove {
+  padding-left: 10px;
+}
+
 .VaultDialog-Button-Folder ui-button {
   max-width: 100%;
 }

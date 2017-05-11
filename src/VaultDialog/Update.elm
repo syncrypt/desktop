@@ -4,14 +4,12 @@ import ConfirmationDialog
 import Daemon
 import Dialog exposing (asModalIn)
 import Dict
-import Http
 import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
 import Set
 import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
-import Task
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
@@ -19,10 +17,12 @@ import VaultDialog.Model
     exposing
         ( FolderItem
         , Msg(..)
+        , RequiresConfirmation(..)
         , State
         , addFolder
         , collapseFolder
         , expandFolder
+        , hasChanged
         , isIgnored
         , toggleIgnorePath
         , toggleUserKey
@@ -186,6 +186,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
+            NameChanged ->
+                (state
+                    |> hasChanged
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
             ConfirmationDialog msg ->
                 (state
                     |> ConfirmationDialog.update msg
@@ -228,6 +235,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             FileCheckBox path _ ->
                 (state
+                    |> hasChanged
                     |> toggleIgnorePath path
                     |> asStateIn vaultId model
                 )
@@ -246,6 +254,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             ToggleIgnorePath path ->
                 (state
+                    |> hasChanged
                     |> toggleIgnorePath path
                     |> asStateIn vaultId model
                 )
@@ -270,6 +279,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         , localFolderItems = Dict.empty
                         , nameInput = nameInput
                      }
+                        |> hasChanged
                         |> asStateIn vaultId model
                     )
                         ! [ VaultDialog.Ports.getFileList ( vaultId, path )
@@ -290,16 +300,16 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            AskDeleteVault ->
+            Confirm DeleteVault ->
                 let
                     title =
-                        "Delete Vault?"
+                        "Delete vault?"
 
                     question =
                         "Do you really want to delete this vault from the server?"
 
                     confirmMsg =
-                        ConfirmedVaultDeletion
+                        Confirmed DeleteVault
                 in
                     (state
                         |> ConfirmationDialog.open title question confirmMsg
@@ -307,11 +317,35 @@ update msg vaultId ({ vaultDialogs } as model) =
                     )
                         ! []
 
-            ConfirmedVaultDeletion ->
+            Confirm RemoveVault ->
+                let
+                    title =
+                        "Remove vault from sync?"
+
+                    question =
+                        "By clicking OK this vault will stop to synchronize to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
+
+                    confirmMsg =
+                        Confirmed RemoveVault
+                in
+                    (state
+                        |> ConfirmationDialog.open title question confirmMsg
+                        |> asStateIn vaultId model
+                    )
+                        ! []
+
+            Confirmed DeleteVault ->
                 model
                     ! [ model.config
-                            |> Daemon.deleteVault state.id
+                            |> Daemon.deleteVault vaultId
                             |> Daemon.attempt Model.DeletedVault
+                      ]
+
+            Confirmed RemoveVault ->
+                model
+                    ! [ model.config
+                            |> Daemon.removeVault vaultId
+                            |> Daemon.attempt Model.RemovedVaultFromSync
                       ]
 
             FetchedUsers (Ok users) ->
@@ -335,6 +369,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             ToggleUserKey email key ->
                 (state
+                    |> hasChanged
                     |> toggleUserKey email key
                     |> asStateIn vaultId model
                 )
@@ -346,6 +381,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         Dict.insert email keys state.usersToAdd
                 in
                     ({ state | usersToAdd = usersToAdd }
+                        |> hasChanged
                         |> asStateIn vaultId model
                     )
                         ! []
@@ -357,6 +393,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                             |> dialogCmd UserInput
                 in
                     ({ state | userInput = input }
+                        |> hasChanged
                         |> asStateIn vaultId model
                     )
                         ! [ cmd ]
