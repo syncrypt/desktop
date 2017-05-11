@@ -8,7 +8,8 @@
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make-installer": "electron-forge make",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "watch": "chokidar '**/*.elm' 'static/*' -c 'make' --initial"
   },
   "keywords": [],
   "author": "Syncrypt UG",
@@ -53,6 +54,7 @@
     "file": "^0.2.2"
   },
   "devDependencies": {
+    "chokidar-cli": "^1.2.0",
     "electron-forge": "^2.12.0",
     "electron-prebuilt-compile": "1.6.2"
   }
