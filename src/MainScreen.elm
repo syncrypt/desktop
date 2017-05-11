@@ -158,7 +158,8 @@ update action model =
 
         RemovedVaultFromSync (Ok vaultId) ->
             model
-                |> notifyText ("Vault removed from sync: " ++ vaultId)
+                |> VaultDialog.Update.cancel vaultId
+                |> andAlso (notifyText ("Vault removed from sync: " ++ vaultId))
 
         RemovedVaultFromSync (Err reason) ->
             model

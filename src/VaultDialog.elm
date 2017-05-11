@@ -197,10 +197,10 @@ saveButton vaultId state =
     let
         ( label, msg ) =
             case ( state.isNew, state.hasChangesPending ) of
-                ( True, _ ) ->
+                ( True, True ) ->
                     ( "Create", Model.SaveVaultDetails vaultId )
 
-                ( _, True ) ->
+                ( False, True ) ->
                     ( "Save", Model.SaveVaultDetails vaultId )
 
                 _ ->
