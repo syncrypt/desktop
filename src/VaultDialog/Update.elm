@@ -334,6 +334,11 @@ update msg vaultId ({ vaultDialogs } as model) =
                     )
                         ! []
 
+            Confirm AddUser ->
+                -- no dialog shown for this, just a button
+                model
+                    ! []
+
             Confirmed DeleteVault ->
                 model
                     ! [ model.config
@@ -347,6 +352,18 @@ update msg vaultId ({ vaultDialogs } as model) =
                             |> Daemon.removeVault vaultId
                             |> Daemon.attempt Model.RemovedVaultFromSync
                       ]
+
+            Confirmed AddUser ->
+                let
+                    ( input, cmd ) =
+                        Ui.Input.setValue "" state.userInput
+                            |> dialogCmd UserInput
+                in
+                    ({ state | userInput = input }
+                        |> hasChanged
+                        |> asStateIn vaultId model
+                    )
+                        ! [ cmd ]
 
             FetchedUsers (Ok users) ->
                 ({ state | users = users }
@@ -385,18 +402,6 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! []
-
-            ConfirmAddUser ->
-                let
-                    ( input, cmd ) =
-                        Ui.Input.setValue "" state.userInput
-                            |> dialogCmd UserInput
-                in
-                    ({ state | userInput = input }
-                        |> hasChanged
-                        |> asStateIn vaultId model
-                    )
-                        ! [ cmd ]
 
             SearchUserKeys email ->
                 model

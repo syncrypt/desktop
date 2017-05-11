@@ -223,7 +223,7 @@ confirmUserKeysButton state =
                 []
             else
                 [ Ui.Button.model "Invite with selected keys" "primary" "small"
-                    |> Ui.Button.view ConfirmAddUser
+                    |> Ui.Button.view (Confirmed AddUser)
                 ]
 
 

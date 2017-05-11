@@ -45,6 +45,7 @@ type alias State =
 type RequiresConfirmation
     = DeleteVault
     | RemoveVault
+    | AddUser
 
 
 type Msg
@@ -71,7 +72,6 @@ type Msg
     | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
     | FoundVaultFingerprints (Result Http.Error (List User.Fingerprint))
     | FetchedUsers (Result Http.Error (List User.User))
-    | ConfirmAddUser
     | SetUserInput String
 
 
