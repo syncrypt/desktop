@@ -123,7 +123,7 @@ tabContents vaultId state model =
             Model.VaultDialog vaultId <|
                 SearchUserKeys (userInputEmail state)
     in
-        [ ( "Basic"
+        [ ( "Name & Files"
           , div [ class "VaultDialog-Tab-Content" ]
                 [ dialogInput <| nameInput vaultId state
                 , dialogInput <| msg <| openFolderButton vaultId state model
@@ -146,6 +146,11 @@ tabContents vaultId state model =
                     [ text "Vault Users:" ]
                 , msg <| userList state model
                 , msg <| pendingUserList state
+                ]
+          )
+        , ( "Cryptography"
+          , div [ class "VaultDialog-Tab-Keys" ]
+                [ text "TODO: add section with information on vault keys & other crypto stuff"
                 ]
           )
         ]
