@@ -23,6 +23,8 @@ run-debug: $(BUILD_DIR) static
 release-setup: all
 	rm -rf $(RELEASE_DIR)/tmp/*
 	mkdir -p $(RELEASE_DIR)/tmp/syncrypt
+	mkdir -p $(RELEASE_DIR)/tmp/build
+	cp icon.* $(RELEASE_DIR)/tmp/
 	cp -r $(BUILD_DIR)/* $(RELEASE_DIR)/tmp/syncrypt
 	cp package.json $(RELEASE_DIR)/tmp/
 	sed -i -e "s/build\/main/syncrypt\/main/g" $(RELEASE_DIR)/tmp/package.json

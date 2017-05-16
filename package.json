@@ -32,9 +32,14 @@
           "rpm"
         ]
       },
-      "electronPackagerConfig": {},
+      "electronPackagerConfig": {
+        "icon": "./icon.ico"
+      },
       "electronWinstallerConfig": {
-        "name": "Syncrypt"
+        "name": "Syncrypt",
+        "setupExe": "Syncrypt Setup.exe",
+        "description": "Syncrypt Desktop Application",
+        "setupIcon": "./icon.ico"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
