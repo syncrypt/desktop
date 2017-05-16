@@ -8,12 +8,14 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Ports
+import Path
 import Set
 import Syncrypt.Vault exposing (VaultId, VaultOptions(..))
 import Time exposing (Time)
 import Ui.NotificationCenter
 import Util exposing (andAlso)
 import VaultDialog
+import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
 
@@ -29,9 +31,7 @@ init config =
 
         initialActions =
             [ updateNow
-            , model.config
-                |> Daemon.getVaults
-                |> attempt FetchedVaultsFromApi
+            , fetchVaults model
             , updateStatsIn 0 model
             ]
     in
@@ -126,7 +126,24 @@ update action model =
 
         OpenFlyingVaultDetails flyingVault ->
             { model | state = ShowingFlyingVaultDetails flyingVault }
-                ! []
+                |> VaultDialog.Update.open
+
+        CloneVault vaultId ->
+            { model | state = CloningVault vaultId }
+                |> VaultDialog.Update.close vaultId
+                |> andAlso (cloneVault vaultId)
+
+        ClonedVault vaultId (Ok vault) ->
+            { model | state = ShowingAllVaults }
+                ! [ model |> fetchVaults ]
+
+        ClonedVault vaultId (Err reason) ->
+            let
+                _ =
+                    Debug.log "ClonedVault failed: " reason
+            in
+                model
+                    |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString reason))
 
         CloseVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
@@ -254,6 +271,13 @@ update action model =
                 |> notifyText ("Failed to update metadata for vault " ++ vaultId)
 
 
+fetchVaults : Model -> Cmd Msg
+fetchVaults model =
+    model.config
+        |> Daemon.getVaults
+        |> attempt FetchedVaultsFromApi
+
+
 updateNow : Cmd Msg
 updateNow =
     updateNowIn 0
@@ -300,28 +324,57 @@ saveVault vaultId model =
         state =
             dialogState vaultId model
     in
-        if state.isNew then
-            case state.localFolderPath of
-                Just folderPath ->
-                    model
-                        ! [ model.config
-                                |> Daemon.createVault
-                                    (Create
-                                        { folder = folderPath
-                                        , ignorePaths = Set.toList state.ignoredFolderItems
-                                        , userKeys = [] -- TODO
-                                        }
-                                    )
-                                |> attempt CreatedVault
-                          ]
+        case state.cloneStatus of
+            New ->
+                case state.localFolderPath of
+                    Just folderPath ->
+                        model
+                            ! [ model.config
+                                    |> Daemon.updateVault
+                                        (Create
+                                            { folder = folderPath
+                                            , ignorePaths = Set.toList state.ignoredFolderItems
+                                            , userKeys =
+                                                []
+                                                -- TODO
+                                            }
+                                        )
+                                    |> attempt CreatedVault
+                              ]
 
-                Nothing ->
-                    model
-                        |> notifyText "No path selected - Vault not created"
-        else
-            model
-                |> VaultDialog.Update.saveVaultChanges vaultId state
-                |> andAlso (notifyText "Vault updated")
+                    Nothing ->
+                        model
+                            |> notifyText "No path selected - Vault not created"
+
+            _ ->
+                model
+                    |> VaultDialog.Update.saveVaultChanges vaultId state
+                    |> andAlso (notifyText "Vault updated")
+
+
+cloneVault : VaultId -> Model -> ( Model, Cmd Msg )
+cloneVault vaultId model =
+    let
+        state =
+            dialogState vaultId model
+    in
+        case state.localFolderPath of
+            Nothing ->
+                model
+                    |> notifyText "Could not clone vault - no folder specified"
+
+            Just folderPath ->
+                model
+                    ! [ model.config
+                            |> Daemon.updateVault
+                                (Clone
+                                    { id = vaultId
+                                    , folder = folderPath
+                                    , ignorePaths = Set.toList state.ignoredFolderItems
+                                    }
+                                )
+                            |> Daemon.attempt (ClonedVault vaultId)
+                      ]
 
 
 

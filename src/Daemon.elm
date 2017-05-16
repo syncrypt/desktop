@@ -119,8 +119,8 @@ getVaultFingerprints vaultId config =
     apiRequest config Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
 
 
-createVault : VaultOptions -> Config -> Http.Request Vault
-createVault options config =
+updateVault : VaultOptions -> Config -> Http.Request Vault
+updateVault options config =
     apiRequest config
         Post
         Vaults

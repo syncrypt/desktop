@@ -7,6 +7,7 @@ module Path
         , inRoot
         , parent
         , toString
+        , fromString
         )
 
 import Util
@@ -64,3 +65,8 @@ parent path =
 toString : String -> Path -> String
 toString pathSeparator path =
     String.join pathSeparator path
+
+
+fromString : String -> String -> Path
+fromString pathSep pathStr =
+    String.split pathSep pathStr

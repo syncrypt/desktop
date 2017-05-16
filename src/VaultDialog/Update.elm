@@ -9,7 +9,7 @@ import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
 import Set
-import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
@@ -39,6 +39,9 @@ open model =
         Model.ShowingVaultDetails vault ->
             openForVault vault model
 
+        Model.ShowingFlyingVaultDetails flyingVault ->
+            openForFlyingVault flyingVault model
+
         _ ->
             let
                 _ =
@@ -60,6 +63,24 @@ openNew model =
             |> asStateIn "" model
         )
             ! []
+
+
+openForFlyingVault : FlyingVault -> Model -> ( Model, Cmd Model.Msg )
+openForFlyingVault flyingVault model =
+    let
+        path =
+            []
+
+        ( state, cmd ) =
+            VaultDialog.Model.initForFlyingVault flyingVault
+                |> setNameInputValue (nameOrId flyingVault)
+    in
+        (state.modal
+            |> Ui.Modal.open
+            |> asModalIn state
+            |> asStateIn flyingVault.id model
+        )
+            ! [ Cmd.map (Model.VaultDialog flyingVault.id) cmd ]
 
 
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )

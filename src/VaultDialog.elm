@@ -20,7 +20,8 @@ import Ui.Tabs
 import Util exposing (onAnyKeyDown, onEnter)
 import VaultDialog.Model
     exposing
-        ( FileName
+        ( CloneStatus(New, Cloned, NotCloned)
+        , FileName
         , FolderItem
         , Msg(..)
         , RequiresConfirmation(..)
@@ -64,21 +65,24 @@ viewAll ({ vaultDialogs } as model) =
 view : VaultId -> Model -> Html Model.Msg
 view vaultId model =
     let
+        state =
+            dialogState vaultId model
+
         viewConfig =
             { address = (Model.VaultDialog vaultId << Modal)
             , contents = contents vaultId model
             , footer = []
             , title =
-                case vaultId of
-                    "" ->
+                case ( vaultId, state.cloneStatus ) of
+                    ( _, New ) ->
                         "Create New Vault"
 
-                    id ->
+                    ( id, Cloned ) ->
                         "Vault " ++ id
-            }
 
-        state =
-            dialogState vaultId model
+                    ( id, NotCloned ) ->
+                        "Vault (not synchronized) " ++ id
+            }
     in
         div [ class "VaultDialog" ]
             [ Ui.Modal.view viewConfig state.modal
@@ -170,7 +174,7 @@ deleteButton : VaultId -> State -> Html Model.Msg
 deleteButton vaultId state =
     span
         [ classList
-            [ ( "Hidden", state.isNew )
+            [ ( "Hidden", state.cloneStatus == New )
             , ( "VaultDialog-Button-Delete", True )
             ]
         ]
@@ -183,7 +187,7 @@ removeButton : VaultId -> State -> Html Model.Msg
 removeButton vaultId state =
     span
         [ classList
-            [ ( "Hidden", state.isNew )
+            [ ( "Hidden", state.cloneStatus == New )
             , ( "VaultDialog-Button-Remove", True )
             ]
         ]
@@ -196,12 +200,15 @@ saveButton : VaultId -> State -> Html Model.Msg
 saveButton vaultId state =
     let
         ( label, msg ) =
-            case ( state.isNew, state.hasChangesPending ) of
-                ( True, True ) ->
+            case ( state.cloneStatus, state.hasChangesPending ) of
+                ( New, True ) ->
                     ( "Create", Model.SaveVaultDetails vaultId )
 
-                ( False, True ) ->
+                ( Cloned, True ) ->
                     ( "Save", Model.SaveVaultDetails vaultId )
+
+                ( NotCloned, True ) ->
+                    ( "Save", Model.CloneVault vaultId )
 
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
@@ -235,18 +242,23 @@ openFolderButton vaultId state model =
                 |> Path.toString model.config.pathSeparator
 
         ( folderPath, msg ) =
-            case ( state.isNew, state.localFolderPath ) of
+            case ( state.cloneStatus, state.localFolderPath ) of
+                ( NotCloned, Nothing ) ->
+                    ( "Select Folder to clone vault to"
+                    , OpenFolderDialog vaultId
+                    )
+
                 ( _, Nothing ) ->
                     ( "Select Folder"
                     , OpenFolderDialog vaultId
                     )
 
-                ( True, Just path ) ->
+                ( New, Just path ) ->
                     ( pathString path
                     , OpenFolderDialog vaultId
                     )
 
-                ( False, Just path ) ->
+                ( _, Just path ) ->
                     let
                         ps =
                             pathString path

@@ -37,6 +37,7 @@ type State
     | ShowingVaultDetails Vault
     | ShowingFlyingVaultDetails FlyingVault
     | CreatingNewVault
+    | CloningVault VaultId
 
 
 type Msg
@@ -50,6 +51,8 @@ type Msg
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
+    | CloneVault VaultId
+    | ClonedVault VaultId (Result Http.Error Vault)
     | CloseVaultDetails VaultId
     | SaveVaultDetails VaultId
     | OpenProgramSettings

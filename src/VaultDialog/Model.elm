@@ -7,7 +7,7 @@ import Ui.Modal
 import Ui.Tabs
 import Set exposing (Set)
 import Path exposing (Path, asPath)
-import Syncrypt.Vault exposing (Vault, VaultId, nameOrId)
+import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
 import Syncrypt.User as User
 import ConfirmationDialog
 import Http
@@ -21,9 +21,15 @@ type alias FolderItem =
     ( Path, List FileName )
 
 
+type CloneStatus
+    = New
+    | Cloned
+    | NotCloned
+
+
 type alias State =
     { id : VaultId
-    , isNew : Bool
+    , cloneStatus : CloneStatus
     , hasChangesPending : Bool
     , title : String
     , modal : Ui.Modal.Model
@@ -78,7 +84,7 @@ type Msg
 init : State
 init =
     { id = ""
-    , isNew = True
+    , cloneStatus = New
     , hasChangesPending = False
     , title = "Untitled Vault"
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
@@ -123,21 +129,47 @@ initForVault vault =
                 |> Ui.Input.placeholder name
                 |> Ui.Input.showClearIcon True
 
-        isNew =
-            vault.id == ""
+        cloneStatus =
+            if vault.id == "" then
+                New
+            else
+                Cloned
 
         folderPath =
-            if isNew then
+            if cloneStatus == New then
                 Nothing
             else
                 Just (asPath vault.folderPath)
     in
         { default
             | id = vault.id
-            , isNew = isNew
+            , cloneStatus = cloneStatus
             , title = name
             , nameInput = nameInput
             , localFolderPath = folderPath
+        }
+
+
+initForFlyingVault : FlyingVault -> State
+initForFlyingVault flyingVault =
+    let
+        default =
+            initForVault (Syncrypt.Vault.asVault flyingVault)
+
+        name =
+            nameOrId flyingVault
+
+        nameInput =
+            Ui.Input.init ()
+                |> Ui.Input.placeholder name
+                |> Ui.Input.showClearIcon True
+    in
+        { default
+            | id = flyingVault.id
+            , cloneStatus = NotCloned
+            , title = name
+            , nameInput = nameInput
+            , localFolderPath = Nothing
         }
 
 
