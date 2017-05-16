@@ -34,7 +34,7 @@ var openFolderDialog = function(vaultId) {
   var folders = Electron.remote.dialog.showOpenDialog({properties: ['openDirectory']});
   if(folders && folders.length == 1) {
     var folderPath = folders[0].split(Path.sep);
-    elmApp.ports.selectedFolder.send([vaultId, folderPath])
+    elmApp.ports.selectedFolder.send([vaultId, folderPath]);
   }
 }
 
