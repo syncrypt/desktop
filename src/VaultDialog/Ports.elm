@@ -15,3 +15,9 @@ port getFileList : ( VaultId, Path ) -> Cmd msg
 
 
 port fileList : (( VaultId, Path, FolderItem ) -> msg) -> Sub msg
+
+
+port openIconFileDialog : String -> Cmd msg
+
+
+port selectedIconFile : (( String, String ) -> msg) -> Sub msg

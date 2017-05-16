@@ -38,6 +38,20 @@ var openFolderDialog = function(vaultId) {
   }
 }
 
+var openIconFileDialog = function(tag) {
+  Electron.remote.dialog.showOpenDialog({
+    properties: ["openFile"],
+    title: "Select icon for vault",
+    buttonLabel: "Select Icon",
+    filters: [{name: "Images", extensions: ["jpg", "jpeg", "png", "gif"]}]
+  }, (files) => {
+    if(files && files.length == 1) {
+      // var filePath = files[0].split(Path.sep);
+      elmApp.ports.selectedIconFile.send([tag, files[0]]);
+    }
+  });
+}
+
 const IGNORE_FILES = [".DS_Store", ".vault"];
 
 var getFileList = function([vaultId, rootPathList]) {
@@ -90,6 +104,7 @@ var setupElmApp = function(daemonApiToken) {
   elmApp.ports.getFileList.subscribe(getFileList)
   elmApp.ports.focusOn.subscribe(focusOn)
   elmApp.ports.openVaultFolder.subscribe(openVaultFolder)
+  elmApp.ports.openIconFileDialog.subscribe(openIconFileDialog)
 }
 
 readAuthToken(setupElmApp)
