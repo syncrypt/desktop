@@ -20,8 +20,8 @@ asModalIn state modal =
     { state | modal = modal }
 
 
-labeled : LabelSide -> List (Html.Attribute msg) -> Maybe msg -> String -> Html msg -> Html msg
-labeled side attributes onClickMsg labelString content =
+labeled : LabelSide -> List (Html.Attribute msg) -> Maybe msg -> Html msg -> Html msg -> Html msg
+labeled side attributes onClickMsg labelContent content =
     let
         className =
             case side of
@@ -41,7 +41,7 @@ labeled side attributes onClickMsg labelString content =
 
         label =
             span (class className :: attrs)
-                [ text labelString ]
+                [ labelContent ]
     in
         orderedLabeling side label content
 

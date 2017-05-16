@@ -32,6 +32,7 @@ type alias State =
     , cloneStatus : CloneStatus
     , hasChangesPending : Bool
     , title : String
+    , icon : Maybe String
     , modal : Ui.Modal.Model
     , confirmationDialog : ConfirmationDialog.Model Msg
     , nameInput : Ui.Input.Model
@@ -63,7 +64,7 @@ type Msg
     | FileCheckBox Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
     | ToggleIgnorePath Path
-    | OpenFolderDialog VaultId
+    | OpenFolderDialog
     | OpenFolder String
     | SelectedFolder Path
     | Tabs Ui.Tabs.Msg
@@ -79,6 +80,8 @@ type Msg
     | FoundVaultFingerprints (Result Http.Error (List User.Fingerprint))
     | FetchedUsers (Result Http.Error (List User.User))
     | SetUserInput String
+    | OpenIconDialog
+    | SelectedIcon String
 
 
 init : State
@@ -87,6 +90,7 @@ init =
     , cloneStatus = New
     , hasChangesPending = False
     , title = "Untitled Vault"
+    , icon = Nothing
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
     , localFolderPath = Nothing
     , localFolderItems = Dict.empty

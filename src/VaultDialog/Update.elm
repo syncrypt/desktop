@@ -281,9 +281,20 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            OpenFolderDialog vaultId ->
+            OpenIconDialog ->
                 model
-                    ! [ VaultDialog.Ports.openFolderDialog vaultId ]
+                    ! [ VaultDialog.Ports.openIconFileDialog state.id ]
+
+            SelectedIcon path ->
+                ({ state | icon = Just path }
+                    |> hasChanged
+                    |> asStateIn state.id model
+                )
+                    ! []
+
+            OpenFolderDialog ->
+                model
+                    ! [ VaultDialog.Ports.openFolderDialog state.id ]
 
             OpenFolder folderPath ->
                 model

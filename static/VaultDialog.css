@@ -165,3 +165,16 @@
   right: 20px;
   position: absolute;
 }
+
+.VaultDialog-Icon-Label {
+  width: 100%;
+}
+
+.VaultDialog-Icon {
+  margin-top: 5px;
+  cursor: pointer;
+  width: 75px;
+  height: 75px;
+  padding: 2px;
+  border: 1px solid black;
+}

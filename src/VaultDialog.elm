@@ -4,8 +4,8 @@ import ConfirmationDialog
 import Date.Distance
 import Dialog exposing (labeledLeft, labeledRight)
 import Dict
-import Html exposing (Html, button, div, form, h4, input, label, span, text)
-import Html.Attributes exposing (class, classList, for, id, style)
+import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
+import Html.Attributes exposing (class, classList, for, id, style, src)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
@@ -20,7 +20,7 @@ import Ui.Tabs
 import Util exposing (onAnyKeyDown, onEnter)
 import VaultDialog.Model
     exposing
-        ( CloneStatus(New, Cloned, NotCloned)
+        ( CloneStatus(..)
         , FileName
         , FolderItem
         , Msg(..)
@@ -48,10 +48,14 @@ subscriptions _ =
 
         selectedFolderMsg ( vaultId, path ) =
             Model.VaultDialog vaultId (SelectedFolder path)
+
+        selectedIconMsg ( vaultId, path ) =
+            Model.VaultDialog vaultId (SelectedIcon path)
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
             , VaultDialog.Ports.selectedFolder selectedFolderMsg
+            , VaultDialog.Ports.selectedIconFile selectedIconMsg
             ]
 
 
@@ -115,9 +119,12 @@ contents vaultId model =
 tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
 tabContents vaultId state model =
     let
-        -- converter from Html Msg -> Html Model.Msg
         msg =
-            Html.map (Model.VaultDialog vaultId)
+            Model.VaultDialog vaultId
+
+        -- converter from Html Msg -> Html Model.Msg
+        rootMsg =
+            Html.map msg
 
         searchKeys =
             Model.VaultDialog vaultId <|
@@ -125,9 +132,10 @@ tabContents vaultId state model =
     in
         [ ( "Name & Files"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ dialogInput <| nameInput vaultId state
-                , dialogInput <| msg <| openFolderButton vaultId state model
-                , dialogInput <| msg <| fileSelectionContainer state
+                [ dialogInput <| rootMsg <| iconInput state
+                , dialogInput <| nameInput msg state
+                , dialogInput <| rootMsg <| openFolderButton vaultId state model
+                , dialogInput <| rootMsg <| fileSelectionContainer state
                 ]
           )
         , ( "Users"
@@ -138,14 +146,14 @@ tabContents vaultId state model =
                         [ dialogInput <| userInput vaultId state
                         ]
                     , div [ class "VaultDialog-UserKey-Selection" ]
-                        [ msg <| userKeySelection state model
-                        , msg <| confirmUserKeysButton state
+                        [ rootMsg <| userKeySelection state model
+                        , rootMsg <| confirmUserKeysButton state
                         ]
                     ]
                 , h4 []
                     [ text "Vault Users:" ]
-                , msg <| userList state model
-                , msg <| pendingUserList state
+                , rootMsg <| userList state model
+                , rootMsg <| pendingUserList state
                 ]
           )
         , ( "Cryptography"
@@ -250,17 +258,17 @@ openFolderButton vaultId state model =
             case ( state.cloneStatus, state.localFolderPath ) of
                 ( NotCloned, Nothing ) ->
                     ( "Select Folder to clone vault to"
-                    , OpenFolderDialog vaultId
+                    , OpenFolderDialog
                     )
 
                 ( _, Nothing ) ->
                     ( "Select Folder"
-                    , OpenFolderDialog vaultId
+                    , OpenFolderDialog
                     )
 
                 ( New, Just path ) ->
                     ( pathString path
-                    , OpenFolderDialog vaultId
+                    , OpenFolderDialog
                     )
 
                 ( _, Just path ) ->
@@ -278,15 +286,32 @@ openFolderButton vaultId state model =
             ]
 
 
-nameInput : VaultId -> State -> Html Model.Msg
-nameInput vaultId state =
-    span [ onAnyKeyDown (Model.VaultDialog vaultId NameChanged) ]
+nameInput : (Msg -> Model.Msg) -> State -> Html Model.Msg
+nameInput msg state =
+    span [ onAnyKeyDown (msg NameChanged) ]
         [ Ui.Input.view state.nameInput
-            |> Html.map (Model.VaultDialog vaultId << NameInput)
+            |> Html.map (msg << NameInput)
             |> labeledLeft [ class "VaultDialog-InputLabel" ]
                 (Just (Model.FocusOn state.nameInput.uid))
-                "Name"
+                (text "Name")
         ]
+
+
+iconInput : State -> Html Msg
+iconInput state =
+    let
+        icon =
+            img
+                [ class "VaultDialog-Icon"
+                , src (Maybe.withDefault "" state.icon)
+                , onClick OpenIconDialog
+                ]
+                []
+    in
+        icon
+            |> labeledLeft [ class "VaultDialog-InputLabel VaultDialog-Icon-Label" ]
+                (Just OpenIconDialog)
+                (text "Vault Icon")
 
 
 userInput : VaultId -> State -> Html Model.Msg
@@ -295,7 +320,7 @@ userInput vaultId state =
         |> Html.map (Model.VaultDialog vaultId << UserInput)
         |> labeledLeft [ class "VaultDialog-InputLabel" ]
             (Just (Model.FocusOn state.userInput.uid))
-            "Invite User"
+            (text "Invite User")
 
 
 fileSelectionContainer : State -> Html Msg
@@ -315,7 +340,7 @@ fileSelectionContainer state =
                 [ Ui.Container.view settings [] (renderFolders state)
                     |> labeledLeft [ class "VaultDialog-InputLabel" ]
                         Nothing
-                        "Files"
+                        (text "Files")
                 ]
             else
                 []
@@ -443,7 +468,7 @@ fileCheckbox path state =
             checkbox
                 |> labeledRight []
                     (Just (ToggleIgnorePath path))
-                    (Path.folderName path)
+                    (text (Path.folderName path))
     in
         span [ class "VaultDialog-Checkbox" ]
             [ checkboxWithLabel ]
@@ -499,7 +524,7 @@ userKeyCheckbox email userKey state model =
             checkbox
                 |> labeledRight []
                     labelMsg
-                    (userKey.fingerprint ++ " - " ++ userKey.description)
+                    (text (userKey.fingerprint ++ " - " ++ userKey.description))
     in
         div []
             [ span [ class "VaultDialog-Checkbox" ] [ checkboxWithLabel ]
