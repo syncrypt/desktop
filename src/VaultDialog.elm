@@ -283,6 +283,9 @@ openFolderButton vaultId state model =
         span [ class "VaultDialog-Button-Folder" ]
             [ Ui.Button.model folderPath "primary" "medium"
                 |> Ui.Button.view msg
+                |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                    (Just OpenFolderDialog)
+                    (text "Folder")
             ]
 
 

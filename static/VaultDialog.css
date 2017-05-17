@@ -109,7 +109,9 @@
 }
 
 .VaultDialog-Button-Folder ui-button {
-  max-width: 100%;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .VaultDialog-User-Name {
