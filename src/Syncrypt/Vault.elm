@@ -141,7 +141,7 @@ jsonOptions config options =
                     ]
 
             Remove id ->
-                Json.object [ ( "id", Json.string id ) ]
+                Json.null
 
             Delete id ->
-                Json.object [ ( "id", Json.string id ), ( "wipe", Json.int 1 ) ]
+                Json.null

@@ -19,6 +19,7 @@ type ApiPath
     | Vaults
     | FlyingVaults
     | Vault VaultId
+    | DeleteVault VaultId
     | FlyingVault VaultId
     | VaultUsers VaultId
     | VaultUser VaultId Email
@@ -141,8 +142,8 @@ deleteVault : VaultId -> Config -> Http.Request VaultId
 deleteVault vaultId config =
     apiRequest config
         Delete
-        (Vault vaultId)
-        (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Delete vaultId))))
+        (DeleteVault vaultId)
+        Nothing
         (decodeToVal vaultId)
 
 
@@ -223,6 +224,9 @@ apiPath apiPath =
 
         Vault vaultId ->
             "vault/" ++ vaultId
+
+        DeleteVault vaultId ->
+            "vault/" ++ vaultId ++ "?wipe=1"
 
         FlyingVault vaultId ->
             "flying-vault/" ++ vaultId
@@ -359,10 +363,16 @@ apiUrl config path =
 
                 ( False, False ) ->
                     config.apiUrl ++ "/"
+
+        hasQuery =
+            String.contains "?"
+
+        isSpecialPath =
+            (==) "stats"
     in
         -- the daemon API expects requests URLs to end with "/"
         -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
-        if String.endsWith "/" path || path == "stats" then
+        if String.endsWith "/" path || hasQuery path || isSpecialPath path then
             rootUrl ++ path
         else
             rootUrl ++ path ++ "/"
