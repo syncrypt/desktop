@@ -19,6 +19,7 @@ import VaultDialog.Model
         , Msg(..)
         , RequiresConfirmation(..)
         , State
+        , CloneStatus(..)
         , addFolder
         , collapseFolder
         , expandFolder
@@ -524,3 +525,29 @@ setNameInputValue value state =
         ( { state | nameInput = nameInput }
         , Cmd.map NameInput cmd
         )
+
+
+isOwner : VaultId -> Model -> Bool
+isOwner vaultId model =
+    case model.login of
+        Model.LoggedOut ->
+            let
+                _ =
+                    Debug.log "logged out!" 1
+            in
+                False
+
+        Model.LoggedIn { email } ->
+            let
+                state =
+                    dialogState vaultId model
+            in
+                case ( state.cloneStatus, List.head state.users ) of
+                    ( New, _ ) ->
+                        True
+
+                    ( _, Nothing ) ->
+                        False
+
+                    ( _, Just owner ) ->
+                        email == owner.email

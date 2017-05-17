@@ -132,7 +132,7 @@ tabContents vaultId state model =
     in
         [ ( "Name & Files"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ dialogInput <| rootMsg <| iconInput state
+                [ dialogInput <| rootMsg <| iconInput state model
                 , dialogInput <| nameInput msg state
                 , dialogInput <| rootMsg <| openFolderButton vaultId state model
                 , dialogInput <| rootMsg <| fileSelectionContainer state
@@ -284,7 +284,7 @@ openFolderButton vaultId state model =
             [ Ui.Button.model folderPath "primary" "medium"
                 |> Ui.Button.view msg
                 |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                    (Just OpenFolderDialog)
+                    Nothing
                     (text "Folder")
             ]
 
@@ -300,8 +300,8 @@ nameInput msg state =
         ]
 
 
-iconInput : State -> Html Msg
-iconInput state =
+iconInput : State -> Model -> Html Msg
+iconInput state model =
     let
         iconPath =
             case state.icon of
@@ -311,17 +311,23 @@ iconInput state =
                 Just path ->
                     path
 
+        _ =
+            Debug.log "isOwner: " ( VaultDialog.Update.isOwner state.id model, state.id )
+
         icon =
             img
-                [ class "VaultDialog-Icon"
-                , src iconPath
-                , onClick OpenIconDialog
-                ]
+                ((src iconPath)
+                    :: (if VaultDialog.Update.isOwner state.id model then
+                            [ class "VaultDialog-Icon Pointer-Cursor", onClick OpenIconDialog ]
+                        else
+                            [ class "VaultDialog-Icon" ]
+                       )
+                )
                 []
     in
         icon
             |> labeledLeft [ class "VaultDialog-InputLabel VaultDialog-Icon-Label" ]
-                (Just OpenIconDialog)
+                Nothing
                 (text "Vault Icon")
 
 

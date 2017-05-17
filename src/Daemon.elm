@@ -170,6 +170,11 @@ getVersion config =
     apiRequest config Get Version Nothing Json.string
 
 
+getLoginState : Config -> Http.Request Model.LoginState
+getLoginState config =
+    apiRequest config Get User Nothing loginStateDecoder
+
+
 login : Email -> Password -> Config -> Http.Request String
 login email password config =
     let
@@ -189,7 +194,7 @@ login email password config =
 
 loginCheck : Config -> Http.Request String
 loginCheck config =
-    apiRequest config Post LoginCheck Nothing Json.string
+    apiRequest config Get LoginCheck Nothing Json.string
 
 
 logout : Config -> Http.Request String
@@ -430,6 +435,15 @@ userKeysDecoder =
 flyingVaultsDecoder : Json.Decoder (List FlyingVault)
 flyingVaultsDecoder =
     Json.list flyingVaultDecoder
+
+
+loginStateDecoder : Json.Decoder Model.LoginState
+loginStateDecoder =
+    decode Model.CurrentUser
+        |> required "first_name" Json.string
+        |> required "last_name" Json.string
+        |> required "email" Json.string
+        |> Json.andThen (\currentUser -> Json.succeed (Model.LoggedIn currentUser))
 
 
 {-| Decodes a `Syncrypt.Vault.Vault`.

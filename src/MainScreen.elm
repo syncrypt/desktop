@@ -8,7 +8,6 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Ports
-import Path
 import Set
 import Syncrypt.Vault exposing (VaultId, VaultOptions(..))
 import Time exposing (Time)
@@ -33,6 +32,7 @@ init config =
             [ updateNow
             , fetchVaults model
             , updateStatsIn 0 model
+            , fetchLoginState model attempt
             ]
     in
         model ! initialActions
@@ -93,6 +93,18 @@ update action model =
                   ]
             )
                 |> andAlso (notifyText ("Error fetching vaults: " ++ (reason |> toString)))
+
+        FetchedLoginState (Ok loginState) ->
+            { model | login = loginState }
+                ! []
+
+        FetchedLoginState (Err reason) ->
+            let
+                _ =
+                    Debug.log "Could not fetch login state: " reason
+            in
+                model
+                    ! [ fetchLoginState model (Daemon.attemptDelayed 1000) ]
 
         UpdatedVaultsFromApi (Ok vaults) ->
             { model | vaults = vaults }
@@ -286,6 +298,12 @@ updateNow =
 updateNowIn : Time -> Cmd Msg
 updateNowIn time =
     Util.performDelayed time SetDate Date.now
+
+
+fetchLoginState model attemptFn =
+    model.config
+        |> Daemon.getLoginState
+        |> attemptFn FetchedLoginState
 
 
 updateStats : Model -> Cmd Msg

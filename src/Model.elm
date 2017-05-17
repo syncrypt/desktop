@@ -1,20 +1,30 @@
 module Model exposing (..)
 
-import Syncrypt.User exposing (User)
-import Syncrypt.Vault exposing (Vault, FlyingVault)
 import Config exposing (Config)
-import Http
 import Date exposing (Date)
-import VaultDialog.Model
-import Syncrypt.Vault exposing (VaultId)
-import Syncrypt.User exposing (Email)
 import Dict exposing (Dict)
-import Util exposing (findFirst)
+import Http
+import Syncrypt.User exposing (Email)
+import Syncrypt.Vault exposing (VaultId, Vault, FlyingVault)
 import Ui.NotificationCenter
+import Util exposing (findFirst)
+import VaultDialog.Model
 
 
 type alias Stats =
     { stats : Int, downloads : Int, uploads : Int }
+
+
+type alias CurrentUser =
+    { firstName : String
+    , lastName : String
+    , email : Syncrypt.User.Email
+    }
+
+
+type LoginState
+    = LoggedOut
+    | LoggedIn CurrentUser
 
 
 type alias Model =
@@ -27,6 +37,7 @@ type alias Model =
     , now : Maybe Date
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
+    , login : LoginState
     }
 
 
@@ -45,6 +56,7 @@ type Msg
     | UpdateVaults
     | UpdateFlyingVaults
     | FetchedVaultsFromApi (Result Http.Error (List Vault))
+    | FetchedLoginState (Result Http.Error LoginState)
     | UpdatedVaultsFromApi (Result Http.Error (List Vault))
     | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
     | UpdatedStatsFromApi (Result Http.Error Stats)
@@ -84,6 +96,7 @@ init config =
         Ui.NotificationCenter.init ()
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
+    , login = LoggedOut
     }
 
 

@@ -151,6 +151,10 @@ a:hover {
   display: none;
 }
 
+.Pointer-Cursor {
+  cursor: pointer;
+}
+
 .MainScreen-NotificationCenter {
   font-size: 13px;
 }
