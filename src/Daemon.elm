@@ -57,7 +57,16 @@ updateVaultMetadata : VaultId -> Metadata -> Config -> Http.Request Vault
 updateVaultMetadata vaultId metadata config =
     let
         metadataJson =
-            Json.Encode.object [ ( "name", Json.Encode.string metadata.name ) ]
+            case metadata.icon of
+                Nothing ->
+                    Json.Encode.object
+                        [ ( "name", Json.Encode.string metadata.name ) ]
+
+                Just iconUrl ->
+                    Json.Encode.object
+                        [ ( "name", Json.Encode.string metadata.name )
+                        , ( "icon", Json.Encode.string iconUrl )
+                        ]
 
         json =
             Json.Encode.object [ ( "metadata", metadataJson ) ]
@@ -438,6 +447,7 @@ vaultDecoder =
         |> required "resource_uri" Json.string
         |> required "folder" Json.string
         |> optional "modification_date" date Nothing
+        |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.
@@ -453,6 +463,7 @@ flyingVaultDecoder =
         |> required "revision_count" Json.int
         |> required "resource_uri" Json.string
         |> optional "modification_date" date Nothing
+        |> optional "icon" (Json.maybe Json.string) Nothing
 
 
 {-| Decodes a `Syncrypt.User.User`.

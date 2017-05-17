@@ -43,7 +43,7 @@ type VaultOptions
 
 
 type alias Metadata =
-    { name : String }
+    { name : String, icon : Maybe String }
 
 
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
@@ -59,6 +59,7 @@ type alias Vault =
     , resourceUri : String
     , folderPath : String
     , modificationDate : Maybe Date
+    , icon : Maybe String
     }
 
 
@@ -73,6 +74,7 @@ type alias FlyingVault =
     , revisionCount : Int
     , resourceUri : String
     , modificationDate : Maybe Date
+    , icon : Maybe String
     }
 
 
@@ -88,6 +90,7 @@ init vaultId =
     , resourceUri = ""
     , folderPath = ""
     , modificationDate = Nothing
+    , icon = Nothing
     }
 
 
@@ -114,6 +117,7 @@ asVault fv =
     , resourceUri = fv.resourceUri
     , folderPath = ""
     , modificationDate = fv.modificationDate
+    , icon = fv.icon
     }
 
 

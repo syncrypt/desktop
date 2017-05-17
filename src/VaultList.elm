@@ -2,10 +2,9 @@ module VaultList exposing (..)
 
 import Date exposing (Date)
 import Date.Distance as Distance
-import Html exposing (Html, button, canvas, div, h1, hr, node, span, text)
-import Html.Attributes exposing (attribute, class, height, id, width)
+import Html exposing (Html, button, canvas, div, h1, hr, node, span, text, img)
+import Html.Attributes exposing (attribute, class, height, id, width, src)
 import Html.Events exposing (onClick)
-import MD5
 import Model exposing (..)
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
@@ -13,24 +12,17 @@ import Util exposing (bytesReadable)
 
 
 type alias HasId a =
-    { a | id : String }
+    { a | id : String, icon : Maybe String }
 
 
 type alias HasModificationDate a =
     { a | modificationDate : Maybe Date }
 
 
-jdenticonAttr : HasId a -> Html.Attribute msg
-jdenticonAttr vault =
-    attribute "data-jdenticon-hash" (MD5.hex vault.id)
-
-
 vaultIcon : HasId a -> Html msg
 vaultIcon vault =
-    div [ class "VaultList-VaultIcon" ]
-        [ canvas [ width 100, height 100, jdenticonAttr vault ]
-            []
-        ]
+    img [ class "VaultList-VaultIcon", src (Maybe.withDefault "" vault.icon) ]
+        []
 
 
 vaultItemSyncStateClass : Vault -> String

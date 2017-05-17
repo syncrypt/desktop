@@ -43,11 +43,14 @@ var openIconFileDialog = function(tag) {
     properties: ["openFile"],
     title: "Select icon for vault",
     buttonLabel: "Select Icon",
-    filters: [{name: "Images", extensions: ["jpg", "jpeg", "png", "gif"]}]
+    filters: [{name: "Images", extensions: ["jpg", "jpeg", "png"]}]
   }, (files) => {
     if(files && files.length == 1) {
-      // var filePath = files[0].split(Path.sep);
-      elmApp.ports.selectedIconFile.send([tag, files[0]]);
+      var iconUrl = Electron.nativeImage.createFromPath(files[0]).resize({
+        width: 100,
+        height: 100
+      }).toDataURL();
+      elmApp.ports.selectedIconFile.send([tag, iconUrl]);
     }
   });
 }

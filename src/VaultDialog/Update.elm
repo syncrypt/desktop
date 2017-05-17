@@ -176,7 +176,7 @@ saveVaultChanges vaultId state model =
 
         updateMetadataCmd =
             model.config
-                |> Daemon.updateVaultMetadata vaultId { name = state.nameInput.value }
+                |> Daemon.updateVaultMetadata vaultId { name = state.nameInput.value, icon = state.icon }
                 |> Daemon.attempt (Model.VaultMetadataUpdated vaultId)
 
         ( newModel, modalCmd ) =
@@ -285,8 +285,8 @@ update msg vaultId ({ vaultDialogs } as model) =
                 model
                     ! [ VaultDialog.Ports.openIconFileDialog state.id ]
 
-            SelectedIcon path ->
-                ({ state | icon = Just path }
+            SelectedIcon iconUrl ->
+                ({ state | icon = Just iconUrl }
                     |> hasChanged
                     |> asStateIn state.id model
                 )

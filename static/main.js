@@ -50,7 +50,8 @@ function createWindow () {
     minHeight: 750,
     title: "Syncrypt",
     frame: true,
-    resizable: true
+    resizable: true,
+    vibrancy: "dark"
   })
 
   // display the index.html file

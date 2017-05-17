@@ -147,6 +147,7 @@ initForVault vault =
     in
         { default
             | id = vault.id
+            , icon = vault.icon
             , cloneStatus = cloneStatus
             , title = name
             , nameInput = nameInput
@@ -170,6 +171,7 @@ initForFlyingVault flyingVault =
     in
         { default
             | id = flyingVault.id
+            , icon = flyingVault.icon
             , cloneStatus = NotCloned
             , title = name
             , nameInput = nameInput

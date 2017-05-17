@@ -383,12 +383,8 @@ cloneVault vaultId model =
 
 view : Model -> Html Msg
 view model =
-    let
-        _ =
-            Debug.log "state: " model.state
-    in
-        layout model
-            []
+    layout model
+        []
 
 
 currentClass : Model -> String

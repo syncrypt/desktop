@@ -300,10 +300,18 @@ nameInput msg state =
 iconInput : State -> Html Msg
 iconInput state =
     let
+        iconPath =
+            case state.icon of
+                Nothing ->
+                    "assets/add.png"
+
+                Just path ->
+                    path
+
         icon =
             img
                 [ class "VaultDialog-Icon"
-                , src (Maybe.withDefault "" state.icon)
+                , src iconPath
                 , onClick OpenIconDialog
                 ]
                 []
