@@ -531,11 +531,7 @@ isOwner : VaultId -> Model -> Bool
 isOwner vaultId model =
     case model.login of
         Model.LoggedOut ->
-            let
-                _ =
-                    Debug.log "logged out!" 1
-            in
-                False
+            False
 
         Model.LoggedIn { email } ->
             let

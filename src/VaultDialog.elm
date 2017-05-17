@@ -311,9 +311,6 @@ iconInput state model =
                 Just path ->
                     path
 
-        _ =
-            Debug.log "isOwner: " ( VaultDialog.Update.isOwner state.id model, state.id )
-
         icon =
             img
                 ((src iconPath)
