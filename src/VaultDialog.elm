@@ -17,7 +17,14 @@ import Ui.Container
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing (onAnyKeyDown, onEnter)
+import Util
+    exposing
+        ( onAnyKeyDown
+        , onEnter
+        , tooltipItem
+        , TooltipDirection(..)
+        , TooltipLength(..)
+        )
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
@@ -254,21 +261,24 @@ openFolderButton vaultId state model =
             path
                 |> Path.toString model.config.pathSeparator
 
-        ( folderPath, msg ) =
+        ( folderPath, msg, tooltipMsg ) =
             case ( state.cloneStatus, state.localFolderPath ) of
                 ( NotCloned, Nothing ) ->
                     ( "Select Folder to clone vault to"
                     , OpenFolderDialog
+                    , "By clicking here, you select a folder to use for this vault to download its files to."
                     )
 
                 ( _, Nothing ) ->
                     ( "Select Folder"
                     , OpenFolderDialog
+                    , "Select a new folder for this vault to store files in."
                     )
 
                 ( New, Just path ) ->
                     ( pathString path
                     , OpenFolderDialog
+                    , "You've selected this folder for this new vault to up- & download files from."
                     )
 
                 ( _, Just path ) ->
@@ -278,25 +288,34 @@ openFolderButton vaultId state model =
                     in
                         ( ps
                         , OpenFolder ps
+                        , "This vault is synchronizing files from and to this folder."
                         )
     in
-        span [ class "VaultDialog-Button-Folder" ]
-            [ Ui.Button.model folderPath "primary" "medium"
-                |> Ui.Button.view msg
-                |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                    Nothing
-                    (text "Folder")
+        tooltipItem Top
+            Auto
+            tooltipMsg
+            [ span [ class "VaultDialog-Button-Folder" ]
+                [ Ui.Button.model folderPath "primary" "medium"
+                    |> Ui.Button.view msg
+                    |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                        Nothing
+                        (text "Folder")
+                ]
             ]
 
 
 nameInput : (Msg -> Model.Msg) -> State -> Html Model.Msg
 nameInput msg state =
-    span [ onAnyKeyDown (msg NameChanged) ]
-        [ Ui.Input.view state.nameInput
-            |> Html.map (msg << NameInput)
-            |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                (Just (Model.FocusOn state.nameInput.uid))
-                (text "Name")
+    tooltipItem Top
+        Auto
+        "The name of the vault. Chosen by the owner."
+        [ span [ onAnyKeyDown (msg NameChanged) ]
+            [ Ui.Input.view state.nameInput
+                |> Html.map (msg << NameInput)
+                |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                    (Just (Model.FocusOn state.nameInput.uid))
+                    (text "Name")
+            ]
         ]
 
 
@@ -321,11 +340,17 @@ iconInput state model =
                        )
                 )
                 []
+
+        labeledIcon =
+            icon
+                |> labeledLeft [ class "VaultDialog-InputLabel VaultDialog-Icon-Label" ]
+                    Nothing
+                    (text "Vault Icon")
     in
-        icon
-            |> labeledLeft [ class "VaultDialog-InputLabel VaultDialog-Icon-Label" ]
-                Nothing
-                (text "Vault Icon")
+        tooltipItem Right
+            Auto
+            "Vault icon that can be seen by any invited user"
+            [ labeledIcon ]
 
 
 userInput : VaultId -> State -> Html Model.Msg
@@ -374,11 +399,15 @@ renderFolders state =
                 rootFolders =
                     List.map (renderFolder state) folders
             in
-                [ div []
-                    (List.foldr (::)
-                        []
-                        (rootFiles ++ rootFolders)
-                    )
+                [ tooltipItem Top
+                    XLarge
+                    "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
+                    [ div []
+                        (List.foldr (::)
+                            []
+                            (rootFiles ++ rootFolders)
+                        )
+                    ]
                 ]
 
         [] ->

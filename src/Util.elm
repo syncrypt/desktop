@@ -16,9 +16,13 @@ module Util
         , onEnter
         , onKeyDown
         , onAnyKeyDown
+        , tooltipItem
+        , TooltipDirection(..)
+        , TooltipLength(..)
         )
 
-import Html
+import Html exposing (Html, span)
+import Html.Attributes exposing (attribute)
 import Html.Events
 import Json.Decode
 import Process
@@ -237,3 +241,77 @@ onKeyDown keyCode msg =
 onAnyKeyDown : msg -> Html.Attribute msg
 onAnyKeyDown msg =
     Html.Events.on "keydown" (Json.Decode.andThen (\_ -> Json.Decode.succeed msg) Html.Events.keyCode)
+
+
+type TooltipDirection
+    = Top
+    | Bottom
+    | Right
+    | Left
+
+
+type TooltipLength
+    = Small
+    | Medium
+    | Large
+    | XLarge
+    | Fit
+    | Auto
+
+
+tooltipItem : TooltipDirection -> TooltipLength -> String -> List (Html msg) -> Html msg
+tooltipItem dir length text body =
+    let
+        baseAttrs =
+            [ attribute "data-balloon" text
+            , attribute "data-balloon-pos" (tooltipDirString dir)
+            ]
+
+        attributes =
+            case length of
+                Auto ->
+                    baseAttrs
+
+                _ ->
+                    (attribute "data-balloon-length" (tooltipLengthString length))
+                        :: baseAttrs
+    in
+        span attributes body
+
+
+tooltipDirString : TooltipDirection -> String
+tooltipDirString dir =
+    case dir of
+        Top ->
+            "up"
+
+        Bottom ->
+            "down"
+
+        Left ->
+            "left"
+
+        Right ->
+            "right"
+
+
+tooltipLengthString : TooltipLength -> String
+tooltipLengthString length =
+    case length of
+        Small ->
+            "small"
+
+        Medium ->
+            "medium"
+
+        Large ->
+            "large"
+
+        XLarge ->
+            "xlarge"
+
+        Fit ->
+            "fit"
+
+        Auto ->
+            ""
