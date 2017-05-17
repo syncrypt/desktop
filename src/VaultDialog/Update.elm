@@ -529,15 +529,15 @@ setNameInputValue value state =
 
 isOwner : VaultId -> Model -> Bool
 isOwner vaultId model =
-    case model.login of
-        Model.LoggedOut ->
-            False
+    let
+        state =
+            dialogState vaultId model
+    in
+        case model.login of
+            Model.LoggedOut ->
+                state.cloneStatus == New
 
-        Model.LoggedIn { email } ->
-            let
-                state =
-                    dialogState vaultId model
-            in
+            Model.LoggedIn { email } ->
                 case ( state.cloneStatus, List.head state.users ) of
                     ( New, _ ) ->
                         True
