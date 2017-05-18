@@ -48,7 +48,8 @@ var openIconFileDialog = function(tag) {
     if(files && files.length == 1) {
       var iconUrl = Electron.nativeImage.createFromPath(files[0]).resize({
         width: 100,
-        height: 100
+        height: 100,
+        quality: "good"
       }).toDataURL();
       elmApp.ports.selectedIconFile.send([tag, iconUrl]);
     }
