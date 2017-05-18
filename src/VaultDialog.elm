@@ -294,31 +294,31 @@ openFolderButton vaultId state model =
                         , "This vault is synchronizing files from and to this folder."
                         )
     in
-        tooltipItem Top
-            Auto
-            tooltipMsg
-            [ span [ class "VaultDialog-Button-Folder" ]
+        span [ class "VaultDialog-Button-Folder" ]
+            [ tooltipItem Bottom
+                Auto
+                tooltipMsg
                 [ Ui.Button.model folderPath "primary" "medium"
                     |> Ui.Button.view msg
-                    |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                        Nothing
-                        (text "Folder")
                 ]
+                |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                    Nothing
+                    (text "Folder")
             ]
 
 
 nameInput : (Msg -> Model.Msg) -> State -> Html Model.Msg
 nameInput msg state =
-    tooltipItem Top
-        Auto
-        "The name of the vault. Chosen by the owner."
-        [ span [ onAnyKeyDown (msg NameChanged) ]
+    span [ onAnyKeyDown (msg NameChanged) ]
+        [ tooltipItem Bottom
+            Auto
+            "The name of the vault. Chosen by the owner."
             [ Ui.Input.view state.nameInput
                 |> Html.map (msg << NameInput)
-                |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                    (Just (Model.FocusOn state.nameInput.uid))
-                    (text "Name")
             ]
+            |> labeledLeft [ class "VaultDialog-InputLabel" ]
+                (Just (Model.FocusOn state.nameInput.uid))
+                (text "Name")
         ]
 
 
@@ -328,7 +328,7 @@ iconInput state model =
         iconPath =
             case state.icon of
                 Nothing ->
-                    "assets/add.png"
+                    ""
 
                 Just path ->
                     path
@@ -343,17 +343,11 @@ iconInput state model =
                        )
                 )
                 []
-
-        labeledIcon =
-            icon
-                |> labeledLeft [ class "VaultDialog-InputLabel VaultDialog-Icon-Label" ]
-                    Nothing
-                    (text "Vault Icon")
     in
         tooltipItem Right
             Auto
             "Vault icon that can be seen by any invited user"
-            [ labeledIcon ]
+            [ icon ]
 
 
 userInput : VaultId -> State -> Html Model.Msg

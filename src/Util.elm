@@ -22,7 +22,7 @@ module Util
         )
 
 import Html exposing (Html, span)
-import Html.Attributes exposing (attribute)
+import Html.Attributes exposing (attribute, class)
 import Html.Events
 import Json.Decode
 import Process
@@ -265,6 +265,7 @@ tooltipItem dir length text body =
         baseAttrs =
             [ attribute "data-balloon" text
             , attribute "data-balloon-pos" (tooltipDirString dir)
+            , class "Tooltip"
             ]
 
         attributes =
