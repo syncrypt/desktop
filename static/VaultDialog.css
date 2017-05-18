@@ -11,6 +11,7 @@
   font-weight: bold;
   min-width: 60px;
   display: inline-block;
+  margin-right: 10px;
 }
 
 .VaultDialog-Input {
@@ -18,12 +19,35 @@
   margin-bottom: 10px;
 }
 
+.VaultDialog-Input-Name {
+  position: relative;
+  top: -100px;
+  margin-left: 100px;
+}
+
+.VaultDialog-Input-Folder {
+  position: relative;
+  top: -110px;
+  margin-left: 100px;
+}
+
+.VaultDialog-Input-FileSelection {
+  position: relative;
+  top: -110px;
+  width: 585px;
+}
+
 
 .VaultDialog-Input ui-input {
-  width: 100%;
+  width: 415px;
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+.VaultDialog-Input-User ui-input {
+  width: 500px;
+}
+
 
 .VaultDialog-Input ui-input input {
   font-size: 15px;
@@ -50,6 +74,7 @@
 }
 
 .VaultDialog-Tab-Content {
+  height: 90%;
 }
 
 .VaultDialog-Tab-Content ui-container {
@@ -109,7 +134,7 @@
 }
 
 .VaultDialog-Button-Folder ui-button {
-  width: 100%;
+  width: 415px;
   margin-top: 5px;
   margin-bottom: 5px;
 }

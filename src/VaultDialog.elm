@@ -139,10 +139,10 @@ tabContents vaultId state model =
     in
         [ ( "Name & Files"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ dialogInput <| rootMsg <| iconInput state model
-                , dialogInput <| nameInput msg state
-                , dialogInput <| rootMsg <| openFolderButton vaultId state model
-                , dialogInput <| rootMsg <| fileSelectionContainer state
+                [ dialogInput "Icon" <| rootMsg <| iconInput state model
+                , dialogInput "Name" <| nameInput msg state
+                , dialogInput "Folder" <| rootMsg <| openFolderButton vaultId state model
+                , dialogInput "FileSelection" <| rootMsg <| fileSelectionContainer state
                 ]
           )
         , ( "Users"
@@ -150,7 +150,7 @@ tabContents vaultId state model =
                 [ div []
                     [ div
                         [ class "VaultDialog-Add-User", onEnter searchKeys ]
-                        [ dialogInput <| userInput vaultId state
+                        [ dialogInput "User" <| userInput vaultId state
                         ]
                     , div [ class "VaultDialog-UserKey-Selection" ]
                         [ rootMsg <| userKeySelection state model
@@ -171,9 +171,12 @@ tabContents vaultId state model =
         ]
 
 
-dialogInput : Html msg -> Html msg
-dialogInput body =
-    div [ class "VaultDialog-Input" ]
+dialogInput : String -> Html msg -> Html msg
+dialogInput inputClassSuffix body =
+    div
+        [ class "VaultDialog-Input"
+        , class ("VaultDialog-Input-" ++ inputClassSuffix)
+        ]
         [ body ]
 
 
