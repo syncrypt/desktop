@@ -20,10 +20,13 @@ Install elm-github-install (needed for elm-ui):
 
     $ npm install elm-github-install -g
 
-Install dependencies (including elm-ui) using elm-github-install:
+Install elm dependencies (including elm-ui) using elm-github-install:
 
     $ elm-install
 
+Install JS dependencies (mostly for building electron release packages):
+
+    $ npm install
 
 ## Build target HTML, JS & CSS
     $ make
@@ -31,3 +34,7 @@ Install dependencies (including elm-ui) using elm-github-install:
 
 ## Run with Electron
     $ make run
+
+## Build release for current platform
+
+    $ make release

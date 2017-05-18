@@ -36,8 +36,8 @@ release: release-setup
 	#cd $(BUILD_DIR) && electron-packager ./ Syncrypt --overwrite
 	cd $(RELEASE_DIR)/tmp && \
 		npm run make-installer
-	mv $(RELEASE_DIR)/tmp/out/* $(RELEASE_DIR)/
-	rm -rf ./$(RELEASE_DIR)/tmp/*
+	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
+	rm -rf $(RELEASE_DIR)/tmp/
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -68,4 +68,5 @@ clean:
 
 distclean: clean
 	rm -rf elm-stuff/
+	rm -rf node_modules/
 	rm -rf release/
