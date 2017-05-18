@@ -45,7 +45,7 @@ function launchDaemon() {
 function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1024,
-    minWidth: 900,
+    minWidth: 910,
     height: 768,
     minHeight: 750,
     title: "Syncrypt",
