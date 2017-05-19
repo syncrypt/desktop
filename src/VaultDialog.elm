@@ -284,13 +284,13 @@ openFolderButton vaultId state model =
                 ( _, Nothing ) ->
                     ( "Select Folder"
                     , OpenFolderDialog
-                    , "Select a new folder for this vault to store files in."
+                    , "Select a new folder for this vault."
                     )
 
                 ( New, Just path ) ->
                     ( pathString path
                     , OpenFolderDialog
-                    , "You've selected this folder for this new vault to up- & download files from."
+                    , "This new vault will synchronize files in this folder."
                     )
 
                 ( _, Just path ) ->
