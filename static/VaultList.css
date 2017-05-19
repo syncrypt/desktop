@@ -86,7 +86,6 @@
 }
 
 .VaultList-Card:hover {
-  opacity: 0.7;
   transition: all 0.25s;
   cursor: pointer;
 }
@@ -134,7 +133,7 @@
 }
 
 .VaultList-VaultCard:hover {
-  opacity: 0.7;
+  background-color: #efeeea;
   transition: all 0.25s;
   cursor: pointer;
   color: #000;
