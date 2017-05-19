@@ -110,16 +110,25 @@ contents vaultId model =
             { address = (Model.VaultDialog vaultId << Tabs)
             , contents = tabContents vaultId state model
             }
+
+        tabs =
+            Ui.Tabs.view tabsViewConfig state.tabs
+
+        confirmationDialog =
+            ConfirmationDialog.view state
+                |> Html.map (Model.VaultDialog state.id)
+
+        buttons =
+            div [ class "VaultDialog-Buttons" ]
+                [ removeButton vaultId state
+                , deleteButton vaultId state model
+                , saveButton vaultId state
+                , cancelButton vaultId state
+                ]
     in
-        [ Ui.Tabs.view tabsViewConfig state.tabs
-        , ConfirmationDialog.view state
-            |> Html.map (Model.VaultDialog state.id)
-        , div [ class "VaultDialog-Buttons" ]
-            [ removeButton vaultId state
-            , deleteButton vaultId state model
-            , saveButton vaultId state
-            , cancelButton vaultId state
-            ]
+        [ tabs
+        , confirmationDialog
+        , buttons
         ]
 
 
