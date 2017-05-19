@@ -44,11 +44,6 @@
   margin-bottom: 5px;
 }
 
-.VaultDialog-Input-User ui-input {
-  width: 500px;
-}
-
-
 .VaultDialog-Input ui-input input {
   font-size: 15px;
 }
@@ -139,6 +134,22 @@
   margin-bottom: 5px;
 }
 
+.VaultDialog-User {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.VaultDialog-UserList {
+  margin-bot: 20px;
+}
+
+.VaultDialog-User:hover {
+  background-color: #eee;
+  color: #000;
+}
+
 .VaultDialog-User-Name {
   font-size: 15px;
 }
@@ -146,11 +157,10 @@
 .VaultDialog-User-Email {
   font-weight: bold;
   font-size: 13px;
-  cursor: pointer;
 }
 
 .VaultDialog-UserAddedTime {
-  right: 20px;
+  right: 35px;
   position: absolute;
   font-weight: normal;
 }
@@ -167,8 +177,17 @@
   transition: all 0.5s;
 }
 
+.VaultDialog-SelectKey {
+  padding: 5px;
+}
+
+.VaultDialog-SelectKey:hover {
+  background-color: #eee;
+  color: #000;
+}
+
 .VaultDialog-UserKeyFingerprints {
-  right: 20px;
+  right: 35px;
   position: absolute;
   font-family: monospace;
   text-transform: uppercase;
@@ -189,7 +208,7 @@
 }
 
 .VaultDialog-UserKeyCreatedTime {
-  right: 20px;
+  right: 35px;
   position: absolute;
 }
 

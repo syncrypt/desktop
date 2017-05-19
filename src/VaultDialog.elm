@@ -166,8 +166,6 @@ tabContents vaultId state model =
                         , rootMsg <| confirmUserKeysButton state
                         ]
                     ]
-                , h4 []
-                    [ text "Vault Users:" ]
                 , rootMsg <| userList state model
                 , rootMsg <| pendingUserList state
                 ]
@@ -580,7 +578,7 @@ userKeyCheckbox email userKey state model =
                     labelMsg
                     (text (userKey.fingerprint ++ " - " ++ userKey.description))
     in
-        div []
+        div [ class "VaultDialog-SelectKey" ]
             [ span [ class "VaultDialog-Checkbox" ] [ checkboxWithLabel ]
             , keyCreatedTimestamp userKey model
             ]
@@ -588,8 +586,11 @@ userKeyCheckbox email userKey state model =
 
 userList : State -> Model -> Html Msg
 userList state model =
-    div [ class "VaultDialog-UserList" ]
-        (List.map (\u -> userItem u model) state.users)
+    div [ class "VaultDialog-UserList" ] <|
+        (h4 []
+            [ text "Vault Users:" ]
+        )
+            :: (List.map (\u -> userItem u model) state.users)
 
 
 pendingUserList : State -> Html Msg
@@ -615,10 +616,10 @@ pendingUserList state =
 
 userItem : User -> Model -> Html Msg
 userItem user model =
-    div [ class "VaultDialog-User" ]
+    div [ class "VaultDialog-User", onClick (SetUserInput user.email) ]
         [ span [ class "VaultDialog-User-Name" ]
             [ text <| user.firstName ++ " " ++ user.lastName ]
-        , span [ class "VaultDialog-User-Email", onClick (SetUserInput user.email) ]
+        , span [ class "VaultDialog-User-Email" ]
             [ text <| " ( " ++ user.email ++ " )" ]
         , userAddedTimestamp user model
         ]
@@ -626,8 +627,8 @@ userItem user model =
 
 pendingUserItem : Email -> List UserKey -> Html Msg
 pendingUserItem email keys =
-    div [ class "VaultDialog-PendingUser" ]
-        [ span [ class "VaultDialog-User-Email", onClick (SetUserInput email) ]
+    div [ class "VaultDialog-User", onClick (SetUserInput email) ]
+        [ span [ class "VaultDialog-User-Email" ]
             [ text email ]
         , span [ class "VaultDialog-UserKeyFingerprints" ]
             [ text
