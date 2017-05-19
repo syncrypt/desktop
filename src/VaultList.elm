@@ -2,13 +2,13 @@ module VaultList exposing (..)
 
 import Date exposing (Date)
 import Date.Distance as Distance
-import Html exposing (Html, button, canvas, div, h1, hr, node, span, text, img)
-import Html.Attributes exposing (attribute, class, height, id, width, src)
+import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
+import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
-import Util exposing (bytesReadable)
+import Util exposing (bytesReadable, tooltipItem, TooltipDirection(..), TooltipLength(..))
 
 
 type alias HasId a =
@@ -37,16 +37,20 @@ updatedAtInfo vault updatedAtHeader model =
             Maybe.withDefault (text "") updatedAtHeader
     in
         div [ class "VaultList-VaultUpdatedAt" ]
-            [ header
-            , case ( vault.modificationDate, model.now ) of
-                ( Nothing, _ ) ->
-                    text "No files uploaded yet"
+            [ tooltipItem Top
+                Auto
+                "Last update to vault"
+                [ header
+                , case ( vault.modificationDate, model.now ) of
+                    ( Nothing, _ ) ->
+                        text "No files uploaded yet"
 
-                ( Just date, Nothing ) ->
-                    text (toString date)
+                    ( Just date, Nothing ) ->
+                        text (toString date)
 
-                ( Just date, Just now ) ->
-                    text <| (Distance.inWords date now) ++ " ago"
+                    ( Just date, Just now ) ->
+                        text <| (Distance.inWords date now) ++ " ago"
+                ]
             ]
 
 
@@ -90,16 +94,24 @@ vaultStatus vault model =
 vaultActivity : Vault -> Html msg
 vaultActivity vault =
     vaultInfoItem vault
-        [ div [ class "VaultList-VaultActivity", attribute "data-tip" "Total vault size with all file revisions" ]
-            [ text (bytesReadable vault.size) ]
+        [ div [ class "VaultList-VaultActivity" ]
+            [ tooltipItem Top
+                Auto
+                "Total vault size (with all file revisions on server)"
+                [ text (bytesReadable vault.size) ]
+            ]
         ]
 
 
 vaultUserCount : Vault -> Html msg
 vaultUserCount vault =
     vaultInfoItem vault
-        [ div [ class "VaultList-VaultUsers", attribute "data-tip" "Users with access to vault" ]
-            [ text (toString vault.userCount) ]
+        [ div [ class "VaultList-VaultUsers" ]
+            [ tooltipItem Bottom
+                Auto
+                "Users with access to vault"
+                [ text (toString vault.userCount) ]
+            ]
         ]
 
 
