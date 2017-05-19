@@ -240,7 +240,7 @@ saveButton vaultId state =
                     ( "Save", Model.SaveVaultDetails vaultId )
 
                 ( NotCloned, True ) ->
-                    ( "Save", Model.CloneVault vaultId )
+                    ( "Sync Vault to Folder", Model.CloneVault vaultId )
 
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
