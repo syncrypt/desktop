@@ -44,7 +44,7 @@ import VaultDialog.Model
         , userKeys
         )
 import VaultDialog.Ports
-import VaultDialog.Update exposing (dialogState)
+import VaultDialog.Update exposing (dialogState, isOwner)
 
 
 subscriptions : Model -> Sub Model.Msg
@@ -115,8 +115,8 @@ contents vaultId model =
         , ConfirmationDialog.view state
             |> Html.map (Model.VaultDialog state.id)
         , div [ class "VaultDialog-Buttons" ]
-            [ deleteButton vaultId state
-            , removeButton vaultId state
+            [ removeButton vaultId state
+            , deleteButton vaultId state model
             , saveButton vaultId state
             , cancelButton vaultId state
             ]
@@ -193,11 +193,11 @@ cancelButton vaultId state =
         ]
 
 
-deleteButton : VaultId -> State -> Html Model.Msg
-deleteButton vaultId state =
+deleteButton : VaultId -> State -> Model -> Html Model.Msg
+deleteButton vaultId state model =
     span
         [ classList
-            [ ( "Hidden", state.cloneStatus == New )
+            [ ( "Hidden", state.cloneStatus == New || not (isOwner vaultId model) )
             , ( "VaultDialog-Button-Delete", True )
             ]
         ]
@@ -336,7 +336,7 @@ iconInput state model =
         icon =
             img
                 ((src iconPath)
-                    :: (if VaultDialog.Update.isOwner state.id model then
+                    :: (if isOwner state.id model then
                             [ class "VaultDialog-Icon Pointer-Cursor", onClick OpenIconDialog ]
                         else
                             [ class "VaultDialog-Icon" ]
