@@ -352,8 +352,13 @@ iconInput state model =
 
 userInput : VaultId -> State -> Html Model.Msg
 userInput vaultId state =
-    Ui.Input.view state.userInput
-        |> Html.map (Model.VaultDialog vaultId << UserInput)
+    tooltipItem Bottom
+        Auto
+        "Search for a user's email address to add them to this vault"
+        [ Ui.Input.view
+            state.userInput
+            |> Html.map (Model.VaultDialog vaultId << UserInput)
+        ]
         |> labeledLeft [ class "VaultDialog-InputLabel" ]
             (Just (Model.FocusOn state.userInput.uid))
             (text "Invite User")
