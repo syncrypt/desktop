@@ -1,18 +1,14 @@
-module Dialog exposing (..)
+module Dialog exposing (WithModalState, asModalIn, labeledItem)
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Ui.Modal
+import Util exposing (Direction(..))
 
 
 type alias WithModalState a =
     { a | modal : Ui.Modal.Model }
-
-
-type LabelSide
-    = Left
-    | Right
 
 
 asModalIn : WithModalState a -> Ui.Modal.Model -> WithModalState a
@@ -20,11 +16,17 @@ asModalIn state modal =
     { state | modal = modal }
 
 
-labeled : LabelSide -> List (Html.Attribute msg) -> Maybe msg -> Html msg -> Html msg -> Html msg
-labeled side attributes onClickMsg labelContent content =
+labeledItem : Direction -> List (Html.Attribute msg) -> Maybe msg -> Html msg -> Html msg -> Html msg
+labeledItem side attributes onClickMsg labelContent content =
     let
         className =
             case side of
+                Top ->
+                    "Dialog-Label-Top"
+
+                Bottom ->
+                    "Dialog-Label-Bottom"
+
                 Left ->
                     "Dialog-Label-Left"
 
@@ -46,18 +48,16 @@ labeled side attributes onClickMsg labelContent content =
         orderedLabeling side label content
 
 
-labeledRight =
-    labeled Right
-
-
-labeledLeft =
-    labeled Left
-
-
 orderedLabeling side label content =
     let
         labelBody =
             case side of
+                Top ->
+                    [ label, content ]
+
+                Bottom ->
+                    [ content, label ]
+
                 Left ->
                     [ label, content ]
 

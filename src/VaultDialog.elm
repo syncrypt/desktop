@@ -3,7 +3,7 @@ module VaultDialog exposing (..)
 import Animation exposing (..)
 import ConfirmationDialog
 import Date.Distance
-import Dialog exposing (labeledLeft, labeledRight)
+import Dialog exposing (labeledItem)
 import Dict
 import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, src, style)
@@ -305,30 +305,34 @@ openFolderButton vaultId state model =
                         )
     in
         span [ class "VaultDialog-Button-Folder" ]
-            [ tooltipItem Bottom
-                Auto
-                tooltipMsg
-                [ Ui.Button.model folderPath "primary" "medium"
-                    |> Ui.Button.view msg
-                ]
-                |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                    Nothing
-                    (text "Folder")
+            [ labeledItem Left
+                [ class "VaultDialog-InputLabel" ]
+                Nothing
+                (text "Folder")
+                (tooltipItem Bottom
+                    Auto
+                    tooltipMsg
+                    [ Ui.Button.model folderPath "primary" "medium"
+                        |> Ui.Button.view msg
+                    ]
+                )
             ]
 
 
 nameInput : (Msg -> Model.Msg) -> State -> Html Model.Msg
 nameInput msg state =
     span [ onAnyKeyDown (msg NameChanged) ]
-        [ tooltipItem Bottom
-            Auto
-            "The name of the vault. Chosen by the owner."
-            [ Ui.Input.view state.nameInput
-                |> Html.map (msg << NameInput)
-            ]
-            |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                (Just (Model.FocusOn state.nameInput.uid))
-                (text "Name")
+        [ labeledItem Left
+            [ class "VaultDialog-InputLabel" ]
+            (Just (Model.FocusOn state.nameInput.uid))
+            (text "Name")
+            (tooltipItem Bottom
+                Auto
+                "The name of the vault. Chosen by the owner."
+                [ Ui.Input.view state.nameInput
+                    |> Html.map (msg << NameInput)
+                ]
+            )
         ]
 
 
@@ -362,16 +366,18 @@ iconInput state model =
 
 userInput : VaultId -> State -> Html Model.Msg
 userInput vaultId state =
-    tooltipItem Bottom
-        Auto
-        "Search for a user's email address to add them to this vault"
-        [ Ui.Input.view
-            state.userInput
-            |> Html.map (Model.VaultDialog vaultId << UserInput)
-        ]
-        |> labeledLeft [ class "VaultDialog-InputLabel" ]
-            (Just (Model.FocusOn state.userInput.uid))
-            (text "Invite User")
+    labeledItem Left
+        [ class "VaultDialog-InputLabel" ]
+        (Just (Model.FocusOn state.userInput.uid))
+        (text "Invite User")
+        (tooltipItem Bottom
+            Auto
+            "Search for a user's email address to add them to this vault"
+            [ Ui.Input.view
+                state.userInput
+                |> Html.map (Model.VaultDialog vaultId << UserInput)
+            ]
+        )
 
 
 fileSelectionContainer : State -> Html Msg
@@ -388,10 +394,11 @@ fileSelectionContainer state =
 
         body =
             if hasFiles then
-                [ Ui.Container.view settings [] (renderFolders state)
-                    |> labeledLeft [ class "VaultDialog-InputLabel" ]
-                        Nothing
-                        (text "Files")
+                [ labeledItem Left
+                    [ class "VaultDialog-InputLabel" ]
+                    Nothing
+                    (text "Files")
+                    (Ui.Container.view settings [] (renderFolders state))
                 ]
             else
                 []
@@ -520,10 +527,11 @@ fileCheckbox path state =
                 |> Html.map (FileCheckBox path)
 
         checkboxWithLabel =
-            checkbox
-                |> labeledRight []
-                    (Just (ToggleIgnorePath path))
-                    (text (Path.folderName path))
+            labeledItem Right
+                []
+                (Just (ToggleIgnorePath path))
+                (text (Path.folderName path))
+                checkbox
     in
         span [ class "VaultDialog-Checkbox" ]
             [ checkboxWithLabel ]
@@ -574,10 +582,11 @@ userKeyCheckbox email userKey state model =
                 |> Html.map (UserKeyCheckbox email userKey)
 
         checkboxWithLabel =
-            checkbox
-                |> labeledRight []
-                    labelMsg
-                    (text (userKey.fingerprint ++ " - " ++ userKey.description))
+            labeledItem Right
+                []
+                labelMsg
+                (text (userKey.fingerprint ++ " - " ++ userKey.description))
+                checkbox
     in
         div [ class "VaultDialog-SelectKey", animation 0.5 Highlight ]
             [ span [ class "VaultDialog-Checkbox" ] [ checkboxWithLabel ]
