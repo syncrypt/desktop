@@ -1,9 +1,10 @@
 module MainScreen exposing (..)
 
+import Animation exposing (..)
 import Config exposing (Config)
 import Daemon exposing (attempt, attemptDelayed)
 import Date exposing (Date)
-import Html exposing (Html, button, div, h1, node, span, text)
+import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
@@ -12,7 +13,7 @@ import Set
 import Syncrypt.Vault exposing (VaultId, VaultOptions(..))
 import Time exposing (Time)
 import Ui.NotificationCenter
-import Util exposing (andAlso)
+import Util exposing (Direction(..), andAlso)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
@@ -401,8 +402,16 @@ cloneVault vaultId model =
 
 view : Model -> Html Msg
 view model =
-    layout model
-        []
+    div [ class "MainScreen" ]
+        [ div [ class (currentClass model), animations 2.5 [ SlideIn Top, FadeIn ] ] <|
+            [ header
+            , div [ class "MainScreen-Container" ]
+                [ VaultList.view model ]
+            , footer model
+            , viewNotificationCenter model
+            ]
+                ++ VaultDialog.viewAll model
+        ]
 
 
 currentClass : Model -> String
@@ -411,20 +420,6 @@ currentClass model =
         "MainScreen-Container"
     else
         "MainScreen-Container MainScreen-Expanded"
-
-
-layout : Model -> List (Html Msg) -> Html Msg
-layout model nodes =
-    div [ class "MainScreen" ]
-        [ div [ class (currentClass model) ] <|
-            [ header
-            , div [ class "MainScreen-Container" ]
-                (nodes ++ [ VaultList.view model ])
-            , footer model
-            , viewNotificationCenter model
-            ]
-                ++ VaultDialog.viewAll model
-        ]
 
 
 viewNotificationCenter : Model -> Html Msg
@@ -436,16 +431,7 @@ header : Html Msg
 header =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-Buttons" ]
-            [ node "ReactTooltip"
-                [ attribute "delayShow" "250"
-                , attribute "effect" "solid"
-                , id "header-tooltip"
-                , attribute "place" "bottom"
-                , attribute "type" "dark"
-                ]
-                []
-            , text "    "
-            , node "IconButton"
+            [ node "IconButton"
                 [ attribute
                     "data-for"
                     "header-tooltip"
@@ -454,7 +440,6 @@ header =
                 , onClick OpenAccountSettings
                 ]
                 []
-            , text "    "
             , node "IconButton"
                 [ attribute "data-for" "header-tooltip"
                 , attribute "data-tip" "Logout"
@@ -462,7 +447,6 @@ header =
                 , onClick Logout
                 ]
                 []
-            , text "  "
             ]
         ]
 

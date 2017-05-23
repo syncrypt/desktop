@@ -25,6 +25,7 @@
   background-repeat: no-repeat;
   float: left;
   animation: rotating 2s linear infinite;
+  animation-direction: reverse;
   background-image: url(assets/update_vault.png);
 }
 
@@ -38,6 +39,7 @@
   background-repeat: no-repeat;
   float: left;
   animation: rotating 2s linear infinite;
+  animation-direction: reverse;
   background-image: url(assets/update_vault.png);
 }
 
@@ -51,6 +53,7 @@
   background-repeat: no-repeat;
   float: left;
   animation: rotating 2s linear infinite;
+  animation-direction: reverse;
   background-image: url(assets/update_vault.png);
 }
 

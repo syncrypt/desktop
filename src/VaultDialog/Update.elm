@@ -13,6 +13,7 @@ import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
+import Lazy exposing (Lazy(..))
 import VaultDialog.Model
     exposing
         ( FolderItem
@@ -399,7 +400,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                         ! [ cmd ]
 
             FetchedUsers (Ok users) ->
-                ({ state | users = users }
+                ({ state | users = Loaded users }
                     |> asStateIn vaultId model
                 )
                     ! []
@@ -437,16 +438,28 @@ update msg vaultId ({ vaultDialogs } as model) =
                         ! []
 
             SearchUserKeys email ->
-                model
-                    ! [ model
-                            |> searchFingerprints email vaultId Daemon.attempt
-                      ]
+                let
+                    newState =
+                        case Dict.get email state.userKeys of
+                            Just (Loaded _) ->
+                                state
+
+                            _ ->
+                                { state
+                                    | userKeys =
+                                        state.userKeys
+                                            |> Dict.insert email Loading
+                                }
+                in
+                    (newState
+                        |> asStateIn vaultId model
+                    )
+                        ! [ model
+                                |> searchFingerprints email vaultId Daemon.attempt
+                          ]
 
             FoundUserKeys email (Ok keys) ->
-                ({ state
-                    | userKeys =
-                        Dict.insert email keys state.userKeys
-                 }
+                ({ state | userKeys = Dict.insert email (Loaded keys) state.userKeys }
                     |> asStateIn vaultId model
                 )
                     ! []
@@ -456,11 +469,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                     _ =
                         Debug.log "No fingerprints found for email: " email
                 in
-                    model
+                    ({ state | userKeys = Dict.insert email NotLoaded state.userKeys }
+                        |> asStateIn vaultId model
+                    )
                         ! []
 
             FoundVaultFingerprints (Ok fingerprints) ->
-                ({ state | vaultFingerprints = Set.fromList fingerprints }
+                ({ state | vaultFingerprints = Loaded <| Set.fromList fingerprints }
                     |> asStateIn vaultId model
                 )
                     ! []
@@ -481,7 +496,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                         Ui.Input.setValue email state.userInput
                             |> dialogCmd UserInput
                 in
-                    ({ state | userInput = userInput }
+                    ({ state
+                        | userInput = userInput
+                        , userKeys =
+                            Dict.update email
+                                (Just << Maybe.withDefault Loading)
+                                state.userKeys
+                     }
                         |> asStateIn vaultId model
                     )
                         ! [ cmd
@@ -538,7 +559,7 @@ isOwner vaultId model =
                 state.cloneStatus == New
 
             Model.LoggedIn { email } ->
-                case ( state.cloneStatus, List.head state.users ) of
+                case ( state.cloneStatus, List.head <| Lazy.withDefault [] state.users ) of
                     ( New, _ ) ->
                         True
 

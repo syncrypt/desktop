@@ -1,5 +1,6 @@
 module VaultList exposing (..)
 
+import Animation exposing (Animation(..), animation, animations)
 import Date exposing (Date)
 import Date.Distance as Distance
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
@@ -8,7 +9,7 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
-import Util exposing (bytesReadable, tooltipItem, TooltipDirection(..), TooltipLength(..))
+import Util exposing (bytesReadable, tooltipItem, Direction(..), TooltipLength(..))
 
 
 type alias HasId a =

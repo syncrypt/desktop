@@ -1,0 +1,70 @@
+@keyframes Anim-Slide-In-Top {
+  from { top: -500px; }
+  to { }
+}
+
+@keyframes Anim-Slide-In-Bottom {
+  from { bottom: -500px; }
+  to { }
+}
+
+@keyframes Anim-Slide-In-Left {
+  from { left: -500px; }
+  to { }
+}
+
+@keyframes Anim-Slide-In-Right {
+  from { right: -500px; }
+  to { }
+}
+
+.Anim-Slide-In-Top {
+  animation-name: Anim-Slide-In-Top;
+  animation-duration: 2.5s;
+}
+
+.Anim-Slide-In-Bottom {
+  animation-name: Anim-Slide-In-Bottom;
+  animation-duration: 2.5s;
+}
+
+.Anim-Slide-In-Left {
+  animation-name: Anim-Slide-In-Left;
+  animation-duration: 2.5s;
+}
+
+.Anim-Slide-In-Right {
+  animation-name: Anim-Slide-In-Right;
+  animation-duration: 2.5s;
+}
+
+@keyframes Anim-Fade-In {
+  from { opacity: 0.0; }
+  to { opacity: 1.0; }
+}
+
+.Anim-Fade-In {
+  animation-name: Anim-Fade-In;
+  animation-duration: 3.0s;
+}
+
+.Loading-Spinner {
+  background-size: 35px;
+  margin-left: -2px;
+  margin-top: -5px;
+  margin-right: 5px;
+  width: 35px;
+  height: 35px;
+  background-repeat: no-repeat;
+  animation: rotating 0.25s linear infinite;
+  animation-direction: reverse;
+  background-image: url(assets/sync.png);
+  transition: all 0.5s;
+}
+
+@keyframes Anim-Highlight {
+  0% { background-color: #fff; }
+  25% { background-color: #ccc; }
+  50% { background-color: #eee; }
+  100% { }
+}

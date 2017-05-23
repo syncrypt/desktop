@@ -1,12 +1,14 @@
 module VaultDialog exposing (..)
 
+import Animation exposing (..)
 import ConfirmationDialog
 import Date.Distance
 import Dialog exposing (labeledLeft, labeledRight)
 import Dict
 import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
-import Html.Attributes exposing (class, classList, for, id, style, src)
+import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
+import Lazy exposing (Lazy(..))
 import Model exposing (Model)
 import Path exposing (Path)
 import Syncrypt.User exposing (Email, User, UserKey)
@@ -19,11 +21,11 @@ import Ui.Modal
 import Ui.Tabs
 import Util
     exposing
-        ( onAnyKeyDown
+        ( Direction(..)
+        , TooltipLength(..)
+        , onAnyKeyDown
         , onEnter
         , tooltipItem
-        , TooltipDirection(..)
-        , TooltipLength(..)
         )
 import VaultDialog.Model
     exposing
@@ -156,7 +158,8 @@ tabContents vaultId state model =
           )
         , ( "Users"
           , div [ class "VaultDialog-Tab-Content" ]
-                [ div []
+                [ div
+                    [ classList [ ( "Hidden", not (isOwner vaultId model) ) ] ]
                     [ div
                         [ class "VaultDialog-Add-User", onEnter searchKeys ]
                         [ dialogInput "User" <| userInput vaultId state
@@ -536,17 +539,15 @@ userKeySelection state model =
             userKeys email state
 
         isHidden =
-            List.isEmpty keys
+            keys == NotLoaded
     in
         div
-            [ classList
-                [ ( "VaultDialog-UserKeys", not isHidden )
-                , ( "VaultDialog-UserKeys-Hidden", isHidden )
-                ]
+            [ class "VaultDialog-UserKeys"
             ]
         <|
-            (h4 [] [ text "Select keys" ])
-                :: List.map (\key -> userKeyCheckbox email key state model) keys
+            (loadingSpinnerIf <| keys == Loading)
+                :: List.map (\key -> userKeyCheckbox email key state model)
+                    (Lazy.withDefault [] keys)
 
 
 userKeyCheckbox : String -> UserKey -> State -> Model -> Html Msg
@@ -578,7 +579,7 @@ userKeyCheckbox email userKey state model =
                     labelMsg
                     (text (userKey.fingerprint ++ " - " ++ userKey.description))
     in
-        div [ class "VaultDialog-SelectKey" ]
+        div [ class "VaultDialog-SelectKey", animation 0.5 Highlight ]
             [ span [ class "VaultDialog-Checkbox" ] [ checkboxWithLabel ]
             , keyCreatedTimestamp userKey model
             ]
@@ -586,11 +587,18 @@ userKeyCheckbox email userKey state model =
 
 userList : State -> Model -> Html Msg
 userList state model =
-    div [ class "VaultDialog-UserList" ] <|
-        (h4 []
-            [ text "Vault Users:" ]
-        )
-            :: (List.map (\u -> userItem u model) state.users)
+    let
+        userItems =
+            (List.map (\u -> userItem u state model) <| Lazy.withDefault [] state.users)
+    in
+        div [ class "Vault-Dialog-UserList" ] <|
+            (h4 []
+                [ text "Vault Users:" ]
+            )
+                :: if List.isEmpty userItems then
+                    [ loadingSpinner ]
+                   else
+                    userItems
 
 
 pendingUserList : State -> Html Msg
@@ -614,9 +622,15 @@ pendingUserList state =
                     :: (List.map (\( email, keys ) -> pendingUserItem email keys) pendingUsers)
 
 
-userItem : User -> Model -> Html Msg
-userItem user model =
-    div [ class "VaultDialog-User", onClick (SetUserInput user.email) ]
+userItem : User -> State -> Model -> Html Msg
+userItem user state model =
+    div
+        [ classList
+            [ ( "VaultDialog-User", True )
+            , ( "Normal-Cursor", not (isOwner state.id model) )
+            ]
+        , onClick (SetUserInput user.email)
+        ]
         [ span [ class "VaultDialog-User-Name" ]
             [ text <| user.firstName ++ " " ++ user.lastName ]
         , span [ class "VaultDialog-User-Email" ]
@@ -645,7 +659,7 @@ userAddedTimestamp user model =
     span [ class "VaultDialog-UserAddedTime" ] <|
         case ( user.accessGrantedAt, model.now ) of
             ( Nothing, _ ) ->
-                []
+                [ text "Vault Owner" ]
 
             ( Just date, Nothing ) ->
                 [ text <| toString date ]

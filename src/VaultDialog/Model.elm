@@ -11,6 +11,7 @@ import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
 import Syncrypt.User as User
 import ConfirmationDialog
 import Http
+import Lazy exposing (Lazy(..))
 
 
 type alias FileName =
@@ -42,10 +43,10 @@ type alias State =
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
-    , users : List User.User
+    , users : Lazy (List User.User)
     , usersToAdd : Dict User.Email (List User.UserKey)
-    , userKeys : Dict User.Email (List User.UserKey)
-    , vaultFingerprints : Set User.Fingerprint
+    , userKeys : Dict User.Email (Lazy (List User.UserKey))
+    , vaultFingerprints : Lazy (Set User.Fingerprint)
     }
 
 
@@ -112,10 +113,10 @@ init =
             |> Ui.Input.showClearIcon True
     , tabs =
         Ui.Tabs.init ()
-    , users = []
+    , users = NotLoaded
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
-    , vaultFingerprints = Set.empty
+    , vaultFingerprints = NotLoaded
     }
 
 
@@ -205,8 +206,14 @@ isUserKeyPending email userKey state =
             List.member userKey keys
 
 
+isUserKeyAlreadyAdded : User.UserKey -> State -> Bool
 isUserKeyAlreadyAdded userKey state =
-    Set.member userKey.fingerprint state.vaultFingerprints
+    case state.vaultFingerprints of
+        Loaded fingerprints ->
+            Set.member userKey.fingerprint fingerprints
+
+        _ ->
+            False
 
 
 isUserKeySelected : User.Email -> User.UserKey -> State -> Bool
@@ -314,10 +321,10 @@ keysToAdd email state =
         |> Maybe.withDefault []
 
 
-userKeys : User.Email -> State -> List User.UserKey
+userKeys : User.Email -> State -> Lazy (List User.UserKey)
 userKeys email state =
     Dict.get email state.userKeys
-        |> Maybe.withDefault []
+        |> Maybe.withDefault NotLoaded
 
 
 hasChanged : State -> State

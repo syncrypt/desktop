@@ -155,6 +155,10 @@ a:hover {
   cursor: pointer;
 }
 
+.Normal-Cursor {
+  cursor: default !important;
+}
+
 .MainScreen-NotificationCenter {
   font-size: 13px;
 }

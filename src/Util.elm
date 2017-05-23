@@ -17,12 +17,12 @@ module Util
         , onKeyDown
         , onAnyKeyDown
         , tooltipItem
-        , TooltipDirection(..)
+        , Direction(..)
         , TooltipLength(..)
         )
 
 import Html exposing (Html, span)
-import Html.Attributes exposing (attribute, class)
+import Html.Attributes exposing (attribute, class, classList)
 import Html.Events
 import Json.Decode
 import Process
@@ -243,7 +243,7 @@ onAnyKeyDown msg =
     Html.Events.on "keydown" (Json.Decode.andThen (\_ -> Json.Decode.succeed msg) Html.Events.keyCode)
 
 
-type TooltipDirection
+type Direction
     = Top
     | Bottom
     | Right
@@ -259,7 +259,7 @@ type TooltipLength
     | Auto
 
 
-tooltipItem : TooltipDirection -> TooltipLength -> String -> List (Html msg) -> Html msg
+tooltipItem : Direction -> TooltipLength -> String -> List (Html msg) -> Html msg
 tooltipItem dir length text body =
     let
         baseAttrs =
@@ -280,7 +280,7 @@ tooltipItem dir length text body =
         span attributes body
 
 
-tooltipDirString : TooltipDirection -> String
+tooltipDirString : Direction -> String
 tooltipDirString dir =
     case dir of
         Top ->
