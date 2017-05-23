@@ -130,7 +130,7 @@ update action model =
             model
                 ! [ model.config
                         |> Daemon.getFlyingVaults
-                        |> attemptDelayed 1000 UpdatedFlyingVaultsFromApi
+                        |> attemptDelayed 10000 UpdatedFlyingVaultsFromApi
                   ]
 
         OpenVaultDetails vault ->
