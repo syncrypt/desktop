@@ -87,6 +87,9 @@ type Msg
     | DeletedVault (WebData VaultId)
     | VaultUserAdded VaultId Email (WebData Email)
     | VaultMetadataUpdated VaultId (WebData Vault)
+    | Login
+    | LoginResult (WebData String)
+    | LoginDialog LoginDialog.Model.Msg
 
 
 init : Config -> Model

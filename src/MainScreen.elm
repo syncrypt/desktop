@@ -214,7 +214,11 @@ update action model =
                 _ =
                     Debug.log "logging in with password" model.loginDialog.passwordInput.value
             in
-                model ! []
+                model
+                    ! [ model.config
+                            |> Daemon.login model.loginDialog.emailInput.value model.loginDialog.passwordInput.value
+                            |> attempt LoginResult
+                      ]
 
         Model.LoginDialog loginMsg ->
             case loginMsg of
@@ -242,6 +246,13 @@ update action model =
 
                 LoginDialog.Model.Modal _ ->
                     model ! []
+
+        LoginResult sth ->
+            let
+                _ =
+                    Debug.log "login result" sth
+            in
+                model ! []
 
         FocusOn id ->
             model
