@@ -20,6 +20,10 @@ run-debug: $(BUILD_DIR) static
 	elm make src/Main.elm --output $(JS_FILE) --debug
 	NODE_ENV=development electron $(MAIN_FILE)
 
+run-watch: all
+	NODE_ENV=production electron $(MAIN_FILE) &
+	npm run watch
+
 release-setup: all
 	rm -rf $(RELEASE_DIR)/tmp/*
 	mkdir -p $(RELEASE_DIR)/tmp/syncrypt
