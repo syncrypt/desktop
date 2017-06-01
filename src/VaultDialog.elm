@@ -601,9 +601,7 @@ userList state model =
             (List.map (\u -> userItem u state model) <| Lazy.withDefault [] state.users)
     in
         div [ class "Vault-Dialog-UserList" ] <|
-            (h4 []
-                [ text "Vault Users:" ]
-            )
+            (h4 [] [ text "Vault Users:" ])
                 :: if List.isEmpty userItems then
                     [ loadingSpinner ]
                    else
