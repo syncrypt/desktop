@@ -183,9 +183,14 @@ saveVaultChanges vaultId state model =
 
         ( newModel, modalCmd ) =
             cancel vaultId model
+
+        updateCmd =
+            model.config
+                |> Daemon.getVaults
+                |> Daemon.attempt Model.FetchedVaultsFromApi
     in
-        model
-            ! (modalCmd :: updateMetadataCmd :: addUserCmds)
+        newModel
+            ! (updateCmd :: modalCmd :: updateMetadataCmd :: addUserCmds)
 
 
 update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )

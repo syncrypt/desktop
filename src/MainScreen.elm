@@ -148,7 +148,7 @@ update action model =
 
         ClonedVault vaultId (Ok vault) ->
             { model | state = ShowingAllVaults }
-                ! [ model |> fetchVaults ]
+                ! [ fetchVaults model ]
 
         ClonedVault vaultId (Err reason) ->
             let
@@ -220,9 +220,9 @@ update action model =
             model
                 |> VaultDialog.Update.update msg vaultId
 
-        OpenVaultFolder _ ->
+        OpenVaultFolder vault ->
             -- TODO: open folder in file browser
-            model ! []
+            model ! [ Ports.openVaultFolder vault.folderPath ]
 
         OpenProgramSettings ->
             -- TODO
