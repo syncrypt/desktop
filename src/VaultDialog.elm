@@ -8,9 +8,9 @@ import Dict
 import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
-import Lazy exposing (Lazy(..))
 import Model exposing (Model)
 import Path exposing (Path)
+import RemoteData exposing (RemoteData(..))
 import Syncrypt.User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
 import Ui.Button
@@ -547,7 +547,7 @@ userKeySelection state model =
             userKeys email state
 
         isHidden =
-            keys == NotLoaded
+            keys == NotAsked
     in
         div
             [ class "VaultDialog-UserKeys"
@@ -555,7 +555,7 @@ userKeySelection state model =
         <|
             (loadingSpinnerIf <| keys == Loading)
                 :: List.map (\key -> userKeyCheckbox email key state model)
-                    (Lazy.withDefault [] keys)
+                    (RemoteData.withDefault [] keys)
 
 
 userKeyCheckbox : String -> UserKey -> State -> Model -> Html Msg
@@ -598,7 +598,7 @@ userList : State -> Model -> Html Msg
 userList state model =
     let
         userItems =
-            (List.map (\u -> userItem u state model) <| Lazy.withDefault [] state.users)
+            (List.map (\u -> userItem u state model) <| RemoteData.withDefault [] state.users)
     in
         div [ class "Vault-Dialog-UserList" ] <|
             (h4 [] [ text "Vault Users:" ])

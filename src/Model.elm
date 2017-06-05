@@ -4,8 +4,10 @@ import Config exposing (Config)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Http
+import Process
+import RemoteData exposing (RemoteData(..), WebData)
 import Syncrypt.User exposing (Email)
-import Syncrypt.Vault exposing (VaultId, Vault, FlyingVault)
+import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
@@ -29,21 +31,21 @@ type LoginState
 
 type alias Model =
     { config : Config
-    , vaults : List Vault
-    , flyingVaults : List FlyingVault
+    , vaults : WebData (List Vault)
+    , flyingVaults : WebData (List FlyingVault)
     , state : State
-    , stats : Stats
+    , stats : WebData Stats
     , sidebarOpen : Bool
     , now : Maybe Date
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
-    , login : LoginState
+    , login : WebData LoginState
     }
 
 
 type State
     = LoadingVaults
-    | UpdatingVaults (List Vault)
+    | UpdatingVaults
     | ShowingAllVaults
     | ShowingVaultDetails Vault
     | ShowingFlyingVaultDetails FlyingVault
@@ -53,42 +55,43 @@ type State
 
 type Msg
     = SetDate Date
+    | GetLoginState
     | UpdateVaults
     | UpdateFlyingVaults
-    | FetchedVaultsFromApi (Result Http.Error (List Vault))
-    | FetchedLoginState (Result Http.Error LoginState)
-    | UpdatedVaultsFromApi (Result Http.Error (List Vault))
-    | UpdatedFlyingVaultsFromApi (Result Http.Error (List FlyingVault))
-    | UpdatedStatsFromApi (Result Http.Error Stats)
+    | UpdateStats
+    | UpdatedLoginState (WebData LoginState)
+    | UpdatedVaultsFromApi (WebData (List Vault))
+    | UpdatedFlyingVaultsFromApi (WebData (List FlyingVault))
+    | UpdatedStatsFromApi (WebData Stats)
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
     | CloneVault VaultId
-    | ClonedVault VaultId (Result Http.Error Vault)
+    | ClonedVault VaultId (WebData Vault)
     | CloseVaultDetails VaultId
     | SaveVaultDetails VaultId
     | OpenProgramSettings
     | OpenAccountSettings
     | Logout
     | CreateNewVault
-    | CreatedVault (Result Http.Error Vault)
+    | CreatedVault (WebData Vault)
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg
     | RemoveVaultFromSync VaultId
-    | RemovedVaultFromSync (Result Http.Error VaultId)
-    | DeletedVault (Result Http.Error VaultId)
-    | VaultUserAdded VaultId Email (Result Http.Error Email)
-    | VaultMetadataUpdated VaultId (Result Http.Error Vault)
+    | RemovedVaultFromSync (WebData VaultId)
+    | DeletedVault (WebData VaultId)
+    | VaultUserAdded VaultId Email (WebData Email)
+    | VaultMetadataUpdated VaultId (WebData Vault)
 
 
 init : Config -> Model
 init config =
     { config = config
-    , vaults = []
-    , flyingVaults = []
+    , vaults = NotAsked
+    , flyingVaults = NotAsked
     , state = LoadingVaults
-    , stats = { stats = 0, downloads = 0, uploads = 0 }
+    , stats = NotAsked
     , sidebarOpen = False
     , now = Nothing
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
@@ -96,7 +99,7 @@ init config =
         Ui.NotificationCenter.init ()
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
-    , login = LoggedOut
+    , login = NotAsked
     }
 
 
@@ -106,9 +109,9 @@ vaultWithId vaultId { vaults, flyingVaults } =
         hasId =
             \v -> v.id == vaultId
     in
-        case findFirst hasId vaults of
+        case findFirst hasId (RemoteData.withDefault [] vaults) of
             Nothing ->
-                case findFirst hasId flyingVaults of
+                case findFirst hasId (RemoteData.withDefault [] flyingVaults) of
                     Nothing ->
                         Syncrypt.Vault.init vaultId
 
@@ -124,5 +127,25 @@ vaultIds { vaults, flyingVaults } =
     let
         idsOf =
             List.map .id
+
+        orEmpty =
+            RemoteData.withDefault []
     in
-        (idsOf vaults) ++ (idsOf flyingVaults)
+        (idsOf (vaults |> orEmpty)) ++ (idsOf (flyingVaults |> orEmpty))
+
+
+
+-- retryOnFailure : WebData a -> Model -> ( Model, Cmd msg )
+
+
+retryOnFailure data msg model =
+    case data of
+        Failure reason ->
+            let
+                _ =
+                    Debug.log "Retrying due to failure: " ( msg, reason )
+            in
+                ( model, Util.delayMsg model.config.updateInterval msg )
+
+        _ ->
+            ( model, Cmd.none )

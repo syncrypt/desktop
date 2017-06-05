@@ -8,27 +8,14 @@ import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
+import RemoteData exposing (RemoteData(..))
 import Set
-import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
+import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Lazy exposing (Lazy(..))
-import VaultDialog.Model
-    exposing
-        ( FolderItem
-        , Msg(..)
-        , RequiresConfirmation(..)
-        , State
-        , CloneStatus(..)
-        , addFolder
-        , collapseFolder
-        , expandFolder
-        , hasChanged
-        , isIgnored
-        , toggleIgnorePath
-        , toggleUserKey
-        )
+import Util exposing (andAlso)
+import VaultDialog.Model exposing (CloneStatus(..), FolderItem, Msg(..), RequiresConfirmation(..), State, addFolder, collapseFolder, expandFolder, hasChanged, isIgnored, toggleIgnorePath, toggleUserKey)
 import VaultDialog.Ports
 
 
@@ -113,9 +100,9 @@ openForVault vault model =
                 [ cmd
                 , VaultDialog.Ports.getFileList ( vault.id, path )
                 , model
-                    |> fetchUsers vault.id Daemon.attempt
+                    |> fetchUsers vault.id
                 , model
-                    |> getVaultFingerprints vault.id Daemon.attempt
+                    |> getVaultFingerprints vault.id
                 ]
             else
                 [ cmd ]
@@ -172,22 +159,20 @@ saveVaultChanges vaultId state model =
                     (\( email, keys ) ->
                         model.config
                             |> Daemon.addVaultUser vaultId email keys
-                            |> Daemon.attempt (Model.VaultUserAdded vaultId email)
+                            |> Cmd.map (Model.VaultUserAdded vaultId email)
                     )
             )
 
         updateMetadataCmd =
             model.config
                 |> Daemon.updateVaultMetadata vaultId { name = state.nameInput.value, icon = state.icon }
-                |> Daemon.attempt (Model.VaultMetadataUpdated vaultId)
+                |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
         ( newModel, modalCmd ) =
             cancel vaultId model
 
         updateCmd =
-            model.config
-                |> Daemon.getVaults
-                |> Daemon.attempt Model.FetchedVaultsFromApi
+            Daemon.getVaults model
     in
         newModel
             ! (updateCmd :: modalCmd :: updateMetadataCmd :: addUserCmds)
@@ -382,14 +367,14 @@ update msg vaultId ({ vaultDialogs } as model) =
                 model
                     ! [ model.config
                             |> Daemon.deleteVault vaultId
-                            |> Daemon.attempt Model.DeletedVault
+                            |> Cmd.map Model.DeletedVault
                       ]
 
             Confirmed RemoveVault ->
                 model
                     ! [ model.config
                             |> Daemon.removeVault vaultId
-                            |> Daemon.attempt Model.RemovedVaultFromSync
+                            |> Cmd.map Model.RemovedVaultFromSync
                       ]
 
             Confirmed AddUser ->
@@ -404,17 +389,11 @@ update msg vaultId ({ vaultDialogs } as model) =
                     )
                         ! [ cmd ]
 
-            FetchedUsers (Ok users) ->
-                ({ state | users = Loaded users }
+            FetchedUsers users ->
+                ({ state | users = users }
                     |> asStateIn vaultId model
                 )
                     ! []
-
-            FetchedUsers (Err reason) ->
-                ( model
-                , model
-                    |> fetchUsers vaultId (Daemon.attemptDelayed 1000)
-                )
 
             UserKeyCheckbox email userKey _ ->
                 (state
@@ -446,7 +425,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                 let
                     newState =
                         case Dict.get email state.userKeys of
-                            Just (Loaded _) ->
+                            Just (Success _) ->
                                 state
 
                             _ ->
@@ -460,40 +439,24 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! [ model
-                                |> searchFingerprints email vaultId Daemon.attempt
+                                |> searchFingerprints email vaultId
                           ]
 
-            FoundUserKeys email (Ok keys) ->
-                ({ state | userKeys = Dict.insert email (Loaded keys) state.userKeys }
+            FoundUserKeys email keys ->
+                ({ state | userKeys = Dict.insert email keys state.userKeys }
                     |> asStateIn vaultId model
                 )
                     ! []
 
-            FoundUserKeys email (Err reason) ->
-                let
-                    _ =
-                        Debug.log "No fingerprints found for email: " email
-                in
-                    ({ state | userKeys = Dict.insert email NotLoaded state.userKeys }
-                        |> asStateIn vaultId model
-                    )
-                        ! []
+            GetVaultFingerprints ->
+                model
+                    ! [ getVaultFingerprints state.id model ]
 
-            FoundVaultFingerprints (Ok fingerprints) ->
-                ({ state | vaultFingerprints = Loaded <| Set.fromList fingerprints }
-                    |> asStateIn vaultId model
+            FoundVaultFingerprints data ->
+                ({ state | vaultFingerprints = RemoteData.map Set.fromList data }
+                    |> asStateIn state.id model
                 )
-                    ! []
-
-            FoundVaultFingerprints (Err reason) ->
-                let
-                    _ =
-                        Debug.log "Failed to find vault fingerprints " reason
-                in
-                    model
-                        ! [ model
-                                |> getVaultFingerprints vaultId (Daemon.attemptDelayed 1000)
-                          ]
+                    |> Model.retryOnFailure data (Model.VaultDialog vaultId GetVaultFingerprints)
 
             SetUserInput email ->
                 let
@@ -511,26 +474,26 @@ update msg vaultId ({ vaultDialogs } as model) =
                         |> asStateIn vaultId model
                     )
                         ! [ cmd
-                          , searchFingerprints email vaultId Daemon.attempt model
+                          , searchFingerprints email vaultId model
                           ]
 
 
-getVaultFingerprints vaultId attemptFunc model =
+getVaultFingerprints vaultId model =
     model.config
         |> Daemon.getVaultFingerprints vaultId
-        |> attemptFunc (Model.VaultDialog vaultId << FoundVaultFingerprints)
+        |> Cmd.map (Model.VaultDialog vaultId << FoundVaultFingerprints)
 
 
-searchFingerprints email vaultId attemptFunc model =
+searchFingerprints email vaultId model =
     model.config
         |> Daemon.getUserKeys email
-        |> attemptFunc (Model.VaultDialog vaultId << FoundUserKeys email)
+        |> Cmd.map (Model.VaultDialog vaultId << FoundUserKeys email)
 
 
-fetchUsers vaultId attemptFunc model =
+fetchUsers vaultId model =
     model.config
         |> Daemon.getVaultUsers vaultId
-        |> attemptFunc (Model.VaultDialog vaultId << FetchedUsers)
+        |> Cmd.map (Model.VaultDialog vaultId << FetchedUsers)
 
 
 asStateIn : VaultId -> Model -> State -> Model
@@ -560,16 +523,21 @@ isOwner vaultId model =
             dialogState vaultId model
     in
         case model.login of
-            Model.LoggedOut ->
-                state.cloneStatus == New
+            Success val ->
+                case val of
+                    Model.LoggedOut ->
+                        state.cloneStatus == New
 
-            Model.LoggedIn { email } ->
-                case ( state.cloneStatus, List.head <| Lazy.withDefault [] state.users ) of
-                    ( New, _ ) ->
-                        True
+                    Model.LoggedIn { email } ->
+                        case ( state.cloneStatus, List.head <| RemoteData.withDefault [] state.users ) of
+                            ( New, _ ) ->
+                                True
 
-                    ( _, Nothing ) ->
-                        False
+                            ( _, Nothing ) ->
+                                False
 
-                    ( _, Just owner ) ->
-                        email == owner.email
+                            ( _, Just owner ) ->
+                                email == owner.email
+
+            _ ->
+                False

@@ -9,8 +9,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Ports
+import RemoteData exposing (RemoteData(..), WebData)
 import Set
-import Syncrypt.Vault exposing (VaultId, VaultOptions(..))
+import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, VaultOptions(..))
 import Time exposing (Time)
 import Ui.NotificationCenter
 import Util exposing (Direction(..), andAlso)
@@ -31,9 +32,9 @@ init config =
 
         initialActions =
             [ updateNow
-            , fetchVaults model
-            , updateStatsIn 0 model
-            , fetchLoginState model attempt
+            , Daemon.getVaults model
+            , updateStats model
+            , Daemon.getLoginState model.config
             ]
     in
         model ! initialActions
@@ -45,7 +46,10 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    VaultDialog.subscriptions model
+    Sub.batch
+        [ VaultDialog.subscriptions model
+        , Time.every model.config.updateInterval (\t -> UpdateVaults)
+        ]
 
 
 
@@ -59,79 +63,36 @@ update action model =
             { model | now = Just date }
                 ! [ updateNowIn 1000 ]
 
+        GetLoginState ->
+            model
+                ! [ Daemon.getLoginState model.config ]
+
         UpdateVaults ->
-            { model | state = UpdatingVaults model.vaults }
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attempt UpdatedVaultsFromApi
-                  , model.config
-                        |> Daemon.getFlyingVaults
-                        |> attempt UpdatedFlyingVaultsFromApi
-                  ]
+            { model | state = UpdatingVaults }
+                ! [ Daemon.getVaults model ]
 
         UpdateFlyingVaults ->
             model
                 ! [ model.config
                         |> Daemon.getFlyingVaults
-                        |> attempt UpdatedFlyingVaultsFromApi
+                        |> Cmd.map UpdatedFlyingVaultsFromApi
                   ]
 
-        FetchedVaultsFromApi (Ok vaults) ->
-            { model | state = ShowingAllVaults, vaults = vaults }
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attemptDelayed model.config.updateInterval UpdatedVaultsFromApi
-                  , model.config
-                        |> Daemon.getFlyingVaults
-                        |> attempt UpdatedFlyingVaultsFromApi
-                  ]
+        UpdateStats ->
+            model
+                ! [ updateStats model ]
 
-        FetchedVaultsFromApi (Err reason) ->
-            (model
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attemptDelayed 1000 FetchedVaultsFromApi
-                  ]
-            )
-                |> andAlso (notifyText ("Error fetching vaults: " ++ (reason |> toString)))
-
-        FetchedLoginState (Ok loginState) ->
+        UpdatedLoginState loginState ->
             { model | login = loginState }
-                ! []
+                |> Model.retryOnFailure loginState GetLoginState
 
-        FetchedLoginState (Err reason) ->
-            let
-                _ =
-                    Debug.log "Could not fetch login state: " reason
-            in
-                model
-                    ! [ fetchLoginState model (Daemon.attemptDelayed 1000) ]
-
-        UpdatedVaultsFromApi (Ok vaults) ->
+        UpdatedVaultsFromApi vaults ->
             { model | vaults = vaults }
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attemptDelayed model.config.updateInterval UpdatedVaultsFromApi
-                  ]
-
-        UpdatedVaultsFromApi (Err reason) ->
-            -- retry to get vaults if request failed
-            model
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attemptDelayed 1000 UpdatedVaultsFromApi
-                  ]
-
-        UpdatedFlyingVaultsFromApi (Ok vaults) ->
-            { model | flyingVaults = vaults }
                 ! []
 
-        UpdatedFlyingVaultsFromApi (Err reason) ->
+        UpdatedFlyingVaultsFromApi vaults ->
             model
-                ! [ model.config
-                        |> Daemon.getFlyingVaults
-                        |> attemptDelayed 10000 UpdatedFlyingVaultsFromApi
-                  ]
+                |> fetchedFlyingVaults vaults
 
         OpenVaultDetails vault ->
             { model | state = ShowingVaultDetails vault }
@@ -146,17 +107,17 @@ update action model =
                 |> VaultDialog.Update.close vaultId
                 |> andAlso (cloneVault vaultId)
 
-        ClonedVault vaultId (Ok vault) ->
+        ClonedVault vaultId (Success vault) ->
             { model | state = ShowingAllVaults }
-                ! [ fetchVaults model ]
+                ! [ Daemon.getVaults model ]
 
-        ClonedVault vaultId (Err reason) ->
+        ClonedVault vaultId data ->
             let
                 _ =
-                    Debug.log "ClonedVault failed: " reason
+                    Debug.log "ClonedVault failed: " data
             in
                 model
-                    |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString reason))
+                    |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString data))
 
         CloseVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
@@ -171,31 +132,31 @@ update action model =
             { model | state = CreatingNewVault }
                 |> VaultDialog.Update.openNew
 
-        CreatedVault (Ok vault) ->
+        CreatedVault (Success vault) ->
             model
                 |> notifyText ("Vault created: " ++ vault.id)
 
-        CreatedVault (Err reason) ->
+        CreatedVault data ->
             model
-                |> notifyText ("Vault creation failed: " ++ (toString reason))
+                |> notifyText ("Vault creation failed: " ++ (toString data))
 
         RemoveVaultFromSync vaultId ->
             model
                 ! [ model.config
                         |> Daemon.removeVault vaultId
-                        |> attempt RemovedVaultFromSync
+                        |> Cmd.map RemovedVaultFromSync
                   ]
 
-        RemovedVaultFromSync (Ok vaultId) ->
+        RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
                 |> andAlso (notifyText ("Vault removed from sync: " ++ vaultId))
 
-        RemovedVaultFromSync (Err reason) ->
+        RemovedVaultFromSync data ->
             model
-                |> notifyText ("Vault removal failed: " ++ (toString reason))
+                |> notifyText ("Vault removal failed: " ++ (toString data))
 
-        DeletedVault (Ok vaultId) ->
+        DeletedVault (Success vaultId) ->
             let
                 newModel =
                     case model.state of
@@ -212,9 +173,9 @@ update action model =
                     |> VaultDialog.Update.close vaultId
                     |> andAlso (notifyText ("Vault deleted from server: " ++ vaultId))
 
-        DeletedVault (Err reason) ->
+        DeletedVault data ->
             model
-                |> notifyText ("Vault deletion failed: " ++ (toString reason))
+                |> notifyText ("Vault deletion failed: " ++ (toString data))
 
         VaultDialog vaultId msg ->
             model
@@ -248,23 +209,15 @@ update action model =
                 { model | notificationCenter = state }
                     ! [ Cmd.map NotificationCenter cmd ]
 
-        UpdatedStatsFromApi (Ok stats) ->
+        UpdatedStatsFromApi stats ->
             { model | stats = stats }
-                ! [ updateStats model ]
+                ! []
 
-        UpdatedStatsFromApi (Err reason) ->
-            let
-                _ =
-                    Debug.log "Updating stats failed: " reason
-            in
-                model
-                    ! [ updateStats model ]
-
-        VaultUserAdded vaultId email (Ok _) ->
+        VaultUserAdded vaultId email (Success _) ->
             model
                 ! []
 
-        VaultUserAdded vaultId email (Err reason) ->
+        VaultUserAdded vaultId email _ ->
             let
                 _ =
                     Debug.log "Could not add user to vault: " ( vaultId, email )
@@ -272,23 +225,31 @@ update action model =
                 model
                     |> notifyText ("Failed to add user " ++ email ++ " to vault " ++ vaultId)
 
-        VaultMetadataUpdated vaultId (Ok _) ->
+        VaultMetadataUpdated vaultId (Success _) ->
             model
-                ! [ model.config
-                        |> Daemon.getVaults
-                        |> attempt FetchedVaultsFromApi
-                  ]
+                ! [ Daemon.getVaults model ]
 
-        VaultMetadataUpdated vaultId (Err _) ->
+        VaultMetadataUpdated vaultId _ ->
             model
                 |> notifyText ("Failed to update metadata for vault " ++ vaultId)
 
 
-fetchVaults : Model -> Cmd Msg
-fetchVaults model =
-    model.config
-        |> Daemon.getVaults
-        |> attempt FetchedVaultsFromApi
+fetchedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
+fetchedFlyingVaults flyingVaults model =
+    let
+        cmds =
+            case flyingVaults of
+                Failure reason ->
+                    [ model.config
+                        |> Daemon.getFlyingVaults
+                        |> Cmd.map UpdatedFlyingVaultsFromApi
+                    ]
+
+                _ ->
+                    []
+    in
+        { model | flyingVaults = flyingVaults }
+            ! cmds
 
 
 updateNow : Cmd Msg
@@ -301,22 +262,11 @@ updateNowIn time =
     Util.performDelayed time SetDate Date.now
 
 
-fetchLoginState model attemptFn =
-    model.config
-        |> Daemon.getLoginState
-        |> attemptFn FetchedLoginState
-
-
 updateStats : Model -> Cmd Msg
-updateStats =
-    updateStatsIn 10000
-
-
-updateStatsIn : Time -> Model -> Cmd Msg
-updateStatsIn delay model =
+updateStats model =
     model.config
         |> Daemon.getStats
-        |> attemptDelayed delay UpdatedStatsFromApi
+        |> Cmd.map UpdatedStatsFromApi
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
@@ -355,10 +305,11 @@ saveVault vaultId model =
                                             , ignorePaths = Set.toList state.ignoredFolderItems
                                             , userKeys =
                                                 []
-                                                -- TODO
+
+                                            -- TODO
                                             }
                                         )
-                                    |> attempt CreatedVault
+                                    |> Cmd.map CreatedVault
                               ]
 
                     Nothing ->
@@ -392,7 +343,7 @@ cloneVault vaultId model =
                                     , ignorePaths = Set.toList state.ignoredFolderItems
                                     }
                                 )
-                            |> Daemon.attempt (ClonedVault vaultId)
+                            |> Cmd.map (ClonedVault vaultId)
                       ]
 
 
@@ -455,24 +406,42 @@ footer : Model -> Html Msg
 footer { stats, vaults } =
     let
         statsStr =
-            (toString stats.stats)
-                ++ " File Stats / "
-                ++ (toString stats.downloads)
-                ++ " Downloads / "
-                ++ (toString stats.uploads)
-                ++ " Uploads"
+            case stats of
+                Success s ->
+                    (toString s.stats)
+                        ++ " File Stats / "
+                        ++ (toString s.downloads)
+                        ++ " Downloads / "
+                        ++ (toString s.uploads)
+                        ++ " Uploads"
+
+                Loading ->
+                    "Stats loading ..."
+
+                NotAsked ->
+                    "Stats N/A"
+
+                Failure reason ->
+                    "Stats failed to load: " ++ (toString reason)
 
         syncedVaults =
-            if List.length vaults == 1 then
-                " Synced Vault / "
-            else
-                " Synced Vaults / "
+            case vaults of
+                Success vaults ->
+                    if List.length vaults == 1 then
+                        " 1 Synced Vault / "
+                    else
+                        (vaults |> List.length |> toString) ++ " Synced Vaults / "
+
+                Loading ->
+                    "..."
+
+                NotAsked ->
+                    "N/A"
+
+                Failure reason ->
+                    "Error: " ++ (toString reason)
     in
         div [ class "MainScreen-Footer" ]
             [ span [ class "MainScreen-Stats" ]
-                [ text <|
-                    (vaults |> List.length |> toString)
-                        ++ syncedVaults
-                        ++ statsStr
-                ]
+                [ text <| syncedVaults ++ statsStr ]
             ]

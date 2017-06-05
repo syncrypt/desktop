@@ -5,13 +5,12 @@ import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
+import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
 import Path exposing (Path, asPath)
 import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
 import Syncrypt.User as User
 import ConfirmationDialog
-import Http
-import Lazy exposing (Lazy(..))
 
 
 type alias FileName =
@@ -43,10 +42,10 @@ type alias State =
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
-    , users : Lazy (List User.User)
+    , users : WebData (List User.User)
     , usersToAdd : Dict User.Email (List User.UserKey)
-    , userKeys : Dict User.Email (Lazy (List User.UserKey))
-    , vaultFingerprints : Lazy (Set User.Fingerprint)
+    , userKeys : Dict User.Email (WebData (List User.UserKey))
+    , vaultFingerprints : WebData (Set User.Fingerprint)
     }
 
 
@@ -77,9 +76,10 @@ type Msg
     | ToggleUserKey User.Email User.UserKey
     | UserKeyCheckbox User.Email User.UserKey Ui.Checkbox.Msg
     | SearchUserKeys User.Email
-    | FoundUserKeys User.Email (Result Http.Error (List User.UserKey))
-    | FoundVaultFingerprints (Result Http.Error (List User.Fingerprint))
-    | FetchedUsers (Result Http.Error (List User.User))
+    | FoundUserKeys User.Email (WebData (List User.UserKey))
+    | GetVaultFingerprints
+    | FoundVaultFingerprints (WebData (List User.Fingerprint))
+    | FetchedUsers (WebData (List User.User))
     | SetUserInput String
     | OpenIconDialog
     | SelectedIcon String
@@ -113,10 +113,10 @@ init =
             |> Ui.Input.showClearIcon True
     , tabs =
         Ui.Tabs.init ()
-    , users = NotLoaded
+    , users = NotAsked
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
-    , vaultFingerprints = NotLoaded
+    , vaultFingerprints = NotAsked
     }
 
 
@@ -209,7 +209,7 @@ isUserKeyPending email userKey state =
 isUserKeyAlreadyAdded : User.UserKey -> State -> Bool
 isUserKeyAlreadyAdded userKey state =
     case state.vaultFingerprints of
-        Loaded fingerprints ->
+        Success fingerprints ->
             Set.member userKey.fingerprint fingerprints
 
         _ ->
@@ -321,10 +321,10 @@ keysToAdd email state =
         |> Maybe.withDefault []
 
 
-userKeys : User.Email -> State -> Lazy (List User.UserKey)
+userKeys : User.Email -> State -> WebData (List User.UserKey)
 userKeys email state =
     Dict.get email state.userKeys
-        |> Maybe.withDefault NotLoaded
+        |> Maybe.withDefault NotAsked
 
 
 hasChanged : State -> State

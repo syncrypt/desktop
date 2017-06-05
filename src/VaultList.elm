@@ -7,9 +7,10 @@ import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
 import Model exposing (..)
+import RemoteData exposing (RemoteData(..))
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
-import Util exposing (bytesReadable, tooltipItem, Direction(..), TooltipLength(..))
+import Util exposing (Direction(..), TooltipLength(..), bytesReadable, tooltipItem)
 
 
 type alias HasId a =
@@ -237,7 +238,7 @@ vaultList : Model -> Html Msg
 vaultList model =
     let
         vaultItems =
-            List.map (vaultItem model) model.vaults
+            List.map (vaultItem model) (RemoteData.withDefault [] model.vaults)
 
         vaultListInfo =
             div [ class "VaultList-VaultListInfo" ]
@@ -263,8 +264,21 @@ flyingVaultList model =
              , div [ class "VaultList-VaultListInfo" ]
                 [ span [ class "VaultList-Title" ]
                     [ text "Available Vaults" ]
-                , span [ class "VaultList-Subtitle" ]
-                    [ text "Click on a vault to clone it to your computer" ]
+                , span [ class "VaultList-Subtitle" ] <|
+                    case model.flyingVaults of
+                        NotAsked ->
+                            [ span [ onClick UpdateFlyingVaults ]
+                                [ text "Check for remote vaults on the server" ]
+                            ]
+
+                        Loading ->
+                            [ text "Fetching remote vault info..." ]
+
+                        Failure reason ->
+                            [ text <| "Error fetching remote vaults: " ++ toString reason ]
+
+                        Success _ ->
+                            [ text "Click on a vault to clone it to your computer" ]
                 ]
              ]
                 ++ flyingVaultItems
@@ -274,16 +288,22 @@ flyingVaultList model =
 unsyncedFlyingVaults : Model -> List FlyingVault
 unsyncedFlyingVaults model =
     let
+        vaults =
+            RemoteData.withDefault [] model.vaults
+
+        flyingVaults =
+            RemoteData.withDefault [] model.flyingVaults
+
         vaultIds =
-            Set.fromList (List.map (\v -> v.id) model.vaults)
+            Set.fromList (List.map (\v -> v.id) vaults)
 
         flyingVaultIds =
-            Set.fromList (List.map (\v -> v.id) model.flyingVaults)
+            Set.fromList (List.map (\v -> v.id) flyingVaults)
 
         diff =
             Set.diff flyingVaultIds vaultIds
     in
-        model.flyingVaults
+        flyingVaults
             |> List.filter (\fv -> Set.member fv.id diff)
 
 

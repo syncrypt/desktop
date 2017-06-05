@@ -2,6 +2,7 @@ module Util
     exposing
         ( ByteUnit
         , ByteUnitPrecision
+        , delayMsg
         , delay
         , attemptDelayed
         , performDelayed
@@ -29,6 +30,12 @@ import Process
 import Round
 import Task exposing (Task, andThen, attempt, perform)
 import Time exposing (Time)
+
+
+delayMsg : Time -> msg -> Cmd msg
+delayMsg time msg =
+    Process.sleep time
+        |> Task.perform (\_ -> msg)
 
 
 {-| Creates a new `Task` that delays a given `Task` by a given time.

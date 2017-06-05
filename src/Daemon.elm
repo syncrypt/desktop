@@ -12,6 +12,7 @@ import Syncrypt.Vault exposing (..)
 import Task exposing (Task)
 import Time exposing (Time)
 import Util
+import RemoteData exposing (RemoteData(..), WebData)
 
 
 type ApiPath
@@ -33,27 +34,42 @@ type ApiPath
     | Logout
 
 
-getStats : Config -> Http.Request Stats
+getStats : Config -> Cmd (WebData Stats)
 getStats config =
     apiRequest config Get Stats Nothing statsDecoder
 
 
-getVaults : Config -> Http.Request (List Vault)
-getVaults config =
+
+-- getVaults : Config -> Http.Request (List Vault)
+-- getVaults config =
+--     apiRequest config Get Vaults Nothing vaultsDecoder
+
+
+getVaults : Model -> Cmd Msg
+getVaults { config } =
     apiRequest config Get Vaults Nothing vaultsDecoder
+        |> Cmd.map UpdatedVaultsFromApi
 
 
-getFlyingVaults : Config -> Http.Request (List FlyingVault)
+getVaultsDelayed { config } =
+    Task.succeed
+        (\_ ->
+            apiRequest config Get Vaults Nothing vaultsDecoder
+                |> Cmd.map UpdatedVaultsFromApi
+        )
+
+
+getFlyingVaults : Config -> Cmd (WebData (List FlyingVault))
 getFlyingVaults config =
     apiRequest config Get FlyingVaults Nothing flyingVaultsDecoder
 
 
-getVault : VaultId -> Config -> Http.Request Vault
+getVault : VaultId -> Config -> Cmd (WebData Vault)
 getVault vaultId config =
     apiRequest config Get (Vault vaultId) Nothing vaultDecoder
 
 
-updateVaultMetadata : VaultId -> Metadata -> Config -> Http.Request Vault
+updateVaultMetadata : VaultId -> Metadata -> Config -> Cmd (WebData Vault)
 updateVaultMetadata vaultId metadata config =
     let
         metadataJson =
@@ -74,22 +90,22 @@ updateVaultMetadata vaultId metadata config =
         apiRequest config Put (Vault vaultId) (Just (Http.jsonBody json)) vaultDecoder
 
 
-getFlyingVault : VaultId -> Config -> Http.Request FlyingVault
+getFlyingVault : VaultId -> Config -> Cmd (WebData FlyingVault)
 getFlyingVault vaultId config =
     apiRequest config Get (FlyingVault vaultId) Nothing flyingVaultDecoder
 
 
-getVaultUsers : VaultId -> Config -> Http.Request (List User)
+getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
 getVaultUsers vaultId config =
     apiRequest config Get (VaultUsers vaultId) Nothing usersDecoder
 
 
-getVaultUser : VaultId -> Email -> Config -> Http.Request User
+getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
 getVaultUser vaultId email config =
     apiRequest config Get (VaultUser vaultId email) Nothing userDecoder
 
 
-addVaultUser : VaultId -> Email -> List UserKey -> Config -> Http.Request Email
+addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd (WebData Email)
 addVaultUser vaultId email keys config =
     let
         fingerprints =
@@ -108,28 +124,28 @@ addVaultUser vaultId email keys config =
             (decode identity |> required "email" Json.string)
 
 
-removeVaultUser : VaultId -> Email -> Config -> Http.Request Email
+removeVaultUser : VaultId -> Email -> Config -> Cmd (WebData Email)
 removeVaultUser vaultId email config =
     -- TODO: check response data type
     apiRequest config Delete (VaultUser vaultId email) Nothing Json.string
 
 
-getUserKeys : Email -> Config -> Http.Request (List UserKey)
+getUserKeys : Email -> Config -> Cmd (WebData (List UserKey))
 getUserKeys email config =
     apiRequest config Get (UserKeys email) Nothing userKeysDecoder
 
 
-getUser : Email -> Config -> Http.Request User
+getUser : Email -> Config -> Cmd (WebData User)
 getUser email config =
     apiRequest config Get User Nothing userDecoder
 
 
-getVaultFingerprints : VaultId -> Config -> Http.Request (List Fingerprint)
+getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
 getVaultFingerprints vaultId config =
     apiRequest config Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
 
 
-updateVault : VaultOptions -> Config -> Http.Request Vault
+updateVault : VaultOptions -> Config -> Cmd (WebData Vault)
 updateVault options config =
     apiRequest config
         Post
@@ -138,7 +154,7 @@ updateVault options config =
         vaultDecoder
 
 
-removeVault : VaultId -> Config -> Http.Request VaultId
+removeVault : VaultId -> Config -> Cmd (WebData VaultId)
 removeVault vaultId config =
     apiRequest config
         Delete
@@ -147,7 +163,7 @@ removeVault vaultId config =
         (decodeToVal vaultId)
 
 
-deleteVault : VaultId -> Config -> Http.Request VaultId
+deleteVault : VaultId -> Config -> Cmd (WebData VaultId)
 deleteVault vaultId config =
     apiRequest config
         Delete
@@ -156,7 +172,7 @@ deleteVault vaultId config =
         (decodeToVal vaultId)
 
 
-sendFeedback : String -> Config -> Http.Request String
+sendFeedback : String -> Config -> Cmd (WebData String)
 sendFeedback text config =
     apiRequest config
         Post
@@ -165,17 +181,18 @@ sendFeedback text config =
         (decodeToVal "")
 
 
-getVersion : Config -> Http.Request String
+getVersion : Config -> Cmd (WebData String)
 getVersion config =
     apiRequest config Get Version Nothing Json.string
 
 
-getLoginState : Config -> Http.Request Model.LoginState
+getLoginState : Config -> Cmd Msg
 getLoginState config =
     apiRequest config Get User Nothing loginStateDecoder
+        |> Cmd.map UpdatedLoginState
 
 
-login : Email -> Password -> Config -> Http.Request String
+login : Email -> Password -> Config -> Cmd (WebData String)
 login email password config =
     let
         json =
@@ -192,12 +209,12 @@ login email password config =
             Json.string
 
 
-loginCheck : Config -> Http.Request String
+loginCheck : Config -> Cmd (WebData String)
 loginCheck config =
     apiRequest config Get LoginCheck Nothing Json.string
 
 
-logout : Config -> Http.Request String
+logout : Config -> Cmd (WebData String)
 logout config =
     apiRequest config Post Logout Nothing Json.string
 
@@ -309,7 +326,7 @@ requestMethod rm =
         apiRequest config Get "vault" vaultsDecoder
 
 -}
-apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Http.Request a
+apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Cmd (WebData a)
 apiRequest config method path maybeBody decoder =
     let
         body =
@@ -329,6 +346,7 @@ apiRequest config method path maybeBody decoder =
             , timeout = Nothing
             , withCredentials = False
             }
+            |> RemoteData.sendRequest
 
 
 {-| Create a `Task.Task` from an api request (`Http.Request`)
@@ -338,11 +356,15 @@ task =
     Http.toTask
 
 
-attempt : (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
+
+--attempt : (Result Http.Error a -> Msg) -> Http.Request a -> Cmd (WebData a)
+
+
 attempt msg request =
     request
-        |> task
-        |> Task.attempt msg
+        -- |> task
+        -- |> Task.attempt msg
+        |> RemoteData.sendRequest
 
 
 attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
