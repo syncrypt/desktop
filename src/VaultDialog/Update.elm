@@ -523,21 +523,16 @@ isOwner vaultId model =
             dialogState vaultId model
     in
         case model.login of
-            Success val ->
-                case val of
-                    Model.LoggedOut ->
-                        state.cloneStatus == New
-
-                    Model.LoggedIn { email } ->
-                        case ( state.cloneStatus, List.head <| RemoteData.withDefault [] state.users ) of
-                            ( New, _ ) ->
-                                True
-
-                            ( _, Nothing ) ->
-                                False
-
-                            ( _, Just owner ) ->
-                                email == owner.email
-
-            _ ->
+            Model.Unknown ->
                 False
+
+            Model.LoggedOut ->
+                state.cloneStatus == New
+
+            Model.LoggedIn { email } ->
+                case List.head <| RemoteData.withDefault [] state.users of
+                    Nothing ->
+                        False
+
+                    Just owner ->
+                        email == owner.email

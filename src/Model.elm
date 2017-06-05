@@ -27,8 +27,13 @@ type alias CurrentUser =
 
 
 type LoginState
-    = LoggedOut
+    = Unknown
+    | LoggedOut
     | LoggedIn CurrentUser
+
+
+type alias StatusResponse =
+    { success : Bool, text : Maybe String }
 
 
 type alias Model =
@@ -43,7 +48,7 @@ type alias Model =
     , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
-    , login : WebData LoginState
+    , login : LoginState
     }
 
 
@@ -88,7 +93,7 @@ type Msg
     | VaultUserAdded VaultId Email (WebData Email)
     | VaultMetadataUpdated VaultId (WebData Vault)
     | Login
-    | LoginResult (WebData String)
+    | LoginResult Email (WebData StatusResponse)
     | LoginDialog LoginDialog.Model.Msg
 
 
@@ -107,7 +112,7 @@ init config =
         Ui.NotificationCenter.init ()
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
-    , login = NotAsked
+    , login = Unknown
     }
 
 

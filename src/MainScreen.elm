@@ -204,7 +204,7 @@ update action model =
 
         Logout ->
             -- TODO
-            model ! []
+            { model | login = LoggedOut } ! []
 
         Login ->
             let
@@ -213,11 +213,14 @@ update action model =
 
                 _ =
                     Debug.log "logging in with password" model.loginDialog.passwordInput.value
+
+                email =
+                    model.loginDialog.emailInput.value
             in
                 model
                     ! [ model.config
-                            |> Daemon.login model.loginDialog.emailInput.value model.loginDialog.passwordInput.value
-                            |> attempt LoginResult
+                            |> Daemon.login email model.loginDialog.passwordInput.value
+                            |> attempt (LoginResult email)
                       ]
 
         Model.LoginDialog loginMsg ->
@@ -247,12 +250,13 @@ update action model =
                 LoginDialog.Model.Modal _ ->
                     model ! []
 
-        LoginResult sth ->
-            let
-                _ =
-                    Debug.log "login result" sth
-            in
-                model ! []
+        LoginResult email (Ok _) ->
+            { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
+                ! []
+
+        LoginResult email (Err reason) ->
+            model
+                ! []
 
         FocusOn id ->
             model
@@ -408,16 +412,24 @@ cloneVault vaultId model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "MainScreen" ]
-        [ div [ class (currentClass model), animations 2.5 [ SlideIn Top, FadeIn ] ] <|
-            [ header
-            , div [ class "MainScreen-Container" ]
-                [ VaultList.view model ]
-            , footer model
-            , viewNotificationCenter model
-            ]
-                ++ VaultDialog.viewAll model
-        ]
+    div [ class "MainScreen" ] <|
+        case model.login of
+            Unknown ->
+                [ text "..." ]
+
+            LoggedOut ->
+                [ LoginDialog.view model ]
+
+            LoggedIn _ ->
+                [ div [ class (currentClass model), animations 2.5 [ SlideIn Top, FadeIn ] ] <|
+                    [ header
+                    , div [ class "MainScreen-Container" ]
+                        [ VaultList.view model ]
+                    , footer model
+                    , viewNotificationCenter model
+                    ]
+                        ++ VaultDialog.viewAll model
+                ]
 
 
 currentClass : Model -> String

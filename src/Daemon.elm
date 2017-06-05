@@ -193,7 +193,7 @@ getLoginState config =
         |> Cmd.map UpdatedLoginState
 
 
-login : Email -> Password -> Config -> Cmd (WebData String)
+login : Email -> Password -> Config -> Cmd (WebData Model.StatusResponse)
 login email password config =
     let
         json =
@@ -207,7 +207,7 @@ login email password config =
             Post
             Login
             (Just (Http.jsonBody json))
-            Json.string
+            statusResponseDecoder
 
 
 loginCheck : Config -> Cmd (WebData String)
@@ -467,6 +467,18 @@ loginStateDecoder =
         |> required "last_name" Json.string
         |> required "email" Json.string
         |> Json.andThen (\currentUser -> Json.succeed (Model.LoggedIn currentUser))
+
+
+statusResponseDecoder : Json.Decoder Model.StatusResponse
+statusResponseDecoder =
+    let
+        parseStatus =
+            Json.string
+                |> andThen (\s -> Json.succeed (s == "ok"))
+    in
+        decode Model.StatusResponse
+            |> required "status" parseStatus
+            |> optional "text" (Json.maybe Json.string) Nothing
 
 
 {-| Decodes a `Syncrypt.Vault.Vault`.
