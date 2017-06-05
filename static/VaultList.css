@@ -308,3 +308,40 @@
   cursor: pointer;
   opacity: 1;
 }
+
+
+.VaultList-VaultOverlayButtons {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 1.0);
+  opacity: 0.0;
+  height: 65px;
+  vertical-align: middle;
+}
+
+.VaultList-VaultOverlayButton {
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 5px;
+  padding: 5px;
+}
+
+@keyframes VaultList-VaultOverlayButtons-SlideIn {
+  from { bottom: -65px; }
+  to { }
+}
+
+.VaultList-VaultCard:hover .VaultList-VaultOverlayButtons {
+  opacity: 1.0;
+  animation-name: VaultList-VaultOverlayButtons-SlideIn;
+  animation-duration: 0.5s;
+}
+
+.VaultList-VaultCard:hover .VaultList-VaultOverlayButton:hover {
+  background-color: #666666;
+  color: white;
+}

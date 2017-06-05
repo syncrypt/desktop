@@ -196,15 +196,23 @@ flyingVaultItemOnClick model flyingVault =
 
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
-    div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
+    div [ class (vaultItemClass model vault) ]
         [ vaultIcon vault
         , vaultInfo vault
             [ vaultStatus vault model
             , vaultUserCount vault
             , vaultActivity vault
-            , vaultRemoveFromSyncButton vault
-            , openVaultFolderButton vault
+            , vaultMouseOverlayButtons vault
             ]
+        ]
+
+
+vaultMouseOverlayButtons vault =
+    div [ class "VaultList-VaultOverlayButtons" ]
+        [ div [ class "VaultList-VaultOverlayButton", onClick (OpenVaultDetails vault) ]
+            [ text "Settings" ]
+        , div [ class "VaultList-VaultOverlayButton", onClick (OpenVaultFolder vault) ]
+            [ text "Show files" ]
         ]
 
 
