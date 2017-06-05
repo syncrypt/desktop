@@ -220,7 +220,7 @@ removeButton : VaultId -> State -> Html Model.Msg
 removeButton vaultId state =
     span
         [ classList
-            [ ( "Hidden", state.cloneStatus == New )
+            [ ( "Hidden", state.cloneStatus /= Cloned )
             , ( "VaultDialog-Button-Remove", True )
             ]
         ]
