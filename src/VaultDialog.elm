@@ -224,7 +224,7 @@ removeButton vaultId state =
             , ( "VaultDialog-Button-Remove", True )
             ]
         ]
-        [ Ui.Button.model "Stop Syncing" "warning" "small"
+        [ Ui.Button.model "Stop syncing" "warning" "small"
             |> Ui.Button.view (Model.VaultDialog vaultId (Confirm RemoveVault))
         ]
 
@@ -241,7 +241,7 @@ saveButton vaultId state =
                     ( "Save", Model.SaveVaultDetails vaultId )
 
                 ( NotCloned, True ) ->
-                    ( "Sync Vault to Folder", Model.CloneVault vaultId )
+                    ( "Sync vault to folder", Model.CloneVault vaultId )
 
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
