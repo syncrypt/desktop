@@ -203,8 +203,11 @@ update action model =
             model ! []
 
         Logout ->
-            -- TODO
-            { model | login = LoggedOut } ! []
+            model
+                ! [ model.config
+                        |> Daemon.logout
+                        |> attempt LogoutResult
+                  ]
 
         Login ->
             let
@@ -256,6 +259,10 @@ update action model =
 
         LoginResult email (Err reason) ->
             model
+                ! []
+
+        LogoutResult _ ->
+            { model | login = LoggedOut }
                 ! []
 
         FocusOn id ->

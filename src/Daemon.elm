@@ -215,9 +215,13 @@ loginCheck config =
     apiRequest config Get LoginCheck Nothing Json.string
 
 
-logout : Config -> Cmd (WebData String)
+logout : Config -> Cmd (WebData Model.StatusResponse)
 logout config =
-    apiRequest config Post Logout Nothing Json.string
+    apiRequest config
+        Post
+        Logout
+        Nothing
+        statusResponseDecoder
 
 
 type alias Path =

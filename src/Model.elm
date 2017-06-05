@@ -94,6 +94,7 @@ type Msg
     | VaultMetadataUpdated VaultId (WebData Vault)
     | Login
     | LoginResult Email (WebData StatusResponse)
+    | LogoutResult (WebData StatusResponse)
     | LoginDialog LoginDialog.Model.Msg
 
 
