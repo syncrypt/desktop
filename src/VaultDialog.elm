@@ -151,10 +151,14 @@ tabContents vaultId state model =
         filesTab =
             ( "Name & Files"
             , div [ class "VaultDialog-Tab-Content" ]
-                [ dialogInput "Icon" <| rootMsg <| iconInput state model
-                , dialogInput "Name" <| nameInput msg state
-                , dialogInput "Folder" <| rootMsg <| openFolderButton vaultId state model
-                , dialogInput "FileSelection" <| rootMsg <| fileSelectionContainer state
+                [ dialogInput "Icon"
+                    [ rootMsg <| iconInput state model ]
+                , dialogInput "Name"
+                    [ nameInput msg state ]
+                , dialogInput "Folder"
+                    [ rootMsg <| openFolderButton vaultId state model ]
+                , dialogInput "FileSelection"
+                    [ rootMsg <| fileSelectionContainer state ]
                 ]
             )
 
@@ -165,7 +169,8 @@ tabContents vaultId state model =
                     [ classList [ ( "Hidden", not (isOwner vaultId model) ) ] ]
                     [ div
                         [ class "VaultDialog-Add-User", onEnter searchKeys ]
-                        [ dialogInput "User" <| userInput vaultId state
+                        [ dialogInput "User"
+                            [ userInput vaultId state ]
                         ]
                     , div [ class "VaultDialog-UserKey-Selection" ]
                         [ rootMsg <| userKeySelection state model
@@ -180,8 +185,7 @@ tabContents vaultId state model =
         cryptoTab =
             ( "Cryptography"
             , div [ class "VaultDialog-Tab-Keys" ]
-                [ text "TODO: add section with information on vault keys & other crypto stuff"
-                ]
+                [ text "TODO: add section with information on vault keys & other crypto stuff" ]
             )
     in
         if isOwner vaultId model then
@@ -190,13 +194,13 @@ tabContents vaultId state model =
             [ filesTab, cryptoTab ]
 
 
-dialogInput : String -> Html msg -> Html msg
+dialogInput : String -> List (Html msg) -> Html msg
 dialogInput inputClassSuffix body =
     div
         [ class "VaultDialog-Input"
         , class ("VaultDialog-Input-" ++ inputClassSuffix)
         ]
-        [ body ]
+        body
 
 
 cancelButton : VaultId -> State -> Html Model.Msg
