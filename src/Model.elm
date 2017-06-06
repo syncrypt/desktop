@@ -2,11 +2,8 @@ module Model exposing (..)
 
 import Config exposing (Config)
 import Date exposing (Date)
-import VaultDialog.Model
-import Syncrypt.Vault exposing (VaultId)
 import Dict exposing (Dict)
-import Http
-import Process
+import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
@@ -44,7 +41,6 @@ type alias Model =
     , stats : WebData Stats
     , sidebarOpen : Bool
     , now : Maybe Date
-    , loggedIn : Bool
     , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg

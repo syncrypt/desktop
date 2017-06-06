@@ -193,8 +193,8 @@ getLoginState config =
         |> Cmd.map UpdatedLoginState
 
 
-login : Email -> Password -> Config -> Cmd (WebData Model.StatusResponse)
-login email password config =
+login : Email -> Password -> Model -> Cmd Msg
+login email password { config } =
     let
         json =
             (Json.Encode.object
@@ -208,6 +208,7 @@ login email password config =
             Login
             (Just (Http.jsonBody json))
             statusResponseDecoder
+            |> Cmd.map (LoginResult email)
 
 
 loginCheck : Config -> Cmd (WebData String)
@@ -215,13 +216,14 @@ loginCheck config =
     apiRequest config Get LoginCheck Nothing Json.string
 
 
-logout : Config -> Cmd (WebData Model.StatusResponse)
-logout config =
+logout : Model -> Cmd Msg
+logout { config } =
     apiRequest config
-        Post
+        Get
         Logout
         Nothing
         statusResponseDecoder
+        |> Cmd.map LogoutResult
 
 
 type alias Path =

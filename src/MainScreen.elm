@@ -37,10 +37,11 @@ init config =
 
         initialActions =
             [ updateNow
+            , Daemon.getLoginState model.config
             , Daemon.getVaults model
             , Daemon.getFlyingVaults model
             , updateStats model
-            , Daemon.getLoginState model.config
+            , Daemon.logout model
             ]
     in
         model ! initialActions
@@ -52,10 +53,15 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ VaultDialog.subscriptions model
-        , Time.every model.config.updateInterval (\t -> UpdateVaults)
-        ]
+    case model.login of
+        LoggedIn _ ->
+            Sub.batch
+                [ VaultDialog.subscriptions model
+                , Time.every model.config.updateInterval (\t -> UpdateVaults)
+                ]
+
+        _ ->
+            Sub.none
 
 
 
@@ -85,9 +91,19 @@ update action model =
             model
                 ! [ updateStats model ]
 
-        UpdatedLoginState loginState ->
-            { model | login = loginState }
-                |> Model.retryOnFailure loginState GetLoginState
+        UpdatedLoginState data ->
+            case data of
+                Success loginState ->
+                    { model | login = loginState }
+                        ! []
+
+                Failure _ ->
+                    { model | login = LoggedOut }
+                        |> Model.retryOnFailure data GetLoginState
+
+                _ ->
+                    { model | login = Unknown }
+                        ! []
 
         UpdatedVaultsFromApi vaults ->
             { model | vaults = vaults }
@@ -204,10 +220,7 @@ update action model =
 
         Logout ->
             model
-                ! [ model.config
-                        |> Daemon.logout
-                        |> attempt LogoutResult
-                  ]
+                ! [ Daemon.logout model ]
 
         Login ->
             let
@@ -219,12 +232,12 @@ update action model =
 
                 email =
                     model.loginDialog.emailInput.value
+
+                password =
+                    model.loginDialog.passwordInput.value
             in
                 model
-                    ! [ model.config
-                            |> Daemon.login email model.loginDialog.passwordInput.value
-                            |> attempt (LoginResult email)
-                      ]
+                    ! [ Daemon.login email password model ]
 
         Model.LoginDialog loginMsg ->
             case loginMsg of
@@ -253,12 +266,12 @@ update action model =
                 LoginDialog.Model.Modal _ ->
                     model ! []
 
-        LoginResult email (Ok _) ->
+        LoginResult email (Success _) ->
             { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
                 ! []
 
-        LoginResult email (Err reason) ->
-            model
+        LoginResult email _ ->
+            { model | login = Unknown }
                 ! []
 
         LogoutResult _ ->
@@ -304,17 +317,8 @@ update action model =
 
 fetchedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 fetchedFlyingVaults flyingVaults model =
-    let
-        cmds =
-            case flyingVaults of
-                Failure reason ->
-                    [ Daemon.getFlyingVaults model ]
-
-                _ ->
-                    []
-    in
-        { model | flyingVaults = flyingVaults }
-            ! cmds
+    { model | flyingVaults = flyingVaults }
+        |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
 
 
 updateNow : Cmd Msg
