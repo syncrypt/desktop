@@ -147,17 +147,20 @@ tabContents vaultId state model =
         searchKeys =
             Model.VaultDialog vaultId <|
                 SearchUserKeys (userInputEmail state)
-    in
-        [ ( "Name & Files"
-          , div [ class "VaultDialog-Tab-Content" ]
+
+        filesTab =
+            ( "Name & Files"
+            , div [ class "VaultDialog-Tab-Content" ]
                 [ dialogInput "Icon" <| rootMsg <| iconInput state model
                 , dialogInput "Name" <| nameInput msg state
                 , dialogInput "Folder" <| rootMsg <| openFolderButton vaultId state model
                 , dialogInput "FileSelection" <| rootMsg <| fileSelectionContainer state
                 ]
-          )
-        , ( "Users"
-          , div [ class "VaultDialog-Tab-Content" ]
+            )
+
+        usersTab =
+            ( "Users"
+            , div [ class "VaultDialog-Tab-Content" ]
                 [ div
                     [ classList [ ( "Hidden", not (isOwner vaultId model) ) ] ]
                     [ div
@@ -172,13 +175,19 @@ tabContents vaultId state model =
                 , rootMsg <| userList state model
                 , rootMsg <| pendingUserList state
                 ]
-          )
-        , ( "Cryptography"
-          , div [ class "VaultDialog-Tab-Keys" ]
+            )
+
+        cryptoTab =
+            ( "Cryptography"
+            , div [ class "VaultDialog-Tab-Keys" ]
                 [ text "TODO: add section with information on vault keys & other crypto stuff"
                 ]
-          )
-        ]
+            )
+    in
+        if isOwner vaultId model then
+            [ filesTab, usersTab, cryptoTab ]
+        else
+            [ filesTab, cryptoTab ]
 
 
 dialogInput : String -> Html msg -> Html msg
@@ -596,16 +605,17 @@ userKeyCheckbox email userKey state model =
 
 userList : State -> Model -> Html Msg
 userList state model =
-    let
-        userItems =
-            (List.map (\u -> userItem u state model) <| RemoteData.withDefault [] state.users)
-    in
-        div [ class "Vault-Dialog-UserList" ] <|
-            (h4 [] [ text "Vault Users:" ])
-                :: if List.isEmpty userItems then
+    div [ class "Vault-Dialog-UserList" ] <|
+        (h4 [] [ text "Vault Users:" ])
+            :: case state.users of
+                Success users ->
+                    List.map (\u -> userItem u state model) users
+
+                Loading ->
                     [ loadingSpinner ]
-                   else
-                    userItems
+
+                _ ->
+                    []
 
 
 pendingUserList : State -> Html Msg

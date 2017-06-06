@@ -237,16 +237,28 @@ newVaultItem =
 vaultList : Model -> Html Msg
 vaultList model =
     let
-        vaultItems =
-            List.map (vaultItem model) (RemoteData.withDefault [] model.vaults)
-
         vaultListInfo =
             div [ class "VaultList-VaultListInfo" ]
                 [ span [ class "VaultList-Title" ]
                     [ text "Local Vaults" ]
-                , span [ class "VaultList-Subtitle" ]
-                    [ text "These vaults are cloned and synchronized on this computer." ]
+                , span [ class "VaultList-Subtitle" ] <|
+                    case model.vaults of
+                        Success _ ->
+                            [ text "These vaults are cloned and synchronized on this computer." ]
+
+                        Failure reason ->
+                            [ text <| "Failed to load vaults: " ++ toString reason ]
+
+                        Loading ->
+                            [ text "Loading vaults" ]
+
+                        NotAsked ->
+                            []
                 ]
+
+        vaultItems =
+            RemoteData.withDefault [] model.vaults
+                |> List.map (vaultItem model)
     in
         div [ class "VaultList-VaultList" ]
             ((vaultListInfo :: vaultItems) ++ [ newVaultItem ])
