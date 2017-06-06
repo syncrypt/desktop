@@ -30,7 +30,6 @@ type Status
 type VaultOptions
     = Create
         { folder : Path
-        , userKeys : List Fingerprint
         , ignorePaths : List Path
         }
     | Clone
@@ -128,10 +127,9 @@ jsonOptions config options =
             String.join config.pathSeparator path
     in
         case options of
-            Create { folder, userKeys, ignorePaths } ->
+            Create { folder, ignorePaths } ->
                 Json.object
                     [ ( "folder", Json.string (pathString folder) )
-                    , ( "userKeys", Json.list (List.map Json.string userKeys) )
                     , ( "ignorePaths"
                       , Json.list
                             (List.map (pathString >> Json.string) ignorePaths)

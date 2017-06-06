@@ -74,7 +74,7 @@ type Msg
     | OpenAccountSettings
     | Logout
     | CreateNewVault
-    | CreatedVault (WebData Vault)
+    | CreatedVault VaultDialog.Model.State (WebData Vault)
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg

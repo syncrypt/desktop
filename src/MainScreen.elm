@@ -33,6 +33,7 @@ init config =
         initialActions =
             [ updateNow
             , Daemon.getVaults model
+            , Daemon.getFlyingVaults model
             , updateStats model
             , Daemon.getLoginState model.config
             ]
@@ -73,10 +74,7 @@ update action model =
 
         UpdateFlyingVaults ->
             model
-                ! [ model.config
-                        |> Daemon.getFlyingVaults
-                        |> Cmd.map UpdatedFlyingVaultsFromApi
-                  ]
+                ! [ Daemon.getFlyingVaults model ]
 
         UpdateStats ->
             model
@@ -132,13 +130,19 @@ update action model =
             { model | state = CreatingNewVault }
                 |> VaultDialog.Update.openNew
 
-        CreatedVault (Success vault) ->
+        CreatedVault dialogState (Success vault) ->
             model
-                |> notifyText ("Vault created: " ++ vault.id)
+                |> VaultDialog.Update.saveVaultChanges vault.id dialogState
+                |> andAlso (notifyText <| "Vault created: " ++ vault.id)
+                |> andAlso (\model -> ( model, Daemon.getVaults model ))
 
-        CreatedVault data ->
+        CreatedVault _ (Failure reason) ->
             model
-                |> notifyText ("Vault creation failed: " ++ (toString data))
+                |> notifyText ("Vault creation failed: " ++ toString reason)
+
+        CreatedVault _ _ ->
+            model
+                ! []
 
         RemoveVaultFromSync vaultId ->
             model
@@ -240,10 +244,7 @@ fetchedFlyingVaults flyingVaults model =
         cmds =
             case flyingVaults of
                 Failure reason ->
-                    [ model.config
-                        |> Daemon.getFlyingVaults
-                        |> Cmd.map UpdatedFlyingVaultsFromApi
-                    ]
+                    [ Daemon.getFlyingVaults model ]
 
                 _ ->
                     []
@@ -295,31 +296,32 @@ saveVault vaultId model =
     in
         case state.cloneStatus of
             New ->
-                case state.localFolderPath of
-                    Just folderPath ->
-                        model
-                            ! [ model.config
-                                    |> Daemon.updateVault
-                                        (Create
-                                            { folder = folderPath
-                                            , ignorePaths = Set.toList state.ignoredFolderItems
-                                            , userKeys =
-                                                []
-
-                                            -- TODO
-                                            }
-                                        )
-                                    |> Cmd.map CreatedVault
-                              ]
-
-                    Nothing ->
-                        model
-                            |> notifyText "No path selected - Vault not created"
+                model
+                    |> createVault state
 
             _ ->
                 model
                     |> VaultDialog.Update.saveVaultChanges vaultId state
                     |> andAlso (notifyText "Vault updated")
+
+
+createVault state model =
+    case state.localFolderPath of
+        Just folderPath ->
+            model
+                ! [ model.config
+                        |> Daemon.updateVault
+                            (Create
+                                { folder = folderPath
+                                , ignorePaths = Set.toList state.ignoredFolderItems
+                                }
+                            )
+                        |> Cmd.map (CreatedVault state)
+                  ]
+
+        Nothing ->
+            model
+                |> notifyText "No path selected - Vault not created"
 
 
 cloneVault : VaultId -> Model -> ( Model, Cmd Msg )

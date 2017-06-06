@@ -59,9 +59,10 @@ getVaultsDelayed { config } =
         )
 
 
-getFlyingVaults : Config -> Cmd (WebData (List FlyingVault))
-getFlyingVaults config =
+getFlyingVaults : Model -> Cmd Msg
+getFlyingVaults { config } =
     apiRequest config Get FlyingVaults Nothing flyingVaultsDecoder
+        |> Cmd.map UpdatedFlyingVaultsFromApi
 
 
 getVault : VaultId -> Config -> Cmd (WebData Vault)
