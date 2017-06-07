@@ -532,7 +532,7 @@ isOwner vaultId model =
             Model.LoggedIn { email } ->
                 case List.head <| RemoteData.withDefault [] state.users of
                     Nothing ->
-                        False
+                        state.cloneStatus == New
 
                     Just owner ->
                         email == owner.email
