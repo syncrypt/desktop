@@ -82,7 +82,7 @@ update action model =
                 ! [ Daemon.getVaults model ]
 
         UpdateFlyingVaults ->
-            model
+            { model | flyingVaults = Loading }
                 ! [ Daemon.getFlyingVaults model ]
 
         UpdateStats ->

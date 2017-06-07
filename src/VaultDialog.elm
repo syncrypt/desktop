@@ -365,7 +365,7 @@ iconInput state model =
             img
                 ((src iconPath)
                     :: (if isOwner state.id model then
-                            [ class "VaultDialog-Icon Pointer-Cursor", onClick OpenIconDialog ]
+                            [ class "VaultDialog-Icon", onClick OpenIconDialog ]
                         else
                             [ class "VaultDialog-Icon" ]
                        )

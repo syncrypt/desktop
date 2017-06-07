@@ -279,8 +279,11 @@ flyingVaultList model =
                 , span [ class "VaultList-Subtitle" ] <|
                     case model.flyingVaults of
                         NotAsked ->
-                            [ span [ onClick UpdateFlyingVaults ]
-                                [ text "Check for remote vaults on the server" ]
+                            [ span
+                                [ class "VaultList-UpdateFlyingVaultsButton"
+                                , onClick UpdateFlyingVaults
+                                ]
+                                [ text "Load remote vaults" ]
                             ]
 
                         Loading ->
