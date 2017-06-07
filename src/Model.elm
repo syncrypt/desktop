@@ -1,7 +1,6 @@
 module Model exposing (..)
 
 import Config exposing (Config)
-import Date exposing (Date)
 import Dict exposing (Dict)
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
@@ -10,6 +9,7 @@ import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
+import Time exposing (Time)
 
 
 type alias Stats =
@@ -40,7 +40,7 @@ type alias Model =
     , state : State
     , stats : WebData Stats
     , sidebarOpen : Bool
-    , now : Maybe Date
+    , now : Maybe Time
     , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
@@ -59,7 +59,7 @@ type State
 
 
 type Msg
-    = SetDate Date
+    = SetTime Time
     | GetLoginState
     | UpdateVaults
     | UpdateFlyingVaults

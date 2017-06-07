@@ -2,6 +2,7 @@ module VaultDialog exposing (..)
 
 import Animation exposing (..)
 import ConfirmationDialog
+import Date
 import Date.Distance
 import Dialog exposing (labeledItem)
 import Dict
@@ -686,7 +687,7 @@ userAddedTimestamp user model =
                 [ text <| toString date ]
 
             ( Just date, Just now ) ->
-                [ text <| "Invited " ++ (Date.Distance.inWords date now) ++ " ago" ]
+                [ text <| "Invited " ++ (Date.Distance.inWords date (Date.fromTime now)) ++ " ago" ]
 
 
 keyCreatedTimestamp : UserKey -> Model -> Html msg
@@ -700,4 +701,4 @@ keyCreatedTimestamp key model =
                 [ text <| toString date ]
 
             ( Just date, Just now ) ->
-                [ text <| "Created " ++ (Date.Distance.inWords date now) ++ " ago" ]
+                [ text <| "Created " ++ (Date.Distance.inWords date (Date.fromTime now)) ++ " ago" ]

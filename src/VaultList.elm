@@ -51,7 +51,7 @@ updatedAtInfo vault updatedAtHeader model =
                         text (toString date)
 
                     ( Just date, Just now ) ->
-                        text <| (Distance.inWords date now) ++ " ago"
+                        text <| (Distance.inWords date (Date.fromTime now)) ++ " ago"
                 ]
             ]
 

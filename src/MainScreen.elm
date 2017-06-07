@@ -36,12 +36,9 @@ init config =
             Model.init config
 
         initialActions =
-            [ updateNow
-            , Daemon.getLoginState model.config
+            [ Daemon.getLoginState model.config
             , Daemon.getVaults model
-            , Daemon.getFlyingVaults model
             , updateStats model
-            , Daemon.logout model
             ]
     in
         model ! initialActions
@@ -58,6 +55,7 @@ subscriptions model =
             Sub.batch
                 [ VaultDialog.subscriptions model
                 , Time.every model.config.updateInterval (\t -> UpdateVaults)
+                , Time.every Time.second SetTime
                 ]
 
         _ ->
@@ -71,9 +69,9 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
     case action of
-        SetDate date ->
-            { model | now = Just date }
-                ! [ updateNowIn 1000 ]
+        SetTime time ->
+            { model | now = Just time }
+                ! []
 
         GetLoginState ->
             model
@@ -270,13 +268,14 @@ update action model =
             { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
                 ! []
 
+        LoginResult email (Failure reason) ->
+            { model | login = LoggedOut } ! []
+
         LoginResult email _ ->
-            { model | login = Unknown }
-                ! []
+            { model | login = Unknown } ! []
 
         LogoutResult _ ->
-            { model | login = LoggedOut }
-                ! []
+            { model | login = LoggedOut } ! []
 
         FocusOn id ->
             model
@@ -319,16 +318,6 @@ fetchedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 fetchedFlyingVaults flyingVaults model =
     { model | flyingVaults = flyingVaults }
         |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
-
-
-updateNow : Cmd Msg
-updateNow =
-    updateNowIn 0
-
-
-updateNowIn : Time -> Cmd Msg
-updateNowIn time =
-    Util.performDelayed time SetDate Date.now
 
 
 updateStats : Model -> Cmd Msg

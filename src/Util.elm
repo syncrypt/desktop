@@ -66,7 +66,7 @@ attemptDelayed time msg task =
 
 {-| Attempts to perform a `Task` after a given delay.
 
-    Util.performDelayed 1000 SetDate Date.now
+    Util.performDelayed 1000 SetTime Time.now
 
 -}
 performDelayed : Time -> (a -> msg) -> Task Never a -> Cmd msg
