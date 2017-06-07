@@ -37,6 +37,10 @@
   width: 585px;
 }
 
+.VaultDialog-Input-Icon img {
+  cursor: default;
+}
+
 
 .VaultDialog-Input ui-input {
   width: 415px;
@@ -138,7 +142,7 @@
   margin-top: 5px;
   margin-bottom: 5px;
   padding: 5px;
-  cursor: pointer;
+  cursor: default;
 }
 
 .VaultDialog-UserList {
@@ -222,4 +226,9 @@
   height: 75px;
   padding: 2px;
   border: 1px solid black;
+}
+
+ui-button,
+ui-tabs-handle {
+  cursor: default !important;
 }

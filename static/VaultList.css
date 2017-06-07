@@ -90,7 +90,6 @@
 
 .VaultList-Card:hover {
   transition: all 0.25s;
-  cursor: pointer;
 }
 
 .VaultList-FlyingVaultSeparator {
@@ -105,7 +104,6 @@
 
 .VaultList-FlyingVaultCard {
   border: 1px dashed #e6e6e6;
-  cursor: pointer;
   display: inline-block;
   margin-left: 20px;
   margin-top: 10px;
@@ -138,7 +136,6 @@
 .VaultList-VaultCard:hover {
   background-color: #efeeea;
   transition: all 0.25s;
-  cursor: pointer;
   color: #000;
 }
 
@@ -191,7 +188,6 @@
 .VaultList-VaultPlusIcon:hover {
   background-image: url(assets/add.png);
   opacity: 1;
-  cursor: pointer;
 }
 
 .VaultList-VaultInfo {
@@ -287,7 +283,6 @@
 }
 
 .VaultList-VaultRemoveButton:hover {
-  cursor: pointer;
   opacity: 1;
 }
 
@@ -305,6 +300,5 @@
 }
 
 .VaultList-VaultFolderButton:hover {
-  cursor: pointer;
   opacity: 1;
 }
