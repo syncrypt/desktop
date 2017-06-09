@@ -1,5 +1,6 @@
 .VaultDialog ui-tabs-content {
   min-width: 600px;
+  max-width: 600px;
   height: 400px;
   overflow-y: auto;
   overflow-x: auto;
@@ -53,7 +54,7 @@ ui-input {
 
 
 .VaultDialog-Input-User ui-input {
-  width: 500px
+  width: 495px
 }
 
 
@@ -240,4 +241,29 @@ ui-input {
 ui-button,
 ui-tabs-handle {
   cursor: default !important;
+}
+
+.VaultDialog-InfoText {
+  text-align: center;
+  margin: 0.5em;
+  width: 440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.VaultDialog-InfoText hr {
+  margin: 1.5em;
+  width: 375px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 1px;
+  border: 0px;
+  background-color: #c17d6f;
+}
+
+.VaultDialog-CryptoInfoItem {
+  cursor: default;
+}
+.VaultDialog-CryptoInfoItem-Label {
+  min-width: 170px !important;
 }

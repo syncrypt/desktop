@@ -164,24 +164,35 @@ tabContents vaultId state model =
             )
 
         usersTab =
-            ( "Users"
-            , div [ class "VaultDialog-Tab-Content" ]
-                [ div
-                    [ classList [ ( "Hidden", not (isOwner vaultId model) ) ] ]
-                    [ div
-                        [ class "VaultDialog-Add-User", onEnter searchKeys ]
-                        [ dialogInput "User"
-                            [ userInput vaultId state ]
+            let
+                ownsVault =
+                    isOwner vaultId model
+
+                infoText =
+                    if ownsVault then
+                        "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
+                    else
+                        "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
+            in
+                ( "Users"
+                , div [ class "VaultDialog-Tab-Content" ]
+                    [ tabInfoText infoText
+                    , div
+                        [ classList [ ( "Hidden", not ownsVault ) ] ]
+                        [ div
+                            [ class "VaultDialog-Add-User", onEnter searchKeys ]
+                            [ dialogInput "User"
+                                [ userInput vaultId state ]
+                            ]
+                        , div [ class "VaultDialog-UserKey-Selection" ]
+                            [ rootMsg <| userKeySelection state model
+                            , rootMsg <| confirmUserKeysButton state
+                            ]
                         ]
-                    , div [ class "VaultDialog-UserKey-Selection" ]
-                        [ rootMsg <| userKeySelection state model
-                        , rootMsg <| confirmUserKeysButton state
-                        ]
+                    , rootMsg <| userList state model
+                    , rootMsg <| pendingUserList state
                     ]
-                , rootMsg <| userList state model
-                , rootMsg <| pendingUserList state
-                ]
-            )
+                )
 
         cryptoTab =
             let
@@ -189,9 +200,9 @@ tabContents vaultId state model =
                     Model.vaultWithId vaultId model
 
                 cryptoInfoItem label tooltip value =
-                    div [ class "VaultDialog-CryptoInfo-Item" ]
+                    div [ class "VaultDialog-CryptoInfoItem" ]
                         [ labeledItem Left
-                            []
+                            [ class "VaultDialog-InputLabel VaultDialog-CryptoInfoItem-Label" ]
                             Nothing
                             (text label)
                             (tooltipItem Bottom
@@ -203,7 +214,8 @@ tabContents vaultId state model =
             in
                 ( "Cryptography"
                 , div [ class "VaultDialog-Tab-Content" ]
-                    [ cryptoInfoItem "Key Algorithm"
+                    [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms & keys."
+                    , cryptoInfoItem "Key Algorithm"
                         "Asymmetric key algorithm used for vault key"
                         (String.toUpper vault.crypto.keyAlgorithm)
                     , cryptoInfoItem "Vault Key Fingerprint"
@@ -227,10 +239,15 @@ tabContents vaultId state model =
                     ]
                 )
     in
-        if isOwner vaultId model then
-            [ filesTab, usersTab, cryptoTab ]
-        else
-            [ filesTab, cryptoTab ]
+        [ filesTab, usersTab, cryptoTab ]
+
+
+tabInfoText : String -> Html msg
+tabInfoText infoText =
+    div [ class "VaultDialog-InfoText" ]
+        [ text infoText
+        , Html.hr [] []
+        ]
 
 
 dialogInput : String -> List (Html msg) -> Html msg
