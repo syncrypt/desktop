@@ -41,12 +41,21 @@
   cursor: default;
 }
 
-
-.VaultDialog-Input ui-input {
-  width: 415px;
+ui-input {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+
+.VaultDialog-Input ui-input {
+  width: 415px;
+}
+
+
+.VaultDialog-Input-User ui-input {
+  width: 500px
+}
+
 
 .VaultDialog-Input ui-input input {
   font-size: 15px;
