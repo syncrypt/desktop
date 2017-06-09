@@ -40,12 +40,6 @@ getStats { config } =
         |> Cmd.map UpdatedStatsFromApi
 
 
-
--- getVaults : Config -> Http.Request (List Vault)
--- getVaults config =
---     apiRequest config Get Vaults Nothing vaultsDecoder
-
-
 getVaults : Model -> Cmd Msg
 getVaults { config } =
     apiRequest config Get Vaults Nothing vaultsDecoder
@@ -156,7 +150,7 @@ removeVault vaultId { config } =
         Delete
         (Vault vaultId)
         (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Remove vaultId))))
-        (decodeToVal vaultId)
+        (succeed vaultId)
         |> Cmd.map RemovedVaultFromSync
 
 
@@ -166,7 +160,7 @@ deleteVault vaultId config =
         Delete
         (DeleteVault vaultId)
         Nothing
-        (decodeToVal vaultId)
+        (succeed vaultId)
 
 
 sendFeedback : String -> Config -> Cmd (WebData String)
@@ -175,7 +169,7 @@ sendFeedback text config =
         Post
         Feedback
         (Just (Http.jsonBody (Json.Encode.string text)))
-        (decodeToVal "")
+        (succeed "")
 
 
 getVersion : Config -> Cmd (WebData String)
@@ -425,11 +419,6 @@ apiHeaders config =
     ]
 
 
-decodeToVal : a -> Json.Decoder a
-decodeToVal val =
-    Json.succeed val
-
-
 statsDecoder : Json.Decoder Model.Stats
 statsDecoder =
     decode Model.Stats
@@ -468,7 +457,7 @@ loginStateDecoder =
         |> required "first_name" Json.string
         |> required "last_name" Json.string
         |> required "email" Json.string
-        |> Json.andThen (\currentUser -> Json.succeed (Model.LoggedIn currentUser))
+        |> andThen (succeed << Model.LoggedIn)
 
 
 statusResponseDecoder : Json.Decoder Model.StatusResponse
@@ -476,7 +465,7 @@ statusResponseDecoder =
     let
         parseStatus =
             Json.string
-                |> andThen (\s -> Json.succeed (s == "ok"))
+                |> andThen (\s -> succeed (s == "ok"))
     in
         decode Model.StatusResponse
             |> required "status" parseStatus
