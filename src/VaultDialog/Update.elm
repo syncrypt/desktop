@@ -159,14 +159,14 @@ saveVaultChanges vaultId state model =
                     (\( email, keys ) ->
                         model.config
                             |> Daemon.addVaultUser vaultId email keys
-                            |> Cmd.map (Model.VaultUserAdded vaultId email)
                     )
             )
 
         updateMetadataCmd =
-            model.config
-                |> Daemon.updateVaultMetadata vaultId { name = state.nameInput.value, icon = state.icon }
-                |> Cmd.map (Model.VaultMetadataUpdated vaultId)
+            Daemon.updateVaultMetadata
+                vaultId
+                { name = state.nameInput.value, icon = state.icon }
+                model
 
         ( newModel, modalCmd ) =
             cancel vaultId model
@@ -372,10 +372,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
             Confirmed RemoveVault ->
                 model
-                    ! [ model.config
-                            |> Daemon.removeVault vaultId
-                            |> Cmd.map Model.RemovedVaultFromSync
-                      ]
+                    ! [ Daemon.removeVault vaultId model ]
 
             Confirmed AddUser ->
                 let

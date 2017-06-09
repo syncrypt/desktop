@@ -7,23 +7,23 @@ import Date exposing (Date)
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import LoginDialog
+import LoginDialog.Model
+import LoginDialog.Update
 import Model exposing (..)
 import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
-import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, VaultOptions(..))
+import Syncrypt.User exposing (Email)
+import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time exposing (Time)
+import Ui.Input
 import Ui.NotificationCenter
 import Util exposing (Direction(..), andAlso)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
-import LoginDialog
-import LoginDialog.Model
 import VaultList
-import Syncrypt.Vault exposing (VaultOptions(..))
-import Set
-import Ui.Input
 
 
 -- INIT
@@ -36,9 +36,9 @@ init config =
             Model.init config
 
         initialActions =
-            [ Daemon.getLoginState model.config
+            [ Daemon.getLoginState model
             , Daemon.getVaults model
-            , updateStats model
+            , Daemon.getStats model
             ]
     in
         model ! initialActions
@@ -73,72 +73,54 @@ update action model =
             { model | now = Just time }
                 ! []
 
-        GetLoginState ->
+        UpdateLoginState ->
             model
-                ! [ Daemon.getLoginState model.config ]
+                |> updateLoginState
 
         UpdateVaults ->
-            { model | state = UpdatingVaults }
-                ! [ Daemon.getVaults model ]
+            model
+                |> updateVaults
 
         UpdateFlyingVaults ->
-            { model | flyingVaults = Loading }
-                ! [ Daemon.getFlyingVaults model ]
+            model
+                |> updateFlyingVaults
 
         UpdateStats ->
             model
-                ! [ updateStats model ]
+                |> updateStats
 
         UpdatedLoginState data ->
-            case data of
-                Success loginState ->
-                    { model | login = loginState }
-                        ! []
-
-                Failure _ ->
-                    { model | login = LoggedOut }
-                        |> Model.retryOnFailure data GetLoginState
-
-                _ ->
-                    { model | login = Unknown }
-                        ! []
+            model
+                |> updatedLoginState data
 
         UpdatedVaultsFromApi vaults ->
-            { model | vaults = vaults }
-                ! []
+            model
+                |> updatedVaults vaults
 
         UpdatedFlyingVaultsFromApi vaults ->
             model
-                |> fetchedFlyingVaults vaults
+                |> updatedFlyingVaults vaults
 
         OpenVaultDetails vault ->
-            { model | state = ShowingVaultDetails vault }
-                |> VaultDialog.Update.open
+            model
+                |> openVaultDetails vault
 
         OpenFlyingVaultDetails flyingVault ->
-            { model | state = ShowingFlyingVaultDetails flyingVault }
-                |> VaultDialog.Update.open
+            model
+                |> openFlyingVaultDetails flyingVault
 
         CloneVault vaultId ->
-            { model | state = CloningVault vaultId }
-                |> VaultDialog.Update.close vaultId
-                |> andAlso (cloneVault vaultId)
-
-        ClonedVault vaultId (Success vault) ->
-            { model | state = ShowingAllVaults }
-                ! [ Daemon.getVaults model ]
+            model
+                |> cloneVault vaultId
+                |> andAlso (VaultDialog.Update.close vaultId)
 
         ClonedVault vaultId data ->
-            let
-                _ =
-                    Debug.log "ClonedVault failed: " data
-            in
-                model
-                    |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString data))
+            model
+                |> clonedVault vaultId data
 
         CloseVaultDetails vaultId ->
-            { model | state = ShowingAllVaults }
-                |> VaultDialog.Update.cancel vaultId
+            model
+                |> closeVaultDetails vaultId
 
         SaveVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
@@ -165,10 +147,7 @@ update action model =
 
         RemoveVaultFromSync vaultId ->
             model
-                ! [ model.config
-                        |> Daemon.removeVault vaultId
-                        |> Cmd.map RemovedVaultFromSync
-                  ]
+                |> removeVaultFromSync vaultId
 
         RemovedVaultFromSync (Success vaultId) ->
             model
@@ -179,103 +158,47 @@ update action model =
             model
                 |> notifyText ("Vault removal failed: " ++ (toString data))
 
-        DeletedVault (Success vaultId) ->
-            let
-                newModel =
-                    case model.state of
-                        ShowingVaultDetails v ->
-                            if v.id == vaultId then
-                                { model | state = ShowingAllVaults }
-                            else
-                                model
-
-                        _ ->
-                            model
-            in
-                newModel
-                    |> VaultDialog.Update.close vaultId
-                    |> andAlso (notifyText ("Vault deleted from server: " ++ vaultId))
-
         DeletedVault data ->
             model
-                |> notifyText ("Vault deletion failed: " ++ (toString data))
+                |> deletedVault data
 
         VaultDialog vaultId msg ->
             model
                 |> VaultDialog.Update.update msg vaultId
 
         OpenVaultFolder vault ->
-            -- TODO: open folder in file browser
-            model ! [ Ports.openVaultFolder vault.folderPath ]
+            model
+                ! [ Ports.openVaultFolder vault.folderPath ]
 
         OpenProgramSettings ->
             -- TODO
-            model ! []
+            model
+                ! []
 
         OpenAccountSettings ->
             -- TODO
-            model ! []
+            model
+                ! []
+
+        Login ->
+            model
+                |> login
 
         Logout ->
             model
-                ! [ Daemon.logout model ]
+                |> logout
 
-        Login ->
-            let
-                _ =
-                    Debug.log "logging in with email" model.loginDialog.emailInput.value
+        Model.LoginDialog msg ->
+            model
+                |> LoginDialog.Update.update msg
 
-                _ =
-                    Debug.log "logging in with password" model.loginDialog.passwordInput.value
-
-                email =
-                    model.loginDialog.emailInput.value
-
-                password =
-                    model.loginDialog.passwordInput.value
-            in
-                model
-                    ! [ Daemon.login email password model ]
-
-        Model.LoginDialog loginMsg ->
-            case loginMsg of
-                LoginDialog.Model.EmailInput msg ->
-                    let
-                        ( emailInput, cmd ) =
-                            Ui.Input.update msg model.loginDialog.emailInput
-
-                        loginDialog =
-                            model.loginDialog
-                    in
-                        ({ model | loginDialog = { loginDialog | emailInput = emailInput } })
-                            ! []
-
-                LoginDialog.Model.PasswordInput msg ->
-                    let
-                        ( passwordInput, cmd ) =
-                            Ui.Input.update msg model.loginDialog.passwordInput
-
-                        loginDialog =
-                            model.loginDialog
-                    in
-                        ({ model | loginDialog = { loginDialog | passwordInput = passwordInput } })
-                            ! []
-
-                LoginDialog.Model.Modal _ ->
-                    model ! []
-
-        LoginResult email (Success _) ->
-            { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
-                ! []
-
-        LoginResult email (Failure reason) ->
-            { model | login = LoggedOut } ! []
-
-        LoginResult email _ ->
-            { model | login = Unknown } ! []
+        LoginResult email data ->
+            model
+                |> handleLoginResult email data
 
         LogoutResult _ ->
-            { model | login = LoggedOut } ! []
+            { model | login = LoggedOut }
+                ! []
 
         FocusOn id ->
             model
@@ -293,38 +216,112 @@ update action model =
             { model | stats = stats }
                 ! []
 
-        VaultUserAdded vaultId email (Success _) ->
+        VaultUserAdded vaultId email data ->
             model
-                ! []
-
-        VaultUserAdded vaultId email _ ->
-            let
-                _ =
-                    Debug.log "Could not add user to vault: " ( vaultId, email )
-            in
-                model
-                    |> notifyText ("Failed to add user " ++ email ++ " to vault " ++ vaultId)
+                |> vaultUserAdded vaultId email data
 
         VaultMetadataUpdated vaultId (Success _) ->
             model
-                ! [ Daemon.getVaults model ]
+                |> updateVaults
 
         VaultMetadataUpdated vaultId _ ->
             model
                 |> notifyText ("Failed to update metadata for vault " ++ vaultId)
 
 
-fetchedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
-fetchedFlyingVaults flyingVaults model =
+updateLoginState : Model -> ( Model, Cmd Msg )
+updateLoginState model =
+    model
+        ! [ Daemon.getLoginState model ]
+
+
+updateVaults : Model -> ( Model, Cmd Msg )
+updateVaults model =
+    { model | state = UpdatingVaults }
+        ! [ Daemon.getVaults model ]
+
+
+updateFlyingVaults : Model -> ( Model, Cmd Msg )
+updateFlyingVaults model =
+    { model | flyingVaults = Loading }
+        ! [ Daemon.getFlyingVaults model ]
+
+
+updateStats : Model -> ( Model, Cmd Msg )
+updateStats model =
+    model
+        ! [ Daemon.getStats model ]
+
+
+updatedLoginState : WebData LoginState -> Model -> ( Model, Cmd Msg )
+updatedLoginState data model =
+    case data of
+        Success loginState ->
+            { model | login = loginState }
+                ! []
+
+        Failure _ ->
+            { model | login = LoggedOut }
+                |> Model.retryOnFailure data UpdateLoginState
+
+        _ ->
+            { model | login = Unknown }
+                ! []
+
+
+updatedVaults : WebData (List Vault) -> Model -> ( Model, Cmd Msg )
+updatedVaults vaults model =
+    { model | vaults = vaults }
+        ! []
+
+
+updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
+updatedFlyingVaults flyingVaults model =
     { model | flyingVaults = flyingVaults }
         |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
 
 
-updateStats : Model -> Cmd Msg
-updateStats model =
-    model.config
-        |> Daemon.getStats
-        |> Cmd.map UpdatedStatsFromApi
+openVaultDetails : Vault -> Model -> ( Model, Cmd Msg )
+openVaultDetails vault model =
+    { model | state = ShowingVaultDetails vault }
+        |> VaultDialog.Update.open
+
+
+closeVaultDetails : VaultId -> Model -> ( Model, Cmd Msg )
+closeVaultDetails vaultId model =
+    { model | state = ShowingAllVaults }
+        |> VaultDialog.Update.cancel vaultId
+
+
+openFlyingVaultDetails : FlyingVault -> Model -> ( Model, Cmd Msg )
+openFlyingVaultDetails flyingVault model =
+    { model | state = ShowingFlyingVaultDetails flyingVault }
+        |> VaultDialog.Update.open
+
+
+deletedVault : WebData VaultId -> Model -> ( Model, Cmd Msg )
+deletedVault data model =
+    case data of
+        Success vaultId ->
+            let
+                newModel =
+                    case model.state of
+                        ShowingVaultDetails v ->
+                            if v.id == vaultId then
+                                { model | state = ShowingAllVaults }
+                            else
+                                model
+
+                        _ ->
+                            model
+            in
+                newModel
+                    |> VaultDialog.Update.close vaultId
+                    |> andAlso (notifyText ("Vault deleted from server: " ++ vaultId))
+
+        _ ->
+            model
+                |> notifyText ("Vault deletion failed: " ++ (toString data))
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
@@ -362,6 +359,7 @@ saveVault vaultId model =
                     |> andAlso (notifyText "Vault updated")
 
 
+createVault : VaultDialog.Model.State -> Model -> ( Model, Cmd Msg )
 createVault state model =
     case state.localFolderPath of
         Just folderPath ->
@@ -382,8 +380,11 @@ createVault state model =
 
 
 cloneVault : VaultId -> Model -> ( Model, Cmd Msg )
-cloneVault vaultId model =
+cloneVault vaultId origModel =
     let
+        model =
+            { origModel | state = CloningVault vaultId }
+
         state =
             dialogState vaultId model
     in
@@ -404,6 +405,73 @@ cloneVault vaultId model =
                                 )
                             |> Cmd.map (ClonedVault vaultId)
                       ]
+
+
+clonedVault vaultId data model =
+    case data of
+        Success vault ->
+            { model | state = ShowingAllVaults }
+                ! [ Daemon.getVaults model ]
+
+        Failure reason ->
+            model
+                |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString reason))
+
+        result ->
+            model
+                |> notifyText ("Unexpected result when cloning vault " ++ vaultId ++ " : " ++ (toString result))
+
+
+vaultUserAdded : VaultId -> Email -> WebData Email -> Model -> ( Model, Cmd Msg )
+vaultUserAdded vaultId email data model =
+    case data of
+        Success _ ->
+            model
+                ! []
+
+        _ ->
+            model
+                |> notifyText ("Failed to add user " ++ email ++ " to vault " ++ vaultId)
+
+
+login : Model -> ( Model, Cmd Msg )
+login model =
+    let
+        email =
+            model.loginDialog.emailInput.value
+
+        password =
+            model.loginDialog.passwordInput.value
+    in
+        model
+            ! [ Daemon.login email password model ]
+
+
+logout : Model -> ( Model, Cmd Msg )
+logout model =
+    model
+        ! [ Daemon.logout model ]
+
+
+handleLoginResult email data model =
+    case data of
+        Success _ ->
+            { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
+                ! []
+
+        Failure reason ->
+            { model | login = LoggedOut }
+                ! []
+
+        _ ->
+            { model | login = Unknown }
+                ! []
+
+
+removeVaultFromSync : VaultId -> Model -> ( Model, Cmd Msg )
+removeVaultFromSync vaultId model =
+    model
+        ! [ Daemon.removeVault vaultId model ]
 
 
 

@@ -60,7 +60,7 @@ type State
 
 type Msg
     = SetTime Time
-    | GetLoginState
+    | UpdateLoginState
     | UpdateVaults
     | UpdateFlyingVaults
     | UpdateStats
