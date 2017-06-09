@@ -45,6 +45,16 @@ type alias Metadata =
     { name : String, icon : Maybe String }
 
 
+type alias CryptoInfo =
+    { aesKeyLength : Int
+    , rsaKeyLength : Int
+    , keyAlgorithm : String
+    , transferAlgorithm : String
+    , hashAlgorithm : String
+    , fingerprint : Maybe String
+    }
+
+
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
 -}
 type alias Vault =
@@ -59,6 +69,7 @@ type alias Vault =
     , folderPath : String
     , modificationDate : Maybe Date
     , icon : Maybe String
+    , crypto : CryptoInfo
     }
 
 
@@ -90,6 +101,14 @@ init vaultId =
     , folderPath = ""
     , modificationDate = Nothing
     , icon = Nothing
+    , crypto =
+        { aesKeyLength = 0
+        , rsaKeyLength = 0
+        , keyAlgorithm = ""
+        , transferAlgorithm = ""
+        , hashAlgorithm = ""
+        , fingerprint = Nothing
+        }
     }
 
 
@@ -106,18 +125,23 @@ nameOrId vault =
 
 asVault : FlyingVault -> Vault
 asVault fv =
-    { id = fv.id
-    , name = fv.name
-    , size = Maybe.withDefault 0 fv.size
-    , status = Unsynced
-    , userCount = fv.userCount
-    , fileCount = fv.fileCount
-    , revisionCount = fv.revisionCount
-    , resourceUri = fv.resourceUri
-    , folderPath = ""
-    , modificationDate = fv.modificationDate
-    , icon = fv.icon
-    }
+    let
+        v =
+            init fv.id
+    in
+        { v
+            | id = fv.id
+            , name = fv.name
+            , size = Maybe.withDefault 0 fv.size
+            , status = Unsynced
+            , userCount = fv.userCount
+            , fileCount = fv.fileCount
+            , revisionCount = fv.revisionCount
+            , resourceUri = fv.resourceUri
+            , folderPath = ""
+            , modificationDate = fv.modificationDate
+            , icon = fv.icon
+        }
 
 
 jsonOptions : Config -> VaultOptions -> Json.Value

@@ -499,6 +499,18 @@ vaultDecoder =
         |> required "folder" Json.string
         |> optional "modification_date" date Nothing
         |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
+        |> required "crypt_info" cryptoInfoDecoder
+
+
+cryptoInfoDecoder : Json.Decoder CryptoInfo
+cryptoInfoDecoder =
+    decode Syncrypt.Vault.CryptoInfo
+        |> required "aes_key_len" Json.int
+        |> required "rsa_key_len" Json.int
+        |> required "key_algo" Json.string
+        |> required "transfer_algo" Json.string
+        |> required "hash_algo" Json.string
+        |> required "fingerprint" (Json.maybe Json.string)
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.

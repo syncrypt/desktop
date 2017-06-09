@@ -184,10 +184,48 @@ tabContents vaultId state model =
             )
 
         cryptoTab =
-            ( "Cryptography"
-            , div [ class "VaultDialog-Tab-Keys" ]
-                [ text "TODO: add section with information on vault keys & other crypto stuff" ]
-            )
+            let
+                vault =
+                    Model.vaultWithId vaultId model
+
+                cryptoInfoItem label tooltip value =
+                    div [ class "VaultDialog-CryptoInfo-Item" ]
+                        [ labeledItem Left
+                            []
+                            Nothing
+                            (text label)
+                            (tooltipItem Bottom
+                                Auto
+                                tooltip
+                                [ text value ]
+                            )
+                        ]
+            in
+                ( "Cryptography"
+                , div [ class "VaultDialog-Tab-Content" ]
+                    [ cryptoInfoItem "Key Algorithm"
+                        "Asymmetric key algorithm used for vault key"
+                        (String.toUpper vault.crypto.keyAlgorithm)
+                    , cryptoInfoItem "Vault Key Fingerprint"
+                        "Vault public key fingerprint"
+                        (vault.crypto.fingerprint
+                            |> Maybe.map String.toUpper
+                            |> Maybe.withDefault "N/A"
+                        )
+                    , cryptoInfoItem "Transfer Algorithm"
+                        "Algorithm used for encrypting data transfer"
+                        (String.toUpper vault.crypto.transferAlgorithm)
+                    , cryptoInfoItem "Hash Algorithm"
+                        "Algorithm used for hashing file contents & names"
+                        (String.toUpper vault.crypto.hashAlgorithm)
+                    , cryptoInfoItem "AES Key Length"
+                        "Length of symmetric file encryption keys in this vault"
+                        (toString vault.crypto.aesKeyLength)
+                    , cryptoInfoItem "RSA Key Length"
+                        "Length of vault private key"
+                        (toString vault.crypto.rsaKeyLength)
+                    ]
+                )
     in
         if isOwner vaultId model then
             [ filesTab, usersTab, cryptoTab ]
