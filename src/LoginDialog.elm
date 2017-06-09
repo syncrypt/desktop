@@ -34,7 +34,7 @@ view model =
             }
 
         viewConfig =
-            { address = (Modal >> Model.LoginDialog)
+            { address = (Model.LoginDialog << Modal)
             , contents = contents state
             , footer = []
             , title = "Login"
@@ -76,7 +76,7 @@ emailInput state =
         (Just (Model.FocusOn state.emailInput.uid))
         (text "E-Mail")
         (Ui.Input.view state.emailInput
-            |> Html.map (EmailInput >> Model.LoginDialog)
+            |> Html.map (Model.LoginDialog << EmailInput)
         )
 
 
@@ -87,5 +87,5 @@ passwordInput state =
         (Just (Model.FocusOn state.passwordInput.uid))
         (text "Password")
         (Ui.Input.view state.passwordInput
-            |> Html.map (PasswordInput >> Model.LoginDialog)
+            |> Html.map (Model.LoginDialog << PasswordInput)
         )
