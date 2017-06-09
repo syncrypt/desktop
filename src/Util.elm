@@ -20,8 +20,11 @@ module Util
         , tooltipItem
         , Direction(..)
         , TooltipLength(..)
+        , timeAgo
         )
 
+import Date exposing (Date)
+import Date.Distance
 import Html exposing (Html, span)
 import Html.Attributes exposing (attribute, class, classList)
 import Html.Events
@@ -323,3 +326,17 @@ tooltipLengthString length =
 
         Auto ->
             ""
+
+
+type alias HasNow a =
+    { a | now : Maybe Time }
+
+
+timeAgo : Date -> HasNow a -> String
+timeAgo date hasNow =
+    case hasNow.now of
+        Just now ->
+            ((Date.Distance.inWords date (Date.fromTime now)) ++ " ago")
+
+        Nothing ->
+            (toString date)

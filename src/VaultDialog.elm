@@ -27,6 +27,7 @@ import Util
         , onAnyKeyDown
         , onEnter
         , tooltipItem
+        , timeAgo
         )
 import VaultDialog.Model
     exposing
@@ -87,20 +88,19 @@ view vaultId model =
             , contents = contents vaultId model
             , footer = []
             , title =
-                case ( vaultId, state.cloneStatus ) of
-                    ( _, New ) ->
+                case state.cloneStatus of
+                    New ->
                         "Create New Vault"
 
-                    ( id, Cloned ) ->
-                        "Vault " ++ id
+                    Cloned ->
+                        state.title
 
-                    ( id, NotCloned ) ->
-                        "Vault (not synchronized) " ++ id
+                    NotCloned ->
+                        "Vault (not synchronized) " ++ vaultId
             }
     in
         div [ class "VaultDialog" ]
-            [ Ui.Modal.view viewConfig state.modal
-            ]
+            [ Ui.Modal.view viewConfig state.modal ]
 
 
 contents : VaultId -> Model -> List (Html Model.Msg)
@@ -212,9 +212,24 @@ tabContents vaultId state model =
                             )
                         ]
             in
-                ( "Cryptography"
+                ( "Cryptography & Metadata"
                 , div [ class "VaultDialog-Tab-Content" ]
                     [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms & keys."
+                    , cryptoInfoItem "Vault ID"
+                        "Syncrypt Vault ID"
+                        (String.toUpper vault.id)
+                    , cryptoInfoItem "File Revisions"
+                        "Total number of file revisions in this vault."
+                        (toString vault.revisionCount)
+                    , cryptoInfoItem "Last modified"
+                        "Date & time of last update to this vault."
+                      <|
+                        case vault.modificationDate of
+                            Just modDate ->
+                                timeAgo modDate model
+
+                            Nothing ->
+                                "No changes so far."
                     , cryptoInfoItem "Key Algorithm"
                         "Asymmetric key algorithm used for vault key"
                         (String.toUpper vault.crypto.keyAlgorithm)
@@ -734,15 +749,12 @@ pendingUserItem email keys =
 userAddedTimestamp : User -> Model -> Html msg
 userAddedTimestamp user model =
     span [ class "VaultDialog-UserAddedTime" ] <|
-        case ( user.accessGrantedAt, model.now ) of
-            ( Nothing, _ ) ->
+        case user.accessGrantedAt of
+            Nothing ->
                 [ text "Vault Owner" ]
 
-            ( Just date, Nothing ) ->
-                [ text <| toString date ]
-
-            ( Just date, Just now ) ->
-                [ text <| "Invited " ++ (Date.Distance.inWords date (Date.fromTime now)) ++ " ago" ]
+            Just date ->
+                [ text <| "Invited " ++ (timeAgo date model) ]
 
 
 keyCreatedTimestamp : UserKey -> Model -> Html msg
