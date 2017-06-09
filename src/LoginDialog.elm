@@ -23,7 +23,8 @@ view model =
             { emailInput =
                 Ui.Input.init ()
             , passwordInput =
-                Ui.Input.init () |> Ui.Input.kind "password"
+                Ui.Input.init ()
+                    |> Ui.Input.kind "password"
             }
 
         modalState =
@@ -40,8 +41,7 @@ view model =
             }
     in
         div [ class "LoginDialog" ]
-            [ Ui.Modal.view viewConfig modalState
-            ]
+            [ Ui.Modal.view viewConfig modalState ]
 
 
 contents : State -> List (Html Model.Msg)
@@ -51,8 +51,7 @@ contents state =
         , dialogInput <| passwordInput state
         ]
     , div [ class "Buttons" ]
-        [ loginButton
-        ]
+        [ loginButton ]
     ]
 
 
