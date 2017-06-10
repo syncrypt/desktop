@@ -55,8 +55,9 @@ subscriptions model =
         LoggedIn _ ->
             Sub.batch
                 [ VaultDialog.subscriptions model
-                , Time.every model.config.updateInterval (\t -> UpdateVaults)
+                , Time.every (10 * Time.minute) (\_ -> UpdateVaults)
                 , Time.every Time.second SetTime
+                , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 ]
 
         _ ->

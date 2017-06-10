@@ -101,7 +101,7 @@ var setupElmApp = function(daemonApiToken) {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",
     pathSeparator: Path.sep,
-    updateInterval: 2000
+    updateInterval: 3000
   });
 
   elmApp.ports.openFolderDialog.subscribe(openFolderDialog)
