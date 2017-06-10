@@ -34,6 +34,10 @@ type alias StatusResponse =
     { success : Bool, text : Maybe String }
 
 
+type alias ExportStatusResponse =
+    { success : Bool, filename : String }
+
+
 type alias Model =
     { config : Config
     , vaults : WebData (List Vault)
@@ -82,6 +86,7 @@ type Msg
     | Logout
     | CreateNewVault
     | CreatedVault VaultDialog.Model.State (WebData Vault)
+    | ExportedVault VaultId (WebData ExportStatusResponse)
     | VaultDialog VaultId VaultDialog.Model.Msg
     | FocusOn String
     | NotificationCenter Ui.NotificationCenter.Msg

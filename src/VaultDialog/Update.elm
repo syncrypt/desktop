@@ -284,6 +284,14 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
+            OpenExportDialog ->
+                model
+                    ! [ VaultDialog.Ports.openExportFileDialog state.id ]
+
+            SelectedExportFile filePath ->
+                model
+                    ! [ Daemon.exportVault state.id filePath model ]
+
             OpenFolderDialog ->
                 model
                     ! [ VaultDialog.Ports.openFolderDialog state.id ]

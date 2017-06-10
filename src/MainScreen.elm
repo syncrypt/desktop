@@ -147,6 +147,14 @@ update action model =
             model
                 ! []
 
+        ExportedVault vaultId (Success { success, filename }) ->
+            model
+                |> notifyText (VaultExported vaultId)
+
+        ExportedVault vaultId data ->
+            model
+                |> notifyText (VaultExportFailed (toString data))
+
         RemoveVaultFromSync vaultId ->
             model
                 |> removeVaultFromSync vaultId

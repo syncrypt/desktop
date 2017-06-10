@@ -63,11 +63,15 @@ subscriptions _ =
 
         selectedIconMsg ( vaultId, path ) =
             Model.VaultDialog vaultId (SelectedIcon path)
+
+        selectedExportFileMsg ( vaultId, path ) =
+            Model.VaultDialog vaultId (SelectedExportFile path)
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
             , VaultDialog.Ports.selectedFolder selectedFolderMsg
             , VaultDialog.Ports.selectedIconFile selectedIconMsg
+            , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
             ]
 
 
@@ -249,6 +253,7 @@ tabContents vaultId state model =
                     , cryptoInfoItem "RSA Key Length"
                         "Length of vault private key"
                         (toString vault.crypto.rsaKeyLength)
+                    , exportButton vault
                     ]
                 )
 
@@ -278,6 +283,15 @@ dialogInput inputClassSuffix body =
         , class ("VaultDialog-Input-" ++ inputClassSuffix)
         ]
         body
+
+
+exportButton : Vault -> Html Model.Msg
+exportButton vault =
+    span
+        [ class "VaultDialog-Button-Export" ]
+        [ Ui.Button.model "Export vault key bundle" "secondary" "small"
+            |> Ui.Button.view (Model.VaultDialog vault.id OpenExportDialog)
+        ]
 
 
 cancelButton : VaultId -> State -> Html Model.Msg

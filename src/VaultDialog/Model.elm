@@ -83,6 +83,8 @@ type Msg
     | SetUserInput String
     | OpenIconDialog
     | SelectedIcon String
+    | OpenExportDialog
+    | SelectedExportFile String
 
 
 init : State

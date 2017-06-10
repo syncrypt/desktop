@@ -24,6 +24,8 @@ type Text
     | VaultMetadataUpdateFailed VaultId
     | VaultCloneFailed VaultId Reason
     | VaultAddUserFailed VaultId Email
+    | VaultExported VaultId
+    | VaultExportFailed Reason
     | CouldNotCloneVaultWithoutFolder VaultId
     | NoPathSelected
     | Stats { stats : Int, downloads : Int, uploads : Int }
@@ -105,6 +107,12 @@ translateEnglish text =
 
         VaultAddUserFailed vaultId email ->
             "Failed to add user " ++ email ++ " to vault " ++ vaultId
+
+        VaultExported vaultId ->
+            "Vault exported: " ++ vaultId
+
+        VaultExportFailed _ ->
+            "Vault export failed"
 
         CouldNotCloneVaultWithoutFolder vaultId ->
             "Could not clone vault - no folder specified"
@@ -195,6 +203,12 @@ translateGerman text =
 
         VaultAddUserFailed vaultId email ->
             "Es gab einen Fehler beim Hinzufügen des Users " ++ email ++ " zum Vault: " ++ vaultId
+
+        VaultExported vaultId ->
+            "Vault wurde exportiert: " ++ vaultId
+
+        VaultExportFailed _ ->
+            "Vault Export ist fehlgeschlagen"
 
         CouldNotCloneVaultWithoutFolder vaultId ->
             "Konnte den Vault nicht klonen - Kein Ordner für die Dateien wurde festgelegt."

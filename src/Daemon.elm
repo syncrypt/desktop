@@ -21,6 +21,7 @@ type ApiPath
     | FlyingVaults
     | Vault VaultId
     | DeleteVault VaultId
+    | ExportVault VaultId
     | FlyingVault VaultId
     | VaultUsers VaultId
     | VaultUser VaultId Email
@@ -208,12 +209,24 @@ loginCheck config =
 
 logout : Model -> Cmd Msg
 logout { config } =
-    apiRequest config
-        Get
-        Logout
-        Nothing
-        statusResponseDecoder
+    apiRequest config Get Logout Nothing statusResponseDecoder
         |> Cmd.map LogoutResult
+
+
+exportVault : VaultId -> String -> Model -> Cmd Msg
+exportVault vaultId path { config } =
+    let
+        json =
+            (Json.Encode.object
+                [ ( "path", Json.Encode.string path ) ]
+            )
+    in
+        apiRequest config
+            Post
+            (ExportVault vaultId)
+            (Just (Http.jsonBody json))
+            exportStatusResponseDecoder
+            |> Cmd.map (ExportedVault vaultId)
 
 
 type alias Path =
@@ -255,6 +268,9 @@ apiPath apiPath =
 
         DeleteVault vaultId ->
             "vault/" ++ vaultId ++ "?wipe=1"
+
+        ExportVault vaultId ->
+            "vault/" ++ vaultId ++ "/export"
 
         FlyingVault vaultId ->
             "flying-vault/" ++ vaultId
@@ -470,6 +486,18 @@ statusResponseDecoder =
         decode Model.StatusResponse
             |> required "status" parseStatus
             |> optional "text" (Json.maybe Json.string) Nothing
+
+
+exportStatusResponseDecoder : Json.Decoder Model.ExportStatusResponse
+exportStatusResponseDecoder =
+    let
+        parseStatus =
+            Json.string
+                |> andThen (\s -> succeed (s == "ok"))
+    in
+        decode Model.ExportStatusResponse
+            |> required "status" parseStatus
+            |> required "filename" Json.string
 
 
 {-| Decodes a `Syncrypt.Vault.Vault`.
