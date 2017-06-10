@@ -251,8 +251,16 @@ tabContents vaultId state model =
                         (toString vault.crypto.rsaKeyLength)
                     ]
                 )
+
+        eventLogTab =
+            ( t EventsTab model
+            , div [ class "VaultDialog-Tab-Content" ]
+                [ tabInfoText "This tab will show all file operations and other events for this vault."
+                , text "TODO: Vault event log"
+                ]
+            )
     in
-        [ filesTab, usersTab, cryptoTab ]
+        [ filesTab, usersTab, cryptoTab, eventLogTab ]
 
 
 tabInfoText : String -> Html msg

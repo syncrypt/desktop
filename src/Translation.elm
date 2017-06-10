@@ -39,6 +39,7 @@ type Text
     | NameAndFilesTab
     | UsersTab
     | CryptoTab
+    | EventsTab
 
 
 type alias HasLanguage a =
@@ -158,6 +159,9 @@ translateEnglish text =
         CryptoTab ->
             "Cryptography & Metadata"
 
+        EventsTab ->
+            "Events"
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -244,3 +248,6 @@ translateGerman text =
 
         CryptoTab ->
             "Cryptographie & Metadaten"
+
+        EventsTab ->
+            "Ereignisse"
