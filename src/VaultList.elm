@@ -89,8 +89,7 @@ vaultInfoItem vault bodyItems =
 vaultStatus : Vault -> Model -> Html msg
 vaultStatus vault model =
     vaultInfoItem vault
-        [ vaultUpdatedAtInfo vault model
-        ]
+        [ vaultUpdatedAtInfo vault model ]
 
 
 vaultActivity : Vault -> Html msg
@@ -120,8 +119,7 @@ vaultUserCount vault =
 flyingVaultInfoItem : FlyingVault -> Model -> Html msg
 flyingVaultInfoItem vault model =
     div [ class "VaultList-VaultInfoItem" ]
-        [ flyingVaultUpdatedAtInfo vault model
-        ]
+        [ flyingVaultUpdatedAtInfo vault model ]
 
 
 vaultRemoveFromSyncButton : Vault -> Html Msg
