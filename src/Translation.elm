@@ -1,4 +1,4 @@
-module Translation exposing (..)
+module Translation exposing (Language(..), Text(..), t, translate)
 
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
@@ -45,11 +45,23 @@ type alias HasLanguage a =
     { a | language : Language }
 
 
+{-| Translates a `Text` into a `String` based on `language`.
+
+    t (VaultCreated "123") {language = English} -- -> "Vault created: 123"
+    t (VaultCreated "123") {language = German}  -- -> "Vault wurde erstellt: 123"
+
+-}
 t : Text -> HasLanguage a -> String
 t text { language } =
     translate text language
 
 
+{-| Translates a `Text` into a `String` based on `lang`.
+
+    translate (VaultCreated "123") English -- -> "Vault created: 123"
+    translate (VaultCreated "123") German  -- -> "Vault wurde erstellt: 123"
+
+-}
 translate : Text -> Language -> String
 translate text lang =
     case lang of
