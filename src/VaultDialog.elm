@@ -547,9 +547,8 @@ renderFile state folderPath path =
         filePath =
             folderPath ++ [ path ]
     in
-        div [ class "VaultDialog-File" ] <|
-            [ fileCheckbox filePath state
-            ]
+        div [ class "VaultDialog-File" ]
+            [ fileCheckbox filePath state ]
 
 
 hiddenIfIgnored : Path -> State -> List (Html.Attribute msg) -> List (Html.Attribute msg)
@@ -569,7 +568,7 @@ inFolderPath path contents =
         [ p ] ->
             contents
 
-        x :: rest ->
+        _ :: rest ->
             [ div [ class "VaultDialog-FolderItem-Nested" ]
                 (inFolderPath rest contents)
             ]
@@ -631,10 +630,7 @@ userKeySelection state model =
         isHidden =
             keys == NotAsked
     in
-        div
-            [ class "VaultDialog-UserKeys"
-            ]
-        <|
+        div [ class "VaultDialog-UserKeys" ] <|
             (loadingSpinnerIf <| keys == Loading)
                 :: List.map (\key -> userKeyCheckbox email key state model)
                     (RemoteData.withDefault [] keys)
@@ -746,13 +742,13 @@ pendingUserItem email keys =
 
 userAddedTimestamp : User -> Model -> Html msg
 userAddedTimestamp user model =
-    span [ class "VaultDialog-UserAddedTime" ] <|
-        case user.accessGrantedAt of
-            Nothing ->
-                [ text "Vault Owner" ]
-
-            Just date ->
-                [ text <| "Invited " ++ (timeAgo date model) ]
+    span [ class "VaultDialog-UserAddedTime" ]
+        [ text
+            (user.accessGrantedAt
+                |> Maybe.map (\date -> "Invited " ++ (timeAgo date model))
+                |> Maybe.withDefault "Vault Owner"
+            )
+        ]
 
 
 keyCreatedTimestamp : UserKey -> Model -> Html msg
