@@ -26,6 +26,19 @@ type Text
     | VaultAddUserFailed VaultId Email
     | CouldNotCloneVaultWithoutFolder VaultId
     | NoPathSelected
+    | Stats { stats : Int, downloads : Int, uploads : Int }
+    | StatsLoading
+    | StatsNotAvailable
+    | StatsFailedToLoad Reason
+    | SyncedVaults Int
+    | VaultsLoading
+    | VaultsNotAvailable
+    | VaultsFailedToLoad Reason
+    | CreateNewVault
+    | VaultNotSynced VaultId
+    | NameAndFilesTab
+    | UsersTab
+    | CryptoTab
 
 
 type alias HasLanguage a =
@@ -84,7 +97,54 @@ translateEnglish text =
             "Could not clone vault - no folder specified"
 
         NoPathSelected ->
-            "No path selected - Vault not created"
+            "No path selected - vault not created"
+
+        Stats { stats, downloads, uploads } ->
+            (toString stats)
+                ++ " file stats / "
+                ++ (toString downloads)
+                ++ " downloads / "
+                ++ (toString uploads)
+                ++ " uploads"
+
+        StatsLoading ->
+            "Stats loading ..."
+
+        StatsNotAvailable ->
+            "Stats N/A"
+
+        StatsFailedToLoad reason ->
+            "Stats failed to load: " ++ reason
+
+        SyncedVaults vaultCount ->
+            if vaultCount == 1 then
+                " 1 synchronized vault / "
+            else
+                (toString vaultCount) ++ " synchronized vaults / "
+
+        VaultsLoading ->
+            "..."
+
+        VaultsNotAvailable ->
+            "N/A"
+
+        VaultsFailedToLoad reason ->
+            "Error: " ++ reason
+
+        CreateNewVault ->
+            "Create New Vault"
+
+        VaultNotSynced vaultId ->
+            "Vault (not synchronized) " ++ vaultId
+
+        NameAndFilesTab ->
+            "Name & Files"
+
+        UsersTab ->
+            "Users"
+
+        CryptoTab ->
+            "Cryptography & Metadata"
 
 
 translateGerman : Text -> String
@@ -125,3 +185,50 @@ translateGerman text =
 
         NoPathSelected ->
             "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
+
+        Stats { stats, downloads, uploads } ->
+            (toString stats)
+                ++ " File Stats / "
+                ++ (toString downloads)
+                ++ " Downloads / "
+                ++ (toString uploads)
+                ++ " Uploads"
+
+        StatsLoading ->
+            "Stats werden abgerufen ..."
+
+        StatsNotAvailable ->
+            "Stats nicht verfügbar"
+
+        StatsFailedToLoad reason ->
+            "Fehler beim Laden der Stats: " ++ reason
+
+        SyncedVaults vaultCount ->
+            if vaultCount == 1 then
+                " 1 synchronisierter Vault / "
+            else
+                (toString vaultCount) ++ " synchronisierte Vaults / "
+
+        VaultsLoading ->
+            "..."
+
+        VaultsNotAvailable ->
+            "N/A"
+
+        VaultsFailedToLoad reason ->
+            "Fehler beim Laden der Vaults: " ++ reason
+
+        CreateNewVault ->
+            "Erzeuge einen neuen Vault"
+
+        VaultNotSynced vaultId ->
+            "Vault (nicht synchronisiert) " ++ vaultId
+
+        NameAndFilesTab ->
+            "Name & Dateien"
+
+        UsersTab ->
+            "Benutzer"
+
+        CryptoTab ->
+            "Cryptographie & Metadaten"

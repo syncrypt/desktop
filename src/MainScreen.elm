@@ -24,7 +24,7 @@ import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import Translation exposing (..)
+import Translation exposing (translate, Text(..))
 
 
 -- INIT
@@ -128,7 +128,7 @@ update action model =
                 |> VaultDialog.Update.close vaultId
                 |> andAlso (saveVault vaultId)
 
-        CreateNewVault ->
+        Model.CreateNewVault ->
             { model | state = CreatingNewVault }
                 |> VaultDialog.Update.openNew
 
@@ -540,45 +540,37 @@ header =
 
 
 footer : Model -> Html Msg
-footer { stats, vaults } =
+footer { stats, vaults, language } =
     let
-        statsStr =
+        statsText =
             case stats of
                 Success s ->
-                    (toString s.stats)
-                        ++ " File Stats / "
-                        ++ (toString s.downloads)
-                        ++ " Downloads / "
-                        ++ (toString s.uploads)
-                        ++ " Uploads"
+                    Translation.Stats s
 
                 Loading ->
-                    "Stats loading ..."
+                    Translation.StatsLoading
 
                 NotAsked ->
-                    "Stats N/A"
+                    Translation.StatsNotAvailable
 
                 Failure reason ->
-                    "Stats failed to load: " ++ (toString reason)
+                    Translation.StatsFailedToLoad (toString reason)
 
-        syncedVaults =
+        syncedVaultsText =
             case vaults of
                 Success vaults ->
-                    if List.length vaults == 1 then
-                        " 1 Synced Vault / "
-                    else
-                        (vaults |> List.length |> toString) ++ " Synced Vaults / "
+                    Translation.SyncedVaults (List.length vaults)
 
                 Loading ->
-                    "..."
+                    Translation.VaultsLoading
 
                 NotAsked ->
-                    "N/A"
+                    Translation.VaultsNotAvailable
 
                 Failure reason ->
-                    "Error: " ++ (toString reason)
+                    Translation.VaultsFailedToLoad (toString reason)
     in
         div [ class "MainScreen-Footer" ]
             [ span [ class "MainScreen-Stats" ]
-                [ text <| syncedVaults ++ statsStr ]
+                [ text <| (translate language syncedVaultsText) ++ (translate language statsText) ]
             ]

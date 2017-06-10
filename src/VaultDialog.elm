@@ -14,6 +14,7 @@ import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
+import Translation exposing (t, Text(..))
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -90,13 +91,13 @@ view vaultId model =
             , title =
                 case state.cloneStatus of
                     New ->
-                        "Create New Vault"
+                        t model CreateNewVault
 
                     Cloned ->
                         state.title
 
                     NotCloned ->
-                        "Vault (not synchronized) " ++ vaultId
+                        t model (VaultNotSynced vaultId)
             }
     in
         div [ class "VaultDialog" ]
@@ -150,7 +151,7 @@ tabContents vaultId state model =
                 SearchUserKeys (userInputEmail state)
 
         filesTab =
-            ( "Name & Files"
+            ( t model NameAndFilesTab
             , div [ class "VaultDialog-Tab-Content" ]
                 [ dialogInput "Icon"
                     [ rootMsg <| iconInput state model ]
@@ -174,7 +175,7 @@ tabContents vaultId state model =
                     else
                         "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
             in
-                ( "Users"
+                ( t model UsersTab
                 , div [ class "VaultDialog-Tab-Content" ]
                     [ tabInfoText infoText
                     , div
@@ -212,7 +213,7 @@ tabContents vaultId state model =
                             )
                         ]
             in
-                ( "Cryptography & Metadata"
+                ( t model CryptoTab
                 , div [ class "VaultDialog-Tab-Content" ]
                     [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms & keys."
                     , cryptoInfoItem "Vault ID"
@@ -223,13 +224,10 @@ tabContents vaultId state model =
                         (toString vault.revisionCount)
                     , cryptoInfoItem "Last modified"
                         "Date & time of last update to this vault."
-                      <|
-                        case vault.modificationDate of
-                            Just modDate ->
-                                timeAgo modDate model
-
-                            Nothing ->
-                                "No changes so far."
+                        (vault.modificationDate
+                            |> Maybe.map (\date -> timeAgo date model)
+                            |> Maybe.withDefault "No changes so far."
+                        )
                     , cryptoInfoItem "Key Algorithm"
                         "Asymmetric key algorithm used for vault key"
                         (String.toUpper vault.crypto.keyAlgorithm)
