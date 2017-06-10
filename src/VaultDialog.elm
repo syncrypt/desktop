@@ -91,13 +91,13 @@ view vaultId model =
             , title =
                 case state.cloneStatus of
                     New ->
-                        t model CreateNewVault
+                        t CreateNewVault model
 
                     Cloned ->
                         state.title
 
                     NotCloned ->
-                        t model (VaultNotSynced vaultId)
+                        t (VaultNotSynced vaultId) model
             }
     in
         div [ class "VaultDialog" ]
@@ -151,7 +151,7 @@ tabContents vaultId state model =
                 SearchUserKeys (userInputEmail state)
 
         filesTab =
-            ( t model NameAndFilesTab
+            ( t NameAndFilesTab model
             , div [ class "VaultDialog-Tab-Content" ]
                 [ dialogInput "Icon"
                     [ rootMsg <| iconInput state model ]
@@ -175,7 +175,7 @@ tabContents vaultId state model =
                     else
                         "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
             in
-                ( t model UsersTab
+                ( t UsersTab model
                 , div [ class "VaultDialog-Tab-Content" ]
                     [ tabInfoText infoText
                     , div
@@ -213,7 +213,7 @@ tabContents vaultId state model =
                             )
                         ]
             in
-                ( t model CryptoTab
+                ( t CryptoTab model
                 , div [ class "VaultDialog-Tab-Content" ]
                     [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms & keys."
                     , cryptoInfoItem "Vault ID"

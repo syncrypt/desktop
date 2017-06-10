@@ -24,7 +24,7 @@ import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import Translation exposing (translate, Text(..))
+import Translation exposing (t, translate, Text(..))
 
 
 -- INIT
@@ -341,7 +341,7 @@ notify body model =
 notifyText : Translation.Text -> Model -> ( Model, Cmd Msg )
 notifyText transText model =
     model
-        |> notify (text (Translation.t model transText))
+        |> notify (text (t transText model))
 
 
 saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
@@ -572,5 +572,5 @@ footer { stats, vaults, language } =
     in
         div [ class "MainScreen-Footer" ]
             [ span [ class "MainScreen-Stats" ]
-                [ text <| (translate language syncedVaultsText) ++ (translate language statsText) ]
+                [ text <| (translate syncedVaultsText language) ++ (translate statsText language) ]
             ]

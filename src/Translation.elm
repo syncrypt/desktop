@@ -45,13 +45,13 @@ type alias HasLanguage a =
     { a | language : Language }
 
 
-t : HasLanguage a -> Text -> String
-t { language } text =
-    translate language text
+t : Text -> HasLanguage a -> String
+t text { language } =
+    translate text language
 
 
-translate : Language -> Text -> String
-translate lang text =
+translate : Text -> Language -> String
+translate text lang =
     case lang of
         English ->
             translateEnglish text
