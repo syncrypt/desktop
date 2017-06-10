@@ -24,6 +24,7 @@ import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
+import Translation exposing (..)
 
 
 -- INIT
@@ -134,12 +135,12 @@ update action model =
         CreatedVault dialogState (Success vault) ->
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
-                |> andAlso (notifyText <| "Vault created: " ++ vault.id)
+                |> andAlso (notifyText <| VaultCreated vault.id)
                 |> andAlso (\model -> ( model, Daemon.getVaults model ))
 
         CreatedVault _ (Failure reason) ->
             model
-                |> notifyText ("Vault creation failed: " ++ toString reason)
+                |> notifyText (VaultCreateFailed <| toString reason)
 
         CreatedVault _ _ ->
             model
@@ -152,11 +153,11 @@ update action model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
-                |> andAlso (notifyText ("Vault removed from sync: " ++ vaultId))
+                |> andAlso (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
             model
-                |> notifyText ("Vault removal failed: " ++ (toString data))
+                |> notifyText (VaultRemoveFailed <| toString data)
 
         DeletedVault data ->
             model
@@ -226,7 +227,7 @@ update action model =
 
         VaultMetadataUpdated vaultId _ ->
             model
-                |> notifyText ("Failed to update metadata for vault " ++ vaultId)
+                |> notifyText (VaultMetadataUpdateFailed vaultId)
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
@@ -317,11 +318,11 @@ deletedVault data model =
             in
                 newModel
                     |> VaultDialog.Update.close vaultId
-                    |> andAlso (notifyText ("Vault deleted from server: " ++ vaultId))
+                    |> andAlso (notifyText <| VaultDeleted vaultId)
 
         _ ->
             model
-                |> notifyText ("Vault deletion failed: " ++ (toString data))
+                |> notifyText (VaultDeleteFailed <| toString data)
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
@@ -337,9 +338,10 @@ notify body model =
             ! [ Cmd.map NotificationCenter cmd ]
 
 
-notifyText : String -> Model -> ( Model, Cmd Msg )
-notifyText message model =
-    notify (text message) model
+notifyText : Translation.Text -> Model -> ( Model, Cmd Msg )
+notifyText transText model =
+    model
+        |> notify (text (Translation.t model transText))
 
 
 saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
@@ -356,7 +358,7 @@ saveVault vaultId model =
             _ ->
                 model
                     |> VaultDialog.Update.saveVaultChanges vaultId state
-                    |> andAlso (notifyText "Vault updated")
+                    |> andAlso (notifyText <| VaultUpdated vaultId)
 
 
 createVault : VaultDialog.Model.State -> Model -> ( Model, Cmd Msg )
@@ -376,7 +378,7 @@ createVault state model =
 
         Nothing ->
             model
-                |> notifyText "No path selected - Vault not created"
+                |> notifyText NoPathSelected
 
 
 cloneVault : VaultId -> Model -> ( Model, Cmd Msg )
@@ -391,7 +393,7 @@ cloneVault vaultId origModel =
         case state.localFolderPath of
             Nothing ->
                 model
-                    |> notifyText "Could not clone vault - no folder specified"
+                    |> notifyText (CouldNotCloneVaultWithoutFolder vaultId)
 
             Just folderPath ->
                 model
@@ -415,11 +417,11 @@ clonedVault vaultId data model =
 
         Failure reason ->
             model
-                |> notifyText ("Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ (toString reason))
+                |> notifyText (VaultCloneFailed vaultId <| toString reason)
 
         result ->
             model
-                |> notifyText ("Unexpected result when cloning vault " ++ vaultId ++ " : " ++ (toString result))
+                |> notifyText (VaultCloneFailed vaultId <| toString result)
 
 
 vaultUserAdded : VaultId -> Email -> WebData Email -> Model -> ( Model, Cmd Msg )
@@ -431,7 +433,7 @@ vaultUserAdded vaultId email data model =
 
         _ ->
             model
-                |> notifyText ("Failed to add user " ++ email ++ " to vault " ++ vaultId)
+                |> notifyText (VaultAddUserFailed vaultId email)
 
 
 login : Model -> ( Model, Cmd Msg )

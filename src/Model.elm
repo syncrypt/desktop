@@ -6,10 +6,11 @@ import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
+import Time exposing (Time)
+import Translation
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
-import Time exposing (Time)
 
 
 type alias Stats =
@@ -45,6 +46,7 @@ type alias Model =
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
+    , language : Translation.Language
     }
 
 
@@ -110,6 +112,7 @@ init config =
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
+    , language = Translation.English
     }
 
 
