@@ -58,15 +58,12 @@ var openIconFileDialog = function(tag) {
 
 
 var openExportFileDialog = function(tag) {
-  Electron.remote.dialog.showOpenDialog({
-    properties: ["openFile", "promptToCreate"],
+  Electron.remote.dialog.showSaveDialog({
     title: "Select file to export Vault key bundle to",
     buttonLabel: "Export to file",
     filters: [{name: "Vault Export Archives", extensions: ["zip"]}]
-  }, (files) => {
-    if(files && files.length == 1) {
-      elmApp.ports.selectedExportFile.send([tag, files[0]]);
-    }
+  }, (file) => {
+    elmApp.ports.selectedExportFile.send([tag, file]);
   });
 }
 
