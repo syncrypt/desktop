@@ -23,7 +23,6 @@ var readAuthToken = function(resolve, reject) {
   });
 }
 
-
 // TODO: get this from syncrypt daemon config file
 var mainContainer = window.document.getElementById("Root");
 var elmApp = null;
@@ -53,7 +52,6 @@ var openIconFileDialog = function(tag) {
     }
   });
 }
-
 
 var openExportFileDialog = function(tag) {
   Electron.remote.dialog.showSaveDialog({
