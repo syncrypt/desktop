@@ -8,7 +8,6 @@ const Electron = require('electron');
 const File = require('file');
 
 var readAuthToken = function(resolve, reject) {
-  console.info('Trying to read auth token');
   Fs.readFile(DaemonConfig, 'utf-8', function (err, data) {
     if (err) {
       reject();
@@ -16,7 +15,6 @@ var readAuthToken = function(resolve, reject) {
     }
     const token = new RegExp("auth_token = ([a-zA-Z0-9]+)").exec(data);
     if (token && token.length == 2) {
-      console.log("The auth token is: " + token[1]);
       resolve(token[1]);
     }
     else {
