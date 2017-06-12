@@ -74,7 +74,7 @@ var getFileList = function([vaultId, rootPathList]) {
   File.walk(rootPath, function(_, dirPath, dirs, files) {
     var path = Path.relative(rootPath, dirPath).split(Path.sep);
 
-    if(path[0] === ".vault") {
+    if(isVaultPath(path)) {
       return;
     }
 
@@ -89,6 +89,15 @@ var getFileList = function([vaultId, rootPathList]) {
 
     elmApp.ports.fileList.send(data);
   })
+}
+
+var isVaultPath = function(path) {
+  for(var i = 0; i < path.length; i++) {
+    if(path[i] == ".vault") {
+      return true;
+    }
+  }
+  return false;
 }
 
 var focusOn = function(id) {
