@@ -11,6 +11,7 @@ import Ports
 import RemoteData exposing (RemoteData(..))
 import Set
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
+import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
@@ -335,10 +336,10 @@ update msg vaultId ({ vaultDialogs } as model) =
             Confirm DeleteVault ->
                 let
                     title =
-                        "Delete vault?"
+                        T.t T.AskDeleteVault model
 
                     question =
-                        "Do you really want to delete this vault from the server?"
+                        T.t T.AskDeleteVaultExtended model
 
                     confirmMsg =
                         Confirmed DeleteVault

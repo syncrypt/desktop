@@ -28,6 +28,8 @@ type Text
     | VaultExportFailed Reason
     | CouldNotCloneVaultWithoutFolder VaultId
     | NoPathSelected
+    | AskDeleteVault
+    | AskDeleteVaultExtended
     | Stats { stats : Int, downloads : Int, uploads : Int }
     | StatsLoading
     | StatsNotAvailable
@@ -119,6 +121,12 @@ translateEnglish text =
 
         NoPathSelected ->
             "No path selected - vault not created"
+
+        AskDeleteVault ->
+            "Delete vault?"
+
+        AskDeleteVaultExtended ->
+            "Do you really want to delete this vault from the server?"
 
         Stats { stats, downloads, uploads } ->
             (toString stats)
@@ -215,6 +223,12 @@ translateGerman text =
 
         NoPathSelected ->
             "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
+
+        AskDeleteVault ->
+            "Vault löschen?"
+
+        AskDeleteVaultExtended ->
+            "Soll der Vault wirklich vom Server gelöscht werden?"
 
         Stats { stats, downloads, uploads } ->
             (toString stats)
