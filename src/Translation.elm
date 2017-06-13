@@ -1,5 +1,7 @@
 module Translation exposing (Language(..), Text(..), t, translate)
 
+import Date exposing (Date)
+import Date.Distance
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
 
@@ -11,6 +13,10 @@ type Language
 
 type alias Reason =
     String
+
+
+type alias Now =
+    Date
 
 
 type Text
@@ -40,10 +46,15 @@ type Text
     | VaultsFailedToLoad Reason
     | CreateNewVault
     | VaultNotSynced VaultId
+    | Updated Date Now
+    | LastUpdateToVault
+    | LastUpdateToVaultLabel
+    | NoFilesUploadedYet
     | NameAndFilesTab
     | UsersTab
     | CryptoTab
     | EventsTab
+    | VaultListHeaderDescription
 
 
 type alias HasLanguage a =
@@ -166,6 +177,18 @@ translateEnglish text =
         VaultNotSynced vaultId ->
             "Vault (not synchronized) " ++ vaultId
 
+        Updated date now ->
+            "Updated " ++ (Date.Distance.inWords date now) ++ " ago"
+
+        LastUpdateToVault ->
+            "Last update "
+
+        LastUpdateToVaultLabel ->
+            "Last update to vault "
+
+        NoFilesUploadedYet ->
+            "No files uploaded yet"
+
         NameAndFilesTab ->
             "Name & Files"
 
@@ -177,6 +200,9 @@ translateEnglish text =
 
         EventsTab ->
             "Events"
+
+        VaultListHeaderDescription ->
+            "These vaults are cloned and synchronized on this computer."
 
 
 translateGerman : Text -> String
@@ -268,6 +294,18 @@ translateGerman text =
         VaultNotSynced vaultId ->
             "Vault (nicht synchronisiert) " ++ vaultId
 
+        Updated date now ->
+            "Aktualisiert vor " ++ (Date.Distance.inWords date now)
+
+        LastUpdateToVault ->
+            "Letzte Änderung am "
+
+        LastUpdateToVaultLabel ->
+            "Letzte Änderung am Vault "
+
+        NoFilesUploadedYet ->
+            "Bisher wurden keine Dateien hochgeladen"
+
         NameAndFilesTab ->
             "Name & Dateien"
 
@@ -279,3 +317,6 @@ translateGerman text =
 
         EventsTab ->
             "Ereignisse"
+
+        VaultListHeaderDescription ->
+            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."

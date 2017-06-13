@@ -1,7 +1,6 @@
 module VaultList exposing (..)
 
 import Date exposing (Date)
-import Date.Distance as Distance
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
@@ -9,6 +8,7 @@ import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
 import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
+import Translation as T exposing (t)
 import Util exposing (Direction(..), TooltipLength(..), bytesReadable, tooltipItem)
 
 
@@ -40,17 +40,17 @@ updatedAtInfo vault updatedAtHeader model =
         div [ class "VaultList-VaultUpdatedAt" ]
             [ tooltipItem Top
                 Auto
-                "Last update to vault"
+                (t T.LastUpdateToVaultLabel model)
                 [ header
                 , case ( vault.modificationDate, model.now ) of
                     ( Nothing, _ ) ->
-                        text "No files uploaded yet"
+                        text (t T.NoFilesUploadedYet model)
 
                     ( Just date, Nothing ) ->
                         text (toString date)
 
                     ( Just date, Just now ) ->
-                        text <| (Distance.inWords date (Date.fromTime now)) ++ " ago"
+                        text <| (t (T.Updated date (Date.fromTime now)) model)
                 ]
             ]
 
@@ -66,17 +66,17 @@ vaultUpdatedAtInfo vault =
 
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
-flyingVaultUpdatedAtInfo flyingVault =
+flyingVaultUpdatedAtInfo flyingVault model =
     let
         updatedText =
             case flyingVault.modificationDate of
                 Nothing ->
-                    "No Updates"
+                    text ""
 
                 Just _ ->
-                    "Updated "
+                    text <| t T.LastUpdateToVault model
     in
-        updatedAtInfo flyingVault <| Just <| text updatedText
+        updatedAtInfo flyingVault (Just updatedText) model
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
@@ -241,7 +241,7 @@ vaultList model =
                 , span [ class "VaultList-Subtitle" ] <|
                     case model.vaults of
                         Success _ ->
-                            [ text "These vaults are cloned and synchronized on this computer." ]
+                            [ text <| t T.VaultListHeaderDescription model ]
 
                         Failure reason ->
                             [ text <| "Failed to load vaults: " ++ toString reason ]
