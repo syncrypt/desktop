@@ -1,10 +1,6 @@
 module LoginDialog.Update exposing (update)
 
-import Ui.Button
-import Ui.Container
 import Ui.Input
-import Ui.Modal
-import Ui.Tabs
 import LoginDialog.Model exposing (State, Msg(..))
 import Model exposing (Model)
 

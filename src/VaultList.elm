@@ -1,6 +1,5 @@
 module VaultList exposing (..)
 
-import Animation exposing (Animation(..), animation, animations)
 import Date exposing (Date)
 import Date.Distance as Distance
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)

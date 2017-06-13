@@ -15,8 +15,21 @@ import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing (andAlso)
-import VaultDialog.Model exposing (CloneStatus(..), FolderItem, Msg(..), RequiresConfirmation(..), State, addFolder, collapseFolder, expandFolder, hasChanged, isIgnored, toggleIgnorePath, toggleUserKey)
+import VaultDialog.Model
+    exposing
+        ( CloneStatus(..)
+        , FolderItem
+        , Msg(..)
+        , RequiresConfirmation(..)
+        , State
+        , addFolder
+        , collapseFolder
+        , expandFolder
+        , hasChanged
+        , isIgnored
+        , toggleIgnorePath
+        , toggleUserKey
+        )
 import VaultDialog.Ports
 
 

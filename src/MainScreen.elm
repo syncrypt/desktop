@@ -2,13 +2,11 @@ module MainScreen exposing (..)
 
 import Animation exposing (..)
 import Config exposing (Config)
-import Daemon exposing (attempt, attemptDelayed)
-import Date exposing (Date)
+import Daemon
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import LoginDialog
-import LoginDialog.Model
 import LoginDialog.Update
 import Model exposing (..)
 import Ports
@@ -16,8 +14,7 @@ import RemoteData exposing (RemoteData(..), WebData)
 import Set
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
-import Time exposing (Time)
-import Ui.Input
+import Time
 import Ui.NotificationCenter
 import Util exposing (Direction(..), andAlso)
 import VaultDialog

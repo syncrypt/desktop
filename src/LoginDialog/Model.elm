@@ -1,10 +1,7 @@
 module LoginDialog.Model exposing (Msg(..), State, init)
 
-import Ui.Button
-import Ui.Container
 import Ui.Input
 import Ui.Modal
-import Ui.Tabs
 
 
 type alias State =

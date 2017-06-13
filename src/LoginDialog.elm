@@ -4,15 +4,10 @@ import Dialog exposing (labeledItem)
 import Util exposing (Direction(..))
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
-import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Ui.Button
-import Ui.Container
 import Ui.Input
 import Ui.Modal
-import Ui.Tabs
-import Path exposing (Path)
-import Dict
 import LoginDialog.Model exposing (State, Msg(..))
 
 

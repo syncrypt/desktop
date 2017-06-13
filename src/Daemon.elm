@@ -348,18 +348,6 @@ task =
     Http.toTask
 
 
-
---attempt : (Result Http.Error a -> Msg) -> Http.Request a -> Cmd (WebData a)
-
-
-attempt msg request =
-    request
-        -- |> task
-        -- |> Task.attempt msg
-        |>
-            RemoteData.sendRequest
-
-
 attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
 attemptDelayed time msg request =
     request
