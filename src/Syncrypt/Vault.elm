@@ -1,7 +1,7 @@
 module Syncrypt.Vault exposing (..)
 
 import Date exposing (Date)
-import Syncrypt.User exposing (User, UserKey, Fingerprint, EmailWithFingerPrint)
+import Syncrypt.User exposing (User, UserKey, Email, Fingerprint, EmailWithFingerPrint)
 import Config exposing (Config)
 import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
@@ -249,3 +249,33 @@ vaultStatusDecoder =
                     fail ("Invalid vault status: " ++ val)
     in
         Json.string |> andThen convert
+
+
+metadataEncoder : Metadata -> Json.Encode.Value
+metadataEncoder metadata =
+    let
+        metadataJson =
+            case metadata.icon of
+                Nothing ->
+                    Json.Encode.object
+                        [ ( "name", Json.Encode.string metadata.name ) ]
+
+                Just iconUrl ->
+                    Json.Encode.object
+                        [ ( "name", Json.Encode.string metadata.name )
+                        , ( "icon", Json.Encode.string iconUrl )
+                        ]
+    in
+        Json.Encode.object [ ( "metadata", metadataJson ) ]
+
+
+addVaultUserEncoder : Email -> List UserKey -> Json.Encode.Value
+addVaultUserEncoder email keys =
+    let
+        fingerprints =
+            List.map .fingerprint keys
+    in
+        Json.Encode.object
+            [ ( "email", Json.Encode.string email )
+            , ( "fingerprints", Json.Encode.list (List.map Json.Encode.string fingerprints) )
+            ]

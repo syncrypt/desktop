@@ -65,22 +65,12 @@ getFlyingVault vaultId config =
 updateVaultMetadata : VaultId -> Metadata -> Model -> Cmd Msg
 updateVaultMetadata vaultId metadata { config } =
     let
-        metadataJson =
-            case metadata.icon of
-                Nothing ->
-                    Json.Encode.object
-                        [ ( "name", Json.Encode.string metadata.name ) ]
-
-                Just iconUrl ->
-                    Json.Encode.object
-                        [ ( "name", Json.Encode.string metadata.name )
-                        , ( "icon", Json.Encode.string iconUrl )
-                        ]
-
-        json =
-            Json.Encode.object [ ( "metadata", metadataJson ) ]
+        jsonBody =
+            metadata
+                |> Syncrypt.Vault.metadataEncoder
+                |> Http.jsonBody
     in
-        apiRequest config Put (Vault vaultId) (Just (Http.jsonBody json)) Syncrypt.Vault.decoder
+        apiRequest config Put (Vault vaultId) (Just jsonBody) Syncrypt.Vault.decoder
             |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
 
@@ -97,19 +87,14 @@ getVaultUser vaultId email config =
 addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd Msg
 addVaultUser vaultId email keys config =
     let
-        fingerprints =
-            List.map .fingerprint keys
-
-        json =
-            Json.Encode.object
-                [ ( "email", Json.Encode.string email )
-                , ( "fingerprints", Json.Encode.list (List.map Json.Encode.string fingerprints) )
-                ]
+        jsonBody =
+            Syncrypt.Vault.addVaultUserEncoder email keys
+                |> Http.jsonBody
     in
         apiRequest config
             Post
             (VaultUsers vaultId)
-            (Just (Http.jsonBody json))
+            (Just jsonBody)
             (decode identity |> required "email" Json.string)
             |> Cmd.map (Model.VaultUserAdded vaultId email)
 
@@ -186,17 +171,14 @@ getLoginState { config } =
 login : Email -> Password -> Model -> Cmd Msg
 login email password { config } =
     let
-        json =
-            (Json.Encode.object
-                [ ( "email", Json.Encode.string email )
-                , ( "password", Json.Encode.string password )
-                ]
-            )
+        jsonBody =
+            Syncrypt.User.loginEncoder email password
+                |> Http.jsonBody
     in
         apiRequest config
             Post
             Login
-            (Just (Http.jsonBody json))
+            (Just jsonBody)
             statusResponseDecoder
             |> Cmd.map (LoginResult email)
 

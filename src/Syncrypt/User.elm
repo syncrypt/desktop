@@ -1,6 +1,7 @@
 module Syncrypt.User exposing (..)
 
 import Date exposing (Date)
+import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Util exposing (dateDecoder)
@@ -62,6 +63,13 @@ keyDecoder =
         |> required "fingerprint" Json.string
         |> required "description" Json.string
         |> required "created_at" dateDecoder
+
+
+loginEncoder email password =
+    Json.Encode.object
+        [ ( "email", Json.Encode.string email )
+        , ( "password", Json.Encode.string password )
+        ]
 
 
 
