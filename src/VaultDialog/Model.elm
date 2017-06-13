@@ -199,6 +199,7 @@ isIgnored path { ignoredFolderItems } =
            )
 
 
+isUserKeyPending : User.Email -> User.UserKey -> State -> Bool
 isUserKeyPending email userKey state =
     case Dict.get email state.usersToAdd of
         Nothing ->

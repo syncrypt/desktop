@@ -65,6 +65,7 @@ keyDecoder =
         |> required "created_at" dateDecoder
 
 
+loginEncoder : Email -> String -> Json.Encode.Value
 loginEncoder email password =
     Json.Encode.object
         [ ( "email", Json.Encode.string email )

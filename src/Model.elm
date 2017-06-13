@@ -203,10 +203,7 @@ vaultIds { vaults, flyingVaults } =
         (idsOf (vaults |> orEmpty)) ++ (idsOf (flyingVaults |> orEmpty))
 
 
-
--- retryOnFailure : WebData a -> Model -> ( Model, Cmd msg )
-
-
+retryOnFailure : WebData a -> msg -> Model -> ( Model, Cmd msg )
 retryOnFailure data msg model =
     case data of
         Failure reason ->

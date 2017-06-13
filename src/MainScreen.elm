@@ -415,6 +415,7 @@ cloneVault vaultId origModel =
                       ]
 
 
+clonedVault : VaultId -> WebData Vault -> Model -> ( Model, Cmd Msg )
 clonedVault vaultId data model =
     case data of
         Success vault ->
@@ -461,6 +462,7 @@ logout model =
         ! [ Daemon.logout model ]
 
 
+handleLoginResult : Email -> WebData StatusResponse -> Model -> ( Model, Cmd Msg )
 handleLoginResult email data model =
     case data of
         Success _ ->
