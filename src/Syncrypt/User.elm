@@ -62,3 +62,12 @@ keyDecoder =
         |> required "fingerprint" Json.string
         |> required "description" Json.string
         |> required "created_at" dateDecoder
+
+
+
+-- Model functions
+
+
+fullName : User -> String
+fullName { firstName, lastName } =
+    firstName ++ " " ++ lastName

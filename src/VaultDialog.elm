@@ -12,7 +12,7 @@ import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Syncrypt.User exposing (Email, User, UserKey)
+import Syncrypt.User as User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
 import Translation exposing (t, Text(..))
 import Ui.Button
@@ -740,7 +740,7 @@ userItem user state model =
         , onClick (SetUserInput user.email)
         ]
         [ span [ class "VaultDialog-User-Name" ]
-            [ text <| user.firstName ++ " " ++ user.lastName ]
+            [ text <| User.fullName user ]
         , span [ class "VaultDialog-User-Email" ]
             [ text <| " ( " ++ user.email ++ " )" ]
         , userAddedTimestamp user model
