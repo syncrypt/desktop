@@ -755,7 +755,7 @@ pendingUserItem email keys =
         , span [ class "VaultDialog-UserKeyFingerprints" ]
             [ text
                 (keys
-                    |> List.map (\key -> key.fingerprint)
+                    |> List.map .fingerprint
                     |> String.join ", "
                 )
             ]
