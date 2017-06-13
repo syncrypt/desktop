@@ -2,8 +2,11 @@ module Syncrypt.Vault exposing (..)
 
 import Date exposing (Date)
 import Syncrypt.User exposing (User, UserKey, Fingerprint, EmailWithFingerPrint)
-import Json.Encode as Json
 import Config exposing (Config)
+import Json.Encode
+import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Util exposing (dateDecoder)
 import Path exposing (Path)
 
 
@@ -144,7 +147,7 @@ asVault fv =
         }
 
 
-jsonOptions : Config -> VaultOptions -> Json.Value
+jsonOptions : Config -> VaultOptions -> Json.Encode.Value
 jsonOptions config options =
     let
         pathString path =
@@ -152,22 +155,97 @@ jsonOptions config options =
     in
         case options of
             Create { folder, ignorePaths } ->
-                Json.object
-                    [ ( "folder", Json.string (pathString folder) )
+                Json.Encode.object
+                    [ ( "folder", Json.Encode.string (pathString folder) )
                     , ( "ignorePaths"
-                      , Json.list
-                            (List.map (pathString >> Json.string) ignorePaths)
+                      , Json.Encode.list
+                            (List.map (pathString >> Json.Encode.string) ignorePaths)
                       )
                     ]
 
             Clone { id, folder } ->
-                Json.object
-                    [ ( "id", Json.string id )
-                    , ( "folder", Json.string (pathString folder) )
+                Json.Encode.object
+                    [ ( "id", Json.Encode.string id )
+                    , ( "folder", Json.Encode.string (pathString folder) )
                     ]
 
             Remove id ->
-                Json.null
+                Json.Encode.null
 
             Delete id ->
-                Json.null
+                Json.Encode.null
+
+
+{-| Decodes a `Syncrypt.Vault.Vault`.
+-}
+decoder : Json.Decoder Vault
+decoder =
+    decode Vault
+        |> required "id" Json.string
+        |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
+        |> required "size" Json.int
+        |> required "state" vaultStatusDecoder
+        |> required "user_count" Json.int
+        |> required "file_count" Json.int
+        |> required "revision_count" Json.int
+        |> required "resource_uri" Json.string
+        |> required "folder" Json.string
+        |> optional "modification_date" dateDecoder Nothing
+        |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
+        |> required "crypt_info" cryptoInfoDecoder
+
+
+cryptoInfoDecoder : Json.Decoder CryptoInfo
+cryptoInfoDecoder =
+    decode CryptoInfo
+        |> required "aes_key_len" Json.int
+        |> required "rsa_key_len" Json.int
+        |> required "key_algo" Json.string
+        |> required "transfer_algo" Json.string
+        |> required "hash_algo" Json.string
+        |> required "fingerprint" (Json.maybe Json.string)
+
+
+{-| Decodes a `Syncrypt.Vault.FlyingVault`.
+-}
+flyingVaultDecoder : Json.Decoder FlyingVault
+flyingVaultDecoder =
+    decode FlyingVault
+        |> required "id" Json.string
+        |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
+        |> optional "size" (Json.maybe Json.int) Nothing
+        |> required "user_count" Json.int
+        |> required "file_count" Json.int
+        |> required "revision_count" Json.int
+        |> required "resource_uri" Json.string
+        |> optional "modification_date" dateDecoder Nothing
+        |> optional "icon" (Json.maybe Json.string) Nothing
+
+
+{-| Decodes a `Syncrypt.Vault.Status`.
+-}
+vaultStatusDecoder : Json.Decoder Status
+vaultStatusDecoder =
+    let
+        convert : String -> Json.Decoder Status
+        convert raw =
+            case raw of
+                "unsynced" ->
+                    succeed Unsynced
+
+                "syncing" ->
+                    succeed Syncing
+
+                "initializing" ->
+                    succeed Initializing
+
+                "synced" ->
+                    succeed Synced
+
+                "ready" ->
+                    succeed Ready
+
+                val ->
+                    fail ("Invalid vault status: " ++ val)
+    in
+        Json.string |> andThen convert

@@ -1,7 +1,6 @@
 module Daemon exposing (..)
 
 import Config exposing (..)
-import Date exposing (Date)
 import Http
 import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
@@ -11,7 +10,7 @@ import Syncrypt.User exposing (Email, Password, User, UserKey, Fingerprint)
 import Syncrypt.Vault exposing (..)
 import Task exposing (Task)
 import Time exposing (Time)
-import Util
+import Util exposing (dateDecoder)
 import RemoteData exposing (RemoteData(..), WebData)
 
 
@@ -43,24 +42,24 @@ getStats { config } =
 
 getVaults : Model -> Cmd Msg
 getVaults { config } =
-    apiRequest config Get Vaults Nothing vaultsDecoder
+    apiRequest config Get Vaults Nothing (Json.list Syncrypt.Vault.decoder)
         |> Cmd.map UpdatedVaultsFromApi
 
 
 getFlyingVaults : Model -> Cmd Msg
 getFlyingVaults { config } =
-    apiRequest config Get FlyingVaults Nothing flyingVaultsDecoder
+    apiRequest config Get FlyingVaults Nothing (Json.list Syncrypt.Vault.flyingVaultDecoder)
         |> Cmd.map UpdatedFlyingVaultsFromApi
 
 
 getVault : VaultId -> Config -> Cmd (WebData Vault)
 getVault vaultId config =
-    apiRequest config Get (Vault vaultId) Nothing vaultDecoder
+    apiRequest config Get (Vault vaultId) Nothing Syncrypt.Vault.decoder
 
 
 getFlyingVault : VaultId -> Config -> Cmd (WebData FlyingVault)
 getFlyingVault vaultId config =
-    apiRequest config Get (FlyingVault vaultId) Nothing flyingVaultDecoder
+    apiRequest config Get (FlyingVault vaultId) Nothing Syncrypt.Vault.flyingVaultDecoder
 
 
 updateVaultMetadata : VaultId -> Metadata -> Model -> Cmd Msg
@@ -81,18 +80,18 @@ updateVaultMetadata vaultId metadata { config } =
         json =
             Json.Encode.object [ ( "metadata", metadataJson ) ]
     in
-        apiRequest config Put (Vault vaultId) (Just (Http.jsonBody json)) vaultDecoder
+        apiRequest config Put (Vault vaultId) (Just (Http.jsonBody json)) Syncrypt.Vault.decoder
             |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
 
 getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
 getVaultUsers vaultId config =
-    apiRequest config Get (VaultUsers vaultId) Nothing usersDecoder
+    apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Syncrypt.User.decoder)
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
 getVaultUser vaultId email config =
-    apiRequest config Get (VaultUser vaultId email) Nothing userDecoder
+    apiRequest config Get (VaultUser vaultId email) Nothing Syncrypt.User.decoder
 
 
 addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd Msg
@@ -123,12 +122,12 @@ removeVaultUser vaultId email config =
 
 getUserKeys : Email -> Config -> Cmd (WebData (List UserKey))
 getUserKeys email config =
-    apiRequest config Get (UserKeys email) Nothing userKeysDecoder
+    apiRequest config Get (UserKeys email) Nothing (Json.list Syncrypt.User.keyDecoder)
 
 
 getUser : Email -> Config -> Cmd (WebData User)
 getUser email config =
-    apiRequest config Get User Nothing userDecoder
+    apiRequest config Get User Nothing Syncrypt.User.decoder
 
 
 getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
@@ -142,7 +141,7 @@ updateVault options config =
         Post
         Vaults
         (Just (Http.jsonBody (jsonOptions config options)))
-        vaultDecoder
+        Syncrypt.Vault.decoder
 
 
 removeVault : VaultId -> Model -> Cmd Msg
@@ -336,7 +335,7 @@ requestMethod rm =
     let
         config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
     in
-        apiRequest config Get "vault" vaultsDecoder
+        apiRequest config Get "vault" (Json.list Syncrypt.Vault.decoder)
 
 -}
 apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Cmd (WebData a)
@@ -377,7 +376,8 @@ attempt msg request =
     request
         -- |> task
         -- |> Task.attempt msg
-        |> RemoteData.sendRequest
+        |>
+            RemoteData.sendRequest
 
 
 attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
@@ -433,181 +433,3 @@ apiHeaders : Config -> List Http.Header
 apiHeaders config =
     [ Http.header "X-Authtoken" config.apiAuthToken
     ]
-
-
-statsDecoder : Json.Decoder Model.Stats
-statsDecoder =
-    decode Model.Stats
-        |> requiredAt [ "stats", "stats" ] Json.int
-        |> requiredAt [ "stats", "downloads" ] Json.int
-        |> requiredAt [ "stats", "uploads" ] Json.int
-
-
-{-| Decodes an array of `Syncrypt.Vault.Vault`.
--}
-vaultsDecoder : Json.Decoder (List Vault)
-vaultsDecoder =
-    Json.list vaultDecoder
-
-
-usersDecoder : Json.Decoder (List User)
-usersDecoder =
-    Json.list userDecoder
-
-
-userKeysDecoder : Json.Decoder (List Syncrypt.User.UserKey)
-userKeysDecoder =
-    Json.list userKeyDecoder
-
-
-{-| Decodes an array of `Syncrypt.Vault.FlyingVault`.
--}
-flyingVaultsDecoder : Json.Decoder (List FlyingVault)
-flyingVaultsDecoder =
-    Json.list flyingVaultDecoder
-
-
-loginStateDecoder : Json.Decoder Model.LoginState
-loginStateDecoder =
-    decode Model.CurrentUser
-        |> required "first_name" Json.string
-        |> required "last_name" Json.string
-        |> required "email" Json.string
-        |> andThen (succeed << Model.LoggedIn)
-
-
-statusResponseDecoder : Json.Decoder Model.StatusResponse
-statusResponseDecoder =
-    let
-        parseStatus =
-            Json.string
-                |> andThen (\s -> succeed (s == "ok"))
-    in
-        decode Model.StatusResponse
-            |> required "status" parseStatus
-            |> optional "text" (Json.maybe Json.string) Nothing
-
-
-exportStatusResponseDecoder : Json.Decoder Model.ExportStatusResponse
-exportStatusResponseDecoder =
-    let
-        parseStatus =
-            Json.string
-                |> andThen (\s -> succeed (s == "ok"))
-    in
-        decode Model.ExportStatusResponse
-            |> required "status" parseStatus
-            |> required "filename" Json.string
-
-
-{-| Decodes a `Syncrypt.Vault.Vault`.
--}
-vaultDecoder : Json.Decoder Vault
-vaultDecoder =
-    decode Syncrypt.Vault.Vault
-        |> required "id" Json.string
-        |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
-        |> required "size" Json.int
-        |> required "state" vaultStatus
-        |> required "user_count" Json.int
-        |> required "file_count" Json.int
-        |> required "revision_count" Json.int
-        |> required "resource_uri" Json.string
-        |> required "folder" Json.string
-        |> optional "modification_date" date Nothing
-        |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
-        |> required "crypt_info" cryptoInfoDecoder
-
-
-cryptoInfoDecoder : Json.Decoder CryptoInfo
-cryptoInfoDecoder =
-    decode Syncrypt.Vault.CryptoInfo
-        |> required "aes_key_len" Json.int
-        |> required "rsa_key_len" Json.int
-        |> required "key_algo" Json.string
-        |> required "transfer_algo" Json.string
-        |> required "hash_algo" Json.string
-        |> required "fingerprint" (Json.maybe Json.string)
-
-
-{-| Decodes a `Syncrypt.Vault.FlyingVault`.
--}
-flyingVaultDecoder : Json.Decoder FlyingVault
-flyingVaultDecoder =
-    decode Syncrypt.Vault.FlyingVault
-        |> required "id" Json.string
-        |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
-        |> optional "size" (Json.maybe Json.int) Nothing
-        |> required "user_count" Json.int
-        |> required "file_count" Json.int
-        |> required "revision_count" Json.int
-        |> required "resource_uri" Json.string
-        |> optional "modification_date" date Nothing
-        |> optional "icon" (Json.maybe Json.string) Nothing
-
-
-{-| Decodes a `Syncrypt.User.User`.
--}
-userDecoder : Json.Decoder User
-userDecoder =
-    decode Syncrypt.User.User
-        |> required "first_name" Json.string
-        |> required "last_name" Json.string
-        |> required "email" Json.string
-        |> optional "access_granted_at" date Nothing
-
-
-{-| Decodes a `Syncrypt.User.UserKey`.
--}
-userKeyDecoder : Json.Decoder Syncrypt.User.UserKey
-userKeyDecoder =
-    decode Syncrypt.User.UserKey
-        |> required "fingerprint" Json.string
-        |> required "description" Json.string
-        |> required "created_at" date
-
-
-{-| Decodes a `Syncrypt.Vault.Status`.
--}
-vaultStatus : Json.Decoder Status
-vaultStatus =
-    let
-        convert : String -> Json.Decoder Status
-        convert raw =
-            case raw of
-                "unsynced" ->
-                    succeed Syncrypt.Vault.Unsynced
-
-                "syncing" ->
-                    succeed Syncrypt.Vault.Syncing
-
-                "initializing" ->
-                    succeed Syncrypt.Vault.Initializing
-
-                "synced" ->
-                    succeed Syncrypt.Vault.Synced
-
-                "ready" ->
-                    succeed Syncrypt.Vault.Ready
-
-                val ->
-                    fail ("Invalid vault status: " ++ val)
-    in
-        Json.string |> andThen convert
-
-
-{-| Decodes an `Maybe Date` from a string.
--}
-date : Json.Decoder (Maybe Date)
-date =
-    let
-        convert : String -> Json.Decoder (Maybe Date)
-        convert raw =
-            case Date.fromString raw of
-                Ok date ->
-                    succeed (Just date)
-
-                Err error ->
-                    succeed Nothing
-    in
-        Json.string |> andThen convert

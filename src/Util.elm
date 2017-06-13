@@ -21,6 +21,7 @@ module Util
         , Direction(..)
         , TooltipLength(..)
         , timeAgo
+        , dateDecoder
         )
 
 import Date exposing (Date)
@@ -340,3 +341,21 @@ timeAgo date hasNow =
 
         Nothing ->
             (toString date)
+
+
+{-| Decodes an `Maybe Date` from a string.
+-}
+dateDecoder : Json.Decode.Decoder (Maybe Date)
+dateDecoder =
+    let
+        convert : String -> Json.Decode.Decoder (Maybe Date)
+        convert raw =
+            case Date.fromString raw of
+                Ok date ->
+                    Json.Decode.succeed (Just date)
+
+                Err error ->
+                    Json.Decode.succeed Nothing
+    in
+        Json.Decode.string
+            |> Json.Decode.andThen convert

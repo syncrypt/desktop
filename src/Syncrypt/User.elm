@@ -1,6 +1,9 @@
 module Syncrypt.User exposing (..)
 
 import Date exposing (Date)
+import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode.Pipeline exposing (decode, optional, required)
+import Util exposing (dateDecoder)
 
 
 type alias User =
@@ -34,3 +37,28 @@ type alias UserKey =
 
 type alias EmailWithFingerPrint =
     ( String, Fingerprint )
+
+
+
+-- Decoders
+
+
+{-| Decodes a `Syncrypt.User.User`.
+-}
+decoder : Json.Decoder User
+decoder =
+    decode User
+        |> required "first_name" Json.string
+        |> required "last_name" Json.string
+        |> required "email" Json.string
+        |> optional "access_granted_at" dateDecoder Nothing
+
+
+{-| Decodes a `Syncrypt.User.UserKey`.
+-}
+keyDecoder : Json.Decoder UserKey
+keyDecoder =
+    decode UserKey
+        |> required "fingerprint" Json.string
+        |> required "description" Json.string
+        |> required "created_at" dateDecoder

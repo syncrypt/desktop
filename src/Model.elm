@@ -2,6 +2,8 @@ module Model exposing (..)
 
 import Config exposing (Config)
 import Dict exposing (Dict)
+import Json.Decode as Json exposing (andThen, succeed)
+import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt)
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import Syncrypt.User exposing (Email)
@@ -99,6 +101,55 @@ type Msg
     | LoginResult Email (WebData StatusResponse)
     | LogoutResult (WebData StatusResponse)
     | LoginDialog LoginDialog.Model.Msg
+
+
+
+-- JSON Decoders
+
+
+statsDecoder : Json.Decoder Stats
+statsDecoder =
+    decode Stats
+        |> requiredAt [ "stats", "stats" ] Json.int
+        |> requiredAt [ "stats", "downloads" ] Json.int
+        |> requiredAt [ "stats", "uploads" ] Json.int
+
+
+loginStateDecoder : Json.Decoder LoginState
+loginStateDecoder =
+    decode CurrentUser
+        |> required "first_name" Json.string
+        |> required "last_name" Json.string
+        |> required "email" Json.string
+        |> andThen (succeed << LoggedIn)
+
+
+statusResponseDecoder : Json.Decoder StatusResponse
+statusResponseDecoder =
+    let
+        parseStatus =
+            Json.string
+                |> andThen (\s -> succeed (s == "ok"))
+    in
+        decode StatusResponse
+            |> required "status" parseStatus
+            |> optional "text" (Json.maybe Json.string) Nothing
+
+
+exportStatusResponseDecoder : Json.Decoder ExportStatusResponse
+exportStatusResponseDecoder =
+    let
+        parseStatus =
+            Json.string
+                |> andThen (\s -> succeed (s == "ok"))
+    in
+        decode ExportStatusResponse
+            |> required "status" parseStatus
+            |> required "filename" Json.string
+
+
+
+-- Model functions
 
 
 init : Config -> Model
