@@ -198,9 +198,7 @@ exportVault : VaultId -> String -> Model -> Cmd Msg
 exportVault vaultId path { config } =
     let
         json =
-            (Json.Encode.object
-                [ ( "path", Json.Encode.string path ) ]
-            )
+            Json.Encode.object [ ( "path", Json.Encode.string path ) ]
     in
         apiRequest config
             Post
@@ -413,5 +411,4 @@ apiUrl config path =
 -}
 apiHeaders : Config -> List Http.Header
 apiHeaders config =
-    [ Http.header "X-Authtoken" config.apiAuthToken
-    ]
+    [ Http.header "X-Authtoken" config.apiAuthToken ]
