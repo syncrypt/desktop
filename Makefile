@@ -63,6 +63,12 @@ $(ASSETS_PATH): $(ASSET_FILES)
 $(JS_FILE): $(JS_SOURCES)
 	elm make src/Main.elm --output $(BUILD_DIR)/elm.js $(DEBUG)
 
+test-setup:
+	cd tests && elm-install
+
+test:
+	elm-test
+
 clean-deps:
 	rm -rf elm-stuff
 
