@@ -7,6 +7,8 @@ module Util
         , attemptDelayed
         , performDelayed
         , skipCharsWhile
+        , removeLeading
+        , removeTrailing
         , removeTrailingZeroes
         , bytesReadable
         , surround
