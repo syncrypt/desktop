@@ -41,7 +41,6 @@ release: release-setup
 	cd $(RELEASE_DIR)/tmp && \
 		npm run make-installer
 	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
-	rm -rf $(RELEASE_DIR)/tmp/
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
