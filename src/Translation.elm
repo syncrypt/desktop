@@ -1,9 +1,17 @@
-module Translation exposing (Language(..), Text(..), t, translate)
+module Translation
+    exposing
+        ( Language(..)
+        , Text(..)
+        , t
+        , translate
+        , timeAgo
+        )
 
 import Date exposing (Date)
 import Date.Distance
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
+import Time exposing (Time)
 
 
 type Language
@@ -295,7 +303,7 @@ translateGerman text =
             "Vault (nicht synchronisiert) " ++ vaultId
 
         Updated date now ->
-            "Aktualisiert vor " ++ (Date.Distance.inWords date now)
+            "Aktualisiert vor " ++ (germanDistance date now)
 
         LastUpdateToVault ->
             "Letzte Änderung am "
@@ -320,3 +328,30 @@ translateGerman text =
 
         VaultListHeaderDescription ->
             "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."
+
+
+germanDistance =
+    Date.Distance.inWordsWithConfig Date.Distance.germanConfig
+
+
+type alias HasNowAndLanguage a =
+    { a | now : Maybe Time, language : Language }
+
+
+timeAgo : Date -> HasNowAndLanguage a -> String
+timeAgo date { now, language } =
+    let
+        distanceConfig =
+            case language of
+                English ->
+                    Date.Distance.defaultConfig
+
+                German ->
+                    Date.Distance.germanConfig
+    in
+        case now of
+            Just now ->
+                ((Date.Distance.inWordsWithConfig distanceConfig date (Date.fromTime now)) ++ " ago")
+
+            Nothing ->
+                (toString date)

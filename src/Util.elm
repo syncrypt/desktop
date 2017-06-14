@@ -22,7 +22,6 @@ module Util
         , tooltipItem
         , Direction(..)
         , TooltipLength(..)
-        , timeAgo
         , dateDecoder
         )
 
@@ -329,20 +328,6 @@ tooltipLengthString length =
 
         Auto ->
             ""
-
-
-type alias HasNow a =
-    { a | now : Maybe Time }
-
-
-timeAgo : Date -> HasNow a -> String
-timeAgo date hasNow =
-    case hasNow.now of
-        Just now ->
-            ((Date.Distance.inWords date (Date.fromTime now)) ++ " ago")
-
-        Nothing ->
-            (toString date)
 
 
 {-| Decodes an `Maybe Date` from a string.

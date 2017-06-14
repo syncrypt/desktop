@@ -14,7 +14,7 @@ import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Vault, VaultId)
-import Translation exposing (t, Text(..))
+import Translation exposing (t, Text(..), timeAgo)
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -28,7 +28,6 @@ import Util
         , onAnyKeyDown
         , onEnter
         , tooltipItem
-        , timeAgo
         )
 import VaultDialog.Model
     exposing
