@@ -90,9 +90,9 @@ skipCharsWhile f string =
 
         Just ( c, rest ) ->
             if f c then
-                rest
+                skipCharsWhile f rest
             else
-                String.cons c (skipCharsWhile f rest)
+                String.cons c rest
 
 
 removeLeading : Char -> String -> String
