@@ -13,6 +13,7 @@ import Translation
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
+import WizardDialog
 
 
 type alias Stats =
@@ -60,6 +61,7 @@ type alias Model =
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
     , language : Translation.Language
+    , wizardDialog : WizardDialog.State Msg
     }
 
 
@@ -108,6 +110,7 @@ type Msg
     | LoginResult Email (WebData StatusResponse)
     | LogoutResult (WebData StatusResponse)
     | LoginDialog LoginDialog.Model.Msg
+    | WizardDialog WizardDialog.Msg
 
 
 
@@ -180,6 +183,7 @@ init config =
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
     , language = Translation.English
+    , wizardDialog = WizardDialog.init WizardDialog
     }
 
 

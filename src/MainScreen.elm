@@ -22,6 +22,7 @@ import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
 import Translation exposing (t, translate, Text(..))
+import WizardDialog
 
 
 -- INIT
@@ -234,6 +235,10 @@ update action model =
         VaultMetadataUpdated vaultId _ ->
             model
                 |> notifyText (VaultMetadataUpdateFailed vaultId)
+
+        WizardDialog msg ->
+            model
+                |> WizardDialog.update msg
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
