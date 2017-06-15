@@ -142,6 +142,10 @@ ui-input {
   padding-left: 10px;
 }
 
+.VaultDialog-Button-Export ui-button {
+  margin-bottom: 10px;
+}
+
 .VaultDialog-Button-Folder ui-button {
   width: 415px;
   margin-top: 5px;
@@ -243,7 +247,7 @@ ui-tabs-handle {
   cursor: default !important;
 }
 
-.VaultDialog-InfoText {
+.VaultDialog-TabInfoText {
   text-align: center;
   margin: 0.5em;
   width: 450px;
@@ -251,9 +255,15 @@ ui-tabs-handle {
   margin-right: auto;
 }
 
-.VaultDialog-Tab-Content-Separator {
-  margin: 1.5em;
+.VaultDialog-InfoText {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-align: justify;
+}
+
+.VaultDialog-Separator {
   width: 375px;
+  margin: 1.5em;
   margin-left: auto;
   margin-right: auto;
   height: 1px;

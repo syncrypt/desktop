@@ -252,6 +252,8 @@ tabContents vaultId state model =
                     , cryptoInfoItem "RSA Key Length"
                         "Length of vault private key"
                         (toString vault.crypto.rsaKeyLength)
+                    , separator
+                    , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
                     , exportButton vault
                     ]
                 )
@@ -269,15 +271,21 @@ tabContents vaultId state model =
 
 tabInfoText : String -> Html msg
 tabInfoText infoText =
-    div [ class "VaultDialog-InfoText" ]
-        [ text infoText
-        , tabContentSeparator
+    div []
+        [ div [ class "VaultDialog-TabInfoText" ] [ text infoText ]
+        , separator
         ]
 
 
-tabContentSeparator : Html msg
-tabContentSeparator =
-    Html.hr [ class "VaultDialog-Tab-Content-Separator" ] []
+infoText : String -> Html msg
+infoText infoText =
+    div [ class "VaultDialog-InfoText" ]
+        [ text infoText ]
+
+
+separator : Html msg
+separator =
+    Html.hr [ class "VaultDialog-Separator" ] []
 
 
 dialogInput : String -> List (Html msg) -> Html msg
@@ -293,7 +301,7 @@ exportButton : Vault -> Html Model.Msg
 exportButton vault =
     span
         [ class "VaultDialog-Button-Export" ]
-        [ Ui.Button.model "Export vault key bundle" "secondary" "small"
+        [ Ui.Button.model "Export vault key bundle" "secondary" "medium"
             |> Ui.Button.view (Model.VaultDialog vault.id OpenExportDialog)
         ]
 
