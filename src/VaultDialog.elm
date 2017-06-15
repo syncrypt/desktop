@@ -218,7 +218,7 @@ tabContents vaultId state model =
             in
                 ( t CryptoTab model
                 , div [ class "VaultDialog-Tab-Content" ]
-                    [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms & keys."
+                    [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
                     , cryptoInfoItem "Vault ID"
                         "Syncrypt Vault ID"
                         (String.toUpper vault.id)
@@ -259,7 +259,7 @@ tabContents vaultId state model =
         eventLogTab =
             ( t EventsTab model
             , div [ class "VaultDialog-Tab-Content" ]
-                [ tabInfoText "This tab will show all file operations and other events for this vault."
+                [ tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
                 , text "TODO: Vault event log"
                 ]
             )
@@ -271,8 +271,13 @@ tabInfoText : String -> Html msg
 tabInfoText infoText =
     div [ class "VaultDialog-InfoText" ]
         [ text infoText
-        , Html.hr [] []
+        , tabContentSeparator
         ]
+
+
+tabContentSeparator : Html msg
+tabContentSeparator =
+    Html.hr [ class "VaultDialog-Tab-Content-Separator" ] []
 
 
 dialogInput : String -> List (Html msg) -> Html msg

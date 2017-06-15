@@ -246,12 +246,12 @@ ui-tabs-handle {
 .VaultDialog-InfoText {
   text-align: center;
   margin: 0.5em;
-  width: 440px;
+  width: 450px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.VaultDialog-InfoText hr {
+.VaultDialog-Tab-Content-Separator {
   margin: 1.5em;
   width: 375px;
   margin-left: auto;
