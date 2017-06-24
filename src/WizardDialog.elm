@@ -169,8 +169,7 @@ contents address view =
     case currentStep view.steps of
         Step step ->
             [ div [ class "WizardDialog-Content" ] <|
-                [ text step.title
-                , step.contents
+                [ step.contents
                 , wizardButtons address view
                 ]
             ]
@@ -203,6 +202,12 @@ wizardButtons address view =
                     |> Ui.Button.view (address FinishWizard)
                 ]
 
+        cancelButton =
+            span [ class "WizardDialog-Button-Previous" ]
+                [ Ui.Button.model "Cancel" "secondary" "small"
+                    |> Ui.Button.view (address Close)
+                ]
+
         buttons =
             case ( hasPreviousStep view.steps, hasNextStep view.steps ) of
                 ( True, True ) ->
@@ -218,7 +223,7 @@ wizardButtons address view =
                     []
     in
         div [ class "WizardDialog-Buttons" ]
-            buttons
+            (cancelButton :: buttons)
 
 
 stepsFromList : Step msg -> List (Step msg) -> StepList msg
