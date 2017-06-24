@@ -15,14 +15,14 @@ import Set
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
+import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
 import Util exposing (Direction(..), andAlso)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import Translation exposing (t, translate, Text(..))
-import WizardDialog
+import WizardDialog exposing (Step(..))
 
 
 -- INIT
@@ -510,6 +510,7 @@ view model =
                         [ VaultList.view model ]
                     , footer model
                     , viewNotificationCenter model
+                    , WizardDialog.view model
                     ]
                         ++ VaultDialog.viewAll model
                 ]

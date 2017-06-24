@@ -2,6 +2,7 @@ module Util
     exposing
         ( ByteUnit
         , ByteUnitPrecision
+        , sendMsg
         , delayMsg
         , delay
         , attemptDelayed
@@ -26,7 +27,6 @@ module Util
         )
 
 import Date exposing (Date)
-import Date.Distance
 import Html exposing (Html, span)
 import Html.Attributes exposing (attribute, class, classList)
 import Html.Events
@@ -35,6 +35,12 @@ import Process
 import Round
 import Task exposing (Task, andThen, attempt, perform)
 import Time exposing (Time)
+
+
+sendMsg : msg -> Cmd msg
+sendMsg msg =
+    Task.succeed msg
+        |> Task.perform identity
 
 
 delayMsg : Time -> msg -> Cmd msg

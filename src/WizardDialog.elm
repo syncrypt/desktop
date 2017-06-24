@@ -2,17 +2,22 @@ module WizardDialog
     exposing
         ( State
         , Msg
+        , Step(..)
+        , StepSettings
+        , StepList
         , init
         , open
         , close
         , view
         , update
+        , stepsFromList
         )
 
-import Html exposing (Html, div, form, span, text)
-import Html.Attributes exposing (class)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (class, classList)
 import Ui.Button
 import Ui.Modal
+import Util
 
 
 type alias StepSettings msg =
@@ -51,6 +56,7 @@ type Msg
     | ToNextStep
     | ToPreviousStep
     | ToStep Int
+    | FinishWizard
 
 
 init : (Msg -> msg) -> State msg
@@ -123,6 +129,16 @@ update msg ({ wizardDialog } as model) =
             model
                 ! []
 
+        FinishWizard ->
+            case wizardDialog.view of
+                Just { onFinishMsg } ->
+                    (close model)
+                        ! [ Util.sendMsg onFinishMsg ]
+
+                Nothing ->
+                    (close model)
+                        ! []
+
 
 view : HasWizardDialog a msg -> Html msg
 view { wizardDialog } =
@@ -155,7 +171,7 @@ contents address view =
             [ div [ class "WizardDialog-Content" ] <|
                 [ text step.title
                 , step.contents
-                , wizardButtons address step
+                , wizardButtons address view
                 ]
             ]
 
@@ -163,18 +179,46 @@ contents address view =
             []
 
 
-wizardButtons : (Msg -> msg) -> StepSettings msg -> Html msg
-wizardButtons address step =
-    div [ class "WizardDialog-Buttons" ]
-        [ span [ class "WizardDialog-Button-Previous" ]
-            [ Ui.Button.model "Previous" "secondary" "small"
-                |> Ui.Button.view (address ToPreviousStep)
-            ]
-        , span [ class "WizardDialog-Button-Next" ]
-            [ Ui.Button.model "Next" "secondary" "small"
-                |> Ui.Button.view (address ToNextStep)
-            ]
-        ]
+wizardButtons : (Msg -> msg) -> ViewSettings msg -> Html msg
+wizardButtons address view =
+    let
+        step =
+            currentStep view.steps
+
+        prevButton =
+            span [ class "WizardDialog-Button-Previous" ]
+                [ Ui.Button.model "Previous" "secondary" "small"
+                    |> Ui.Button.view (address ToPreviousStep)
+                ]
+
+        nextButton =
+            span [ class "WizardDialog-Button-Next" ]
+                [ Ui.Button.model "Next" "secondary" "small"
+                    |> Ui.Button.view (address ToNextStep)
+                ]
+
+        finishButton =
+            span [ class "WizardDialog-Button-Finish" ]
+                [ Ui.Button.model "Finish" "secondary" "small"
+                    |> Ui.Button.view (address FinishWizard)
+                ]
+
+        buttons =
+            case ( hasPreviousStep view.steps, hasNextStep view.steps ) of
+                ( True, True ) ->
+                    [ prevButton, nextButton ]
+
+                ( True, False ) ->
+                    [ prevButton, finishButton ]
+
+                ( False, True ) ->
+                    [ nextButton ]
+
+                ( False, False ) ->
+                    []
+    in
+        div [ class "WizardDialog-Buttons" ]
+            buttons
 
 
 stepsFromList : Step msg -> List (Step msg) -> StepList msg
@@ -185,6 +229,26 @@ stepsFromList firstStep steps =
 currentStep : StepList msg -> Step msg
 currentStep (StepList _ current _) =
     current
+
+
+hasPreviousStep : StepList msg -> Bool
+hasPreviousStep steps =
+    case steps of
+        StepList [] _ _ ->
+            False
+
+        _ ->
+            True
+
+
+hasNextStep : StepList msg -> Bool
+hasNextStep steps =
+    case steps of
+        StepList _ _ [] ->
+            False
+
+        _ ->
+            True
 
 
 toNextStep : StepList msg -> StepList msg
