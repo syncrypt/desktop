@@ -203,21 +203,25 @@ wizardButtons address view =
                 ]
 
         cancelButton =
-            span [ class "WizardDialog-Button-Previous" ]
+            span [ class "WizardDialog-Button-Cancel" ]
                 [ Ui.Button.model "Cancel" "secondary" "small"
                     |> Ui.Button.view (address Close)
                 ]
 
+        navigationButtons buttons =
+            div [ class "WizardDialog-NavigationButtons" ]
+                buttons
+
         buttons =
             case ( hasPreviousStep view.steps, hasNextStep view.steps ) of
                 ( True, True ) ->
-                    [ prevButton, nextButton ]
+                    [ navigationButtons [ prevButton, nextButton ] ]
 
                 ( True, False ) ->
-                    [ prevButton, finishButton ]
+                    [ navigationButtons [ prevButton ], finishButton ]
 
                 ( False, True ) ->
-                    [ nextButton ]
+                    [ navigationButtons [ nextButton ] ]
 
                 ( False, False ) ->
                     []
