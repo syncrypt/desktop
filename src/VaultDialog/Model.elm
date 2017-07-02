@@ -8,7 +8,7 @@ import Ui.Tabs
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
 import Path exposing (Path, asPath)
-import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId)
+import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId, VaultLogItem)
 import Syncrypt.User as User
 import ConfirmationDialog
 
@@ -43,6 +43,7 @@ type alias State =
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
     , users : WebData (List User.User)
+    , logItems : WebData (List VaultLogItem)
     , usersToAdd : Dict User.Email (List User.UserKey)
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
@@ -80,6 +81,7 @@ type Msg
     | GetVaultFingerprints
     | FoundVaultFingerprints (WebData (List User.Fingerprint))
     | FetchedUsers (WebData (List User.User))
+    | FetchedVaultEventLog (WebData (List VaultLogItem))
     | SetUserInput String
     | OpenIconDialog
     | SelectedIcon String
@@ -116,6 +118,7 @@ init =
     , tabs =
         Ui.Tabs.init ()
     , users = NotAsked
+    , logItems = NotAsked
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked

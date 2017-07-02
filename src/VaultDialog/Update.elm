@@ -117,6 +117,8 @@ openForVault vault model =
                     |> fetchUsers vault.id
                 , model
                     |> getVaultFingerprints vault.id
+                , model
+                    |> getVaultEventLog vault.id
                 ]
             else
                 [ cmd ]
@@ -414,6 +416,12 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
+            FetchedVaultEventLog items ->
+                ({ state | logItems = items }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
             UserKeyCheckbox email userKey _ ->
                 (state
                     |> toggleUserKey email userKey
@@ -501,6 +509,12 @@ getVaultFingerprints vaultId model =
     model.config
         |> Daemon.getVaultFingerprints vaultId
         |> Cmd.map (Model.VaultDialog vaultId << FoundVaultFingerprints)
+
+
+getVaultEventLog vaultId model =
+    model.config
+        |> Daemon.getVaultEventLog vaultId
+        |> Cmd.map (Model.VaultDialog vaultId << FetchedVaultEventLog)
 
 
 searchFingerprints email vaultId model =

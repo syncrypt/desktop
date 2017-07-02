@@ -58,6 +58,13 @@ type alias CryptoInfo =
     }
 
 
+type alias VaultLogItem =
+    { createdAt : String
+    , email : String
+    , path : String
+    }
+
+
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
 -}
 type alias Vault =
@@ -204,6 +211,14 @@ cryptoInfoDecoder =
         |> required "transfer_algo" Json.string
         |> required "hash_algo" Json.string
         |> required "fingerprint" (Json.maybe Json.string)
+
+
+logItemDecoder : Json.Decoder VaultLogItem
+logItemDecoder =
+    decode VaultLogItem
+        |> required "created_at" Json.string
+        |> required "email" Json.string
+        |> required "path" Json.string
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.

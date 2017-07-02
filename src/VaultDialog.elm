@@ -13,7 +13,7 @@ import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
-import Syncrypt.Vault exposing (Vault, VaultId)
+import Syncrypt.Vault exposing (Vault, VaultId, VaultLogItem)
 import Translation exposing (t, Text(..), timeAgo)
 import Ui.Button
 import Ui.Checkbox
@@ -261,9 +261,16 @@ tabContents vaultId state model =
         eventLogTab =
             ( t EventsTab model
             , div [ class "VaultDialog-Tab-Content" ]
-                [ tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
-                , text "TODO: Vault event log"
-                ]
+                ([ tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
+                 ]
+                    ++ (case state.logItems of
+                            Success realLogItems ->
+                                List.map renderLogItem realLogItems
+
+                            _ ->
+                                []
+                       )
+                )
             )
     in
         [ filesTab, usersTab, cryptoTab, eventLogTab ]
@@ -274,6 +281,13 @@ tabInfoText infoText =
     div []
         [ div [ class "VaultDialog-TabInfoText" ] [ text infoText ]
         , separator
+        ]
+
+
+renderLogItem : VaultLogItem -> Html msg
+renderLogItem item =
+    div []
+        [ div [ class "VaultDialog-VaultLogItem" ] [ text item.path ]
         ]
 
 

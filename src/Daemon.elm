@@ -26,6 +26,7 @@ type ApiPath
     | VaultUser VaultId Email
     | UserKeys Email
     | VaultFingerprints VaultId
+    | VaultEventLog VaultId
     | User
     | Feedback
     | Version
@@ -77,6 +78,11 @@ updateVaultMetadata vaultId metadata { config } =
 getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
 getVaultUsers vaultId config =
     apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Syncrypt.User.decoder)
+
+
+getVaultEventLog : VaultId -> Config -> Cmd (WebData (List VaultLogItem))
+getVaultEventLog vaultId config =
+    apiRequest config Get (VaultEventLog vaultId) Nothing (Json.list Syncrypt.Vault.logItemDecoder)
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
@@ -262,6 +268,9 @@ apiPath apiPath =
 
         VaultFingerprints vaultId ->
             "vault/" ++ vaultId ++ "/fingerprints"
+
+        VaultEventLog vaultId ->
+            "vault/" ++ vaultId ++ "/log"
 
         UserKeys email ->
             "user/" ++ email ++ "/keys"
