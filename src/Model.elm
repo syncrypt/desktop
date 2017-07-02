@@ -3,7 +3,7 @@ module Model exposing (..)
 import Config exposing (Config)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt)
+import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt, optionalAt)
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import Syncrypt.User exposing (Email)
@@ -16,7 +16,14 @@ import VaultDialog.Model
 
 
 type alias Stats =
-    { stats : Int, downloads : Int, uploads : Int }
+    { stats : Int
+    , downloads : Int
+    , uploads : Int
+    , totalSlots : Int
+    , busySlots : Int
+    , idleSlots : Int
+    , closedSlots : Int
+    }
 
 
 type alias CurrentUser =
@@ -113,6 +120,10 @@ statsDecoder =
         |> requiredAt [ "stats", "stats" ] Json.int
         |> requiredAt [ "stats", "downloads" ] Json.int
         |> requiredAt [ "stats", "uploads" ] Json.int
+        |> requiredAt [ "slots", "total" ] Json.int
+        |> optionalAt [ "slots", "busy" ] Json.int 0
+        |> optionalAt [ "slots", "idle" ] Json.int 0
+        |> optionalAt [ "slots", "closed" ] Json.int 0
 
 
 loginStateDecoder : Json.Decoder LoginState

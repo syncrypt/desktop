@@ -44,7 +44,15 @@ type Text
     | NoPathSelected
     | AskDeleteVault
     | AskDeleteVaultExtended
-    | Stats { stats : Int, downloads : Int, uploads : Int }
+    | Stats
+        { stats : Int
+        , downloads : Int
+        , uploads : Int
+        , totalSlots : Int
+        , busySlots : Int
+        , idleSlots : Int
+        , closedSlots : Int
+        }
     | StatsLoading
     | StatsNotAvailable
     | StatsFailedToLoad Reason
@@ -147,9 +155,13 @@ translateEnglish text =
         AskDeleteVaultExtended ->
             "Do you really want to delete this vault from the server?"
 
-        Stats { stats, downloads, uploads } ->
-            (toString stats)
-                ++ " file stats / "
+        Stats { stats, downloads, uploads, totalSlots, busySlots, idleSlots, closedSlots } ->
+            (toString (busySlots + idleSlots))
+                ++ " open connections ("
+                ++ (toString idleSlots)
+                ++ " idle) / "
+                ++ (toString stats)
+                ++ " file queries / "
                 ++ (toString downloads)
                 ++ " downloads / "
                 ++ (toString uploads)
@@ -264,9 +276,13 @@ translateGerman text =
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
-        Stats { stats, downloads, uploads } ->
-            (toString stats)
-                ++ " File Stats / "
+        Stats { stats, downloads, uploads, totalSlots, busySlots, idleSlots, closedSlots } ->
+            (toString (busySlots + idleSlots))
+                ++ " offene Verbindungen ("
+                ++ (toString idleSlots)
+                ++ " ruhend) / "
+                ++ (toString stats)
+                ++ " Dateiabfragen / "
                 ++ (toString downloads)
                 ++ " Downloads / "
                 ++ (toString uploads)
