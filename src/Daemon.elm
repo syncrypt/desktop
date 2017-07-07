@@ -82,7 +82,7 @@ getVaultUsers vaultId config =
 
 getVaultEventLog : VaultId -> Config -> Cmd (WebData (List VaultLogItem))
 getVaultEventLog vaultId config =
-    apiRequest config Get (VaultEventLog vaultId) Nothing (Json.list Syncrypt.Vault.logItemDecoder)
+    apiRequest config Get (VaultEventLog vaultId) Nothing Syncrypt.Vault.logItemsDecoder
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)

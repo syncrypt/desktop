@@ -6,7 +6,7 @@ import Date
 import Date.Distance
 import Dialog exposing (labeledItem)
 import Dict
-import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
+import Html exposing (Html, button, div, form, h4, img, input, label, span, table, td, th, tr, text)
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
@@ -260,15 +260,27 @@ tabContents vaultId state model =
 
         eventLogTab =
             ( t EventsTab model
-            , div [ class "VaultDialog-Tab-Content" ]
-                ([ tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
-                 ]
-                    ++ (case state.logItems of
+            , div [ class "VaultDialog-Tab-Events" ]
+                (tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
+                    :: (case state.logItems of
                             Success realLogItems ->
-                                List.map renderLogItem realLogItems
+                                [ table [] <|
+                                    (tr []
+                                        [ th []
+                                            [ text "Created at" ]
+                                        , th []
+                                            [ text "User" ]
+                                        , th []
+                                            [ text "Operation" ]
+                                        , th []
+                                            [ text "Path" ]
+                                        ]
+                                    )
+                                        :: (List.map renderLogItem realLogItems)
+                                ]
 
                             _ ->
-                                []
+                                [ loadingSpinner ]
                        )
                 )
             )
@@ -286,8 +298,15 @@ tabInfoText infoText =
 
 renderLogItem : VaultLogItem -> Html msg
 renderLogItem item =
-    div []
-        [ div [ class "VaultDialog-VaultLogItem" ] [ text item.path ]
+    tr [ class "VaultDialog-VaultLogItem" ]
+        [ td []
+            [ text item.createdAt ]
+        , td []
+            [ text item.email ]
+        , td []
+            [ text item.operation ]
+        , td []
+            [ text item.path ]
         ]
 
 

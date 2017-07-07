@@ -58,10 +58,15 @@ type alias CryptoInfo =
     }
 
 
+type alias VaultLogItems =
+    { items : List VaultLogItem }
+
+
 type alias VaultLogItem =
     { createdAt : String
-    , email : String
+    , operation : String
     , path : String
+    , email : String
     }
 
 
@@ -213,12 +218,20 @@ cryptoInfoDecoder =
         |> required "fingerprint" (Json.maybe Json.string)
 
 
+logItemsDecoder : Json.Decoder (List VaultLogItem)
+logItemsDecoder =
+    decode VaultLogItems
+        |> required "items" (Json.list logItemDecoder)
+        |> andThen (\{ items } -> Json.succeed items)
+
+
 logItemDecoder : Json.Decoder VaultLogItem
 logItemDecoder =
     decode VaultLogItem
         |> required "created_at" Json.string
-        |> required "email" Json.string
+        |> required "operation" Json.string
         |> required "path" Json.string
+        |> required "user_email" Json.string
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.
