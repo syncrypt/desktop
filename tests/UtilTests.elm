@@ -3,6 +3,7 @@ module UtilTests exposing (..)
 import Test exposing (..)
 import Expect
 import Util
+import Fuzz
 
 
 skipCharsWhile : Test
@@ -29,6 +30,11 @@ removeLeading =
                 "  hello  "
                     |> Util.removeLeading ' '
                     |> Expect.equal "hello  "
+        , fuzz Fuzz.string "skips all leading whitespace from random string" <|
+            \str ->
+                ("    " ++ str)
+                    |> Util.removeLeading ' '
+                    |> Expect.equal (str |> Util.removeLeading ' ')
         ]
 
 
@@ -45,4 +51,9 @@ removeTrailing =
                 "  hello   "
                     |> Util.removeTrailing ' '
                     |> Expect.equal "  hello"
+        , fuzz Fuzz.string "skips all trailing whitespace from random string" <|
+            \str ->
+                (str ++ "    ")
+                    |> Util.removeTrailing ' '
+                    |> Expect.equal (str |> Util.removeTrailing ' ')
         ]
