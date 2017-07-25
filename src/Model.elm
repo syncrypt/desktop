@@ -6,6 +6,7 @@ import Json.Decode as Json exposing (andThen, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt, optionalAt)
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
+import SettingsDialog.Model
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
 import Time exposing (Time)
@@ -62,6 +63,7 @@ type alias Model =
     , login : LoginState
     , language : Translation.Language
     , wizardDialog : WizardDialog.State Msg
+    , settingsDialog : SettingsDialog.Model.State Msg
     }
 
 
@@ -111,6 +113,7 @@ type Msg
     | LogoutResult (WebData StatusResponse)
     | LoginDialog LoginDialog.Model.Msg
     | WizardDialog WizardDialog.Msg
+    | SettingsDialog SettingsDialog.Model.Msg
 
 
 
@@ -184,6 +187,7 @@ init config =
     , login = Unknown
     , language = Translation.English
     , wizardDialog = WizardDialog.init WizardDialog
+    , settingsDialog = SettingsDialog.Model.init SettingsDialog
     }
 
 

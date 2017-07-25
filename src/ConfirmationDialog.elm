@@ -1,7 +1,7 @@
 module ConfirmationDialog
     exposing
         ( Model
-        , Msg
+        , Msg(..)
         , init
         , open
         , close

@@ -12,12 +12,14 @@ import Model exposing (..)
 import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
+import SettingsDialog
+import SettingsDialog.Model
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
 import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing (Direction(..), andAlso)
+import Util exposing (Direction(..), andAlso, iconButton, IconButton(..))
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
@@ -185,7 +187,9 @@ update action model =
 
         OpenAccountSettings ->
             -- TODO
-            model
+            (model
+                |> SettingsDialog.open
+            )
                 ! []
 
         Login ->
@@ -239,6 +243,10 @@ update action model =
         WizardDialog msg ->
             model
                 |> WizardDialog.update msg
+
+        SettingsDialog msg ->
+            model
+                |> SettingsDialog.update msg
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
@@ -511,6 +519,7 @@ view model =
                     , footer model
                     , viewNotificationCenter model
                     , WizardDialog.view model
+                    , SettingsDialog.view model
                     ]
                         ++ VaultDialog.viewAll model
                 ]
