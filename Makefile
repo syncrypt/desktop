@@ -68,14 +68,16 @@ test-setup:
 test:
 	elm-test
 
+deps:
+	npm install && elm-install
+
 clean-deps:
 	rm -rf elm-stuff
+	rm -rf node_modules/
 
 clean:
-	rm -rf $(BUILD_DIR)/
+	rm -rf $(BUILD_DIR)
 	rm -rf $(RELEASE_DIR)/tmp/
 
-distclean: clean
-	rm -rf elm-stuff/
-	rm -rf node_modules/
-	rm -rf release/
+distclean: clean clean-deps
+	rm -rf $(RELEASE_DIR)

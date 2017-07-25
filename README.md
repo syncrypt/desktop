@@ -16,7 +16,8 @@ http://www.gnu.org/licenses/quick-guide-gplv3.html
 
 Install Elm - see: https://guide.elm-lang.org/install.html
 
-Install elm-github-install (needed for elm-ui):
+Install elm-github-install (needed for elm-ui and other custom packages with
+native code):
 
     $ npm install elm-github-install -g
 
