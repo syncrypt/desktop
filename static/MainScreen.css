@@ -144,9 +144,22 @@ a:hover {
 }
 
 .MainScreen-Buttons {
+  z-index: 1;
   position: absolute;
-  right: 10px;
-  top: 17px;
+  right: 25px;
+  top: 12px;
+}
+
+.MainScreen-IconButton:hover {
+  opacity: 0.66;
+}
+
+.MainScreen-IconButton .Icon {
+  display: inline-block;
+  background-repeat:no-repeat;
+  background-size: 40px 40px;
+  width:  40px;
+  height: 40px;
 }
 
 .Hidden {

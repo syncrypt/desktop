@@ -533,22 +533,8 @@ header : Html Msg
 header =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-Buttons" ]
-            [ node "IconButton"
-                [ attribute
-                    "data-for"
-                    "header-tooltip"
-                , attribute "data-tip" "Account Settings"
-                , attribute "icon" "settings"
-                , onClick OpenAccountSettings
-                ]
-                []
-            , node "IconButton"
-                [ attribute "data-for" "header-tooltip"
-                , attribute "data-tip" "Logout"
-                , attribute "icon" "logout"
-                , onClick Logout
-                ]
-                []
+            [ iconButton SettingsButton [ onClick OpenAccountSettings ]
+            , iconButton LogoutButton [ onClick Logout ]
             ]
         ]
 

@@ -24,11 +24,13 @@ module Util
         , Direction(..)
         , TooltipLength(..)
         , dateDecoder
+        , IconButton(..)
+        , iconButton
         )
 
 import Date exposing (Date)
-import Html exposing (Html, span)
-import Html.Attributes exposing (attribute, class, classList)
+import Html exposing (Html, span, div, text)
+import Html.Attributes exposing (attribute, class, classList, style)
 import Html.Events
 import Json.Decode
 import Process
@@ -352,3 +354,48 @@ dateDecoder =
     in
         Json.Decode.string
             |> Json.Decode.andThen convert
+
+
+type IconButton
+    = SettingsButton
+    | LogoutButton
+
+
+iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
+iconButton buttonType attrs =
+    (tooltipItem Bottom
+        Auto
+        (iconButtonTooltip buttonType)
+        [ div
+            (class "MainScreen-IconButton" :: attrs)
+            [ div
+                [ class "Icon"
+                , style
+                    [ ( "backgroundImage"
+                      , "url(assets/" ++ (iconName buttonType) ++ ".png)"
+                      )
+                    ]
+                ]
+                []
+            ]
+        ]
+    )
+
+
+iconName : IconButton -> String
+iconName buttonType =
+    case buttonType of
+        LogoutButton ->
+            "logout"
+
+        SettingsButton ->
+            "settings"
+
+
+iconButtonTooltip buttonType =
+    case buttonType of
+        LogoutButton ->
+            "Logout"
+
+        SettingsButton ->
+            "Account & Software Settings"
