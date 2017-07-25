@@ -13,7 +13,6 @@ import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
 import SettingsDialog
-import SettingsDialog.Model
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
@@ -172,7 +171,7 @@ update action model =
             model
                 |> deletedVault data
 
-        VaultDialog vaultId msg ->
+        VaultDialogMsg vaultId msg ->
             model
                 |> VaultDialog.Update.update msg vaultId
 
@@ -200,7 +199,7 @@ update action model =
             model
                 |> logout
 
-        Model.LoginDialog msg ->
+        Model.LoginDialogMsg msg ->
             model
                 |> LoginDialog.Update.update msg
 
@@ -216,13 +215,13 @@ update action model =
             model
                 ! [ Ports.focusOn id ]
 
-        NotificationCenter msg ->
+        NotificationCenterMsg msg ->
             let
                 ( state, cmd ) =
                     Ui.NotificationCenter.update msg model.notificationCenter
             in
                 { model | notificationCenter = state }
-                    ! [ Cmd.map NotificationCenter cmd ]
+                    ! [ Cmd.map NotificationCenterMsg cmd ]
 
         UpdatedStatsFromApi stats ->
             { model | stats = stats }
@@ -240,11 +239,11 @@ update action model =
             model
                 |> notifyText (VaultMetadataUpdateFailed vaultId)
 
-        WizardDialog msg ->
+        WizardDialogMsg msg ->
             model
                 |> WizardDialog.update msg
 
-        SettingsDialog msg ->
+        SettingsDialogMsg msg ->
             model
                 |> SettingsDialog.update msg
 
@@ -354,7 +353,7 @@ notify body model =
             Ui.NotificationCenter.notify content model.notificationCenter
     in
         { model | notificationCenter = state }
-            ! [ Cmd.map NotificationCenter cmd ]
+            ! [ Cmd.map NotificationCenterMsg cmd ]
 
 
 notifyText : Translation.Text -> Model -> ( Model, Cmd Msg )
@@ -535,7 +534,7 @@ currentClass model =
 
 viewNotificationCenter : Model -> Html Msg
 viewNotificationCenter { notificationCenter } =
-    Ui.NotificationCenter.view NotificationCenter notificationCenter
+    Ui.NotificationCenter.view NotificationCenterMsg notificationCenter
 
 
 header : Html Msg

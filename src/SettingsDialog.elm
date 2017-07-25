@@ -24,11 +24,11 @@ view { settingsDialog } =
 update : Msg -> HasSettingsDialog a msg -> ( HasSettingsDialog a msg, Cmd msg )
 update msg ({ settingsDialog } as model) =
     case msg of
-        ConfirmationDialog (ConfirmationDialog.Close) ->
+        ConfirmationDialogMsg (ConfirmationDialog.Close) ->
             (close model)
                 ! []
 
-        ConfirmationDialog msg ->
+        ConfirmationDialogMsg msg ->
             (settingsDialog
                 |> ConfirmationDialog.update msg
                 |> asStateIn model

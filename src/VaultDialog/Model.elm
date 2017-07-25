@@ -57,18 +57,18 @@ type RequiresConfirmation
 
 
 type Msg
-    = Modal Ui.Modal.Msg
-    | ConfirmationDialog ConfirmationDialog.Msg
+    = ModalMsg Ui.Modal.Msg
+    | ConfirmationDialogMsg ConfirmationDialog.Msg
     | NameChanged
-    | NameInput Ui.Input.Msg
-    | UserInput Ui.Input.Msg
-    | FileCheckBox Path Ui.Checkbox.Msg
+    | NameInputMsg Ui.Input.Msg
+    | UserInputMsg Ui.Input.Msg
+    | FileCheckBoxMsg Path Ui.Checkbox.Msg
     | NestedFileList Path FolderItem
     | ToggleIgnorePath Path
     | OpenFolderDialog
     | OpenFolder String
     | SelectedFolder Path
-    | Tabs Ui.Tabs.Msg
+    | TabsMsg Ui.Tabs.Msg
     | CollapseFolder Path
     | ExpandFolder Path
     | Confirm RequiresConfirmation
@@ -105,7 +105,7 @@ init =
             |> Ui.Modal.closable False
             |> Ui.Modal.backdrop False
     , confirmationDialog =
-        ConfirmationDialog.init ConfirmationDialog
+        ConfirmationDialog.init ConfirmationDialogMsg
     , nameInput =
         Ui.Input.init ()
             |> Ui.Input.placeholder "Vault Name"

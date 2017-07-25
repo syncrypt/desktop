@@ -83,7 +83,7 @@ openForFlyingVault flyingVault model =
             |> asModalIn state
             |> asStateIn flyingVault.id model
         )
-            ! [ Cmd.map (Model.VaultDialog flyingVault.id) cmd ]
+            ! [ Cmd.map (Model.VaultDialogMsg flyingVault.id) cmd ]
 
 
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
@@ -98,7 +98,7 @@ openForVault vault model =
                                 |> setNameInputValue (nameOrId vault)
                     in
                         ( True
-                        , ( state, Cmd.map (Model.VaultDialog vault.id) cmd )
+                        , ( state, Cmd.map (Model.VaultDialogMsg vault.id) cmd )
                         )
 
                 Just s ->
@@ -198,7 +198,7 @@ update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )
 update msg vaultId ({ vaultDialogs } as model) =
     let
         dialogMsg msg =
-            (Model.VaultDialog vaultId) << msg
+            (Model.VaultDialogMsg vaultId) << msg
 
         dialogCmd msg ( model, cmd ) =
             ( model, cmd |> map (dialogMsg msg) )
@@ -207,7 +207,7 @@ update msg vaultId ({ vaultDialogs } as model) =
             dialogState vaultId model
     in
         case msg of
-            Modal msg ->
+            ModalMsg msg ->
                 (state.modal
                     |> Ui.Modal.update msg
                     |> asModalIn state
@@ -222,47 +222,47 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            ConfirmationDialog msg ->
+            ConfirmationDialogMsg msg ->
                 (state
                     |> ConfirmationDialog.update msg
                     |> asStateIn vaultId model
                 )
                     ! []
 
-            NameInput msg ->
+            NameInputMsg msg ->
                 let
                     ( nameInput, cmd ) =
                         Ui.Input.update msg state.nameInput
-                            |> dialogCmd NameInput
+                            |> dialogCmd NameInputMsg
                 in
                     ({ state | nameInput = nameInput }
                         |> asStateIn vaultId model
                     )
                         ! [ cmd ]
 
-            UserInput msg ->
+            UserInputMsg msg ->
                 let
                     ( userInput, cmd ) =
                         Ui.Input.update msg state.userInput
-                            |> dialogCmd UserInput
+                            |> dialogCmd UserInputMsg
                 in
                     ({ state | userInput = userInput }
                         |> asStateIn vaultId model
                     )
                         ! [ cmd ]
 
-            Tabs msg ->
+            TabsMsg msg ->
                 let
                     ( tabs, cmd ) =
                         Ui.Tabs.update msg state.tabs
-                            |> dialogCmd Tabs
+                            |> dialogCmd TabsMsg
                 in
                     ({ state | tabs = tabs }
                         |> asStateIn vaultId model
                     )
                         ! [ cmd ]
 
-            FileCheckBox path _ ->
+            FileCheckBoxMsg path _ ->
                 (state
                     |> hasChanged
                     |> toggleIgnorePath path
@@ -320,7 +320,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                 let
                     ( nameInput, nameInputCmd ) =
                         Ui.Input.setValue (folderName path) state.nameInput
-                            |> dialogCmd NameInput
+                            |> dialogCmd NameInputMsg
                 in
                     ({ state
                         | localFolderPath = Just path
@@ -402,7 +402,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                 let
                     ( input, cmd ) =
                         Ui.Input.setValue "" state.userInput
-                            |> dialogCmd UserInput
+                            |> dialogCmd UserInputMsg
                 in
                     ({ state | userInput = input }
                         |> hasChanged
@@ -483,13 +483,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                 ({ state | vaultFingerprints = RemoteData.map Set.fromList data }
                     |> asStateIn state.id model
                 )
-                    |> Model.retryOnFailure data (Model.VaultDialog vaultId GetVaultFingerprints)
+                    |> Model.retryOnFailure data (Model.VaultDialogMsg vaultId GetVaultFingerprints)
 
             SetUserInput email ->
                 let
                     ( userInput, cmd ) =
                         Ui.Input.setValue email state.userInput
-                            |> dialogCmd UserInput
+                            |> dialogCmd UserInputMsg
                 in
                     ({ state
                         | userInput = userInput
@@ -508,25 +508,25 @@ update msg vaultId ({ vaultDialogs } as model) =
 getVaultFingerprints vaultId model =
     model.config
         |> Daemon.getVaultFingerprints vaultId
-        |> Cmd.map (Model.VaultDialog vaultId << FoundVaultFingerprints)
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FoundVaultFingerprints)
 
 
 getVaultEventLog vaultId model =
     model.config
         |> Daemon.getVaultEventLog vaultId
-        |> Cmd.map (Model.VaultDialog vaultId << FetchedVaultEventLog)
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultEventLog)
 
 
 searchFingerprints email vaultId model =
     model.config
         |> Daemon.getUserKeys email
-        |> Cmd.map (Model.VaultDialog vaultId << FoundUserKeys email)
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
 
 
 fetchUsers vaultId model =
     model.config
         |> Daemon.getVaultUsers vaultId
-        |> Cmd.map (Model.VaultDialog vaultId << FetchedUsers)
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedUsers)
 
 
 asStateIn : VaultId -> Model -> State -> Model
@@ -545,7 +545,7 @@ setNameInputValue value state =
                 |> Ui.Input.setValue value
     in
         ( { state | nameInput = nameInput }
-        , Cmd.map NameInput cmd
+        , Cmd.map NameInputMsg cmd
         )
 
 

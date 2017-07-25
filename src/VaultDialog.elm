@@ -55,16 +55,16 @@ subscriptions : Model -> Sub Model.Msg
 subscriptions _ =
     let
         fileListMsg ( vaultId, rootPath, folderItem ) =
-            Model.VaultDialog vaultId (NestedFileList rootPath folderItem)
+            Model.VaultDialogMsg vaultId (NestedFileList rootPath folderItem)
 
         selectedFolderMsg ( vaultId, path ) =
-            Model.VaultDialog vaultId (SelectedFolder path)
+            Model.VaultDialogMsg vaultId (SelectedFolder path)
 
         selectedIconMsg ( vaultId, path ) =
-            Model.VaultDialog vaultId (SelectedIcon path)
+            Model.VaultDialogMsg vaultId (SelectedIcon path)
 
         selectedExportFileMsg ( vaultId, path ) =
-            Model.VaultDialog vaultId (SelectedExportFile path)
+            Model.VaultDialogMsg vaultId (SelectedExportFile path)
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
@@ -88,7 +88,7 @@ view vaultId model =
             dialogState vaultId model
 
         viewConfig =
-            { address = (Model.VaultDialog vaultId << Modal)
+            { address = (Model.VaultDialogMsg vaultId << ModalMsg)
             , contents = contents vaultId model
             , footer = []
             , title =
@@ -114,7 +114,7 @@ contents vaultId model =
             dialogState vaultId model
 
         tabsViewConfig =
-            { address = (Model.VaultDialog vaultId << Tabs)
+            { address = (Model.VaultDialogMsg vaultId << TabsMsg)
             , contents = tabContents vaultId state model
             }
 
@@ -123,7 +123,7 @@ contents vaultId model =
 
         confirmationDialog =
             ConfirmationDialog.view state
-                |> Html.map (Model.VaultDialog state.id)
+                |> Html.map (Model.VaultDialogMsg state.id)
 
         buttons =
             div [ class "VaultDialog-Buttons" ]
@@ -143,14 +143,14 @@ tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
 tabContents vaultId state model =
     let
         msg =
-            Model.VaultDialog vaultId
+            Model.VaultDialogMsg vaultId
 
         -- converter from Html Msg -> Html Model.Msg
         rootMsg =
             Html.map msg
 
         searchKeys =
-            Model.VaultDialog vaultId <|
+            Model.VaultDialogMsg vaultId <|
                 SearchUserKeys (userInputEmail state)
 
         filesTab =
@@ -335,7 +335,7 @@ exportButton vault =
     span
         [ class "VaultDialog-Button-Export" ]
         [ Ui.Button.model "Export vault key bundle" "secondary" "medium"
-            |> Ui.Button.view (Model.VaultDialog vault.id OpenExportDialog)
+            |> Ui.Button.view (Model.VaultDialogMsg vault.id OpenExportDialog)
         ]
 
 
@@ -361,7 +361,7 @@ deleteButton vaultId state model =
             ]
         ]
         [ Ui.Button.model "Delete from Server" "danger" "small"
-            |> Ui.Button.view (Model.VaultDialog vaultId (Confirm DeleteVault))
+            |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm DeleteVault))
         ]
 
 
@@ -374,7 +374,7 @@ removeButton vaultId state =
             ]
         ]
         [ Ui.Button.model "Stop syncing" "warning" "small"
-            |> Ui.Button.view (Model.VaultDialog vaultId (Confirm RemoveVault))
+            |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm RemoveVault))
         ]
 
 
@@ -479,7 +479,7 @@ nameInput msg state =
                 Auto
                 "The name of the vault. Chosen by the owner."
                 [ Ui.Input.view state.nameInput
-                    |> Html.map (msg << NameInput)
+                    |> Html.map (msg << NameInputMsg)
                 ]
             )
         ]
@@ -524,7 +524,7 @@ userInput vaultId state =
             "Search for a user's email address to add them to this vault"
             [ Ui.Input.view
                 state.userInput
-                |> Html.map (Model.VaultDialog vaultId << UserInput)
+                |> Html.map (Model.VaultDialogMsg vaultId << UserInputMsg)
             ]
         )
 
@@ -672,7 +672,7 @@ fileCheckbox path state =
 
         checkbox =
             Ui.Checkbox.view fileCheckboxSettings
-                |> Html.map (FileCheckBox path)
+                |> Html.map (FileCheckBoxMsg path)
 
         checkboxWithLabel =
             labeledItem Right

@@ -11,7 +11,7 @@ type alias State msg =
 
 
 type Msg
-    = ConfirmationDialog ConfirmationDialog.Msg
+    = ConfirmationDialogMsg ConfirmationDialog.Msg
     | Close
 
 
@@ -19,5 +19,5 @@ init : (Msg -> msg) -> State msg
 init toMsg =
     { toMsg = toMsg
     , hasChangesPending = False
-    , confirmationDialog = ConfirmationDialog.init ConfirmationDialog
+    , confirmationDialog = ConfirmationDialog.init ConfirmationDialogMsg
     }

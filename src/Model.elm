@@ -100,9 +100,9 @@ type Msg
     | CreateNewVault
     | CreatedVault VaultDialog.Model.State (WebData Vault)
     | ExportedVault VaultId (WebData ExportStatusResponse)
-    | VaultDialog VaultId VaultDialog.Model.Msg
+    | VaultDialogMsg VaultId VaultDialog.Model.Msg
     | FocusOn String
-    | NotificationCenter Ui.NotificationCenter.Msg
+    | NotificationCenterMsg Ui.NotificationCenter.Msg
     | RemoveVaultFromSync VaultId
     | RemovedVaultFromSync (WebData VaultId)
     | DeletedVault (WebData VaultId)
@@ -111,9 +111,9 @@ type Msg
     | Login
     | LoginResult Email (WebData StatusResponse)
     | LogoutResult (WebData StatusResponse)
-    | LoginDialog LoginDialog.Model.Msg
-    | WizardDialog WizardDialog.Msg
-    | SettingsDialog SettingsDialog.Model.Msg
+    | LoginDialogMsg LoginDialog.Model.Msg
+    | WizardDialogMsg WizardDialog.Msg
+    | SettingsDialogMsg SettingsDialog.Model.Msg
 
 
 
@@ -186,8 +186,8 @@ init config =
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
     , language = Translation.English
-    , wizardDialog = WizardDialog.init WizardDialog
-    , settingsDialog = SettingsDialog.Model.init SettingsDialog
+    , wizardDialog = WizardDialog.init WizardDialogMsg
+    , settingsDialog = SettingsDialog.Model.init SettingsDialogMsg
     }
 
 
