@@ -1,9 +1,15 @@
 # Syncrypt Desktop in Elm
 
-This is a WIP version of a rewrite of the Syncrypt Desktop UI in Elm.
+This is our next iteration of the Syncrypt Desktop UI written in Elm.
 Syncrypt is a fully encrypted file storage service for groups and private
-backups. This is a WIP rewrite of our platform independent GUI for the [Syncrypt
+backups. This is our platform independent GUI for the [Syncrypt
 client](https://github.com/syncrypt/client).
+
+## Download
+
+You can download the latest supported Syncrypt releases from our [official releases
+page](http://alpha.syncrypt.space/releases/). Note that Syncrypt is currently
+in closed alpha. You can get your alpha invite @ [syncrypt.space](https://syncrypt.space).
 
 ## License
 
