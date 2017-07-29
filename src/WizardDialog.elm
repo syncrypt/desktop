@@ -186,25 +186,25 @@ wizardButtons address view =
 
         prevButton =
             span [ class "WizardDialog-Button-Previous" ]
-                [ Ui.Button.model "Previous" "secondary" "small"
+                [ Ui.Button.model "Previous" "secondary" "medium"
                     |> Ui.Button.view (address ToPreviousStep)
                 ]
 
         nextButton =
             span [ class "WizardDialog-Button-Next" ]
-                [ Ui.Button.model "Next" "secondary" "small"
+                [ Ui.Button.model "Next" "secondary" "medium"
                     |> Ui.Button.view (address ToNextStep)
                 ]
 
         finishButton =
             span [ class "WizardDialog-Button-Finish" ]
-                [ Ui.Button.model "Finish" "secondary" "small"
+                [ Ui.Button.model "Finish" "secondary" "medium"
                     |> Ui.Button.view (address FinishWizard)
                 ]
 
         cancelButton =
             span [ class "WizardDialog-Button-Cancel" ]
-                [ Ui.Button.model "Cancel" "secondary" "small"
+                [ Ui.Button.model "Cancel" "secondary" "medium"
                     |> Ui.Button.view (address Close)
                 ]
 

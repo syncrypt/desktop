@@ -103,7 +103,7 @@ init =
     , modal =
         Ui.Modal.init
             |> Ui.Modal.closable False
-            |> Ui.Modal.backdrop False
+            |> Ui.Modal.backdrop True
     , confirmationDialog =
         ConfirmationDialog.init ConfirmationDialogMsg
     , nameInput =

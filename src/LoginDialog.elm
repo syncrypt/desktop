@@ -59,7 +59,7 @@ dialogInput body =
 loginButton : Html Model.Msg
 loginButton =
     span [ class "Button-Login" ]
-        [ Ui.Button.model "Login" "primary" "small"
+        [ Ui.Button.model "Login" "primary" "medium"
             |> Ui.Button.view Model.Login
         ]
 

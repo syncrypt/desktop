@@ -347,7 +347,7 @@ cancelButton vaultId state =
             , ( "Hidden", not state.hasChangesPending )
             ]
         ]
-        [ Ui.Button.model "Cancel Changes" "secondary" "small"
+        [ Ui.Button.model "Cancel Changes" "secondary" "medium"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
 
@@ -360,7 +360,7 @@ deleteButton vaultId state model =
             , ( "VaultDialog-Button-Delete", True )
             ]
         ]
-        [ Ui.Button.model "Delete from Server" "danger" "small"
+        [ Ui.Button.model "Delete from Server" "danger" "medium"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm DeleteVault))
         ]
 
@@ -373,7 +373,7 @@ removeButton vaultId state =
             , ( "VaultDialog-Button-Remove", True )
             ]
         ]
-        [ Ui.Button.model "Stop syncing" "warning" "small"
+        [ Ui.Button.model "Stop syncing" "warning" "medium"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm RemoveVault))
         ]
 
@@ -396,7 +396,7 @@ saveButton vaultId state =
                     ( "Close", Model.CloseVaultDetails vaultId )
     in
         span [ class "VaultDialog-Button-Save" ]
-            [ Ui.Button.model label "primary" "small"
+            [ Ui.Button.model label "primary" "medium"
                 |> Ui.Button.view msg
             ]
 
@@ -411,7 +411,7 @@ confirmUserKeysButton state =
             if List.isEmpty (keysToAdd email state) then
                 []
             else
-                [ Ui.Button.model "Invite with selected keys" "primary" "small"
+                [ Ui.Button.model "Invite with selected keys" "primary" "medium"
                     |> Ui.Button.view (Confirmed AddUser)
                 ]
 
