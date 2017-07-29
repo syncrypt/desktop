@@ -218,8 +218,8 @@ flyingVaultItem model flyingVault =
         ]
 
 
-newVaultItem : Html Msg
-newVaultItem =
+newVaultItemButton : Html Msg
+newVaultItemButton =
     div
         [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
         , attribute "data-offset" "{'bottom': -15, 'left': 0}"
@@ -258,7 +258,7 @@ vaultList model =
                 |> List.map (vaultItem model)
     in
         div [ class "VaultList-VaultList" ]
-            ((vaultListInfo :: vaultItems) ++ [ newVaultItem ])
+            ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
 flyingVaultList : Model -> Html Msg
