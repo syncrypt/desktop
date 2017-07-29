@@ -249,6 +249,13 @@ update action model =
             model
                 |> SettingsDialog.update msg
 
+        OpenSetupWizardDialog ->
+            model
+                |> openSetupWizard
+
+        SetupWizardFinished ->
+            model
+                |> notify (text "Syncrypt initialized")
 
         EmailCompletionList emails ->
             let
@@ -257,6 +264,34 @@ update action model =
             in
                 { model | emailCompletionList = emails }
                     ! []
+
+
+openSetupWizard : Model -> ( Model, Cmd msg )
+openSetupWizard model =
+    let
+        wizardContent body =
+            div [ class "MainScreen-SetupWizard" ]
+                body
+
+        steps =
+            [ Step
+                { title = "Welcome to Syncrypt"
+                , contents =
+                    wizardContent
+                        [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
+                }
+            , Step
+                { title = "Account setup"
+                , contents =
+                    wizardContent
+                        [ text "Setup your account here" ]
+                }
+            ]
+    in
+        (model
+            |> WizardDialog.open steps SetupWizardFinished
+        )
+            ! []
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )

@@ -115,6 +115,8 @@ type Msg
     | LoginDialogMsg LoginDialog.Model.Msg
     | WizardDialogMsg WizardDialog.Msg
     | SettingsDialogMsg SettingsDialog.Model.Msg
+    | OpenSetupWizardDialog
+    | SetupWizardFinished
     | EmailCompletionList (List Email)
 
 

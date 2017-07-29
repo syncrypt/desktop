@@ -3,7 +3,7 @@
 }
 
 .WizardDialog-Buttons ui-button {
-  width: 100px;
+  min-width: 120px;
 }
 
 .WizardDialog-NavigationButtons {
