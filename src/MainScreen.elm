@@ -580,7 +580,7 @@ view model =
                 [ LoginDialog.view model ]
 
             LoggedIn _ ->
-                [ div [ class (currentClass model), animations 2.5 [ SlideIn Top, FadeIn ] ] <|
+                [ div [ class (currentClass model) ] <|
                     [ header
                     , div [ class "MainScreen-Container" ]
                         [ VaultList.view model ]
