@@ -39,6 +39,7 @@ init config =
             [ Daemon.getLoginState model
             , Daemon.getVaults model
             , Daemon.getStats model
+            , Daemon.getConfig model
             ]
     in
         model ! initialActions
@@ -81,6 +82,10 @@ update action model =
         UpdateVaults ->
             model
                 |> updateVaults
+
+        UpdateDaemonConfig ->
+            model
+                ! [ Daemon.getConfig model ]
 
         UpdateFlyingVaults ->
             model
@@ -246,6 +251,14 @@ update action model =
         SettingsDialogMsg msg ->
             model
                 |> SettingsDialog.update msg
+
+        UpdatedDaemonConfig (Success daemonConfig) ->
+            { model | isFirstLaunch = daemonConfig.gui.isFirstLaunch }
+                ! []
+
+        UpdatedDaemonConfig msg ->
+            model
+                |> Model.retryOnFailure msg UpdateDaemonConfig
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )

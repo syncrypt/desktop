@@ -15,7 +15,7 @@ import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
 import WizardDialog
-import Syncrypt.Stats exposing (KeyState(..), Stats)
+import Syncrypt.Daemon exposing (KeyState(..), Stats, DaemonConfig)
 
 
 type alias CurrentUser =
@@ -46,6 +46,7 @@ type alias Model =
     , state : State
     , stats : WebData Stats
     , sidebarOpen : Bool
+    , isFirstLaunch : Bool
     , now : Maybe Time
     , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
@@ -77,6 +78,8 @@ type Msg
     | UpdatedVaultsFromApi (WebData (List Vault))
     | UpdatedFlyingVaultsFromApi (WebData (List FlyingVault))
     | UpdatedStatsFromApi (WebData Stats)
+    | UpdateDaemonConfig
+    | UpdatedDaemonConfig (WebData DaemonConfig)
     | OpenVaultDetails Vault
     | OpenVaultFolder Vault
     | OpenFlyingVaultDetails FlyingVault
@@ -188,6 +191,7 @@ init config =
     , state = LoadingVaults
     , stats = NotAsked
     , sidebarOpen = False
+    , isFirstLaunch = False
     , now = Nothing
     , loginDialog = LoginDialog.Model.init
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]

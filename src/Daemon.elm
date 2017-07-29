@@ -8,6 +8,7 @@ import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optio
 import Model exposing (..)
 import Syncrypt.User exposing (Email, Password, User, UserKey, Fingerprint)
 import Syncrypt.Vault exposing (..)
+import Syncrypt.Daemon exposing (daemonConfigDecoder)
 import Task exposing (Task)
 import Time exposing (Time)
 import Util exposing (dateDecoder)
@@ -28,6 +29,7 @@ type ApiPath
     | VaultFingerprints VaultId
     | VaultEventLog VaultId
     | User
+    | DaemonConfig
     | Feedback
     | Version
     | Login
@@ -119,6 +121,12 @@ getUserKeys email config =
 getUser : Email -> Config -> Cmd (WebData User)
 getUser email config =
     apiRequest config Get User Nothing Syncrypt.User.decoder
+
+
+getConfig : Model -> Cmd Msg
+getConfig { config } =
+    apiRequest config Get DaemonConfig Nothing daemonConfigDecoder
+        |> Cmd.map UpdatedDaemonConfig
 
 
 getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
@@ -277,6 +285,9 @@ apiPath apiPath =
 
         User ->
             "auth/user"
+
+        DaemonConfig ->
+            "config"
 
         Feedback ->
             "feedback"

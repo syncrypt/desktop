@@ -12,7 +12,7 @@ import Date.Distance
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
 import Time exposing (Time)
-import Syncrypt.Stats exposing (KeyState, Stats)
+import Syncrypt.Daemon exposing (KeyState, Stats)
 
 
 type Language
