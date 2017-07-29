@@ -39,6 +39,7 @@ init config =
             [ Daemon.getLoginState model
             , Daemon.getVaults model
             , Daemon.getStats model
+            , Ports.updateEmailCompletionList ()
             ]
     in
         model ! initialActions
@@ -57,6 +58,7 @@ subscriptions model =
                 , Time.every (10 * Time.minute) (\_ -> UpdateVaults)
                 , Time.every Time.second SetTime
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
+                , Ports.getEmailCompletionList EmailCompletionList
                 ]
 
         _ ->
@@ -246,6 +248,15 @@ update action model =
         SettingsDialogMsg msg ->
             model
                 |> SettingsDialog.update msg
+
+
+        EmailCompletionList emails ->
+            let
+                _ =
+                    Debug.log "got email completion list: " emails
+            in
+                { model | emailCompletionList = emails }
+                    ! []
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )

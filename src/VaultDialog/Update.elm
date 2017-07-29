@@ -470,10 +470,19 @@ update msg vaultId ({ vaultDialogs } as model) =
                           ]
 
             FoundUserKeys email keys ->
-                ({ state | userKeys = Dict.insert email keys state.userKeys }
-                    |> asStateIn vaultId model
-                )
-                    ! []
+                let
+                    cmds =
+                        case keys of
+                            Success _ ->
+                                [ Ports.addEmailToCompletionList email ]
+
+                            _ ->
+                                []
+                in
+                    ({ state | userKeys = Dict.insert email keys state.userKeys }
+                        |> asStateIn vaultId model
+                    )
+                        ! cmds
 
             GetVaultFingerprints ->
                 model

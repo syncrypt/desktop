@@ -112,6 +112,24 @@ var openVaultFolder = function(path) {
   }
 }
 
+var addEmailToCompletionList = function(email) {
+  var emails = Array(localStorage["EmailCompletionList"])
+
+  if(emails.includes(email)) {
+    return;
+  }
+
+  emails.push(email)
+  localStorage["EmailCompletionList"] = emails
+}
+
+var updateEmailCompletionList = function() {
+  var emails = localStorage["EmailCompletionList"]
+  if(emails) {
+    elmApp.ports.getEmailCompletionList.send(Array(emails))
+  }
+}
+
 var setupElmApp = function(daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -126,6 +144,8 @@ var setupElmApp = function(daemonApiToken) {
   elmApp.ports.openVaultFolder.subscribe(openVaultFolder)
   elmApp.ports.openIconFileDialog.subscribe(openIconFileDialog)
   elmApp.ports.openExportFileDialog.subscribe(openExportFileDialog)
+  elmApp.ports.addEmailToCompletionList.subscribe(addEmailToCompletionList)
+  elmApp.ports.updateEmailCompletionList.subscribe(updateEmailCompletionList)
 }
 
 readAuthToken(setupElmApp)
