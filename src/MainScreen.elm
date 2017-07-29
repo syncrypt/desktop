@@ -40,6 +40,7 @@ init config =
             , Daemon.getVaults model
             , Daemon.getStats model
             , Ports.updateEmailCompletionList ()
+            , Daemon.getConfig model
             ]
     in
         model ! initialActions
@@ -83,6 +84,10 @@ update action model =
         UpdateVaults ->
             model
                 |> updateVaults
+
+        UpdateDaemonConfig ->
+            model
+                ! [ Daemon.getConfig model ]
 
         UpdateFlyingVaults ->
             model
@@ -264,6 +269,14 @@ update action model =
             in
                 { model | emailCompletionList = emails }
                     ! []
+
+        UpdatedDaemonConfig (Success daemonConfig) ->
+            { model | isFirstLaunch = daemonConfig.gui.isFirstLaunch }
+                ! []
+
+        UpdatedDaemonConfig msg ->
+            model
+                |> Model.retryOnFailure msg UpdateDaemonConfig
 
 
 openSetupWizard : Model -> ( Model, Cmd msg )
