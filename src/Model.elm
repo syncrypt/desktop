@@ -15,17 +15,7 @@ import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
 import WizardDialog
-
-
-type alias Stats =
-    { stats : Int
-    , downloads : Int
-    , uploads : Int
-    , totalSlots : Int
-    , busySlots : Int
-    , idleSlots : Int
-    , closedSlots : Int
-    }
+import Syncrypt.Stats exposing (KeyState(..), Stats)
 
 
 type alias CurrentUser =
@@ -126,10 +116,31 @@ statsDecoder =
         |> requiredAt [ "stats", "stats" ] Json.int
         |> requiredAt [ "stats", "downloads" ] Json.int
         |> requiredAt [ "stats", "uploads" ] Json.int
+        |> requiredAt [ "user_key_state" ] keyStateDecoder
         |> requiredAt [ "slots", "total" ] Json.int
         |> optionalAt [ "slots", "busy" ] Json.int 0
         |> optionalAt [ "slots", "idle" ] Json.int 0
         |> optionalAt [ "slots", "closed" ] Json.int 0
+
+
+keyStateDecoder : Json.Decoder KeyState
+keyStateDecoder =
+    Json.string
+        |> andThen
+            (\s ->
+                (succeed
+                    (case s of
+                        "initializing" ->
+                            Initializing
+
+                        "initialized" ->
+                            Initialized
+
+                        _ ->
+                            Uninitialized
+                    )
+                )
+            )
 
 
 loginStateDecoder : Json.Decoder LoginState

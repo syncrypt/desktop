@@ -12,6 +12,7 @@ import Date.Distance
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
 import Time exposing (Time)
+import Syncrypt.Stats exposing (KeyState, Stats)
 
 
 type Language
@@ -48,6 +49,7 @@ type Text
         { stats : Int
         , downloads : Int
         , uploads : Int
+        , userKeyState : KeyState
         , totalSlots : Int
         , busySlots : Int
         , idleSlots : Int
@@ -155,7 +157,7 @@ translateEnglish text =
         AskDeleteVaultExtended ->
             "Do you really want to delete this vault from the server?"
 
-        Stats { stats, downloads, uploads, totalSlots, busySlots, idleSlots, closedSlots } ->
+        Stats { stats, downloads, uploads, userKeyState, totalSlots, busySlots, idleSlots, closedSlots } ->
             (toString (busySlots + idleSlots))
                 ++ " open connections ("
                 ++ (toString idleSlots)
@@ -276,7 +278,7 @@ translateGerman text =
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
-        Stats { stats, downloads, uploads, totalSlots, busySlots, idleSlots, closedSlots } ->
+        Stats { stats, downloads, uploads, userKeyState, totalSlots, busySlots, idleSlots, closedSlots } ->
             (toString (busySlots + idleSlots))
                 ++ " offene Verbindungen ("
                 ++ (toString idleSlots)
