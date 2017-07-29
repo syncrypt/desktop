@@ -259,8 +259,10 @@ update action model =
                 |> openSetupWizard
 
         SetupWizardFinished ->
-            model
-                |> notify (text "Syncrypt initialized")
+            (model
+                ! [ Daemon.invalidateFirstLaunch model ]
+            )
+                |> andAlso (notify (text "Syncrypt initialized"))
 
         EmailCompletionList emails ->
             let
