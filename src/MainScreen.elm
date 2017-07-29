@@ -272,11 +272,21 @@ update action model =
 
         UpdatedDaemonConfig (Success daemonConfig) ->
             { model | isFirstLaunch = daemonConfig.gui.isFirstLaunch }
-                ! []
+                |> openSetupWizardIfFirstLaunch
 
         UpdatedDaemonConfig msg ->
             model
                 |> Model.retryOnFailure msg UpdateDaemonConfig
+
+
+openSetupWizardIfFirstLaunch : Model -> ( Model, Cmd msg )
+openSetupWizardIfFirstLaunch model =
+    if model.isFirstLaunch then
+        model
+            |> openSetupWizard
+    else
+        model
+            ! []
 
 
 openSetupWizard : Model -> ( Model, Cmd msg )
