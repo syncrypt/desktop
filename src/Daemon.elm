@@ -129,6 +129,25 @@ getConfig { config } =
         |> Cmd.map UpdatedDaemonConfig
 
 
+invalidateFirstLaunch : Model -> Cmd Msg
+invalidateFirstLaunch { config } =
+    let
+        body =
+            Http.jsonBody
+                (Json.Encode.object
+                    [ ( "gui"
+                      , (Json.Encode.object
+                            [ ( "is_first_launch", (Json.Encode.bool False) )
+                            ]
+                        )
+                      )
+                    ]
+                )
+    in
+        apiRequest config Patch DaemonConfig (Just body) daemonConfigDecoder
+            |> Cmd.map UpdatedDaemonConfig
+
+
 getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
 getVaultFingerprints vaultId config =
     apiRequest config Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
