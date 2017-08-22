@@ -312,7 +312,7 @@ apiPath apiPath =
             "vault/" ++ vaultId ++ "/fingerprints"
 
         VaultEventLog vaultId ->
-            "vault/" ++ vaultId ++ "/log"
+            "vault/" ++ vaultId ++ "/history/"
 
         Stream (VaultEventLogStream vaultId) ->
             "vault/" ++ vaultId ++ "/logstream"
