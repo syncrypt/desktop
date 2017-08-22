@@ -13,6 +13,7 @@ import Task exposing (Task)
 import Time exposing (Time)
 import Util exposing (dateDecoder)
 import RemoteData exposing (RemoteData(..), WebData)
+import WebSocket
 
 
 type ApiPath
@@ -28,6 +29,7 @@ type ApiPath
     | UserKeys Email
     | VaultFingerprints VaultId
     | VaultEventLog VaultId
+    | Stream ApiStreamPath
     | User
     | DaemonConfig
     | Feedback
@@ -35,6 +37,10 @@ type ApiPath
     | Login
     | LoginCheck
     | Logout
+
+
+type ApiStreamPath
+    = VaultEventLogStream VaultId
 
 
 getStats : Model -> Cmd Msg
@@ -85,6 +91,15 @@ getVaultUsers vaultId config =
 getVaultEventLog : VaultId -> Config -> Cmd (WebData (List VaultLogItem))
 getVaultEventLog vaultId config =
     apiRequest config Get (VaultEventLog vaultId) Nothing Syncrypt.Vault.logItemsDecoder
+
+
+subscribeVaultEventLogStream : VaultId -> (String -> msg) -> Config -> Sub msg
+subscribeVaultEventLogStream vaultId toMsg config =
+    let
+        url =
+            apiWSUrl config (apiPath (Stream (VaultEventLogStream vaultId)))
+    in
+        WebSocket.listen url toMsg
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
@@ -299,6 +314,9 @@ apiPath apiPath =
         VaultEventLog vaultId ->
             "vault/" ++ vaultId ++ "/log"
 
+        Stream (VaultEventLogStream vaultId) ->
+            "vault/" ++ vaultId ++ "/logstream"
+
         UserKeys email ->
             "user/" ++ email ++ "/keys"
 
@@ -429,6 +447,20 @@ apiUrl config path =
             rootUrl ++ path
         else
             rootUrl ++ path ++ "/"
+
+
+apiWSUrl : Config -> Path -> Url
+apiWSUrl config path =
+    let
+        url =
+            case String.split "://" (apiUrl config path) of
+                [ _, url ] ->
+                    url
+
+                _ ->
+                    path
+    in
+        "ws://" ++ url
 
 
 {-| Returns the required `Http.Header`s required by the daemon JSON API.

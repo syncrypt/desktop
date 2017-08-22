@@ -4,6 +4,7 @@ import Animation exposing (..)
 import ConfirmationDialog
 import Date
 import Date.Distance
+import Daemon
 import Dialog exposing (labeledItem)
 import Dict
 import Html exposing (Html, button, div, form, h4, img, input, label, span, table, td, th, tr, text)
@@ -52,7 +53,7 @@ import VaultDialog.Update exposing (dialogState, isOwner)
 
 
 subscriptions : Model -> Sub Model.Msg
-subscriptions _ =
+subscriptions model =
     let
         fileListMsg ( vaultId, rootPath, folderItem ) =
             Model.VaultDialogMsg vaultId (NestedFileList rootPath folderItem)
@@ -62,11 +63,21 @@ subscriptions _ =
 
         selectedExportFileMsg ( vaultId, path ) =
             Model.VaultDialogMsg vaultId (SelectedExportFile path)
+
+        logStream =
+            case model.state of
+                Model.ShowingVaultDetails vault ->
+                    model.config
+                        |> Daemon.subscribeVaultEventLogStream vault.id (Model.VaultDialogMsg vault.id << VaultLogStream)
+
+                _ ->
+                    Sub.none
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
             , VaultDialog.Ports.selectedFolder selectedFolderMsg
             , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
+            , logStream
             ]
 
 

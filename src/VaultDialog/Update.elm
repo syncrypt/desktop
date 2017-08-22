@@ -513,6 +513,14 @@ update msg vaultId ({ vaultDialogs } as model) =
                           , searchFingerprints email vaultId model
                           ]
 
+            VaultLogStream logMsg ->
+                let
+                    _ =
+                        Debug.log "VaultLogStream" ( vaultId, logMsg )
+                in
+                    model
+                        ! []
+
 
 getVaultFingerprints vaultId model =
     model.config

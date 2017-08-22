@@ -87,6 +87,7 @@ type Msg
     | SelectedIcon String
     | OpenExportDialog
     | SelectedExportFile String
+    | VaultLogStream String
 
 
 init : State
