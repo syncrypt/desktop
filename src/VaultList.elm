@@ -20,12 +20,6 @@ type alias HasModificationDate a =
     { a | modificationDate : Maybe Date }
 
 
-vaultIcon : HasId a -> Html msg
-vaultIcon vault =
-    img [ class "VaultList-VaultIcon", src (Maybe.withDefault "" vault.icon) ]
-        []
-
-
 vaultItemSyncStateClass : Vault -> String
 vaultItemSyncStateClass vault =
     "VaultList-VaultStatus-" ++ (toString vault.status)
@@ -195,8 +189,7 @@ flyingVaultItemOnClick model flyingVault =
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
     div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
-        [ vaultIcon vault
-        , vaultInfo vault
+        [ vaultInfo vault
             [ vaultStatus vault model
             , vaultUserCount vault
             , vaultActivity vault
@@ -209,8 +202,7 @@ vaultItem model vault =
 flyingVaultItem : Model -> FlyingVault -> Html Msg
 flyingVaultItem model flyingVault =
     div [ class (flyingVaultItemClass model flyingVault), onClick (flyingVaultItemOnClick model flyingVault) ]
-        [ vaultIcon flyingVault
-        , vaultInfo flyingVault
+        [ vaultInfo flyingVault
             [ flyingVaultInfoItem flyingVault model
             , vaultActivity (flyingVault |> asVault)
             , vaultUserCount (flyingVault |> asVault)
