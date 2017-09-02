@@ -1,5 +1,10 @@
 @import "Common.scss";
 
+$margin-vault-list: 70px;
+$margin-vault-card-horizontal: 30px;
+$margin-vault-card-vertical: 35px;
+$padding-vault-card: 10px;
+
 @keyframes rotating {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -74,6 +79,7 @@
 .VaultList-VaultList {
   margin-top: 10px;
   margin-bottom: 80px;
+  margin-left: $margin-vault-list;
 }
 
 .VaultList-Card {
@@ -84,9 +90,9 @@
   height: 130px;
   width: 250px;
   overflow: hidden;
-  margin-left: 20px;
-  margin-top: 10px;
-  padding: 10px;
+  margin-right: $margin-vault-card-horizontal;
+  margin-top: $margin-vault-card-vertical;
+  padding: $padding-vault-card;
   position: relative;
   transition: all 0.25s;
   background-color: #efddda;
@@ -149,7 +155,6 @@
 
 .VaultList-VaultListInfo {
   overflow: hidden;
-  margin-left: 20px;
   color: $color-text-dark;
 }
 
