@@ -1,41 +1,19 @@
+@import "Common.scss";
+
 body {
   position: relative;
   color: #333;
   height: 100vh;
-  background-color: #fff;
+  background-color: $color-bg-light;
   overflow-y: hidden;
   font-family: Hind, Arial, Helvetica, Helvetica Neue;
+  font-size: $font-size-regular;
   margin: 0px;
-  background: linear-gradient(0deg, #404f60, #c17d6f);
   background-attachment: fixed;
-}
-
-h2 {
-  margin: 0px;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.25rem;
-  color: #333;
-}
-
-p {
-  font-size: 24px;
 }
 
 li {
   list-style: none;
-}
-
-a {
-  color: #555;
-  opacity: 0.75;
-  text-decoration: none;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 #Root {
@@ -115,19 +93,9 @@ a:hover {
   background-size: 170px;
 }
 
-.MainScreen-Header h1 {
-  font-size: 100px;
-  color: #f00;
-}
-
-.MainScreen-Header a {
-  font-size: 1.4rem;
-}
-
 .MainScreen-Footer {
   position: fixed;
   z-index: 1;
-  font-size: 14px;
   left: 0px;
   right: 0px;
   bottom: 0px;
@@ -175,7 +143,7 @@ a:hover {
 }
 
 .MainScreen-NotificationCenter {
-  font-size: 13px;
+  font-size: $font-size-small;
 }
 
 .Tooltip {

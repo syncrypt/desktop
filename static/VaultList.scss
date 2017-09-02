@@ -1,3 +1,5 @@
+@import "Common.scss";
+
 @keyframes rotating {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -146,7 +148,7 @@
 .VaultList-VaultListInfo {
   overflow: hidden;
   margin-left: 20px;
-  color: #eee;
+  color: $color-text-dark;
 }
 
 .VaultList-VaultListInfo .VaultList-Title {
