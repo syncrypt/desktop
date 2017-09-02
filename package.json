@@ -56,7 +56,8 @@
   "dependencies": {
     "electron-compile": "^6.4.0",
     "expand-home-dir": "^0.0.3",
-    "file": "^0.2.2"
+    "file": "^0.2.2",
+    "node-sass": "^4.5.3"
   },
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
