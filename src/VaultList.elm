@@ -229,7 +229,7 @@ vaultList model =
         vaultListInfo =
             div [ class "VaultList-VaultListInfo" ]
                 [ span [ class "VaultList-Title" ]
-                    [ text "Local Vaults" ]
+                    [ text "Vaults" ]
                 , span [ class "VaultList-Subtitle" ] <|
                     case model.vaults of
                         Success _ ->

@@ -79,9 +79,10 @@ $vault-card-width: 270px;
 }
 
 .VaultList-VaultList {
-  margin-top: 10px;
+  margin-top: 50px;
   margin-bottom: 80px;
   margin-left: $margin-vault-list;
+  margin-right: $margin-vault-list;
 }
 
 .VaultList-Card {
@@ -138,7 +139,6 @@ $vault-card-width: 270px;
 }
 
 .VaultList-VaultCardSelected .VaultList-VaultTitle {
-  color: #000;
 }
 
 .VaultList-VaultCard {
@@ -161,15 +161,15 @@ $vault-card-width: 270px;
 }
 
 .VaultList-VaultListInfo .VaultList-Title {
-  font-size: 25px;
   display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-bottom: 12px;
+  border-bottom: 1px solid $color-bg-dark;
 }
 
 .VaultList-VaultListInfo .VaultList-Subtitle {
-  font-size: 15px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  display: block;
+  display: none;
 }
 
 .VaultList-UpdateFlyingVaultsButton {
