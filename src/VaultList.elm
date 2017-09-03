@@ -141,15 +141,24 @@ vaultInfo : NameOrId vault -> List (Html msg) -> Html msg
 vaultInfo vault nodes =
     let
         vaultHeader =
-            [ div [ class "VaultList-VaultTitle" ]
-                [ text (nameOrId vault) ]
-            , div [ class "VaultList-VaultId" ]
-                [ text vault.id ]
-            , hr [] []
+            [ div [ class "VaultList-Header" ]
+                [ div [ class "VaultList-VaultTitle" ]
+                    [ text (nameOrId vault) ]
+                ]
+            ]
+
+        vaultBody =
+            [ div [ class "VaultList-Body" ]
+                [ text "body" ]
+            ]
+
+        vaultFooter =
+            [ div [ class "VaultList-Footer" ]
+                nodes
             ]
     in
         div [ class "VaultList-VaultInfo" ]
-            (vaultHeader ++ nodes)
+            (vaultHeader ++ vaultBody ++ vaultFooter)
 
 
 vaultItemOnClick : Model -> Vault -> Msg

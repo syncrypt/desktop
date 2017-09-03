@@ -3,7 +3,7 @@
 $margin-vault-list: 70px;
 $margin-vault-card-horizontal: 30px;
 $margin-vault-card-vertical: 35px;
-$padding-vault-card: 10px;
+$padding-vault-card: 22px;
 $vault-card-height: 165px;
 $vault-card-width: 270px;
 
@@ -164,7 +164,7 @@ $vault-card-width: 270px;
   display: block;
   font-weight: bold;
   text-transform: uppercase;
-  padding-bottom: 12px;
+  padding-bottom: $padding-small;
   border-bottom: 1px solid $color-bg-dark;
 }
 
@@ -226,22 +226,32 @@ $vault-card-width: 270px;
 }
 
 .VaultList-VaultTitle {
-  font-weight: 600;
-  font-size: 14px;
-  color: #666;
-  text-align: left;
+  font-weight: bold;
+  text-transform: uppercase;
   width: 100%;
-  height: 1em;
-  margin-top: 5px;
-  margin-right: 10px;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding-bottom: $padding-small;
+  border-bottom: 1px solid $color-bg-dark;
+}
+
+.VaultList-Body {
+  padding-top: 36px;
+}
+
+.VaultList-Footer {
+  background-color: $color-bg-dark;
+  width: 100%;
+  position: absolute;
+  height: 12px;
+  padding: $padding-small;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 
 .VaultList-VaultId {
-  font-size: 8px;
-  padding-top: 5px;
-  padding-bottom: 2px;
+  display: none;
 }
 
 .VaultList-VaultInfoItem {
