@@ -1,5 +1,8 @@
 @import "Common.scss";
 
+$height-mainscreen-header: 70px;
+$width-mainscreen-logo: 220px;
+
 body {
   position: relative;
   color: #333;
@@ -83,10 +86,18 @@ li {
   position: fixed;
   top: 0px;
   z-index: 1;
-  height: 64px;
+  height: $height-mainscreen-header;
   width: 100%;
-  background-color: #a07f78;
-  margin-bottom: 10px;
+  background-color: $color-bg-dark;
+}
+
+.MainScreen-HeaderLogo {
+  position: fixed;
+  top: 0px;
+  z-index: 1;
+  height: $height-mainscreen-header;
+  width: $width-mainscreen-logo;
+  background-color: $color-highlight;
   background-image: url(assets/logo.png);
   background-repeat: no-repeat;
   background-position: 20px 2px;

@@ -611,7 +611,10 @@ viewNotificationCenter { notificationCenter } =
 header : Html Msg
 header =
     div [ class "MainScreen-Header" ]
-        [ div [ class "MainScreen-Buttons" ]
+        [ div [ class "MainScreen-HeaderLogo" ]
+            []
+        , div
+            [ class "MainScreen-Buttons" ]
             [ iconButton SettingsButton [ onClick OpenAccountSettings ]
             , iconButton LogoutButton [ onClick Logout ]
             ]
