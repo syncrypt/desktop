@@ -268,32 +268,26 @@ $vault-card-width: 270px;
   font-size: $font-size-regular;
 }
 
-.VaultList-VaultUsers {
-  background-image: url(assets/people.png);
-  background-size: 30px;
+@mixin vault-info-item($icon, $bgSize, $bgYOffset, $paddingLeft) {
+  background-image: $icon;
   background-repeat: no-repeat;
-  background-position-y: -18px;
-  padding-left: 34px;
-  padding-top: 4px;
+  background-size: $bgSize;
+  background-position-y: $bgYOffset;
+  white-space: nowrap;
   width: 60px;
   height: 25px;
-  white-space: nowrap;
   vertical-align: middle;
   margin-top: 8px;
+  padding-top: 4px;
+  padding-left: $paddingLeft;
+}
+
+.VaultList-VaultUsers {
+  @include vault-info-item(url(assets/people.png), 30px, -18px, 34px);
 }
 
 .VaultList-VaultActivity {
-  background-image: url(assets/data_usage.png);
-  background-size: 25px;
-  background-repeat: no-repeat;
-  background-position-y: -13px;
-  padding-left: 30px;
-  padding-top: 4px;
-  width: 60px;
-  height: 25px;
-  white-space: nowrap;
-  vertical-align: middle;
-  margin-top: 8px;
+  @include vault-info-item(url(assets/data_usage.png), 20px, -8px, 30px);
 }
 
 .VaultList-VaultRemoveButton {
