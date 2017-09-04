@@ -15,6 +15,7 @@ import Util exposing (Direction)
 type Animation
     = SlideIn Direction
     | FadeIn
+    | FadeInFast
     | Highlight
 
 
@@ -22,13 +23,10 @@ animationClass : Animation -> String
 animationClass anim =
     case anim of
         SlideIn dir ->
-            "Anim-Slide-In-" ++ (toString dir)
+            "Anim-SlideIn" ++ (toString dir)
 
-        FadeIn ->
-            "Anim-Fade-In"
-
-        Highlight ->
-            "Anim-Highlight"
+        name ->
+            "Anim-" ++ (toString name)
 
 
 animation : Float -> Animation -> Html.Attribute msg

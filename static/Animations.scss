@@ -1,50 +1,57 @@
-@keyframes Anim-Slide-In-Top {
+@keyframes Anim-SlideInTop {
   from { top: -500px; }
   to { }
 }
 
-@keyframes Anim-Slide-In-Bottom {
+@keyframes Anim-SlideInBottom {
   from { bottom: -500px; }
   to { }
 }
 
-@keyframes Anim-Slide-In-Left {
+@keyframes Anim-SlideInLeft {
   from { left: -500px; }
   to { }
 }
 
-@keyframes Anim-Slide-In-Right {
+@keyframes Anim-SlideInRight {
   from { right: -500px; }
   to { }
 }
 
-.Anim-Slide-In-Top {
-  animation-name: Anim-Slide-In-Top;
+.Anim-SlideInTop {
+  animation-name: Anim-SlideInTop;
   animation-duration: 2.5s;
 }
 
-.Anim-Slide-In-Bottom {
-  animation-name: Anim-Slide-In-Bottom;
+.Anim-SlideInBottom {
+  animation-name: Anim-SlideInBottom;
   animation-duration: 2.5s;
 }
 
-.Anim-Slide-In-Left {
-  animation-name: Anim-Slide-In-Left;
+.Anim-SlideInLeft {
+  animation-name: Anim-SlideInLeft;
   animation-duration: 2.5s;
 }
 
-.Anim-Slide-In-Right {
-  animation-name: Anim-Slide-In-Right;
+.Anim-SlideInRight {
+  animation-name: Anim-SlideInRight;
   animation-duration: 2.5s;
 }
 
-@keyframes Anim-Fade-In {
+@keyframes Anim-FadeIn {
   from { opacity: 0.0; }
   to { opacity: 1.0; }
 }
 
-.Anim-Fade-In {
-  animation-name: Anim-Fade-In;
+@keyframes Anim-FadeInFast {
+  0% { opacity: 0.0; }
+  90% { opacity: 0.0; }
+  95% { opacity: 0.25 }
+  100% { opacity: 1.0; }
+}
+
+.Anim-FadeIn {
+  animation-name: Anim-FadeIn;
   animation-duration: 3.0s;
 }
 

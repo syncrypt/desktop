@@ -584,7 +584,7 @@ view model =
             LoggedIn _ ->
                 [ div [ class (currentClass model) ] <|
                     [ header
-                    , div [ class "MainScreen-Container" ]
+                    , div [ class "MainScreen-Container", animation 1.0 FadeInFast ]
                         [ VaultList.view model ]
                     , footer model
                     , viewNotificationCenter model
