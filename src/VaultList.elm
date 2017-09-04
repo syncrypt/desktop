@@ -30,22 +30,23 @@ updatedAtInfo vault updatedAtHeader model =
     let
         header =
             Maybe.withDefault (text "") updatedAtHeader
+
+        updatedText =
+            case ( vault.modificationDate, model.now ) of
+                ( Nothing, _ ) ->
+                    text (t T.NoFilesUploadedYet model)
+
+                ( Just date, Nothing ) ->
+                    text (toString date)
+
+                ( Just date, Just now ) ->
+                    text <| (t (T.Updated date (Date.fromTime now)) model)
     in
         div [ class "VaultList-VaultUpdatedAt" ]
             [ tooltipItem Top
                 Auto
                 (t T.LastUpdateToVaultLabel model)
-                [ header
-                , case ( vault.modificationDate, model.now ) of
-                    ( Nothing, _ ) ->
-                        text (t T.NoFilesUploadedYet model)
-
-                    ( Just date, Nothing ) ->
-                        text (toString date)
-
-                    ( Just date, Just now ) ->
-                        text <| (t (T.Updated date (Date.fromTime now)) model)
-                ]
+                [ header, updatedText ]
             ]
 
 
@@ -81,8 +82,7 @@ vaultInfoItem vault bodyItems =
 
 vaultStatus : Vault -> Model -> Html msg
 vaultStatus vault model =
-    vaultInfoItem vault
-        [ vaultUpdatedAtInfo vault model ]
+    vaultUpdatedAtInfo vault model
 
 
 vaultActivity : Vault -> Html msg
@@ -137,8 +137,8 @@ openVaultFolderButton vault =
         []
 
 
-vaultInfo : NameOrId vault -> List (Html msg) -> Html msg
-vaultInfo vault nodes =
+vaultInfo : NameOrId vault -> List (Html msg) -> List (Html msg) -> Model -> Html msg
+vaultInfo vault body footerNodes model =
     let
         vaultHeader =
             [ div [ class "VaultList-Header" ]
@@ -149,12 +149,12 @@ vaultInfo vault nodes =
 
         vaultBody =
             [ div [ class "VaultList-Body" ]
-                [ text "body" ]
+                body
             ]
 
         vaultFooter =
             [ div [ class "VaultList-Footer" ]
-                nodes
+                footerNodes
             ]
     in
         div [ class "VaultList-VaultInfo" ]
@@ -198,24 +198,26 @@ flyingVaultItemOnClick model flyingVault =
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
     div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
-        [ vaultInfo vault
-            [ vaultStatus vault model
-            , vaultUserCount vault
-            , vaultActivity vault
-            , vaultRemoveFromSyncButton vault
-            , openVaultFolderButton vault
-            ]
+        [ model
+            |> vaultInfo vault
+                [ vaultStatus vault model ]
+                [ vaultUserCount vault
+                , vaultActivity vault
+                , vaultRemoveFromSyncButton vault
+                , openVaultFolderButton vault
+                ]
         ]
 
 
 flyingVaultItem : Model -> FlyingVault -> Html Msg
 flyingVaultItem model flyingVault =
     div [ class (flyingVaultItemClass model flyingVault), onClick (flyingVaultItemOnClick model flyingVault) ]
-        [ vaultInfo flyingVault
-            [ flyingVaultInfoItem flyingVault model
-            , vaultActivity (flyingVault |> asVault)
-            , vaultUserCount (flyingVault |> asVault)
-            ]
+        [ model
+            |> vaultInfo flyingVault
+                [ flyingVaultInfoItem flyingVault model ]
+                [ vaultActivity (flyingVault |> asVault)
+                , vaultUserCount (flyingVault |> asVault)
+                ]
         ]
 
 

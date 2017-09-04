@@ -14,14 +14,14 @@ $vault-card-width: 270px;
 
 .VaultList-VaultStatus-Synced {
   background-size: 22px;
-  margin-left: -2px;
-  margin-top: -5px;
-  margin-right: 5px;
+  margin-top: -3px;
   width: 22px;
   height: 22px;
   background-repeat: no-repeat;
   float: left;
-  background-image: url(assets/check.png);
+  background-image: url(assets/check_circle.png);
+  background-position-y: -10px;
+  padding-right: 8px;
 }
 
 .VaultList-VaultStatus-Initializing {
@@ -241,10 +241,13 @@ $vault-card-width: 270px;
 
 .VaultList-Footer {
   background-color: $color-bg-dark;
-  width: 100%;
   position: absolute;
-  height: 12px;
-  padding: $padding-small;
+  height: 36px;
+  padding-top: $padding-small;
+  padding-bottom: $padding-small;
+  padding-left: $padding-medium;
+  padding-right: $padding-medium;
+  display: inline-flex;
   bottom: 0px;
   left: 0px;
   right: 0px;
@@ -256,36 +259,41 @@ $vault-card-width: 270px;
 
 .VaultList-VaultInfoItem {
   position: relative;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  color: $color-bg-extra-light;
+  font-size: $font-size-small;
 }
 
 .VaultList-VaultUpdatedAt {
-  font-size: 12px;
+  font-color: $color-text-dark;
+  font-size: $font-size-regular;
 }
 
 .VaultList-VaultUsers {
-  background-image: url(assets/avatar.png);
-  background-size: 18px;
+  background-image: url(assets/people.png);
+  background-size: 30px;
   background-repeat: no-repeat;
-  padding-left: 25px;
-  font-weight: 300;
-  font-size: 15px;
-  color: #666666;
-  width: 80px;
+  background-position-y: -18px;
+  padding-left: 34px;
+  padding-top: 4px;
+  width: 60px;
+  height: 25px;
   white-space: nowrap;
+  vertical-align: middle;
+  margin-top: 8px;
 }
 
 .VaultList-VaultActivity {
-  background-image: url(assets/vault.png);
-  background-size: 18px;
+  background-image: url(assets/data_usage.png);
+  background-size: 25px;
   background-repeat: no-repeat;
-  padding-left: 25px;
-  font-weight: 300;
-  font-size: 15px;
-  color: #666666;
-  width: 80px;
+  background-position-y: -13px;
+  padding-left: 30px;
+  padding-top: 4px;
+  width: 60px;
+  height: 25px;
   white-space: nowrap;
+  vertical-align: middle;
+  margin-top: 8px;
 }
 
 .VaultList-VaultRemoveButton {
@@ -307,7 +315,7 @@ $vault-card-width: 270px;
 
 .VaultList-VaultFolderButton {
   display: none;
-  background-image: url(assets/folder.png);
+  background-image: url(assets/folder_open.png);
   background-repeat: no-repeat;
   background-size: 20px 20px;
   width: 20px;

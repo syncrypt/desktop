@@ -200,7 +200,7 @@ translateEnglish text =
             "Vault (not synchronized) " ++ vaultId
 
         Updated date now ->
-            "Updated " ++ (Date.Distance.inWords date now) ++ " ago"
+            "Synced " ++ (Date.Distance.inWords date now) ++ " ago"
 
         LastUpdateToVault ->
             "Last update "
@@ -321,7 +321,7 @@ translateGerman text =
             "Vault (nicht synchronisiert) " ++ vaultId
 
         Updated date now ->
-            "Aktualisiert vor " ++ (germanDistance date now)
+            "Synchronisiert vor " ++ (germanDistance date now)
 
         LastUpdateToVault ->
             "Letzte Änderung am "
