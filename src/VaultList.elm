@@ -269,31 +269,31 @@ flyingVaultList model =
     let
         flyingVaultItems =
             (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
+
+        subtitle =
+            case model.flyingVaults of
+                NotAsked ->
+                    span
+                        [ class "VaultList-UpdateFlyingVaultsButton"
+                        , onClick UpdateFlyingVaults
+                        ]
+                        [ text "Load remote vaults" ]
+
+                Loading ->
+                    text "Fetching remote vault info..."
+
+                Failure reason ->
+                    text <| "Error fetching remote vaults: " ++ toString reason
+
+                Success _ ->
+                    text "Click on a vault to clone it to your computer"
     in
-        div [ class "VaultList-FlyingVaultList" ]
-            ([ hr [ class "VaultList-FlyingVaultSeparator" ]
-                []
-             , div [ class "VaultList-VaultListInfo" ]
+        div [ class "VaultList-VaultList" ]
+            ([ div [ class "VaultList-VaultListInfo" ]
                 [ span [ class "VaultList-Title" ]
                     [ text "Available Vaults" ]
                 , span [ class "VaultList-Subtitle" ] <|
-                    case model.flyingVaults of
-                        NotAsked ->
-                            [ span
-                                [ class "VaultList-UpdateFlyingVaultsButton"
-                                , onClick UpdateFlyingVaults
-                                ]
-                                [ text "Load remote vaults" ]
-                            ]
-
-                        Loading ->
-                            [ text "Fetching remote vault info..." ]
-
-                        Failure reason ->
-                            [ text <| "Error fetching remote vaults: " ++ toString reason ]
-
-                        Success _ ->
-                            [ text "Click on a vault to clone it to your computer" ]
+                    [ subtitle ]
                 ]
              ]
                 ++ flyingVaultItems
