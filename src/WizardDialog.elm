@@ -29,8 +29,16 @@ type Step msg
     | Finished
 
 
+type alias FinishedSteps msg =
+    List (Step msg)
+
+
+type alias UnfinishedSteps msg =
+    List (Step msg)
+
+
 type StepList msg
-    = StepList (List (Step msg)) (Step msg) (List (Step msg))
+    = StepList (FinishedSteps msg) (Step msg) (UnfinishedSteps msg)
 
 
 type alias State msg =
