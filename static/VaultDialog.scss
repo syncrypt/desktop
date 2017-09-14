@@ -1,10 +1,46 @@
-.VaultDialog ui-tabs-content {
-  min-width: 600px;
-  max-width: 600px;
-  height: 400px;
-  overflow-y: auto;
-  overflow-x: auto;
-  font-size: 15px;
+@import "Common.scss";
+
+.VaultDialog {
+  ui-modal-header {
+    background-color: $color-bg-dark;
+    color: $color-highlight;
+    font-family: $font-family-main;
+  }
+
+  ui-modal-title {
+    font-size: $font-size-header;
+  }
+
+  ui-modal-content {
+    background-color: $color-bg-light !important;
+  }
+
+  ui-tabs-content {
+    min-width: 600px;
+    max-width: 600px;
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+    font-size: 15px;
+    background-color: $color-bg-light !important;
+  }
+
+  ui-tabs-handle[selected] {
+    background-color: $color-bg-light;
+    border-bottom: 3px solid $color-highlight !important;
+    font-size: $font-size-header;
+  }
+
+  ui-tabs-handle {
+    border: 0px !important;
+    border-bottom: 1px solid $color-bg-dark !important;
+    background-color: $color-bg-light !important;
+  }
+
+  ui-tabs-handles {
+    border-bottom: 1px solid $color-bg-dark !important;
+    background-color: $color-bg-light !important;
+  }
 }
 
 .Dialog-Label-Left.VaultDialog-InputLabel,

@@ -9,7 +9,7 @@ body {
   height: 100vh;
   background-color: $color-bg-light;
   overflow-y: hidden;
-  font-family: Hind, Arial, Helvetica, Helvetica Neue;
+  font-family: $font-family-main;
   font-size: $font-size-regular;
   margin: 0px;
   background-attachment: fixed;
