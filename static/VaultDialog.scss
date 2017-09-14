@@ -41,6 +41,17 @@
     border-bottom: 1px solid $color-bg-dark !important;
     background-color: $color-bg-light !important;
   }
+
+  ui-button,
+  ui-tabs-handle {
+    @include defaultCursor;
+  }
+
+  ui-button {
+    background-color: $color-highlight !important;
+    color: black !important;
+    font-size: $font-size-small !important;
+  }
 }
 
 .Dialog-Label-Left.VaultDialog-InputLabel,
@@ -57,20 +68,12 @@
 }
 
 .VaultDialog-Input-Name {
-  position: relative;
-  top: -100px;
-  margin-left: 100px;
 }
 
 .VaultDialog-Input-Folder {
-  position: relative;
-  top: -110px;
-  margin-left: 100px;
 }
 
 .VaultDialog-Input-FileSelection {
-  position: relative;
-  top: -110px;
   width: 585px;
 }
 
@@ -276,11 +279,6 @@ ui-input {
   height: 75px;
   padding: 2px;
   border: 1px solid black;
-}
-
-ui-button,
-ui-tabs-handle {
-  cursor: default !important;
 }
 
 .VaultDialog-TabInfoText {
