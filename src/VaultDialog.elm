@@ -60,16 +60,12 @@ subscriptions _ =
         selectedFolderMsg ( vaultId, path ) =
             Model.VaultDialogMsg vaultId (SelectedFolder path)
 
-        selectedIconMsg ( vaultId, path ) =
-            Model.VaultDialogMsg vaultId (SelectedIcon path)
-
         selectedExportFileMsg ( vaultId, path ) =
             Model.VaultDialogMsg vaultId (SelectedExportFile path)
     in
         Sub.batch
             [ VaultDialog.Ports.fileList fileListMsg
             , VaultDialog.Ports.selectedFolder selectedFolderMsg
-            , VaultDialog.Ports.selectedIconFile selectedIconMsg
             , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
             ]
 
@@ -156,9 +152,7 @@ tabContents vaultId state model =
         filesTab =
             ( t NameAndFilesTab model
             , div [ class "VaultDialog-Tab-Content" ]
-                [ dialogInput "Icon"
-                    [ rootMsg <| iconInput state model ]
-                , dialogInput "Name"
+                [ dialogInput "Name"
                     [ nameInput msg state ]
                 , dialogInput "Folder"
                     [ rootMsg <| openFolderButton vaultId state model ]
@@ -334,7 +328,7 @@ exportButton : Vault -> Html Model.Msg
 exportButton vault =
     span
         [ class "VaultDialog-Button-Export" ]
-        [ Ui.Button.model "Export vault key bundle" "secondary" "medium"
+        [ Ui.Button.model "Export vault key bundle" "secondary" "small"
             |> Ui.Button.view (Model.VaultDialogMsg vault.id OpenExportDialog)
         ]
 
@@ -347,7 +341,7 @@ cancelButton vaultId state =
             , ( "Hidden", not state.hasChangesPending )
             ]
         ]
-        [ Ui.Button.model "Cancel Changes" "secondary" "medium"
+        [ Ui.Button.model "Cancel Changes" "secondary" "small"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
 
@@ -360,7 +354,7 @@ deleteButton vaultId state model =
             , ( "VaultDialog-Button-Delete", True )
             ]
         ]
-        [ Ui.Button.model "Delete from Server" "danger" "medium"
+        [ Ui.Button.model "Delete from Server" "danger" "small"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm DeleteVault))
         ]
 
@@ -373,7 +367,7 @@ removeButton vaultId state =
             , ( "VaultDialog-Button-Remove", True )
             ]
         ]
-        [ Ui.Button.model "Stop syncing" "warning" "medium"
+        [ Ui.Button.model "Stop syncing" "warning" "small"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm RemoveVault))
         ]
 
@@ -396,7 +390,7 @@ saveButton vaultId state =
                     ( "Close", Model.CloseVaultDetails vaultId )
     in
         span [ class "VaultDialog-Button-Save" ]
-            [ Ui.Button.model label "primary" "medium"
+            [ Ui.Button.model label "primary" "small"
                 |> Ui.Button.view msg
             ]
 
@@ -411,7 +405,7 @@ confirmUserKeysButton state =
             if List.isEmpty (keysToAdd email state) then
                 []
             else
-                [ Ui.Button.model "Invite with selected keys" "primary" "medium"
+                [ Ui.Button.model "Invite with selected keys" "primary" "small"
                     |> Ui.Button.view (Confirmed AddUser)
                 ]
 
@@ -461,7 +455,7 @@ openFolderButton vaultId state model =
                 (tooltipItem Bottom
                     Auto
                     tooltipMsg
-                    [ Ui.Button.model folderPath "primary" "medium"
+                    [ Ui.Button.model folderPath "primary" "small"
                         |> Ui.Button.view msg
                     ]
                 )
