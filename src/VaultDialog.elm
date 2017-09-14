@@ -564,12 +564,7 @@ renderFolders state =
                 [ tooltipItem Top
                     XLarge
                     "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
-                    [ div []
-                        (List.foldr (::)
-                            []
-                            (rootFiles ++ rootFolders)
-                        )
-                    ]
+                    (rootFiles ++ rootFolders)
                 ]
 
         [] ->
