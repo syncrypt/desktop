@@ -1,38 +1,50 @@
-.WizardDialog-Buttons {
-  padding-top: 20px;
-}
+@import "Common.scss";
 
-.WizardDialog-Buttons ui-button {
-  min-width: 120px;
-}
+.WizardDialog {
+  ui-modal-header,
+  ui-modal-footer {
+    background-color: $color-bg-dark;
+    color: $color-highlight;
+    font-family: $font-family-main;
+  }
 
-.WizardDialog-NavigationButtons {
-  width: 220px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-}
+  ui-modal-footer {
+    height: 25px;
+  }
 
-.WizardDialog-Button-Previous {
-  padding-left:  5px;
-  padding-right: 5px;
-  position: relative;
-  float: left;
-}
+  ui-modal-title {
+    font-size: $font-size-header;
+  }
 
-.WizardDialog-Button-Next {
-  padding-left:  5px;
-  padding-right: 5px;
-  position: relative;
-  float: right;
-}
+  ui-modal-content {
+    background-color: $color-bg-light !important;
+  }
 
-.WizardDialog-Button-Cancel {
-  float: left;
-  margin-bottom: 10px;
-}
+  .Buttons ui-button {
+    min-width: 120px;
+  }
 
-.WizardDialog-Button-Finish {
-  float: right;
-  margin-bottom: 10px;
+  .NavigationButtons {
+    width: 220px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: -25px;
+  }
+
+  .Button-Previous,
+  .Button-Next {
+    padding-left:  10px;
+    padding-right: 10px;
+  }
+
+  .Button-Cancel {
+  }
+
+  .Button-Finish {
+    position: relative;
+    float: right;
+    top: -51px;
+    margin-bottom: -33px;
+  }
 }

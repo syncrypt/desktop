@@ -162,11 +162,12 @@ view { wizardDialog } =
                         viewConfig =
                             { address = (wizardDialog.address << Modal)
                             , contents = contents wizardDialog.address view
-                            , footer = []
+                            , footer = wizardButtons wizardDialog.address view
                             , title = title
                             }
                     in
-                        Ui.Modal.view viewConfig wizardDialog.modal
+                        div [ class "WizardDialog" ]
+                            [ Ui.Modal.view viewConfig wizardDialog.modal ]
 
                 Finished ->
                     div [] []
@@ -176,9 +177,8 @@ contents : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
 contents address view =
     case currentStep view.steps of
         Step step ->
-            [ div [ class "WizardDialog-Content" ] <|
+            [ div [ class "Content" ] <|
                 [ step.contents
-                , wizardButtons address view
                 ]
             ]
 
@@ -186,38 +186,38 @@ contents address view =
             []
 
 
-wizardButtons : (Msg -> msg) -> ViewSettings msg -> Html msg
+wizardButtons : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
 wizardButtons address view =
     let
         step =
             currentStep view.steps
 
         prevButton =
-            span [ class "WizardDialog-Button-Previous" ]
-                [ Ui.Button.model "Previous" "secondary" "medium"
+            span [ class "Button-Previous" ]
+                [ Ui.Button.model "Previous" "secondary" "small"
                     |> Ui.Button.view (address ToPreviousStep)
                 ]
 
         nextButton =
-            span [ class "WizardDialog-Button-Next" ]
-                [ Ui.Button.model "Next" "secondary" "medium"
+            span [ class "Button-Next" ]
+                [ Ui.Button.model "Next" "secondary" "small"
                     |> Ui.Button.view (address ToNextStep)
                 ]
 
         finishButton =
-            span [ class "WizardDialog-Button-Finish" ]
-                [ Ui.Button.model "Finish" "secondary" "medium"
+            span [ class "Button-Finish" ]
+                [ Ui.Button.model "Finish" "secondary" "small"
                     |> Ui.Button.view (address FinishWizard)
                 ]
 
         cancelButton =
-            span [ class "WizardDialog-Button-Cancel" ]
-                [ Ui.Button.model "Cancel" "secondary" "medium"
+            span [ class "Button-Cancel" ]
+                [ Ui.Button.model "Cancel" "secondary" "small"
                     |> Ui.Button.view (address Close)
                 ]
 
         navigationButtons buttons =
-            div [ class "WizardDialog-NavigationButtons" ]
+            div [ class "NavigationButtons" ]
                 buttons
 
         buttons =
@@ -234,8 +234,7 @@ wizardButtons address view =
                 ( False, False ) ->
                     []
     in
-        div [ class "WizardDialog-Buttons" ]
-            (cancelButton :: buttons)
+        cancelButton :: buttons
 
 
 stepsFromList : Step msg -> List (Step msg) -> StepList msg
