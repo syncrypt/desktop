@@ -19,3 +19,15 @@ $padding-medium: 22px;
 @mixin defaultCursor {
   cursor: default !important;
 }
+
+ui-button,
+ui-tabs-handle {
+  @include defaultCursor;
+}
+
+
+ui-button {
+  background-color: $color-highlight !important;
+  color: black !important;
+  font-size: $font-size-small !important;
+}
