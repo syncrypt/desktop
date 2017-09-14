@@ -1,7 +1,8 @@
 @import "Common.scss";
 
 .VaultDialog {
-  ui-modal-header {
+  ui-modal-header,
+  ui-modal-footer {
     background-color: $color-bg-dark;
     color: $color-highlight;
     font-family: $font-family-main;
@@ -159,10 +160,6 @@
     font-size: 14px;
     font-weight: bold;
     margin-left: 10px;
-  }
-
-  .Buttons {
-    padding-top: 20px;
   }
 
   .Button-Cancel {

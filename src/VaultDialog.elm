@@ -86,7 +86,12 @@ view vaultId model =
         viewConfig =
             { address = (Model.VaultDialogMsg vaultId << ModalMsg)
             , contents = contents vaultId model
-            , footer = []
+            , footer =
+                [ removeButton vaultId state
+                , deleteButton vaultId state model
+                , saveButton vaultId state
+                , cancelButton vaultId state
+                ]
             , title =
                 case state.cloneStatus of
                     New ->
@@ -120,18 +125,9 @@ contents vaultId model =
         confirmationDialog =
             ConfirmationDialog.view state
                 |> Html.map (Model.VaultDialogMsg state.id)
-
-        buttons =
-            div [ class "Buttons" ]
-                [ removeButton vaultId state
-                , deleteButton vaultId state model
-                , saveButton vaultId state
-                , cancelButton vaultId state
-                ]
     in
         [ tabs
         , confirmationDialog
-        , buttons
         ]
 
 
