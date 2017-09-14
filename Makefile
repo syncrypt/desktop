@@ -26,7 +26,7 @@ run-debug: $(BUILD_DIR) static
 
 run-watch: all
 	$(SASS_CMD) --watch --recursive --output build/ --source-map true --source-map-contents static/ &
-	NODE_ENV=production electron $(MAIN_FILE) &
+	NODE_ENV=development electron $(MAIN_FILE) &
 	npm run watch
 
 release-setup: all
