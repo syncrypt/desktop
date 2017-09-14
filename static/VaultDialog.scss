@@ -52,262 +52,263 @@
     color: black !important;
     font-size: $font-size-small !important;
   }
-}
-
-.Dialog-Label-Left.VaultDialog-InputLabel,
-.Dialog-Label-Right.VaultDialog-InputLabel {
-  font-weight: bold;
-  min-width: 60px;
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.VaultDialog-Input {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.VaultDialog-Input-Name {
-}
-
-.VaultDialog-Input-Folder {
-}
-
-.VaultDialog-Input-FileSelection {
-  width: 585px;
-}
-
-.VaultDialog-Input-Icon img {
-  cursor: default;
-}
-
-ui-input {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
 
 
-.VaultDialog-Input ui-input {
-  width: 415px;
-}
+  .Dialog-Label-Left.InputLabel,
+  .Dialog-Label-Right.InputLabel {
+    font-weight: bold;
+    min-width: 60px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .Input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .Input-Name {
+  }
+
+  .Input-Folder {
+  }
+
+  .Input-FileSelection {
+    width: 585px;
+  }
+
+  .Input-Icon img {
+    cursor: default;
+  }
+
+  ui-input {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 
 
-.VaultDialog-Input-User ui-input {
-  width: 495px
-}
+  .Input ui-input {
+    width: 415px;
+  }
 
 
-.VaultDialog-Input ui-input input {
-  font-size: 15px;
-}
-
-.VaultDialog-FolderItem {
-  padding-top: 5px;
-  position: relative;
-}
-
-.VaultDialog-FolderItem-Collapsed {
-  padding-top: 5px;
-  position: relative;
-}
+  .Input-User ui-input {
+    width: 495px
+  }
 
 
-.VaultDialog-File {
-  padding-top: 5px;
-  position: relative;
-}
+  .Input ui-input input {
+    font-size: 15px;
+  }
 
-.VaultDialog-FolderItem-Hidden {
-  display: none;
-}
+  .FolderItem {
+    padding-top: 5px;
+    position: relative;
+  }
 
-.VaultDialog-Tab-Content {
-  height: 90%;
-}
+  .FolderItem-Collapsed {
+    padding-top: 5px;
+    position: relative;
+  }
 
-.VaultDialog-Tab-Content ui-container {
-  border: 1px solid #ddd;
-  padding: 10px;
-}
+  .File {
+    padding-top: 5px;
+    position: relative;
+  }
 
-.VaultDialog-FileSelection ui-container {
-  margin-top: 5px;
-}
+  .FolderItem-Hidden {
+    display: none;
+  }
 
-.VaultDialog-Checkbox ui-checkbox {
-  width:  20px !important;
-  height: 20px !important;
-  display: inline-flex !important;
-}
-.VaultDialog-Checkbox ui-checkbox svg {
-  width:  10px !important;
-  height: 10px !important;
-}
+  .Tab-Content {
+    height: 90%;
+  }
 
-.VaultDialog-FolderItem-Nested {
-  padding-left: 30px;
-}
+  .Tab-Content ui-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
 
-.VaultDialog-FolderItem-Collapsed .VaultDialog-FolderItem-Nested {
-  /*display: none;*/
-}
+  .FileSelection ui-container {
+    margin-top: 10px;
+  }
 
-.VaultDialog-File span .VaultDialog-FolderItem-Collapse-Toggle {
-  display: none;
-}
+  .Checkbox ui-checkbox {
+    width:  20px !important;
+    height: 20px !important;
+    display: inline-flex !important;
+  }
+  .Checkbox ui-checkbox svg {
+    width:  10px !important;
+    height: 10px !important;
+  }
 
-.VaultDialog-FolderItem-Collapse-Toggle {
-  font-size: 14px;
-  font-weight: bold;
-  margin-left: 10px;
-}
+  .FolderItem-Nested {
+    padding-left: 30px;
+  }
 
-.VaultDialog-Buttons {
-  padding-top: 20px;
-}
+  .FolderItem-Collapsed .FolderItem-Nested {
+    /*display: none;*/
+  }
 
-.VaultDialog-Button-Cancel {
-  float: right;
-  padding-bottom: 20px;
-}
+  .File span .FolderItem-Collapse-Toggle {
+    display: none;
+  }
 
-.VaultDialog-Button-Save {
-  float: right;
-  padding-bottom: 20px;
-  padding-left: 10px;
-}
+  .FolderItem-Collapse-Toggle {
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
 
-.VaultDialog-Button-Delete {
-  padding-left: 10px;
-}
+  .Buttons {
+    padding-top: 20px;
+  }
 
-.VaultDialog-Button-Export ui-button {
-  margin-bottom: 10px;
-}
+  .Button-Cancel {
+    float: right;
+    padding-bottom: 20px;
+  }
 
-.VaultDialog-Button-Folder ui-button {
-  width: 415px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
+  .Button-Save {
+    float: right;
+    padding-bottom: 20px;
+    padding-left: 10px;
+  }
 
-.VaultDialog-User {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  padding: 5px;
-  cursor: default;
-}
+  .Button-Delete {
+    padding-left: 10px;
+  }
 
-.VaultDialog-UserList {
-  margin-bot: 20px;
-}
+  .Button-Export ui-button {
+    margin-bottom: 10px;
+  }
 
-.VaultDialog-User:hover {
-  background-color: #eee;
-  color: #000;
-}
+  .Button-Folder ui-button {
+    width: 415px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 
-.VaultDialog-User-Name {
-  font-size: 15px;
-}
+  .User {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    cursor: default;
+  }
 
-.VaultDialog-User-Email {
-  font-weight: bold;
-  font-size: 13px;
-}
+  .UserList {
+    margin-bot: 20px;
+  }
 
-.VaultDialog-UserAddedTime {
-  right: 35px;
-  position: absolute;
-  font-weight: normal;
-}
+  .User:hover {
+    background-color: #eee;
+    color: #000;
+  }
 
-.VaultDialog-UserKeys {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  transition: all 0.5s;
-}
+  .UserName {
+    font-size: 15px;
+  }
 
-.VaultDialog-UserKeys-Hidden {
-  left: -150px;
-  position: absolute;
-  transition: all 0.5s;
-}
+  .UserEmail {
+    font-weight: bold;
+    font-size: 13px;
+  }
 
-.VaultDialog-SelectKey {
-  padding: 5px;
-}
+  .UserAddedTime {
+    right: 35px;
+    position: absolute;
+    font-weight: normal;
+  }
 
-.VaultDialog-SelectKey:hover {
-  background-color: #eee;
-  color: #000;
-}
+  .UserKeys {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: all 0.5s;
+  }
 
-.VaultDialog-UserKeyFingerprints {
-  right: 35px;
-  position: absolute;
-  font-family: monospace;
-  text-transform: uppercase;
-  margin-top: 7px;
-  font-size: 12px;
-  font-weight: bold;
-}
+  .UserKeys-Hidden {
+    left: -150px;
+    position: absolute;
+    transition: all 0.5s;
+  }
 
-.VaultDialog h4 {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
+  .SelectKey {
+    padding: 5px;
+  }
 
-.VaultDialog-UserKeys .VaultDialog-Checkbox {
-  font-family: monospace;
-  font-weight: bold;
-  text-transform: uppercase;
-}
+  .SelectKey:hover {
+    background-color: #eee;
+    color: #000;
+  }
 
-.VaultDialog-UserKeyCreatedTime {
-  right: 35px;
-  position: absolute;
-}
+  .UserKeyFingerprints {
+    right: 35px;
+    position: absolute;
+    font-family: monospace;
+    text-transform: uppercase;
+    margin-top: 7px;
+    font-size: 12px;
+    font-weight: bold;
+  }
 
-.VaultDialog-Icon-Label {
-  width: 100%;
-}
+  .VaultDialog h4 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
 
-.VaultDialog-Icon {
-  margin-top: 5px;
-  width: 75px;
-  height: 75px;
-  padding: 2px;
-  border: 1px solid black;
-}
+  .UserKeys .Checkbox {
+    font-family: monospace;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
 
-.VaultDialog-TabInfoText {
-  text-align: center;
-  margin: 0.5em;
-  width: 450px;
-  margin-left: auto;
-  margin-right: auto;
-}
+  .UserKeyCreatedTime {
+    right: 35px;
+    position: absolute;
+  }
 
-.VaultDialog-InfoText {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  text-align: justify;
-}
+  .Icon-Label {
+    width: 100%;
+  }
 
-.VaultDialog-Separator {
-  width: 375px;
-  margin: 1.5em;
-  margin-left: auto;
-  margin-right: auto;
-  height: 1px;
-  border: 0px;
-  background-color: #c17d6f;
-}
+  .Icon {
+    margin-top: 5px;
+    width: 75px;
+    height: 75px;
+    padding: 2px;
+    border: 1px solid black;
+  }
 
-.VaultDialog-CryptoInfoItem {
-  cursor: default;
-}
-.VaultDialog-CryptoInfoItem-Label {
-  min-width: 170px !important;
+  .TabInfoText {
+    text-align: center;
+    margin: 0.5em;
+    width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .InfoText {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    text-align: justify;
+  }
+
+  .Separator {
+    width: 375px;
+    margin: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+    height: 1px;
+    border: 0px;
+    background-color: #c17d6f;
+  }
+
+  .CryptoInfoItem {
+    cursor: default;
+  }
+
+  .CryptoInfoItem-Label {
+    min-width: 170px !important;
+  }
 }
