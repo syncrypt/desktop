@@ -23,7 +23,7 @@ import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import WizardDialog exposing (Step(..))
+import WizardDialog exposing (Step(..), ButtonSettings(Default))
 
 
 -- INIT
@@ -304,12 +304,14 @@ openSetupWizard model =
                 , contents =
                     wizardContent
                         [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
+                , buttons = Default
                 }
             , Step
                 { title = "Account setup"
                 , contents =
                     wizardContent
                         [ text "Setup your account here" ]
+                , buttons = Default
                 }
             ]
     in

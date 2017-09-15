@@ -1,9 +1,11 @@
 module WizardDialog
     exposing
         ( State
-        , Msg
+        , Msg(..)
         , Step(..)
         , StepSettings
+        , Button(..)
+        , ButtonSettings(..)
         , StepList
         , init
         , open
@@ -20,8 +22,21 @@ import Ui.Modal
 import Util
 
 
+type Button msg
+    = Next
+    | Prev
+    | Cancel
+    | Finish
+    | CustomButton String msg
+
+
+type ButtonSettings msg
+    = Default
+    | Visible (List (Button msg))
+
+
 type alias StepSettings msg =
-    { title : String, contents : Html msg }
+    { title : String, contents : Html msg, buttons : ButtonSettings msg }
 
 
 type Step msg
@@ -157,69 +172,62 @@ view { wizardDialog } =
 
         Just view ->
             case currentStep view.steps of
-                Step { title } ->
-                    let
-                        viewConfig =
-                            { address = (wizardDialog.address << Modal)
-                            , contents = contents wizardDialog.address view
-                            , footer = wizardButtons wizardDialog.address view
-                            , title = title
-                            }
-                    in
-                        div [ class "WizardDialog" ]
-                            [ Ui.Modal.view viewConfig wizardDialog.modal ]
+                Step stepSettings ->
+                    viewDialog wizardDialog stepSettings view
 
                 Finished ->
                     div [] []
 
 
-contents : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
-contents address view =
-    case currentStep view.steps of
-        Step step ->
-            [ div [ class "Content" ] <|
-                [ step.contents
-                ]
-            ]
-
-        Finished ->
-            []
-
-
-wizardButtons : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
-wizardButtons address view =
+viewDialog : State msg -> StepSettings msg -> ViewSettings msg -> Html msg
+viewDialog state step view =
     let
+        viewConfig =
+            { address = state.address << Modal
+            , contents =
+                [ div [ class "Content" ]
+                    [ step.contents ]
+                ]
+            , footer = wizardButtons state.address view step.buttons
+            , title = step.title
+            }
+    in
+        div [ class "WizardDialog" ]
+            [ Ui.Modal.view viewConfig state.modal ]
+
+
+button : List (Html.Attribute msg) -> String -> msg -> Html msg
+button attributes title msg =
+    span attributes
+        [ Ui.Button.model title "secondary" "small"
+            |> Ui.Button.view msg
+        ]
+
+
+wizardButtons : (Msg -> msg) -> ViewSettings msg -> ButtonSettings msg -> List (Html msg)
+wizardButtons address view buttonSettings =
+    let
+        step : Step msg
         step =
             currentStep view.steps
 
         prevButton =
-            span [ class "Button-Previous" ]
-                [ Ui.Button.model "Previous" "secondary" "small"
-                    |> Ui.Button.view (address ToPreviousStep)
-                ]
+            button [ class "Button-Previous" ] "Previous" (address ToPreviousStep)
 
         nextButton =
-            span [ class "Button-Next" ]
-                [ Ui.Button.model "Next" "secondary" "small"
-                    |> Ui.Button.view (address ToNextStep)
-                ]
+            button [ class "Button-Next" ] "Next" (address ToNextStep)
 
         finishButton =
-            span [ class "Button-Finish" ]
-                [ Ui.Button.model "Finish" "secondary" "small"
-                    |> Ui.Button.view (address FinishWizard)
-                ]
+            button [ class "Button-Finish" ] "Next" (address FinishWizard)
 
         cancelButton =
-            span [ class "Button-Cancel" ]
-                [ Ui.Button.model "Cancel" "secondary" "small"
-                    |> Ui.Button.view (address Close)
-                ]
+            button [ class "Button-Cancel" ] "Cancel" (address Close)
 
         navigationButtons buttons =
             div [ class "NavigationButtons" ]
                 buttons
 
+        buttons : List (Html msg)
         buttons =
             case ( hasPreviousStep view.steps, hasNextStep view.steps ) of
                 ( True, True ) ->
@@ -233,8 +241,31 @@ wizardButtons address view =
 
                 ( False, False ) ->
                     []
+
+        toHtml : Button msg -> Html msg
+        toHtml btn =
+            case btn of
+                Prev ->
+                    prevButton
+
+                Next ->
+                    nextButton
+
+                Cancel ->
+                    cancelButton
+
+                Finish ->
+                    finishButton
+
+                CustomButton title msg ->
+                    button [ class "Custom-Button" ] title msg
     in
-        cancelButton :: buttons
+        case buttonSettings of
+            Default ->
+                cancelButton :: buttons
+
+            Visible buttons ->
+                List.map toHtml buttons
 
 
 stepsFromList : Step msg -> List (Step msg) -> StepList msg
