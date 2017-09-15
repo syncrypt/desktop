@@ -218,7 +218,7 @@ wizardButtons address view buttonSettings =
             button [ class "Button-Next" ] "Next" (address ToNextStep)
 
         finishButton =
-            button [ class "Button-Finish" ] "Next" (address FinishWizard)
+            button [ class "Button-Finish" ] "Finish" (address FinishWizard)
 
         cancelButton =
             button [ class "Button-Cancel" ] "Cancel" (address Close)
