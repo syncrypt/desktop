@@ -100,40 +100,33 @@ open steps onFinishMsg ({ wizardDialog } as model) =
             model
 
         step1 :: steps ->
-            { model
-                | wizardDialog =
-                    { wizardDialog
-                        | modal = Ui.Modal.open wizardDialog.modal
-                        , view =
-                            Just
-                                { steps = stepsFromList step1 steps
-                                , onFinishMsg = onFinishMsg
-                                }
-                    }
+            { wizardDialog
+                | modal = Ui.Modal.open wizardDialog.modal
+                , view =
+                    Just
+                        { steps = stepsFromList step1 steps
+                        , onFinishMsg = onFinishMsg
+                        }
             }
+                |> asWizardIn model
 
 
 close : HasWizardDialog a msg -> HasWizardDialog a msg
 close ({ wizardDialog } as model) =
-    { model
-        | wizardDialog =
-            { wizardDialog
-                | modal = Ui.Modal.close wizardDialog.modal
-                , view = Nothing
-            }
+    { wizardDialog
+        | modal = Ui.Modal.close wizardDialog.modal
+        , view = Nothing
     }
+        |> asWizardIn model
 
 
 update : Msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 update msg ({ wizardDialog } as model) =
     case msg of
         Modal msg ->
-            { model
-                | wizardDialog =
-                    { wizardDialog
-                        | modal = Ui.Modal.update msg wizardDialog.modal
-                    }
-            }
+            ({ wizardDialog | modal = Ui.Modal.update msg wizardDialog.modal }
+                |> asWizardIn model
+            )
                 ! []
 
         Close ->
