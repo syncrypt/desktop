@@ -58,11 +58,11 @@ type alias CryptoInfo =
     }
 
 
-type alias VaultLogItems =
-    { items : List VaultLogItem }
+type alias HistoryItems =
+    { items : List HistoryItem }
 
 
-type alias VaultLogItem =
+type alias HistoryItem =
     { createdAt : String
     , operation : String
     , path : String
@@ -218,16 +218,16 @@ cryptoInfoDecoder =
         |> required "fingerprint" (Json.maybe Json.string)
 
 
-logItemsDecoder : Json.Decoder (List VaultLogItem)
-logItemsDecoder =
-    decode VaultLogItems
-        |> required "items" (Json.list logItemDecoder)
+historyItemsDecoder : Json.Decoder (List HistoryItem)
+historyItemsDecoder =
+    decode HistoryItems
+        |> required "items" (Json.list historyItemDecoder)
         |> andThen (\{ items } -> Json.succeed items)
 
 
-logItemDecoder : Json.Decoder VaultLogItem
-logItemDecoder =
-    decode VaultLogItem
+historyItemDecoder : Json.Decoder HistoryItem
+historyItemDecoder =
+    decode HistoryItem
         |> required "created_at" Json.string
         |> required "operation" Json.string
         |> required "path" Json.string

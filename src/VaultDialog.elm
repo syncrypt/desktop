@@ -14,7 +14,7 @@ import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
-import Syncrypt.Vault exposing (Vault, VaultId, VaultLogItem)
+import Syncrypt.Vault exposing (Vault, VaultId, HistoryItem)
 import Translation exposing (t, Text(..), timeAgo)
 import Ui.Button
 import Ui.Checkbox
@@ -68,7 +68,7 @@ subscriptions model =
             case model.state of
                 Model.ShowingVaultDetails vault ->
                     model.config
-                        |> Daemon.subscribeVaultEventLogStream vault.id (Model.VaultDialogMsg vault.id << VaultLogStream)
+                        |> Daemon.subscribeVaultLogStream vault.id (Model.VaultDialogMsg vault.id << VaultLogStream)
 
                 _ ->
                     Sub.none
@@ -262,7 +262,7 @@ tabContents vaultId state model =
                 )
 
         eventLogTab =
-            ( t EventsTab model
+            ( t HistoryTab model
             , div [ class "Tab-Events" ]
                 (tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
                     :: (case state.logItems of
@@ -299,9 +299,9 @@ tabInfoText infoText =
         ]
 
 
-renderLogItem : VaultLogItem -> Html msg
+renderLogItem : HistoryItem -> Html msg
 renderLogItem item =
-    tr [ class "VaultLogItem" ]
+    tr [ class "HistoryItem" ]
         [ td []
             [ text item.createdAt ]
         , td []

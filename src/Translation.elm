@@ -71,7 +71,7 @@ type Text
     | NameAndFilesTab
     | UsersTab
     | CryptoTab
-    | EventsTab
+    | HistoryTab
     | VaultListHeaderDescription
 
 
@@ -220,8 +220,8 @@ translateEnglish text =
         CryptoTab ->
             "Cryptography & Metadata"
 
-        EventsTab ->
-            "Events"
+        HistoryTab ->
+            "Event History"
 
         VaultListHeaderDescription ->
             "These vaults are cloned and synchronized on this computer."
@@ -341,7 +341,7 @@ translateGerman text =
         CryptoTab ->
             "Cryptographie & Metadaten"
 
-        EventsTab ->
+        HistoryTab ->
             "Ereignisse"
 
         VaultListHeaderDescription ->

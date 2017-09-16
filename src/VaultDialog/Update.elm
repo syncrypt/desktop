@@ -530,7 +530,7 @@ getVaultFingerprints vaultId model =
 
 getVaultEventLog vaultId model =
     model.config
-        |> Daemon.getVaultEventLog vaultId
+        |> Daemon.getVaultHistory vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultEventLog)
 
 

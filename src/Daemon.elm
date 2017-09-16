@@ -28,7 +28,7 @@ type ApiPath
     | VaultUser VaultId Email
     | UserKeys Email
     | VaultFingerprints VaultId
-    | VaultEventLog VaultId
+    | VaultHistory VaultId
     | Stream ApiStreamPath
     | User
     | DaemonConfig
@@ -40,7 +40,7 @@ type ApiPath
 
 
 type ApiStreamPath
-    = VaultEventLogStream VaultId
+    = VaultLogStream VaultId
 
 
 getStats : Model -> Cmd Msg
@@ -88,16 +88,16 @@ getVaultUsers vaultId config =
     apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Syncrypt.User.decoder)
 
 
-getVaultEventLog : VaultId -> Config -> Cmd (WebData (List VaultLogItem))
-getVaultEventLog vaultId config =
-    apiRequest config Get (VaultEventLog vaultId) Nothing Syncrypt.Vault.logItemsDecoder
+getVaultHistory : VaultId -> Config -> Cmd (WebData (List HistoryItem))
+getVaultHistory vaultId config =
+    apiRequest config Get (VaultHistory vaultId) Nothing Syncrypt.Vault.historyItemsDecoder
 
 
-subscribeVaultEventLogStream : VaultId -> (String -> msg) -> Config -> Sub msg
-subscribeVaultEventLogStream vaultId toMsg config =
+subscribeVaultLogStream : VaultId -> (String -> msg) -> Config -> Sub msg
+subscribeVaultLogStream vaultId toMsg config =
     let
         url =
-            apiWSUrl config (apiPath (Stream (VaultEventLogStream vaultId)))
+            apiWSUrl config (apiPath (Stream (VaultLogStream vaultId)))
     in
         WebSocket.listen url toMsg
 
@@ -311,10 +311,10 @@ apiPath apiPath =
         VaultFingerprints vaultId ->
             "vault/" ++ vaultId ++ "/fingerprints"
 
-        VaultEventLog vaultId ->
+        VaultHistory vaultId ->
             "vault/" ++ vaultId ++ "/history/"
 
-        Stream (VaultEventLogStream vaultId) ->
+        Stream (VaultLogStream vaultId) ->
             "vault/" ++ vaultId ++ "/logstream"
 
         UserKeys email ->
