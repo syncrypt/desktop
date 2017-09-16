@@ -98,10 +98,12 @@ view vaultId model =
             { address = (Model.VaultDialogMsg vaultId << ModalMsg)
             , contents = contents vaultId model
             , footer =
-                [ removeButton vaultId state
-                , deleteButton vaultId state model
-                , saveButton vaultId state
-                , cancelButton vaultId state
+                [ span [ class "Buttons" ]
+                    [ removeButton vaultId state
+                    , deleteButton vaultId state model
+                    , saveButton vaultId state
+                    , cancelButton vaultId state
+                    ]
                 ]
             , title =
                 case state.cloneStatus of
@@ -343,11 +345,7 @@ exportButton vault =
 cancelButton : VaultId -> State -> Html Model.Msg
 cancelButton vaultId state =
     span
-        [ classList
-            [ ( "Button-Cancel", True )
-            , ( "Hidden", not state.hasChangesPending )
-            ]
-        ]
+        [ classList [ ( "Hidden", not state.hasChangesPending ) ] ]
         [ Ui.Button.model "Cancel Changes" "secondary" "small"
             |> Ui.Button.view (Model.CloseVaultDetails vaultId)
         ]
@@ -357,8 +355,9 @@ deleteButton : VaultId -> State -> Model -> Html Model.Msg
 deleteButton vaultId state model =
     span
         [ classList
-            [ ( "Hidden", state.cloneStatus == New || not (isOwner vaultId model) )
-            , ( "Button-Delete", True )
+            [ ( "Hidden"
+              , state.cloneStatus == New || not (isOwner vaultId model)
+              )
             ]
         ]
         [ Ui.Button.model "Delete from Server" "danger" "small"
@@ -369,11 +368,7 @@ deleteButton vaultId state model =
 removeButton : VaultId -> State -> Html Model.Msg
 removeButton vaultId state =
     span
-        [ classList
-            [ ( "Hidden", state.cloneStatus /= Cloned )
-            , ( "Button-Remove", True )
-            ]
-        ]
+        [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
         [ Ui.Button.model "Stop syncing" "warning" "small"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm RemoveVault))
         ]

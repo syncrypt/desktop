@@ -11,6 +11,8 @@ $font-family-main: Hind, Arial, Helvetica, Helvetica Neue;
 
 $padding-small: 12px;
 $padding-medium: 22px;
+$padding-large: 30px;
+$padding-extra-large: 30px;
 
 @mixin shadow {
   box-shadow: 0 5px 20px 0 rgba(0,0,0,0.1)
@@ -30,4 +32,11 @@ ui-button {
   background-color: $color-highlight !important;
   color: black !important;
   font-size: $font-size-small !important;
+}
+
+ui-input input {
+  background-color: $color-bg-light !important;
+  border: 2px solid $color-highlight !important;
+  color: black !important;
+  font-size: $font-size-regular;
 }
