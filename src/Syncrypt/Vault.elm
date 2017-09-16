@@ -70,6 +70,26 @@ type alias HistoryItem =
     }
 
 
+type LogLevel
+    = Debug
+    | Info
+    | Warning
+    | Error
+
+
+type alias LogItem =
+    { level : LogLevel
+    , createdAt : Maybe Date
+    , message : String
+    , vaultId : VaultId
+    }
+
+
+type Event
+    = History HistoryItem
+    | Log LogItem
+
+
 {-| Main vault type. Represents all vaults cloned & synced on current computer.
 -}
 type alias Vault =
@@ -232,6 +252,45 @@ historyItemDecoder =
         |> required "operation" Json.string
         |> required "path" Json.string
         |> required "user_email" Json.string
+
+
+logLevelDecoder : Json.Decoder LogLevel
+logLevelDecoder =
+    let
+        convert : String -> Json.Decoder LogLevel
+        convert level =
+            succeed <|
+                case String.toLower level of
+                    "debug" ->
+                        Debug
+
+                    "info" ->
+                        Info
+
+                    "warning" ->
+                        Warning
+
+                    "error" ->
+                        Error
+
+                    val ->
+                        let
+                            _ =
+                                Debug.log "Invalid log stream level" val
+                        in
+                            Error
+    in
+        Json.string
+            |> Json.andThen convert
+
+
+logItemDecoder : Json.Decoder LogItem
+logItemDecoder =
+    decode LogItem
+        |> required "level" logLevelDecoder
+        |> required "createdAt" Util.dateDecoder
+        |> required "mesage" Json.string
+        |> required "vault_id" Json.string
 
 
 {-| Decodes a `Syncrypt.Vault.FlyingVault`.

@@ -2,20 +2,20 @@ module VaultDialog exposing (..)
 
 import Animation exposing (..)
 import ConfirmationDialog
+import Daemon
 import Date
 import Date.Distance
-import Daemon
 import Dialog exposing (labeledItem)
 import Dict
-import Html exposing (Html, button, div, form, h4, img, input, label, span, table, td, th, tr, text)
+import Html exposing (Html, button, div, form, h4, img, input, label, span, table, td, text, th, tr)
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
-import Syncrypt.Vault exposing (Vault, VaultId, HistoryItem)
-import Translation exposing (t, Text(..), timeAgo)
+import Syncrypt.Vault exposing (Event(..), HistoryItem, Vault, VaultId)
+import Translation exposing (Text(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -160,7 +160,7 @@ tabContents vaultId state model =
 
         filesTab =
             ( t NameAndFilesTab model
-            , div [ class "Tab-Content" ]
+            , div []
                 [ dialogInput "Name"
                     [ nameInput msg state ]
                 , dialogInput "Folder"
@@ -182,7 +182,7 @@ tabContents vaultId state model =
                         "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
             in
                 ( t UsersTab model
-                , div [ class "Tab-Content" ]
+                , div []
                     [ tabInfoText infoText
                     , div
                         [ classList [ ( "Hidden", not ownsVault ) ] ]
@@ -220,7 +220,7 @@ tabContents vaultId state model =
                         ]
             in
                 ( t CryptoTab model
-                , div [ class "Tab-Content" ]
+                , div []
                     [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
                     , cryptoInfoItem "Vault ID"
                         "Syncrypt Vault ID"
@@ -261,34 +261,37 @@ tabContents vaultId state model =
                     ]
                 )
 
-        eventLogTab =
-            ( t HistoryTab model
-            , div [ class "Tab-Events" ]
-                (tabInfoText "Here are all file operations performed by all users in this vault. Search for specific file names, users or operation type."
-                    :: (case state.logItems of
-                            Success realLogItems ->
-                                [ table [] <|
-                                    (tr []
-                                        [ th []
-                                            [ text "Created at" ]
-                                        , th []
-                                            [ text "User" ]
-                                        , th []
-                                            [ text "Operation" ]
-                                        , th []
-                                            [ text "Path" ]
-                                        ]
-                                    )
-                                        :: (List.map renderLogItem realLogItems)
-                                ]
+        logTab =
+            ( t LogTab model
+            , div [] <|
+                case VaultDialog.Model.events state of
+                    [] ->
+                        [ loadingSpinner ]
 
-                            _ ->
-                                [ loadingSpinner ]
-                       )
-                )
+                    events ->
+                        [ table [] <|
+                            (tr []
+                                [ th []
+                                    [ text "Created at" ]
+                                , th []
+                                    [ text "User" ]
+                                , th []
+                                    [ text "Operation" ]
+                                , th []
+                                    [ text "Path" ]
+                                ]
+                            )
+                                :: (List.map renderEvent events)
+                        ]
+            )
+
+        adminTab =
+            ( t AdminTab model
+            , div []
+                []
             )
     in
-        [ filesTab, usersTab, cryptoTab, eventLogTab ]
+        [ filesTab, usersTab, cryptoTab, logTab, adminTab ]
 
 
 tabInfoText : String -> Html msg
@@ -299,18 +302,32 @@ tabInfoText infoText =
         ]
 
 
-renderLogItem : HistoryItem -> Html msg
-renderLogItem item =
-    tr [ class "HistoryItem" ]
-        [ td []
-            [ text item.createdAt ]
-        , td []
-            [ text item.email ]
-        , td []
-            [ text item.operation ]
-        , td []
-            [ text item.path ]
-        ]
+renderEvent : Event -> Html msg
+renderEvent event =
+    case event of
+        Log item ->
+            tr [ class "HistoryItem" ]
+                [ td []
+                    [ text <| toString item.createdAt ]
+                , td []
+                    []
+                , td []
+                    [ text <| toString item.level ]
+                , td []
+                    [ text item.message ]
+                ]
+
+        History item ->
+            tr [ class "HistoryItem" ]
+                [ td []
+                    [ text item.createdAt ]
+                , td []
+                    [ text item.email ]
+                , td []
+                    [ text item.operation ]
+                , td []
+                    [ text item.path ]
+                ]
 
 
 infoText : String -> Html msg

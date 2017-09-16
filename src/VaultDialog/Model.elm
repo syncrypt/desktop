@@ -1,5 +1,6 @@
 module VaultDialog.Model exposing (..)
 
+import Date exposing (Date)
 import Dict exposing (Dict)
 import Ui.Checkbox
 import Ui.Input
@@ -27,6 +28,24 @@ type CloneStatus
     | NotCloned
 
 
+type LogOperationFilter
+    = Create
+    | Delete
+    | Update
+
+
+type EventFilter
+    = IsHistoryItem
+    | IsLogItem
+    | User String
+    | Email String
+    | Search String Bool -- is case sensitive?
+    | Level Syncrypt.Vault.LogLevel
+    | MinDate Date
+    | MaxDate Date
+    | Operation LogOperationFilter
+
+
 type alias State =
     { id : VaultId
     , cloneStatus : CloneStatus
@@ -43,7 +62,9 @@ type alias State =
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
     , users : WebData (List User.User)
-    , logItems : WebData (List HistoryItem)
+    , logItems : WebData (List Syncrypt.Vault.LogItem)
+    , historyItems : WebData (List Syncrypt.Vault.HistoryItem)
+    , eventfilters : List EventFilter
     , usersToAdd : Dict User.Email (List User.UserKey)
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
@@ -81,7 +102,7 @@ type Msg
     | GetVaultFingerprints
     | FoundVaultFingerprints (WebData (List User.Fingerprint))
     | FetchedUsers (WebData (List User.User))
-    | FetchedVaultEventLog (WebData (List HistoryItem))
+    | FetchedVaultHistory (WebData (List HistoryItem))
     | SetUserInput String
     | OpenIconDialog
     | SelectedIcon String
@@ -120,6 +141,8 @@ init =
         Ui.Tabs.init ()
     , users = NotAsked
     , logItems = NotAsked
+    , historyItems = NotAsked
+    , eventfilters = []
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked
@@ -337,3 +360,10 @@ userKeys email state =
 hasChanged : State -> State
 hasChanged state =
     { state | hasChangesPending = True }
+
+
+events : State -> List Syncrypt.Vault.Event
+events state =
+    -- TODO: add filtering
+    (List.map Syncrypt.Vault.History (RemoteData.withDefault [] state.historyItems))
+        ++ (List.map Syncrypt.Vault.Log (RemoteData.withDefault [] state.logItems))

@@ -71,7 +71,8 @@ type Text
     | NameAndFilesTab
     | UsersTab
     | CryptoTab
-    | HistoryTab
+    | LogTab
+    | AdminTab
     | VaultListHeaderDescription
 
 
@@ -212,16 +213,19 @@ translateEnglish text =
             "No files uploaded yet"
 
         NameAndFilesTab ->
-            "Name & Files"
+            "Files"
 
         UsersTab ->
             "Users"
 
         CryptoTab ->
-            "Cryptography & Metadata"
+            "Metadata"
 
-        HistoryTab ->
-            "Event History"
+        LogTab ->
+            "Log"
+
+        AdminTab ->
+            "Administration"
 
         VaultListHeaderDescription ->
             "These vaults are cloned and synchronized on this computer."
@@ -333,16 +337,19 @@ translateGerman text =
             "Bisher wurden keine Dateien hochgeladen"
 
         NameAndFilesTab ->
-            "Name & Dateien"
+            "Dateien"
 
         UsersTab ->
             "Benutzer"
 
         CryptoTab ->
-            "Cryptographie & Metadaten"
+            "Metadaten"
 
-        HistoryTab ->
-            "Ereignisse"
+        LogTab ->
+            "Log"
+
+        AdminTab ->
+            "Administration"
 
         VaultListHeaderDescription ->
             "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."

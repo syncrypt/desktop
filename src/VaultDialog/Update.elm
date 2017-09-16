@@ -416,8 +416,8 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
-            FetchedVaultEventLog items ->
-                ({ state | logItems = items }
+            FetchedVaultHistory items ->
+                ({ state | historyItems = items }
                     |> asStateIn vaultId model
                 )
                     ! []
@@ -531,7 +531,7 @@ getVaultFingerprints vaultId model =
 getVaultEventLog vaultId model =
     model.config
         |> Daemon.getVaultHistory vaultId
-        |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultEventLog)
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultHistory)
 
 
 searchFingerprints email vaultId model =
