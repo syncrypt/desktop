@@ -30,6 +30,11 @@ import Util
         , onAnyKeyDown
         , onEnter
         , tooltipItem
+        , dateParts
+        , padNumber
+        , monthNumber
+        , fullDateString
+        , shortDateString
         )
 import VaultDialog.Model
     exposing
@@ -268,7 +273,7 @@ tabContents vaultId state model =
                 [ table [ class "LogTable" ] <|
                     (tr []
                         [ th [ onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder) ]
-                            [ text "Created at" ]
+                            [ text "Time" ]
 
                         -- , th []
                         --     [ text "User" ]
@@ -318,6 +323,29 @@ type alias HasCreatedAt event =
     { event | createdAt : Maybe Date.Date }
 
 
+eventDateString : Maybe Time -> HasCreatedAt a -> String
+eventDateString now { createdAt } =
+    case ( now, createdAt ) of
+        ( Nothing, Just date ) ->
+            fullDateString date
+
+        ( Just nowTime, Just date ) ->
+            let
+                ( y1, m1, d1, _, _, _ ) =
+                    dateParts (Date.fromTime nowTime)
+
+                ( y2, m2, d2, _, _, _ ) =
+                    dateParts date
+            in
+                if y1 == y2 && m1 == m2 && d1 == d2 then
+                    shortDateString date
+                else
+                    fullDateString date
+
+        _ ->
+            ""
+
+
 eventDateDistance : Maybe Time -> HasCreatedAt a -> String
 eventDateDistance now { createdAt } =
     case now of
@@ -341,7 +369,7 @@ viewLogItem : Maybe Time -> Syncrypt.Vault.LogItem -> Html msg
 viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []
-            [ text <| eventDateDistance now item ]
+            [ text <| eventDateString now item ]
 
         -- , td []
         --     []
@@ -356,7 +384,7 @@ viewHistoryItem : Maybe Time -> HistoryItem -> Html msg
 viewHistoryItem now item =
     tr [ class "HistoryItem" ]
         [ td []
-            [ text <| eventDateDistance now item ]
+            [ text <| eventDateString now item ]
 
         -- , td []
         --     [ text item.email ]

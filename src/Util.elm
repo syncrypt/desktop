@@ -27,6 +27,11 @@ module Util
         , IconButton(..)
         , iconButton
         , shortenString
+        , padNumber
+        , dateParts
+        , monthNumber
+        , fullDateString
+        , shortDateString
         )
 
 import Date exposing (Date)
@@ -407,3 +412,91 @@ shortenString maxSize string =
         String.left maxSize string ++ "..."
     else
         string
+
+
+padNumber : Int -> String
+padNumber val =
+    if val > 10 then
+        toString val
+    else
+        "0" ++ toString val
+
+
+dateParts date =
+    ( Date.year date
+    , Date.month date
+    , Date.day date
+    , Date.hour date
+    , Date.minute date
+    , Date.second date
+    )
+
+
+monthNumber : Date.Month -> Int
+monthNumber month =
+    case month of
+        Date.Jan ->
+            1
+
+        Date.Feb ->
+            2
+
+        Date.Mar ->
+            3
+
+        Date.Apr ->
+            4
+
+        Date.May ->
+            5
+
+        Date.Jun ->
+            6
+
+        Date.Jul ->
+            7
+
+        Date.Aug ->
+            8
+
+        Date.Sep ->
+            9
+
+        Date.Oct ->
+            10
+
+        Date.Nov ->
+            11
+
+        Date.Dec ->
+            12
+
+
+fullDateString date =
+    let
+        ( year, month, day, hour, minute, second ) =
+            dateParts date
+    in
+        (year |> toString)
+            ++ "/"
+            ++ (month |> monthNumber |> padNumber)
+            ++ "/"
+            ++ (day |> padNumber)
+            ++ " "
+            ++ (hour |> padNumber)
+            ++ ":"
+            ++ (minute |> padNumber)
+            ++ ":"
+            ++ (second |> padNumber)
+
+
+shortDateString date =
+    let
+        ( _, _, _, hour, minute, second ) =
+            dateParts date
+    in
+        (hour |> padNumber)
+            ++ ":"
+            ++ (minute |> padNumber)
+            ++ ":"
+            ++ (second |> padNumber)
