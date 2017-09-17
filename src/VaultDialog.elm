@@ -277,7 +277,10 @@ tabContents vaultId state model =
                     ]
                 , table [ class "EventTable" ] <|
                     (tr []
-                        [ th [ onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder) ]
+                        [ th
+                            [ class "Default-Cursor"
+                            , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
+                            ]
                             [ text "Time" ]
 
                         -- , th []

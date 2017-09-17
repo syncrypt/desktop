@@ -70,12 +70,11 @@
   .EventFilters {
     .Dialog-Label-Left {
       font-weight: bold;
+
     }
 
     ui-button {
-      margin-right: $padding-medium;
-      margin-top: $padding-small;
-      margin-bottom: $padding-small;
+      margin: $padding-small;
     }
   }
 
@@ -83,6 +82,8 @@
     th, td {
       margin-left: auto;
       margin-right: auto;
+      text-align: left;
+      font-size: $font-size-small;
       text-align: left;
     }
     width: 100%;
