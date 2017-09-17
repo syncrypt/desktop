@@ -416,7 +416,7 @@ shortenString maxSize string =
 
 padNumber : Int -> String
 padNumber val =
-    if val > 10 then
+    if val >= 10 then
         toString val
     else
         "0" ++ toString val
