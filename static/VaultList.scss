@@ -20,7 +20,7 @@ $vault-card-width: 270px;
   background-repeat: no-repeat;
   float: left;
   background-image: url(assets/check_circle.png);
-  background-position-y: -10px;
+  background-position: 0px;
   padding-right: 8px;
 }
 
@@ -35,7 +35,8 @@ $vault-card-width: 270px;
   float: left;
   animation: rotating 2s linear infinite;
   animation-direction: reverse;
-  background-image: url(assets/update_vault.png);
+  background-image: url(assets/sync_white.png);
+  background-position: 0px;
 }
 
 .VaultList-VaultStatus-Syncing {
@@ -50,20 +51,7 @@ $vault-card-width: 270px;
   animation: rotating 2s linear infinite;
   animation-direction: reverse;
   background-image: url(assets/update_vault.png);
-}
-
-.VaultList-VaultStatus-Initializing {
-  background-size: 22px;
-  margin-left: -2px;
-  margin-top: -5px;
-  margin-right: 5px;
-  width: 22px;
-  height: 22px;
-  background-repeat: no-repeat;
-  float: left;
-  animation: rotating 2s linear infinite;
-  animation-direction: reverse;
-  background-image: url(assets/update_vault.png);
+  background-position: 0px;
 }
 
 .VaultList-VaultStatus-Ready {
