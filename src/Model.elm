@@ -1,21 +1,21 @@
 module Model exposing (..)
 
 import Config exposing (Config)
+import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt, optionalAt)
+import Json.Decode.Pipeline exposing (decode, optional, optionalAt, required, requiredAt)
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
+import Syncrypt.Daemon exposing (DaemonConfig, KeyState(..), Stats)
 import Syncrypt.User exposing (Email)
 import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
-import Time exposing (Time)
 import Translation
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
 import WizardDialog
-import Syncrypt.Daemon exposing (KeyState(..), Stats, DaemonConfig)
 
 
 type alias CurrentUser =
@@ -47,7 +47,7 @@ type alias Model =
     , stats : WebData Stats
     , sidebarOpen : Bool
     , isFirstLaunch : Bool
-    , now : Maybe Time
+    , now : Maybe Date
     , loginDialog : LoginDialog.Model.State
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
@@ -70,7 +70,7 @@ type State
 
 
 type Msg
-    = SetTime Time
+    = SetTime Date
     | UpdateLoginState
     | UpdateVaults
     | UpdateFlyingVaults

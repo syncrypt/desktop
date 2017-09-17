@@ -3,6 +3,7 @@ module MainScreen exposing (..)
 import Animation exposing (..)
 import Config exposing (Config)
 import Daemon
+import Date
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -18,12 +19,12 @@ import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
 import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing (Direction(..), andAlso, iconButton, IconButton(..))
+import Util exposing (Direction(..), IconButton(..), andAlso, iconButton)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultList
-import WizardDialog exposing (Step(..), ButtonSettings(Default))
+import WizardDialog exposing (ButtonSettings(Default), Step(..))
 
 
 -- INIT
@@ -57,7 +58,7 @@ subscriptions model =
             Sub.batch
                 [ VaultDialog.subscriptions model
                 , Time.every (10 * Time.minute) (\_ -> UpdateVaults)
-                , Time.every Time.second SetTime
+                , Time.every Time.second (Date.fromTime >> SetTime)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 ]

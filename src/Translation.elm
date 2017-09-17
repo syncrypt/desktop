@@ -11,7 +11,6 @@ import Date exposing (Date)
 import Date.Distance
 import Syncrypt.Vault exposing (VaultId)
 import Syncrypt.User exposing (Email)
-import Time exposing (Time)
 import Syncrypt.Daemon exposing (KeyState, Stats)
 
 
@@ -360,7 +359,7 @@ germanDistance =
 
 
 type alias HasNowAndLanguage a =
-    { a | now : Maybe Time, language : Language }
+    { a | now : Maybe Date, language : Language }
 
 
 timeAgo : Date -> HasNowAndLanguage a -> String
@@ -376,7 +375,7 @@ timeAgo date { now, language } =
     in
         case now of
             Just now ->
-                ((Date.Distance.inWordsWithConfig distanceConfig date (Date.fromTime now)) ++ " ago")
+                ((Date.Distance.inWordsWithConfig distanceConfig date now) ++ " ago")
 
             Nothing ->
                 (toString date)

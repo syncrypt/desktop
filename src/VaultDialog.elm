@@ -3,7 +3,7 @@ module VaultDialog exposing (..)
 import Animation exposing (..)
 import ConfirmationDialog
 import Daemon
-import Date
+import Date exposing (Date)
 import Date.Distance
 import Dialog exposing (labeledItem)
 import Dict
@@ -15,7 +15,6 @@ import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Event(..), HistoryItem, Vault, VaultId)
-import Time exposing (Time)
 import Translation exposing (Text(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox
@@ -27,14 +26,14 @@ import Util
     exposing
         ( Direction(..)
         , TooltipLength(..)
+        , dateParts
+        , fullDateString
+        , monthNumber
         , onAnyKeyDown
         , onEnter
-        , tooltipItem
-        , dateParts
         , padNumber
-        , monthNumber
-        , fullDateString
         , shortDateString
+        , tooltipItem
         )
 import VaultDialog.Model
     exposing
@@ -309,7 +308,7 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Maybe Time -> Event -> Html msg
+viewEvent : Maybe Date -> Event -> Html msg
 viewEvent now event =
     case event of
         Log item ->
@@ -323,16 +322,16 @@ type alias HasCreatedAt event =
     { event | createdAt : Maybe Date.Date }
 
 
-eventDateString : Maybe Time -> HasCreatedAt a -> String
+eventDateString : Maybe Date -> HasCreatedAt a -> String
 eventDateString now { createdAt } =
     case ( now, createdAt ) of
         ( Nothing, Just date ) ->
             fullDateString date
 
-        ( Just nowTime, Just date ) ->
+        ( Just nowDate, Just date ) ->
             let
                 ( y1, m1, d1, _, _, _ ) =
-                    dateParts (Date.fromTime nowTime)
+                    dateParts nowDate
 
                 ( y2, m2, d2, _, _, _ ) =
                     dateParts date
@@ -346,26 +345,7 @@ eventDateString now { createdAt } =
             ""
 
 
-eventDateDistance : Maybe Time -> HasCreatedAt a -> String
-eventDateDistance now { createdAt } =
-    case now of
-        Nothing ->
-            ""
-
-        Just currTime ->
-            let
-                currDate =
-                    Date.fromTime currTime
-
-                distString =
-                    Date.Distance.inWords
-                        currDate
-                        (Maybe.withDefault currDate createdAt)
-            in
-                distString ++ " ago"
-
-
-viewLogItem : Maybe Time -> Syncrypt.Vault.LogItem -> Html msg
+viewLogItem : Maybe Date -> Syncrypt.Vault.LogItem -> Html msg
 viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []
@@ -380,7 +360,7 @@ viewLogItem now item =
         ]
 
 
-viewHistoryItem : Maybe Time -> HistoryItem -> Html msg
+viewHistoryItem : Maybe Date -> HistoryItem -> Html msg
 viewHistoryItem now item =
     tr [ class "HistoryItem" ]
         [ td []
@@ -902,4 +882,4 @@ keyCreatedTimestamp key model =
                 [ text <| toString date ]
 
             ( Just date, Just now ) ->
-                [ text <| "Created " ++ (Date.Distance.inWords date (Date.fromTime now)) ++ " ago" ]
+                [ text <| "Created " ++ (Date.Distance.inWords date now) ++ " ago" ]
