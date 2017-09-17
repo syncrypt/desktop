@@ -530,8 +530,26 @@ update msg vaultId ({ vaultDialogs } as model) =
                     ! []
 
             FilterEventsBy eventFilter ->
-                (state
-                    |> VaultDialog.Model.filterEventsBy eventFilter
+                let
+                    newState =
+                        case eventFilter of
+                            VaultDialog.Model.Level _ ->
+                                if state.viewLogLevelFilters then
+                                    { state | viewLogLevelFilters = False }
+                                else
+                                    state
+
+                            _ ->
+                                state
+                in
+                    (newState
+                        |> VaultDialog.Model.filterEventsBy eventFilter
+                        |> asStateIn vaultId model
+                    )
+                        ! []
+
+            ToggleViewLogLevelFilters ->
+                ({ state | viewLogLevelFilters = not state.viewLogLevelFilters }
                     |> asStateIn vaultId model
                 )
                     ! []

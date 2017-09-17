@@ -87,6 +87,7 @@ type alias State =
     , usersToAdd : Dict User.Email (List User.UserKey)
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
+    , viewLogLevelFilters : Bool
     }
 
 
@@ -131,6 +132,7 @@ type Msg
     | ToggleEventSortOrder
     | SortEventsBy EventSortBy
     | FilterEventsBy EventFilter
+    | ToggleViewLogLevelFilters
 
 
 init : State
@@ -170,6 +172,7 @@ init =
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked
+    , viewLogLevelFilters = False
     }
 
 
@@ -458,6 +461,11 @@ filterEvents state events =
                             |> List.any (doesFilterApply event)
                             |> not
                     )
+
+
+isFilterEnabled : EventFilter -> State -> Bool
+isFilterEnabled filter state =
+    List.member filter state.eventFilters
 
 
 doesFilterApply : Event -> EventFilter -> Bool

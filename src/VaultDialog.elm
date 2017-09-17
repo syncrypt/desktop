@@ -7,14 +7,37 @@ import Date exposing (Date)
 import Date.Distance
 import Dialog exposing (labeledItem)
 import Dict
-import Html exposing (Html, button, div, form, h4, img, input, label, span, table, td, text, th, tr)
+import Html
+    exposing
+        ( Html
+        , button
+        , div
+        , form
+        , h4
+        , img
+        , input
+        , label
+        , span
+        , table
+        , td
+        , text
+        , th
+        , tr
+        )
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
-import Syncrypt.Vault exposing (Event(..), HistoryItem, Vault, VaultId)
+import Syncrypt.Vault
+    exposing
+        ( Event(..)
+        , HistoryItem
+        , LogLevel(..)
+        , Vault
+        , VaultId
+        )
 import Translation exposing (Text(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox
@@ -38,12 +61,12 @@ import Util
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
+        , EventFilter(..)
         , FileName
         , FolderItem
         , Msg(..)
         , RequiresConfirmation(..)
         , State
-        , EventFilter(..)
         , folderIsEmpty
         , isExpanded
         , isIgnored
@@ -272,7 +295,7 @@ tabContents vaultId state model =
                         Nothing
                         (text "Filters")
                         (span []
-                            (eventFilterButtons vaultId)
+                            (eventFilterButtons vaultId state)
                         )
                     ]
                 , table [ class "EventTable" ] <|
@@ -317,23 +340,54 @@ tabContents vaultId state model =
         [ filesTab, usersTab, cryptoTab, logTab, adminTab ]
 
 
-eventFilterButtons vaultId =
+eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
+eventFilterButtons vaultId state =
     let
-        button label msg =
-            Ui.Button.model label "primary" "small"
-                |> Ui.Button.view msg
+        button attributes label msg =
+            span attributes
+                [ Ui.Button.model label "primary" "small"
+                    |> Ui.Button.view msg
+                ]
+
+        rootMsg msg =
+            Model.VaultDialogMsg vaultId msg
+
+        filterMsg filter =
+            rootMsg <| FilterEventsBy filter
+
+        filterButton title filter =
+            button
+                [ classList
+                    [ ( "Filter-Active"
+                      , VaultDialog.Model.isFilterEnabled filter state
+                      )
+                    ]
+                ]
+                title
+                (filterMsg <| filter)
+
+        logLevelButtons =
+            [ filterButton "Debug" <| Level Debug
+            , filterButton "Info" <| Level Info
+            , filterButton "Warning" <| Level Warning
+            , filterButton "Error" <| Level Error
+            ]
+
+        logLevelButton =
+            button [] "Log Level" (rootMsg <| ToggleViewLogLevelFilters)
 
         buttons =
-            [ ( "History", IsHistoryItem )
-            , ( "Log", IsLogItem )
+            [ filterButton "History" <| IsHistoryItem
+            , filterButton "Log" <| IsLogItem
+            , logLevelButton
+            , span [ class "LogLevelButtons" ] <|
+                if state.viewLogLevelFilters then
+                    logLevelButtons
+                else
+                    []
             ]
     in
         buttons
-            |> List.map
-                (\( title, filter ) ->
-                    button title
-                        (Model.VaultDialogMsg vaultId (FilterEventsBy filter))
-                )
 
 
 tabInfoText : String -> Html msg

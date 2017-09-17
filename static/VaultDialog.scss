@@ -70,11 +70,30 @@
   .EventFilters {
     .Dialog-Label-Left {
       font-weight: bold;
-
     }
 
     ui-button {
       margin: $padding-small;
+    }
+
+    .Filter-Active {
+      ui-button {
+        background-color: $color-bg-dark !important;
+        color: $color-highlight !important;
+      }
+    }
+
+    .LogLevelButtons {
+      ui-button {
+        position: relative;
+        display: flex;
+        margin-bottom: -10px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 85px;
+        left: -10px;
+        top: -20px;
+      }
     }
   }
 
