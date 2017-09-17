@@ -63,7 +63,7 @@ type alias HistoryItems =
 
 
 type alias HistoryItem =
-    { createdAt : String
+    { createdAt : Maybe Date
     , operation : String
     , path : String
     , email : String
@@ -248,7 +248,7 @@ historyItemsDecoder =
 historyItemDecoder : Json.Decoder HistoryItem
 historyItemDecoder =
     decode HistoryItem
-        |> required "created_at" Json.string
+        |> required "created_at" dateDecoder
         |> required "operation" Json.string
         |> required "path" Json.string
         |> required "user_email" Json.string

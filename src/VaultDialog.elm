@@ -15,6 +15,7 @@ import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Syncrypt.User as User exposing (Email, User, UserKey)
 import Syncrypt.Vault exposing (Event(..), HistoryItem, Vault, VaultId)
+import Time exposing (Time)
 import Translation exposing (Text(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox
@@ -264,25 +265,26 @@ tabContents vaultId state model =
         logTab =
             ( t LogTab model
             , div [] <|
-                case VaultDialog.Model.events state of
-                    [] ->
-                        [ loadingSpinner ]
+                [ table [ class "LogTable" ] <|
+                    (tr []
+                        [ th []
+                            [ text "Created at" ]
 
-                    events ->
-                        [ table [] <|
-                            (tr []
-                                [ th []
-                                    [ text "Created at" ]
-                                , th []
-                                    [ text "User" ]
-                                , th []
-                                    [ text "Operation" ]
-                                , th []
-                                    [ text "Path" ]
-                                ]
-                            )
-                                :: (List.map renderEvent events)
+                        -- , th []
+                        --     [ text "User" ]
+                        , th []
+                            [ text "Operation" ]
+                        , th []
+                            [ text "Path" ]
                         ]
+                    )
+                        :: case VaultDialog.Model.events state of
+                            [] ->
+                                [ loadingSpinner ]
+
+                            events ->
+                                List.map (renderEvent model.now) events
+                ]
             )
 
         adminTab =
@@ -302,15 +304,16 @@ tabInfoText infoText =
         ]
 
 
-renderEvent : Event -> Html msg
-renderEvent event =
+renderEvent : Maybe Time -> Event -> Html msg
+renderEvent now event =
     case event of
         Log item ->
             tr [ class "HistoryItem" ]
                 [ td []
                     [ text <| toString item.createdAt ]
-                , td []
-                    []
+
+                -- , td []
+                --     []
                 , td []
                     [ text <| toString item.level ]
                 , td []
@@ -320,13 +323,29 @@ renderEvent event =
         History item ->
             tr [ class "HistoryItem" ]
                 [ td []
-                    [ text item.createdAt ]
-                , td []
-                    [ text item.email ]
+                    [ case now of
+                        Nothing ->
+                            text ""
+
+                        Just currTime ->
+                            let
+                                currDate =
+                                    Date.fromTime currTime
+
+                                distString =
+                                    Date.Distance.inWords
+                                        currDate
+                                        (Maybe.withDefault currDate item.createdAt)
+                            in
+                                text <| distString ++ " ago"
+                    ]
+
+                -- , td []
+                --     [ text item.email ]
                 , td []
                     [ text item.operation ]
                 , td []
-                    [ text item.path ]
+                    [ text <| Util.shortenString 50 item.path ]
                 ]
 
 

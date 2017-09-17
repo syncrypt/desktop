@@ -26,6 +26,7 @@ module Util
         , dateDecoder
         , IconButton(..)
         , iconButton
+        , shortenString
         )
 
 import Date exposing (Date)
@@ -399,3 +400,10 @@ iconButtonTooltip buttonType =
 
         SettingsButton ->
             "Account & Software Settings"
+
+
+shortenString maxSize string =
+    if String.length string > maxSize then
+        String.left maxSize string ++ "..."
+    else
+        string

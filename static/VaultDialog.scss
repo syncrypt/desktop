@@ -67,6 +67,15 @@
     margin-bottom: 5px !important
   }
 
+  .LogTable {
+    th, td {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    width: 100%;
+  }
+
   .Dialog-Label-Left.InputLabel,
   .Dialog-Label-Right.InputLabel {
     font-weight: bold;
