@@ -244,9 +244,11 @@ This is somewhat similar to Haskell's >>=
 
     doStuff : Model -> ( Model, Cmd Msg )
     doStuff model =
-        model
+        ( model, fetchData )
             ~> doSomething
             ~> doAnotherThing
+
+    fetchData : Model -> Cmd Msg
 
     doSomething : Model -> ( Model, Cmd Msg )
 
