@@ -32,7 +32,7 @@
   ui-tabs-content {
     min-width: 600px;
     max-width: 600px;
-    height: 400px;
+    height: 450px;
     overflow-y: auto;
     overflow-x: auto;
     font-size: 15px;
@@ -86,6 +86,16 @@
       text-align: left;
     }
     width: 100%;
+  }
+
+  .Admin-Buttons {
+    ui-button {
+      display: block;
+    }
+
+    .InfoText {
+      text-align: justify;
+    }
   }
 
   .Dialog-Label-Left.InputLabel,

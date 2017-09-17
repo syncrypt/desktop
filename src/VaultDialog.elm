@@ -105,9 +105,7 @@ view vaultId model =
             , contents = contents vaultId model
             , footer =
                 [ span [ class "Buttons" ]
-                    [ removeButton vaultId state
-                    , deleteButton vaultId state model
-                    , saveButton vaultId state
+                    [ saveButton vaultId state
                     , cancelButton vaultId state
                     ]
                 ]
@@ -262,8 +260,6 @@ tabContents vaultId state model =
                         "Length of vault private key"
                         (toString vault.crypto.rsaKeyLength)
                     , separator
-                    , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
-                    , exportButton vault
                     ]
                 )
 
@@ -303,8 +299,16 @@ tabContents vaultId state model =
 
         adminTab =
             ( t AdminTab model
-            , div []
-                []
+            , div [ class "Admin-Buttons" ]
+                [ infoText "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
+                , removeButton vaultId state
+                , separator
+                , infoText "Delete this vault with its files from the Syncrypt cloud."
+                , deleteButton vaultId state model
+                , separator
+                , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
+                , exportButton <| Model.vaultWithId vaultId model
+                ]
             )
     in
         [ filesTab, usersTab, cryptoTab, logTab, adminTab ]
