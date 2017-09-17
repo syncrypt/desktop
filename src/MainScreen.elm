@@ -19,7 +19,7 @@ import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
 import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing (Direction(..), IconButton(..), andAlso, iconButton)
+import Util exposing (Direction(..), IconButton(..), (~>), iconButton)
 import VaultDialog
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
@@ -121,7 +121,7 @@ update action model =
         CloneVault vaultId ->
             model
                 |> cloneVault vaultId
-                |> andAlso (VaultDialog.Update.close vaultId)
+                ~> (VaultDialog.Update.close vaultId)
 
         ClonedVault vaultId data ->
             model
@@ -134,7 +134,7 @@ update action model =
         SaveVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
-                |> andAlso (saveVault vaultId)
+                ~> (saveVault vaultId)
 
         Model.CreateNewVault ->
             { model | state = CreatingNewVault }
@@ -143,8 +143,8 @@ update action model =
         CreatedVault dialogState (Success vault) ->
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
-                |> andAlso (notifyText <| VaultCreated vault.id)
-                |> andAlso (\model -> ( model, Daemon.getVaults model ))
+                ~> (notifyText <| VaultCreated vault.id)
+                ~> (\model -> ( model, Daemon.getVaults model ))
 
         CreatedVault _ (Failure reason) ->
             model
@@ -169,7 +169,7 @@ update action model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
-                |> andAlso (notifyText <| VaultRemoved vaultId)
+                ~> (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
             model
@@ -263,7 +263,7 @@ update action model =
             (model
                 ! [ Daemon.invalidateFirstLaunch model ]
             )
-                |> andAlso (notify (text "Syncrypt initialized"))
+                ~> (notify (text "Syncrypt initialized"))
 
         EmailCompletionList emails ->
             let
@@ -410,7 +410,7 @@ deletedVault data model =
             in
                 newModel
                     |> VaultDialog.Update.close vaultId
-                    |> andAlso (notifyText <| VaultDeleted vaultId)
+                    ~> (notifyText <| VaultDeleted vaultId)
 
         _ ->
             model
@@ -450,7 +450,7 @@ saveVault vaultId model =
             _ ->
                 model
                     |> VaultDialog.Update.saveVaultChanges vaultId state
-                    |> andAlso (notifyText <| VaultUpdated vaultId)
+                    ~> (notifyText <| VaultUpdated vaultId)
 
 
 createVault : VaultDialog.Model.State -> Model -> ( Model, Cmd Msg )

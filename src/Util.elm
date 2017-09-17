@@ -17,6 +17,7 @@ module Util
         , allButLast
         , findFirst
         , andAlso
+        , (~>)
         , onEnter
         , onKeyDown
         , onAnyKeyDown
@@ -238,7 +239,28 @@ findFirst check list =
                 findFirst check rest
 
 
-andAlso : (model -> ( model, Cmd msg )) -> ( model, Cmd msg ) -> ( model, Cmd msg )
+{-| Composes multiple (model, Cmd msg) pairs with each other.
+This is somewhat similar to Haskell's >>=
+
+    doStuff : Model -> ( Model, Cmd Msg )
+    doStuff model =
+        model
+            ~> doSomething
+            ~> doAnotherThing
+
+    doSomething : Model -> ( Model, Cmd Msg )
+
+    doAnotherThing : Model -> ( Model, Cmd Msg )
+
+-}
+(~>) : ( model1, Cmd msg ) -> (model1 -> ( model2, Cmd msg )) -> ( model2, Cmd msg )
+(~>) modelAndCmd f =
+    modelAndCmd
+        |> andAlso f
+infixl 0 ~>
+
+
+andAlso : (model1 -> ( model2, Cmd msg )) -> ( model1, Cmd msg ) -> ( model2, Cmd msg )
 andAlso f ( m1, cmd1 ) =
     let
         ( m2, cmd2 ) =
