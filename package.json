@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
-    "electron-forge": "^2.12.0",
-    "electron-prebuilt-compile": "1.6.2"
+    "electron-forge": "^4.0.2",
+    "electron-prebuilt-compile": "1.7.6"
   }
 }
