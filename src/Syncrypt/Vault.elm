@@ -289,7 +289,7 @@ logItemDecoder =
     decode LogItem
         |> required "level" logLevelDecoder
         |> required "createdAt" Util.dateDecoder
-        |> required "mesage" Json.string
+        |> required "message" Json.string
         |> required "vault_id" Json.string
 
 

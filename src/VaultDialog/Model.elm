@@ -46,6 +46,15 @@ type EventFilter
     | Operation LogOperationFilter
 
 
+type EventSortOrder
+    = Ascending
+    | Descending
+
+
+type alias EventSortBy =
+    Syncrypt.Vault.Event -> Syncrypt.Vault.Event -> Order
+
+
 type alias State =
     { id : VaultId
     , cloneStatus : CloneStatus
@@ -62,9 +71,11 @@ type alias State =
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
     , users : WebData (List User.User)
-    , logItems : WebData (List Syncrypt.Vault.LogItem)
+    , logItems : List Syncrypt.Vault.LogItem
     , historyItems : WebData (List Syncrypt.Vault.HistoryItem)
     , eventfilters : List EventFilter
+    , eventSortBy : EventSortBy
+    , eventSortOrder : EventSortOrder
     , usersToAdd : Dict User.Email (List User.UserKey)
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
@@ -108,7 +119,9 @@ type Msg
     | SelectedIcon String
     | OpenExportDialog
     | SelectedExportFile String
-    | VaultLogStream String
+    | VaultLogStream (Result String Syncrypt.Vault.LogItem)
+    | ToggleEventSortOrder
+    | SortEventsBy EventSortBy
 
 
 init : State
@@ -140,9 +153,11 @@ init =
     , tabs =
         Ui.Tabs.init ()
     , users = NotAsked
-    , logItems = NotAsked
+    , logItems = []
     , historyItems = NotAsked
     , eventfilters = []
+    , eventSortOrder = Descending
+    , eventSortBy = eventSortByCreatedAt
     , usersToAdd = Dict.empty
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked
@@ -365,5 +380,87 @@ hasChanged state =
 events : State -> List Syncrypt.Vault.Event
 events state =
     -- TODO: add filtering
-    (List.map Syncrypt.Vault.History (RemoteData.withDefault [] state.historyItems))
-        ++ (List.map Syncrypt.Vault.Log (RemoteData.withDefault [] state.logItems))
+    ((List.map Syncrypt.Vault.History (RemoteData.withDefault [] state.historyItems))
+        ++ (List.map Syncrypt.Vault.Log state.logItems)
+    )
+        |> sortEvents state
+
+
+toggleSortOrder : State -> State
+toggleSortOrder state =
+    let
+        newOrder =
+            case state.eventSortOrder of
+                Ascending ->
+                    Descending
+
+                Descending ->
+                    Ascending
+    in
+        { state | eventSortOrder = newOrder }
+
+
+sortBy : EventSortBy -> State -> State
+sortBy newSortBy state =
+    { state | eventSortBy = newSortBy }
+
+
+sortEvents state events =
+    let
+        ( lt, gt ) =
+            case state.eventSortOrder of
+                Ascending ->
+                    ( LT, GT )
+
+                Descending ->
+                    ( GT, LT )
+    in
+        events
+            |> List.sortWith
+                (\a b ->
+                    case state.eventSortBy a b of
+                        LT ->
+                            lt
+
+                        GT ->
+                            gt
+
+                        EQ ->
+                            EQ
+                )
+
+
+eventSortByCreatedAt : Syncrypt.Vault.Event -> Syncrypt.Vault.Event -> Order
+eventSortByCreatedAt a b =
+    let
+        distA =
+            eventDistVal a
+
+        distB =
+            eventDistVal b
+    in
+        if distA < distB then
+            LT
+        else if distA <= distB then
+            EQ
+        else
+            GT
+
+
+eventDistVal event =
+    case event of
+        Syncrypt.Vault.History item ->
+            case item.createdAt of
+                Nothing ->
+                    0
+
+                Just val ->
+                    Date.toTime val
+
+        Syncrypt.Vault.Log item ->
+            case item.createdAt of
+                Nothing ->
+                    0
+
+                Just val ->
+                    Date.toTime val

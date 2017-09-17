@@ -267,7 +267,7 @@ tabContents vaultId state model =
             , div [] <|
                 [ table [ class "LogTable" ] <|
                     (tr []
-                        [ th []
+                        [ th [ onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder) ]
                             [ text "Created at" ]
 
                         -- , th []
@@ -283,7 +283,7 @@ tabContents vaultId state model =
                                 [ loadingSpinner ]
 
                             events ->
-                                List.map (renderEvent model.now) events
+                                List.map (viewEvent model.now) events
                 ]
             )
 
@@ -304,49 +304,67 @@ tabInfoText infoText =
         ]
 
 
-renderEvent : Maybe Time -> Event -> Html msg
-renderEvent now event =
+viewEvent : Maybe Time -> Event -> Html msg
+viewEvent now event =
     case event of
         Log item ->
-            tr [ class "HistoryItem" ]
-                [ td []
-                    [ text <| toString item.createdAt ]
-
-                -- , td []
-                --     []
-                , td []
-                    [ text <| toString item.level ]
-                , td []
-                    [ text item.message ]
-                ]
+            viewLogItem now item
 
         History item ->
-            tr [ class "HistoryItem" ]
-                [ td []
-                    [ case now of
-                        Nothing ->
-                            text ""
+            viewHistoryItem now item
 
-                        Just currTime ->
-                            let
-                                currDate =
-                                    Date.fromTime currTime
 
-                                distString =
-                                    Date.Distance.inWords
-                                        currDate
-                                        (Maybe.withDefault currDate item.createdAt)
-                            in
-                                text <| distString ++ " ago"
-                    ]
+type alias HasCreatedAt event =
+    { event | createdAt : Maybe Date.Date }
 
-                -- , td []
-                --     [ text item.email ]
-                , td []
-                    [ text item.operation ]
-                , td []
-                    [ text <| Util.shortenString 50 item.path ]
-                ]
+
+eventDateDistance : Maybe Time -> HasCreatedAt a -> String
+eventDateDistance now { createdAt } =
+    case now of
+        Nothing ->
+            ""
+
+        Just currTime ->
+            let
+                currDate =
+                    Date.fromTime currTime
+
+                distString =
+                    Date.Distance.inWords
+                        currDate
+                        (Maybe.withDefault currDate createdAt)
+            in
+                distString ++ " ago"
+
+
+viewLogItem : Maybe Time -> Syncrypt.Vault.LogItem -> Html msg
+viewLogItem now item =
+    tr [ class "HistoryItem" ]
+        [ td []
+            [ text <| eventDateDistance now item ]
+
+        -- , td []
+        --     []
+        , td []
+            [ text <| toString item.level ]
+        , td []
+            [ text item.message ]
+        ]
+
+
+viewHistoryItem : Maybe Time -> HistoryItem -> Html msg
+viewHistoryItem now item =
+    tr [ class "HistoryItem" ]
+        [ td []
+            [ text <| eventDateDistance now item ]
+
+        -- , td []
+        --     [ text item.email ]
+        , td []
+            [ text item.operation ]
+        , td []
+            [ text <| Util.shortenString 50 item.path ]
+        ]
 
 
 infoText : String -> Html msg

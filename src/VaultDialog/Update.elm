@@ -4,6 +4,7 @@ import ConfirmationDialog
 import Daemon
 import Dialog exposing (asModalIn)
 import Dict
+import Json.Decode
 import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
@@ -15,21 +16,7 @@ import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import VaultDialog.Model
-    exposing
-        ( CloneStatus(..)
-        , FolderItem
-        , Msg(..)
-        , RequiresConfirmation(..)
-        , State
-        , addFolder
-        , collapseFolder
-        , expandFolder
-        , hasChanged
-        , isIgnored
-        , toggleIgnorePath
-        , toggleUserKey
-        )
+import VaultDialog.Model exposing (CloneStatus(..), FolderItem, Msg(..), RequiresConfirmation(..), State, addFolder, collapseFolder, expandFolder, hasChanged, isIgnored, toggleIgnorePath, toggleUserKey)
 import VaultDialog.Ports
 
 
@@ -513,13 +500,34 @@ update msg vaultId ({ vaultDialogs } as model) =
                           , searchFingerprints email vaultId model
                           ]
 
-            VaultLogStream logMsg ->
-                let
-                    _ =
-                        Debug.log "VaultLogStream" ( vaultId, logMsg )
-                in
-                    model
-                        ! []
+            VaultLogStream logItem ->
+                case logItem of
+                    Err reason ->
+                        let
+                            _ =
+                                Debug.log "Failed decoding Vault log stream message: " reason
+                        in
+                            model ! []
+
+                    Ok item ->
+                        ({ state | logItems = item :: state.logItems }
+                            |> asStateIn vaultId model
+                        )
+                            ! []
+
+            ToggleEventSortOrder ->
+                (state
+                    |> VaultDialog.Model.toggleSortOrder
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            SortEventsBy sortFn ->
+                (state
+                    |> VaultDialog.Model.sortBy sortFn
+                    |> asStateIn vaultId model
+                )
+                    ! []
 
 
 getVaultFingerprints vaultId model =

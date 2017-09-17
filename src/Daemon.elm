@@ -93,13 +93,17 @@ getVaultHistory vaultId config =
     apiRequest config Get (VaultHistory vaultId) Nothing Syncrypt.Vault.historyItemsDecoder
 
 
-subscribeVaultLogStream : VaultId -> (String -> msg) -> Config -> Sub msg
+subscribeVaultLogStream : VaultId -> (Result String Syncrypt.Vault.LogItem -> msg) -> Config -> Sub msg
 subscribeVaultLogStream vaultId toMsg config =
     let
+        parseMsg : String -> msg
+        parseMsg json =
+            toMsg <| Json.decodeString logItemDecoder json
+
         url =
             apiWSUrl config (apiPath (Stream (VaultLogStream vaultId)))
     in
-        WebSocket.listen url toMsg
+        WebSocket.listen url parseMsg
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
