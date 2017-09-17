@@ -9,7 +9,15 @@ import Ui.Tabs
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
 import Path exposing (Path, asPath)
-import Syncrypt.Vault exposing (Vault, FlyingVault, VaultId, nameOrId, HistoryItem)
+import Syncrypt.Vault
+    exposing
+        ( Vault
+        , FlyingVault
+        , VaultId
+        , nameOrId
+        , HistoryItem
+        , Event(..)
+        )
 import Syncrypt.User as User
 import ConfirmationDialog
 
@@ -73,7 +81,7 @@ type alias State =
     , users : WebData (List User.User)
     , logItems : List Syncrypt.Vault.LogItem
     , historyItems : WebData (List Syncrypt.Vault.HistoryItem)
-    , eventfilters : List EventFilter
+    , eventFilters : List EventFilter
     , eventSortBy : EventSortBy
     , eventSortOrder : EventSortOrder
     , usersToAdd : Dict User.Email (List User.UserKey)
@@ -122,6 +130,7 @@ type Msg
     | VaultLogStream (Result String Syncrypt.Vault.LogItem)
     | ToggleEventSortOrder
     | SortEventsBy EventSortBy
+    | FilterEventsBy EventFilter
 
 
 init : State
@@ -155,7 +164,7 @@ init =
     , users = NotAsked
     , logItems = []
     , historyItems = NotAsked
-    , eventfilters = []
+    , eventFilters = []
     , eventSortOrder = Descending
     , eventSortBy = eventSortByCreatedAt
     , usersToAdd = Dict.empty
@@ -352,7 +361,10 @@ toggleUserKey email key state =
                     else
                         keys ++ [ key ]
             in
-                { state | usersToAdd = Dict.insert email userKeysSelected state.usersToAdd }
+                { state
+                    | usersToAdd =
+                        Dict.insert email userKeysSelected state.usersToAdd
+                }
 
 
 userInputEmail : State -> User.Email
@@ -379,11 +391,17 @@ hasChanged state =
 
 events : State -> List Syncrypt.Vault.Event
 events state =
-    -- TODO: add filtering
-    ((List.map Syncrypt.Vault.History (RemoteData.withDefault [] state.historyItems))
-        ++ (List.map Syncrypt.Vault.Log state.logItems)
-    )
-        |> sortEvents state
+    let
+        historyEvents =
+            List.map History
+                (RemoteData.withDefault [] state.historyItems)
+
+        logEvents =
+            List.map Log state.logItems
+    in
+        (historyEvents ++ logEvents)
+            |> filterEvents state
+            |> sortEvents state
 
 
 toggleSortOrder : State -> State
@@ -405,6 +423,91 @@ sortBy newSortBy state =
     { state | eventSortBy = newSortBy }
 
 
+filterEventsBy : EventFilter -> State -> State
+filterEventsBy filter state =
+    -- if List.member filter state.eventFilters then
+    --     { state | eventFilters = List.filter ((==) filter) state.eventFilters }
+    -- else
+    --     { state | eventFilters = filter :: state.eventFilters }
+    { state | eventFilters = toggleFilter filter state.eventFilters }
+
+
+toggleFilter filter filters =
+    case filters of
+        [] ->
+            [ filter ]
+
+        f :: rest ->
+            if f == filter then
+                rest
+            else
+                f :: toggleFilter filter rest
+
+
+filterEvents : State -> List Event -> List Event
+filterEvents state events =
+    case state.eventFilters of
+        [] ->
+            events
+
+        filters ->
+            events
+                |> List.filter
+                    (\event ->
+                        filters
+                            |> List.any (doesFilterApply event)
+                            |> not
+                    )
+
+
+doesFilterApply : Event -> EventFilter -> Bool
+doesFilterApply event filter =
+    case ( filter, event ) of
+        ( IsHistoryItem, History _ ) ->
+            True
+
+        ( IsLogItem, Log _ ) ->
+            True
+
+        ( User name, _ ) ->
+            -- TODO
+            False
+
+        ( Email email, History item ) ->
+            item.email == email
+
+        ( Search text caseSensitive, _ ) ->
+            -- TODO
+            False
+
+        ( Level level, Log item ) ->
+            item.level == level
+
+        ( MinDate date, _ ) ->
+            -- TODO
+            False
+
+        ( MaxDate date, _ ) ->
+            -- TODO
+            False
+
+        ( Operation opFilter, History item ) ->
+            -- TODO
+            case opFilter of
+                Create ->
+                    item.operation == "create"
+
+                Delete ->
+                    item.operation == "delete"
+
+                Update ->
+                    item.operation == "update"
+
+        _ ->
+            False
+
+
+sortEvents : State -> List Event -> List Event
 sortEvents state events =
     let
         ( lt, gt ) =

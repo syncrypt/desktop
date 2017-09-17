@@ -529,6 +529,13 @@ update msg vaultId ({ vaultDialogs } as model) =
                 )
                     ! []
 
+            FilterEventsBy eventFilter ->
+                (state
+                    |> VaultDialog.Model.filterEventsBy eventFilter
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
 
 getVaultFingerprints vaultId model =
     model.config

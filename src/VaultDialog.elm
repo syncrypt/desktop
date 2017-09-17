@@ -43,6 +43,7 @@ import VaultDialog.Model
         , Msg(..)
         , RequiresConfirmation(..)
         , State
+        , EventFilter(..)
         , folderIsEmpty
         , isExpanded
         , isIgnored
@@ -269,7 +270,16 @@ tabContents vaultId state model =
         logTab =
             ( t LogTab model
             , div [] <|
-                [ table [ class "LogTable" ] <|
+                [ div [ class "EventFilters" ] <|
+                    [ Dialog.labeledItem Left
+                        []
+                        Nothing
+                        (text "Filters")
+                        (span []
+                            (eventFilterButtons vaultId)
+                        )
+                    ]
+                , table [ class "EventTable" ] <|
                     (tr []
                         [ th [ onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder) ]
                             [ text "Time" ]
@@ -298,6 +308,25 @@ tabContents vaultId state model =
             )
     in
         [ filesTab, usersTab, cryptoTab, logTab, adminTab ]
+
+
+eventFilterButtons vaultId =
+    let
+        button label msg =
+            Ui.Button.model label "primary" "small"
+                |> Ui.Button.view msg
+
+        buttons =
+            [ ( "History", IsHistoryItem )
+            , ( "Log", IsLogItem )
+            ]
+    in
+        buttons
+            |> List.map
+                (\( title, filter ) ->
+                    button title
+                        (Model.VaultDialogMsg vaultId (FilterEventsBy filter))
+                )
 
 
 tabInfoText : String -> Html msg
@@ -453,10 +482,8 @@ saveButton vaultId state =
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
     in
-        span [ class "Button-Save" ]
-            [ Ui.Button.model label "primary" "small"
-                |> Ui.Button.view msg
-            ]
+        Ui.Button.model label "primary" "small"
+            |> Ui.Button.view msg
 
 
 confirmUserKeysButton : State -> Html Msg
@@ -465,13 +492,11 @@ confirmUserKeysButton state =
         email =
             userInputEmail state
     in
-        span [ class "Button-Confirm-UserKeys" ] <|
-            if List.isEmpty (keysToAdd email state) then
-                []
-            else
-                [ Ui.Button.model "Invite with selected keys" "primary" "small"
-                    |> Ui.Button.view (Confirmed AddUser)
-                ]
+        if List.isEmpty (keysToAdd email state) then
+            span [] []
+        else
+            Ui.Button.model "Invite with selected keys" "primary" "small"
+                |> Ui.Button.view (Confirmed AddUser)
 
 
 openFolderButton : VaultId -> State -> Model -> Html Msg
