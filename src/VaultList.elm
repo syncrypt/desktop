@@ -22,7 +22,7 @@ type alias HasModificationDate a =
 
 vaultItemSyncStateClass : Vault -> String
 vaultItemSyncStateClass vault =
-    "VaultList-VaultStatus-" ++ (toString vault.status)
+    "VaultStatus-" ++ (toString vault.status)
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
@@ -42,7 +42,7 @@ updatedAtInfo vault updatedAtHeader model =
                 ( Just date, Just now ) ->
                     text <| (t (T.Updated date now) model)
     in
-        div [ class "VaultList-VaultUpdatedAt" ]
+        div [ class "VaultUpdatedAt" ]
             [ tooltipItem Top
                 Auto
                 (t T.LastUpdateToVaultLabel model)
@@ -76,7 +76,7 @@ flyingVaultUpdatedAtInfo flyingVault model =
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
 vaultInfoItem vault bodyItems =
-    div [ class "VaultList-VaultInfoItem" ]
+    div [ class "VaultInfoItem" ]
         bodyItems
 
 
@@ -88,7 +88,7 @@ vaultStatus vault model =
 vaultActivity : Vault -> Html msg
 vaultActivity vault =
     vaultInfoItem vault
-        [ div [ class "VaultList-VaultActivity" ]
+        [ div [ class "VaultActivity" ]
             [ tooltipItem Top
                 Auto
                 "Total vault size (with all file revisions on server)"
@@ -100,7 +100,7 @@ vaultActivity vault =
 vaultUserCount : Vault -> Html msg
 vaultUserCount vault =
     vaultInfoItem vault
-        [ div [ class "VaultList-VaultUsers" ]
+        [ div [ class "VaultUsers" ]
             [ tooltipItem Bottom
                 Auto
                 "Users with access to vault"
@@ -111,14 +111,14 @@ vaultUserCount vault =
 
 flyingVaultInfoItem : FlyingVault -> Model -> Html msg
 flyingVaultInfoItem vault model =
-    div [ class "VaultList-VaultInfoItem" ]
+    div [ class "VaultInfoItem" ]
         [ flyingVaultUpdatedAtInfo vault model ]
 
 
 vaultRemoveFromSyncButton : Vault -> Html Msg
 vaultRemoveFromSyncButton vault =
     div
-        [ class "VaultList-VaultRemoveButton"
+        [ class "VaultRemoveButton"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Remove vault from sync"
         , onClick (RemoveVaultFromSync vault.id)
@@ -129,7 +129,7 @@ vaultRemoveFromSyncButton vault =
 openVaultFolderButton : Vault -> Html Msg
 openVaultFolderButton vault =
     div
-        [ class "VaultList-VaultFolderButton"
+        [ class "VaultFolderButton"
         , attribute "data-for" "button-tooltip"
         , attribute "data-tip" "Open Vault Folder"
         , onClick (OpenVaultFolder vault)
@@ -141,23 +141,23 @@ vaultInfo : NameOrId vault -> List (Html msg) -> List (Html msg) -> Model -> Htm
 vaultInfo vault body footerNodes model =
     let
         vaultHeader =
-            [ div [ class "VaultList-Header" ]
-                [ div [ class "VaultList-VaultTitle" ]
+            [ div [ class "Header" ]
+                [ div [ class "VaultTitle" ]
                     [ text (nameOrId vault) ]
                 ]
             ]
 
         vaultBody =
-            [ div [ class "VaultList-Body" ]
+            [ div [ class "Body" ]
                 body
             ]
 
         vaultFooter =
-            [ div [ class "VaultList-Footer" ]
+            [ div [ class "Footer" ]
                 footerNodes
             ]
     in
-        div [ class "VaultList-VaultInfo" ]
+        div [ class "VaultInfo" ]
             (vaultHeader ++ vaultBody ++ vaultFooter)
 
 
@@ -227,9 +227,9 @@ newVaultItemButton =
         [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
         , attribute "data-offset" "{'bottom': -15, 'left': 0}"
         , attribute "data-for" "new-vault-item-tooltip"
-        , class "VaultList-VaultPlus"
+        , class "VaultPlus"
         ]
-        [ div [ class "VaultList-VaultPlusIcon", onClick CreateNewVault ]
+        [ div [ class "VaultPlusIcon", onClick CreateNewVault ]
             []
         ]
 
@@ -238,10 +238,10 @@ vaultList : Model -> Html Msg
 vaultList model =
     let
         vaultListInfo =
-            div [ class "VaultList-VaultListInfo" ]
-                [ span [ class "VaultList-Title" ]
+            div [ class "VaultListInfo" ]
+                [ span [ class "Title" ]
                     [ text "Vaults" ]
-                , span [ class "VaultList-Subtitle" ] <|
+                , span [ class "Subtitle" ] <|
                     case model.vaults of
                         Success _ ->
                             [ text <| t T.VaultListHeaderDescription model ]
@@ -260,7 +260,7 @@ vaultList model =
             RemoteData.withDefault [] model.vaults
                 |> List.map (vaultItem model)
     in
-        div [ class "VaultList-VaultList" ]
+        div [ class "VaultList" ]
             ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
@@ -274,13 +274,33 @@ flyingVaultList model =
             case model.flyingVaults of
                 NotAsked ->
                     span
-                        [ class "VaultList-UpdateFlyingVaultsButton"
+                        [ class "UpdateFlyingVaultsButton"
                         , onClick UpdateFlyingVaults
                         ]
                         [ text "Load remote vaults" ]
 
                 Loading ->
-                    text "Fetching remote vault info..."
+                    let
+                        suffix =
+                            case model.now of
+                                Just now ->
+                                    case Date.second now % 4 of
+                                        0 ->
+                                            ""
+
+                                        1 ->
+                                            "."
+
+                                        2 ->
+                                            ".."
+
+                                        _ ->
+                                            "..."
+
+                                Nothing ->
+                                    "."
+                    in
+                        text <| "Fetching remote vault info " ++ suffix
 
                 Failure reason ->
                     text <| "Error fetching remote vaults: " ++ toString reason
@@ -288,11 +308,11 @@ flyingVaultList model =
                 Success _ ->
                     text "Click on a vault to clone it to your computer"
     in
-        div [ class "VaultList-VaultList" ]
-            ([ div [ class "VaultList-VaultListInfo" ]
-                [ span [ class "VaultList-Title" ]
+        div [ class "VaultList" ]
+            ([ div [ class "VaultListInfo" ]
+                [ span [ class "Title" ]
                     [ text "Available Vaults" ]
-                , span [ class "VaultList-Subtitle" ] <|
+                , span [ class "Subtitle" ] <|
                     [ subtitle ]
                 ]
              ]
@@ -334,12 +354,12 @@ vaultItemClass : Model -> Vault -> String
 vaultItemClass model vault =
     let
         defaultClass =
-            "VaultList-Card VaultList-VaultCard"
+            "Card VaultCard"
     in
         case model.state of
             ShowingVaultDetails selectedVault ->
                 if vault == selectedVault then
-                    "VaultList-Card VaultList-VaultCardSelected"
+                    "Card VaultCardSelected"
                 else
                     defaultClass
 
@@ -351,12 +371,12 @@ flyingVaultItemClass : Model -> FlyingVault -> String
 flyingVaultItemClass model flyingVault =
     let
         defaultClass =
-            "VaultList-Card VaultList-FlyingVaultCard"
+            "Card FlyingVaultCard"
     in
         case model.state of
             ShowingFlyingVaultDetails selectedVault ->
                 if flyingVault == selectedVault then
-                    "VaultList-Card VaultList-VaultCardSelected"
+                    "Card VaultCardSelected"
                 else
                     defaultClass
 
