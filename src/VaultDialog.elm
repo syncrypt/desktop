@@ -298,28 +298,31 @@ tabContents vaultId state model =
                             (eventFilterButtons vaultId state)
                         )
                     ]
-                , table [ class "EventTable" ] <|
-                    (tr []
+                , div [ class "EventTableHeader" ]
+                    [ table [ class "EventTable" ] <|
                         [ th
                             [ class "Default-Cursor"
                             , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
                             ]
                             [ text "Time" ]
-
-                        -- , th []
-                        --     [ text "User" ]
+                          -- , th []
+                          --     [ text "User" ]
                         , th []
                             [ text "Operation" ]
                         , th []
-                            [ text "Path" ]
+                            [ text "Path / Message" ]
                         ]
-                    )
-                        :: case VaultDialog.Model.events state of
+                    ]
+                , div [ class "EventTableContent" ]
+                    [ table [ class "EventTable" ] <|
+                        (case VaultDialog.Model.events state of
                             [] ->
                                 [ loadingSpinner ]
 
                             events ->
-                                List.map (viewEvent model.now) events
+                                (List.map (viewEvent model.now) events)
+                        )
+                    ]
                 ]
             )
 
@@ -440,9 +443,8 @@ viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-
-        -- , td []
-        --     []
+          -- , td []
+          --     []
         , td []
             [ text <| toString item.level ]
         , td []
@@ -455,9 +457,8 @@ viewHistoryItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-
-        -- , td []
-        --     [ text item.email ]
+          -- , td []
+          --     [ text item.email ]
         , td []
             [ text item.operation ]
         , td []

@@ -91,6 +91,7 @@
     .LogLevelButtons {
       position: absolute;
       display: inline-block;
+      z-index: 5;
       width: 85px;
       left: 0px;
       top: 0px;
@@ -110,13 +111,36 @@
 
   .EventTable {
     th, td {
-      margin-left: auto;
-      margin-right: auto;
       text-align: left;
       font-size: $font-size-small;
       text-align: left;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    th:nth-child(1), td:nth-child(1) {
+      width: 120px;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      width: 60px;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      width: auto;
+    }
+    tr {
+      white-space: nowrap;
     }
     width: 100%;
+  }
+
+  .EventTableContent {
+    position: absolute;
+    background-color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+    top: 70px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
   }
 
   .Admin-Buttons {
