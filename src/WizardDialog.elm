@@ -197,7 +197,11 @@ button attributes title msg =
         ]
 
 
-wizardButtons : (Msg -> msg) -> ViewSettings msg -> ButtonSettings msg -> List (Html msg)
+wizardButtons :
+    (Msg -> msg)
+    -> ViewSettings msg
+    -> ButtonSettings msg
+    -> List (Html msg)
 wizardButtons address view buttonSettings =
     let
         step : Step msg

@@ -7,9 +7,23 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
-import Syncrypt.Vault exposing (FlyingVault, NameOrId, Status(..), Vault, asVault, nameOrId)
+import Syncrypt.Vault
+    exposing
+        ( FlyingVault
+        , NameOrId
+        , Status(..)
+        , Vault
+        , asVault
+        , nameOrId
+        )
 import Translation as T exposing (t)
-import Util exposing (Direction(..), TooltipLength(..), bytesReadable, tooltipItem)
+import Util
+    exposing
+        ( Direction(..)
+        , TooltipLength(..)
+        , bytesReadable
+        , tooltipItem
+        )
 
 
 type alias HasId a =
@@ -137,7 +151,12 @@ openVaultFolderButton vault =
         []
 
 
-vaultInfo : NameOrId vault -> List (Html msg) -> List (Html msg) -> Model -> Html msg
+vaultInfo :
+    NameOrId vault
+    -> List (Html msg)
+    -> List (Html msg)
+    -> Model
+    -> Html msg
 vaultInfo vault body footerNodes model =
     let
         vaultHeader =
@@ -197,7 +216,10 @@ flyingVaultItemOnClick model flyingVault =
 
 vaultItem : Model -> Vault -> Html Msg
 vaultItem model vault =
-    div [ class (vaultItemClass model vault), onClick (vaultItemOnClick model vault) ]
+    div
+        [ class (vaultItemClass model vault)
+        , onClick (vaultItemOnClick model vault)
+        ]
         [ model
             |> vaultInfo vault
                 [ vaultStatus vault model ]
@@ -211,7 +233,10 @@ vaultItem model vault =
 
 flyingVaultItem : Model -> FlyingVault -> Html Msg
 flyingVaultItem model flyingVault =
-    div [ class (flyingVaultItemClass model flyingVault), onClick (flyingVaultItemOnClick model flyingVault) ]
+    div
+        [ class (flyingVaultItemClass model flyingVault)
+        , onClick (flyingVaultItemOnClick model flyingVault)
+        ]
         [ model
             |> vaultInfo flyingVault
                 [ flyingVaultInfoItem flyingVault model ]
@@ -237,23 +262,26 @@ newVaultItemButton =
 vaultList : Model -> Html Msg
 vaultList model =
     let
+        vaultListInfoSubtitle =
+            case model.vaults of
+                Success _ ->
+                    [ text <| t T.VaultListHeaderDescription model ]
+
+                Failure reason ->
+                    [ text <| "Failed to load vaults: " ++ toString reason ]
+
+                Loading ->
+                    [ text "Loading vaults" ]
+
+                NotAsked ->
+                    []
+
         vaultListInfo =
             div [ class "VaultListInfo" ]
                 [ span [ class "Title" ]
                     [ text "Vaults" ]
-                , span [ class "Subtitle" ] <|
-                    case model.vaults of
-                        Success _ ->
-                            [ text <| t T.VaultListHeaderDescription model ]
-
-                        Failure reason ->
-                            [ text <| "Failed to load vaults: " ++ toString reason ]
-
-                        Loading ->
-                            [ text "Loading vaults" ]
-
-                        NotAsked ->
-                            []
+                , span [ class "Subtitle" ]
+                    vaultListInfoSubtitle
                 ]
 
         vaultItems =
@@ -268,7 +296,9 @@ flyingVaultList : Model -> Html Msg
 flyingVaultList model =
     let
         flyingVaultItems =
-            (List.map (flyingVaultItem model) (unsyncedFlyingVaults model))
+            model
+                |> unsyncedFlyingVaults
+                |> List.map (flyingVaultItem model)
 
         subtitle =
             case model.flyingVaults of
@@ -308,16 +338,15 @@ flyingVaultList model =
                 Success _ ->
                     text "Click on a vault to clone it to your computer"
     in
-        div [ class "VaultList" ]
-            ([ div [ class "VaultListInfo" ]
+        div [ class "VaultList" ] <|
+            [ div [ class "VaultListInfo" ]
                 [ span [ class "Title" ]
                     [ text "Available Vaults" ]
-                , span [ class "Subtitle" ] <|
+                , span [ class "Subtitle" ]
                     [ subtitle ]
                 ]
-             ]
+            ]
                 ++ flyingVaultItems
-            )
 
 
 unsyncedFlyingVaults : Model -> List FlyingVault
@@ -330,10 +359,14 @@ unsyncedFlyingVaults model =
             RemoteData.withDefault [] model.flyingVaults
 
         vaultIds =
-            Set.fromList (List.map (\v -> v.id) vaults)
+            vaults
+                |> List.map (\v -> v.id)
+                |> Set.fromList
 
         flyingVaultIds =
-            Set.fromList (List.map (\v -> v.id) flyingVaults)
+            flyingVaults
+                |> List.map (\v -> v.id)
+                |> Set.fromList
 
         diff =
             Set.diff flyingVaultIds vaultIds

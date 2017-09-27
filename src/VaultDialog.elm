@@ -96,8 +96,12 @@ subscriptions model =
         logStream =
             case model.state of
                 Model.ShowingVaultDetails vault ->
-                    model.config
-                        |> Daemon.subscribeVaultLogStream vault.id (Model.VaultDialogMsg vault.id << VaultLogStream)
+                    let
+                        msg =
+                            Model.VaultDialogMsg vault.id << VaultLogStream
+                    in
+                        model.config
+                            |> Daemon.subscribeVaultLogStream vault.id msg
 
                 _ ->
                     Sub.none
@@ -176,7 +180,17 @@ tabContents vaultId state model =
     let
         msg =
             Model.VaultDialogMsg vaultId
+    in
+        [ filesTab msg vaultId state model
+        , usersTab msg vaultId state model
+        , cryptoTab vaultId state model
+        , logTab vaultId state model
+        , adminTab vaultId state model
+        ]
 
+
+usersTab msg vaultId state model =
+    let
         -- converter from Html Msg -> Html Model.Msg
         rootMsg =
             Html.map msg
@@ -185,162 +199,163 @@ tabContents vaultId state model =
             Model.VaultDialogMsg vaultId <|
                 SearchUserKeys (userInputEmail state)
 
-        filesTab =
-            ( t NameAndFilesTab model
-            , div []
-                [ dialogInput "Name"
-                    [ nameInput msg state ]
-                , dialogInput "Folder"
-                    [ rootMsg <| openFolderButton vaultId state model ]
-                , dialogInput "FileSelection"
-                    [ rootMsg <| fileSelectionContainer state ]
-                ]
-            )
+        ownsVault =
+            isOwner vaultId model
 
-        usersTab =
-            let
-                ownsVault =
-                    isOwner vaultId model
-
-                infoText =
-                    if ownsVault then
-                        "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
-                    else
-                        "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
-            in
-                ( t UsersTab model
-                , div []
-                    [ tabInfoText infoText
-                    , div
-                        [ classList [ ( "Hidden", not ownsVault ) ] ]
-                        [ div
-                            [ class "Add-User", onEnter searchKeys ]
-                            [ dialogInput "User"
-                                [ userInput vaultId state ]
-                            ]
-                        , div [ class "UserKey-Selection" ]
-                            [ rootMsg <| userKeySelection state model
-                            , rootMsg <| confirmUserKeysButton state
-                            ]
-                        ]
-                    , rootMsg <| userList state model
-                    , rootMsg <| pendingUserList state
-                    ]
-                )
-
-        cryptoTab =
-            let
-                vault =
-                    Model.vaultWithId vaultId model
-
-                cryptoInfoItem label tooltip value =
-                    div [ class "CryptoInfoItem" ]
-                        [ labeledItem Left
-                            [ class "InputLabel CryptoInfoItem-Label" ]
-                            Nothing
-                            (text label)
-                            (tooltipItem Bottom
-                                Auto
-                                tooltip
-                                [ text value ]
-                            )
-                        ]
-            in
-                ( t CryptoTab model
-                , div []
-                    [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
-                    , cryptoInfoItem "Vault ID"
-                        "Syncrypt Vault ID"
-                        (String.toUpper vault.id)
-                    , cryptoInfoItem "File Revisions"
-                        "Total number of file revisions in this vault."
-                        (toString vault.revisionCount)
-                    , cryptoInfoItem "Last modified"
-                        "Date & time of last update to this vault."
-                        (vault.modificationDate
-                            |> Maybe.map (\date -> timeAgo date model)
-                            |> Maybe.withDefault "No changes so far."
-                        )
-                    , cryptoInfoItem "Key Algorithm"
-                        "Asymmetric key algorithm used for vault key"
-                        (String.toUpper vault.crypto.keyAlgorithm)
-                    , cryptoInfoItem "Vault Key Fingerprint"
-                        "Vault public key fingerprint"
-                        (vault.crypto.fingerprint
-                            |> Maybe.map String.toUpper
-                            |> Maybe.withDefault "N/A"
-                        )
-                    , cryptoInfoItem "Transfer Algorithm"
-                        "Algorithm used for encrypting data transfer"
-                        (String.toUpper vault.crypto.transferAlgorithm)
-                    , cryptoInfoItem "Hash Algorithm"
-                        "Algorithm used for hashing file contents & names"
-                        (String.toUpper vault.crypto.hashAlgorithm)
-                    , cryptoInfoItem "AES Key Length"
-                        "Length of symmetric file encryption keys in this vault"
-                        (toString vault.crypto.aesKeyLength)
-                    , cryptoInfoItem "RSA Key Length"
-                        "Length of vault private key"
-                        (toString vault.crypto.rsaKeyLength)
-                    , separator
-                    ]
-                )
-
-        logTab =
-            ( t LogTab model
-            , div [] <|
-                [ div [ class "EventFilters" ] <|
-                    [ Dialog.labeledItem Left
-                        []
-                        Nothing
-                        (text "Filters")
-                        (span []
-                            (eventFilterButtons vaultId state)
-                        )
-                    ]
-                , div [ class "EventTableHeader" ]
-                    [ table [ class "EventTable" ] <|
-                        [ th
-                            [ class "Default-Cursor"
-                            , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
-                            ]
-                            [ text "Time" ]
-                          -- , th []
-                          --     [ text "User" ]
-                        , th []
-                            [ text "Operation" ]
-                        , th []
-                            [ text "Path / Message" ]
-                        ]
-                    ]
-                , div [ class "EventTableContent" ]
-                    [ table [ class "EventTable" ] <|
-                        (case VaultDialog.Model.events state of
-                            [] ->
-                                [ loadingSpinner ]
-
-                            events ->
-                                (List.map (viewEvent model.now) events)
-                        )
-                    ]
-                ]
-            )
-
-        adminTab =
-            ( t AdminTab model
-            , div [ class "Admin-Buttons" ]
-                [ infoText "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
-                , removeButton vaultId state
-                , separator
-                , infoText "Delete this vault with its files from the Syncrypt cloud."
-                , deleteButton vaultId state model
-                , separator
-                , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
-                , exportButton <| Model.vaultWithId vaultId model
-                ]
-            )
+        infoText =
+            if ownsVault then
+                "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
+            else
+                "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
     in
-        [ filesTab, usersTab, cryptoTab, logTab, adminTab ]
+        ( t UsersTab model
+        , div []
+            [ tabInfoText infoText
+            , div
+                [ classList [ ( "Hidden", not ownsVault ) ] ]
+                [ div
+                    [ class "Add-User", onEnter searchKeys ]
+                    [ dialogInput "User"
+                        [ userInput vaultId state ]
+                    ]
+                , div [ class "UserKey-Selection" ]
+                    [ rootMsg <| userKeySelection state model
+                    , rootMsg <| confirmUserKeysButton state
+                    ]
+                ]
+            , rootMsg <| userList state model
+            , rootMsg <| pendingUserList state
+            ]
+        )
+
+
+cryptoTab vaultId state model =
+    let
+        vault =
+            Model.vaultWithId vaultId model
+
+        cryptoInfoItem label tooltip value =
+            div [ class "CryptoInfoItem" ]
+                [ labeledItem Left
+                    [ class "InputLabel CryptoInfoItem-Label" ]
+                    Nothing
+                    (text label)
+                    (tooltipItem Bottom
+                        Auto
+                        tooltip
+                        [ text value ]
+                    )
+                ]
+    in
+        ( t CryptoTab model
+        , div []
+            [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
+            , cryptoInfoItem "Vault ID"
+                "Syncrypt Vault ID"
+                (String.toUpper vault.id)
+            , cryptoInfoItem "File Revisions"
+                "Total number of file revisions in this vault."
+                (toString vault.revisionCount)
+            , cryptoInfoItem "Last modified"
+                "Date & time of last update to this vault."
+                (vault.modificationDate
+                    |> Maybe.map (\date -> timeAgo date model)
+                    |> Maybe.withDefault "No changes so far."
+                )
+            , cryptoInfoItem "Key Algorithm"
+                "Asymmetric key algorithm used for vault key"
+                (String.toUpper vault.crypto.keyAlgorithm)
+            , cryptoInfoItem "Vault Key Fingerprint"
+                "Vault public key fingerprint"
+                (vault.crypto.fingerprint
+                    |> Maybe.map String.toUpper
+                    |> Maybe.withDefault "N/A"
+                )
+            , cryptoInfoItem "Transfer Algorithm"
+                "Algorithm used for encrypting data transfer"
+                (String.toUpper vault.crypto.transferAlgorithm)
+            , cryptoInfoItem "Hash Algorithm"
+                "Algorithm used for hashing file contents & names"
+                (String.toUpper vault.crypto.hashAlgorithm)
+            , cryptoInfoItem "AES Key Length"
+                "Length of symmetric file encryption keys in this vault"
+                (toString vault.crypto.aesKeyLength)
+            , cryptoInfoItem "RSA Key Length"
+                "Length of vault private key"
+                (toString vault.crypto.rsaKeyLength)
+            , separator
+            ]
+        )
+
+
+filesTab msg vaultId state model =
+    ( t NameAndFilesTab model
+    , div []
+        [ dialogInput "Name"
+            [ nameInput msg state ]
+        , dialogInput "Folder"
+            [ Html.map msg <| openFolderButton vaultId state model ]
+        , dialogInput "FileSelection"
+            [ Html.map msg <| fileSelectionContainer state ]
+        ]
+    )
+
+
+logTab vaultId state model =
+    ( t LogTab model
+    , div [] <|
+        [ div [ class "EventFilters" ] <|
+            [ Dialog.labeledItem Left
+                []
+                Nothing
+                (text "Filters")
+                (span []
+                    (eventFilterButtons vaultId state)
+                )
+            ]
+        , div [ class "EventTableHeader" ]
+            [ table [ class "EventTable" ] <|
+                [ th
+                    [ class "Default-Cursor"
+                    , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
+                    ]
+                    [ text "Time" ]
+
+                -- , th []
+                --     [ text "User" ]
+                , th []
+                    [ text "Operation" ]
+                , th []
+                    [ text "Path / Message" ]
+                ]
+            ]
+        , div [ class "EventTableContent" ]
+            [ table [ class "EventTable" ] <|
+                (case VaultDialog.Model.events state of
+                    [] ->
+                        [ loadingSpinner ]
+
+                    events ->
+                        (List.map (viewEvent model.now) events)
+                )
+            ]
+        ]
+    )
+
+
+adminTab vaultId state model =
+    ( t AdminTab model
+    , div [ class "Admin-Buttons" ]
+        [ infoText "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
+        , removeButton vaultId state
+        , separator
+        , infoText "Delete this vault with its files from the Syncrypt cloud."
+        , deleteButton vaultId state model
+        , separator
+        , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
+        , exportButton <| Model.vaultWithId vaultId model
+        ]
+    )
 
 
 eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
@@ -443,8 +458,9 @@ viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-          -- , td []
-          --     []
+
+        -- , td []
+        --     []
         , td []
             [ text <| toString item.level ]
         , td []
@@ -457,8 +473,9 @@ viewHistoryItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-          -- , td []
-          --     [ text item.email ]
+
+        -- , td []
+        --     [ text item.email ]
         , td []
             [ text item.operation ]
         , td []
