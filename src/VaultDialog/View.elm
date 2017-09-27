@@ -775,7 +775,11 @@ renderFile state folderPath path =
             [ fileCheckbox filePath state ]
 
 
-hiddenIfIgnored : Path -> State -> List (Html.Attribute msg) -> List (Html.Attribute msg)
+hiddenIfIgnored :
+    Path
+    -> State
+    -> List (Html.Attribute msg)
+    -> List (Html.Attribute msg)
 hiddenIfIgnored path state attributes =
     if isIgnored path state then
         (class "FolderItem-Hidden") :: attributes
@@ -989,4 +993,8 @@ keyCreatedTimestamp key model =
                 [ text <| toString date ]
 
             ( Just date, Just now ) ->
-                [ text <| "Created " ++ (Date.Distance.inWords date now) ++ " ago" ]
+                [ text <|
+                    "Created "
+                        ++ Date.Distance.inWords date now
+                        ++ " ago"
+                ]
