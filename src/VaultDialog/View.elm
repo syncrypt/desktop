@@ -1,4 +1,4 @@
-module VaultDialog exposing (..)
+module VaultDialog.View exposing (..)
 
 import Animation exposing (..)
 import ConfirmationDialog

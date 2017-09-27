@@ -3,26 +3,28 @@ module MainScreen exposing (..)
 import Animation exposing (..)
 import Config exposing (Config)
 import Daemon
+import Data.User exposing (Email)
+import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Date
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import LoginDialog
 import LoginDialog.Update
+import LoginDialog.View
 import Model exposing (..)
 import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
-import SettingsDialog
-import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
+import SettingsDialog.Model as SettingsDialog
+import SettingsDialog.Update
+import SettingsDialog.View
 import Time
 import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing (Direction(..), IconButton(..), (~>), iconButton)
-import VaultDialog
+import Util exposing (Direction(..), IconButton(..), iconButton, (~>))
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
+import VaultDialog.View
 import VaultList
 import WizardDialog exposing (ButtonSettings(Default), Step(..))
 
@@ -56,7 +58,7 @@ subscriptions model =
     case model.login of
         LoggedIn _ ->
             Sub.batch
-                [ VaultDialog.subscriptions model
+                [ VaultDialog.View.subscriptions model
                 , Time.every (10 * Time.minute) (\_ -> UpdateVaults)
                 , Time.every Time.second (Date.fromTime >> SetTime)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
@@ -253,7 +255,7 @@ update action model =
 
         SettingsDialogMsg msg ->
             model
-                |> SettingsDialog.update msg
+                |> SettingsDialog.Update.update msg
 
         OpenSetupWizardDialog ->
             model
@@ -586,7 +588,7 @@ view model =
                 [ text "..." ]
 
             LoggedOut ->
-                [ LoginDialog.view model ]
+                [ LoginDialog.View.view model ]
 
             LoggedIn _ ->
                 [ div [ class (currentClass model) ] <|
@@ -596,9 +598,9 @@ view model =
                     , footer model
                     , viewNotificationCenter model
                     , WizardDialog.view model
-                    , SettingsDialog.view model
+                    , SettingsDialog.View.view model
                     ]
-                        ++ VaultDialog.viewAll model
+                        ++ VaultDialog.View.viewAll model
                 ]
 
 

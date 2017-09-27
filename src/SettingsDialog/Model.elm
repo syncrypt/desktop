@@ -15,9 +15,28 @@ type Msg
     | Close
 
 
+type alias HasSettingsDialog a msg =
+    { a | settingsDialog : State msg }
+
+
 init : (Msg -> msg) -> State msg
 init toMsg =
     { toMsg = toMsg
     , hasChangesPending = False
     , confirmationDialog = ConfirmationDialog.init ConfirmationDialogMsg
     }
+
+
+open : HasSettingsDialog a msg -> HasSettingsDialog a msg
+open ({ settingsDialog } as model) =
+    { model
+        | settingsDialog =
+            ConfirmationDialog.open "Coming Soon"
+                "Not yet implemented"
+                Close
+                settingsDialog
+    }
+
+
+close ({ settingsDialog } as model) =
+    { model | settingsDialog = ConfirmationDialog.close settingsDialog }

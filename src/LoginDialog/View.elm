@@ -1,4 +1,4 @@
-module LoginDialog exposing (..)
+module LoginDialog.View exposing (..)
 
 import Dialog exposing (labeledItem)
 import Util exposing (Direction(..))

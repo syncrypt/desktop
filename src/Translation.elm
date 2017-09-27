@@ -258,13 +258,20 @@ translateGerman text =
             "Es gab einen Fehler beim Löschen des Vaults: " ++ reason
 
         VaultMetadataUpdateFailed vaultId ->
-            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults: " ++ vaultId
+            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults: "
+                ++ vaultId
 
         VaultCloneFailed vaultId reason ->
-            "Es gab einen Fehler beim Download des Vaults " ++ vaultId ++ " : " ++ reason
+            "Es gab einen Fehler beim Download des Vaults "
+                ++ vaultId
+                ++ " : "
+                ++ reason
 
         VaultAddUserFailed vaultId email ->
-            "Es gab einen Fehler beim Hinzufügen des Users " ++ email ++ " zum Vault: " ++ vaultId
+            "Es gab einen Fehler beim Hinzufügen des Users "
+                ++ email
+                ++ " zum Vault: "
+                ++ vaultId
 
         VaultExported vaultId ->
             "Vault wurde exportiert: " ++ vaultId
@@ -284,16 +291,16 @@ translateGerman text =
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
-        Stats { stats, downloads, uploads, userKeyState, totalSlots, busySlots, idleSlots, closedSlots } ->
-            (toString (busySlots + idleSlots))
+        Stats s ->
+            (toString (s.busySlots + s.idleSlots))
                 ++ " offene Verbindungen ("
-                ++ (toString idleSlots)
+                ++ (toString s.idleSlots)
                 ++ " ruhend) / "
-                ++ (toString stats)
+                ++ (toString s.stats)
                 ++ " Dateiabfragen / "
-                ++ (toString downloads)
+                ++ (toString s.downloads)
                 ++ " Downloads / "
-                ++ (toString uploads)
+                ++ (toString s.uploads)
                 ++ " Uploads"
 
         StatsLoading ->
@@ -309,7 +316,7 @@ translateGerman text =
             if vaultCount == 1 then
                 " 1 synchronisierter Vault / "
             else
-                (toString vaultCount) ++ " synchronisierte Vaults / "
+                toString vaultCount ++ " synchronisierte Vaults / "
 
         VaultsLoading ->
             "..."
@@ -327,7 +334,7 @@ translateGerman text =
             "Vault (nicht synchronisiert) " ++ vaultId
 
         Updated date now ->
-            "Synchronisiert vor " ++ (germanDistance date now)
+            "Synchronisiert vor " ++ germanDistance date now
 
         LastUpdateToVault ->
             "Letzte Änderung am "
@@ -378,7 +385,8 @@ timeAgo date { now, language } =
     in
         case now of
             Just now ->
-                ((Date.Distance.inWordsWithConfig distanceConfig date now) ++ " ago")
+                Date.Distance.inWordsWithConfig distanceConfig date now
+                    ++ " ago"
 
             Nothing ->
-                (toString date)
+                toString date
