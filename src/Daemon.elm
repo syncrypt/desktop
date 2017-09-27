@@ -388,7 +388,13 @@ requestMethod rm =
         apiRequest config Get "vault" (Json.list Data.Vault.decoder)
 
 -}
-apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Cmd (WebData a)
+apiRequest :
+    Config
+    -> RequestMethod
+    -> ApiPath
+    -> Maybe Http.Body
+    -> Json.Decoder a
+    -> Cmd (WebData a)
 apiRequest config method path maybeBody decoder =
     let
         body =
@@ -418,11 +424,31 @@ task =
     Http.toTask
 
 
-attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
+attemptDelayed :
+    Time
+    -> (Result Http.Error a -> Msg)
+    -> Http.Request a
+    -> Cmd Msg
 attemptDelayed time msg request =
     request
         |> task
         |> Util.attemptDelayed time msg
+
+
+rootUrl : Config -> Path -> Path
+rootUrl config path =
+    case ( String.endsWith "/" config.apiUrl, String.startsWith "/" path ) of
+        ( True, False ) ->
+            config.apiUrl
+
+        ( True, True ) ->
+            String.dropRight 1 config.apiUrl
+
+        ( False, True ) ->
+            config.apiUrl
+
+        ( False, False ) ->
+            config.apiUrl ++ "/"
 
 
 {-| Returns the api url for a given `Config` and `Path`.
@@ -437,29 +463,15 @@ attemptDelayed time msg request =
 apiUrl : Config -> Path -> Url
 apiUrl config path =
     let
-        rootUrl =
-            case ( String.endsWith "/" config.apiUrl, String.startsWith "/" path ) of
-                ( True, False ) ->
-                    config.apiUrl
-
-                ( True, True ) ->
-                    String.dropRight 1 config.apiUrl
-
-                ( False, True ) ->
-                    config.apiUrl
-
-                ( False, False ) ->
-                    config.apiUrl ++ "/"
-
         hasQuery =
             String.contains "?"
     in
         -- the daemon API expects requests URLs to end with "/"
         -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
         if String.endsWith "/" path || hasQuery path then
-            rootUrl ++ path
+            rootUrl config path ++ path
         else
-            rootUrl ++ path ++ "/"
+            rootUrl config path ++ path ++ "/"
 
 
 apiWSUrl : Config -> Path -> Url

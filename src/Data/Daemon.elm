@@ -1,7 +1,14 @@
 module Data.Daemon exposing (..)
 
 import Json.Decode as Json exposing (andThen, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, required, requiredAt, optionalAt)
+import Json.Decode.Pipeline
+    exposing
+        ( decode
+        , optional
+        , required
+        , requiredAt
+        , optionalAt
+        )
 
 
 type KeyState

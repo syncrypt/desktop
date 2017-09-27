@@ -1,11 +1,27 @@
 module Data.Vault exposing (..)
 
 import Date exposing (Date)
-import Data.User exposing (User, UserKey, Email, Fingerprint, EmailWithFingerPrint)
+import Data.User
+    exposing
+        ( User
+        , UserKey
+        , Email
+        , Fingerprint
+        , EmailWithFingerPrint
+        )
 import Config exposing (Config)
 import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
-import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Json.Decode.Pipeline
+    exposing
+        ( custom
+        , decode
+        , hardcoded
+        , optional
+        , optionalAt
+        , required
+        , requiredAt
+        )
 import Util exposing (dateDecoder)
 import Path exposing (Path)
 

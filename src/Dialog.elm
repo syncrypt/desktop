@@ -16,7 +16,13 @@ asModalIn state modal =
     { state | modal = modal }
 
 
-labeledItem : Direction -> List (Html.Attribute msg) -> Maybe msg -> Html msg -> Html msg -> Html msg
+labeledItem :
+    Direction
+    -> List (Html.Attribute msg)
+    -> Maybe msg
+    -> Html msg
+    -> Html msg
+    -> Html msg
 labeledItem side attributes onClickMsg labelContent content =
     let
         className =

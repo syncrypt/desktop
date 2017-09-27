@@ -923,13 +923,16 @@ pendingUserList state =
             state.usersToAdd
                 |> Dict.filter hasPendingKeys
                 |> Dict.toList
+
+        pendingUserItems =
+            pendingUsers
+                |> List.map (\( email, keys ) -> pendingUserItem email keys)
     in
         div [ class "PendingUserList" ] <|
             if List.isEmpty pendingUsers then
                 []
             else
-                (h4 [] [ text "Pending Users:" ])
-                    :: (List.map (\( email, keys ) -> pendingUserItem email keys) pendingUsers)
+                (h4 [] [ text "Pending Users:" ]) :: pendingUserItems
 
 
 userItem : User -> State -> Model -> Html Msg

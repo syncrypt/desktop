@@ -39,7 +39,7 @@ import Date exposing (Date)
 import Html exposing (Html, span, div, text)
 import Html.Attributes exposing (attribute, class, classList, style)
 import Html.Events
-import Json.Decode
+import Json.Decode as Json
 import Process
 import Round
 import Task exposing (Task, andThen, attempt, perform)
@@ -186,7 +186,10 @@ bytesReadable x =
                 trimmedSizeStr ++ " " ++ unit
 
 
-bytesReadable_ : Float -> List ( ByteUnit, ByteUnitPrecision ) -> ( String, String )
+bytesReadable_ :
+    Float
+    -> List ( ByteUnit, ByteUnitPrecision )
+    -> ( String, String )
 bytesReadable_ size units =
     -- find first unit where
     case units of
@@ -255,14 +258,14 @@ This is somewhat similar to Haskell's >>=
     doAnotherThing : Model -> ( Model, Cmd Msg )
 
 -}
-(~>) : ( model1, Cmd msg ) -> (model1 -> ( model2, Cmd msg )) -> ( model2, Cmd msg )
+(~>) : ( m1, Cmd msg ) -> (m1 -> ( m2, Cmd msg )) -> ( m2, Cmd msg )
 (~>) modelAndCmd f =
     modelAndCmd
         |> andAlso f
 infixl 0 ~>
 
 
-andAlso : (model1 -> ( model2, Cmd msg )) -> ( model1, Cmd msg ) -> ( model2, Cmd msg )
+andAlso : (m1 -> ( m2, Cmd msg )) -> ( m1, Cmd msg ) -> ( m2, Cmd msg )
 andAlso f ( m1, cmd1 ) =
     let
         ( m2, cmd2 ) =
@@ -281,16 +284,19 @@ onKeyDown keyCode msg =
     let
         isKey code =
             if code == keyCode then
-                Json.Decode.succeed msg
+                Json.succeed msg
             else
-                Json.Decode.fail ""
+                Json.fail ""
     in
-        Html.Events.on "keydown" (Json.Decode.andThen isKey Html.Events.keyCode)
+        Html.Events.on "keydown" (Json.andThen isKey Html.Events.keyCode)
 
 
 onAnyKeyDown : msg -> Html.Attribute msg
 onAnyKeyDown msg =
-    Html.Events.on "keydown" (Json.Decode.andThen (\_ -> Json.Decode.succeed msg) Html.Events.keyCode)
+    Html.Events.on "keydown"
+        (Html.Events.keyCode
+            |> Json.andThen (\_ -> Json.succeed msg)
+        )
 
 
 type Direction
@@ -370,20 +376,20 @@ tooltipLengthString length =
 
 {-| Decodes an `Maybe Date` from a string.
 -}
-dateDecoder : Json.Decode.Decoder (Maybe Date)
+dateDecoder : Json.Decoder (Maybe Date)
 dateDecoder =
     let
-        convert : String -> Json.Decode.Decoder (Maybe Date)
+        convert : String -> Json.Decoder (Maybe Date)
         convert raw =
             case Date.fromString raw of
                 Ok date ->
-                    Json.Decode.succeed (Just date)
+                    Json.succeed (Just date)
 
                 Err error ->
-                    Json.Decode.succeed Nothing
+                    Json.succeed Nothing
     in
-        Json.Decode.string
-            |> Json.Decode.andThen convert
+        Json.string
+            |> Json.andThen convert
 
 
 type IconButton

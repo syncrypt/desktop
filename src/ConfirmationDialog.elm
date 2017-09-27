@@ -49,7 +49,12 @@ init address =
     }
 
 
-open : String -> String -> msg -> HasConfirmationDialog a msg -> HasConfirmationDialog a msg
+open :
+    String
+    -> String
+    -> msg
+    -> HasConfirmationDialog a msg
+    -> HasConfirmationDialog a msg
 open title question confirmMsg ({ confirmationDialog } as model) =
     { model
         | confirmationDialog =

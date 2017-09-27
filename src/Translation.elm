@@ -134,7 +134,10 @@ translateEnglish text =
             "Failed to update metadata for vault " ++ vaultId
 
         VaultCloneFailed vaultId reason ->
-            "Something went wrong while cloning the vault " ++ vaultId ++ " : " ++ reason
+            "Something went wrong while cloning the vault "
+                ++ vaultId
+                ++ " : "
+                ++ reason
 
         VaultAddUserFailed vaultId email ->
             "Failed to add user " ++ email ++ " to vault " ++ vaultId
@@ -157,16 +160,16 @@ translateEnglish text =
         AskDeleteVaultExtended ->
             "Do you really want to delete this vault from the server?"
 
-        Stats { stats, downloads, uploads, userKeyState, totalSlots, busySlots, idleSlots, closedSlots } ->
-            (toString (busySlots + idleSlots))
+        Stats s ->
+            (toString (s.busySlots + s.idleSlots))
                 ++ " open connections ("
-                ++ (toString idleSlots)
+                ++ (toString s.idleSlots)
                 ++ " idle) / "
-                ++ (toString stats)
+                ++ (toString s.stats)
                 ++ " file queries / "
-                ++ (toString downloads)
+                ++ (toString s.downloads)
                 ++ " downloads / "
-                ++ (toString uploads)
+                ++ (toString s.uploads)
                 ++ " uploads"
 
         StatsLoading ->

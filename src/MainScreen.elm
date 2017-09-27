@@ -548,7 +548,11 @@ logout model =
         ! [ Daemon.logout model ]
 
 
-handleLoginResult : Email -> WebData StatusResponse -> Model -> ( Model, Cmd Msg )
+handleLoginResult :
+    Email
+    -> WebData StatusResponse
+    -> Model
+    -> ( Model, Cmd Msg )
 handleLoginResult email data model =
     case data of
         Success _ ->
@@ -657,5 +661,8 @@ footer { stats, vaults, language } =
     in
         div [ class "MainScreen-Footer" ]
             [ span [ class "MainScreen-Stats" ]
-                [ text <| (translate syncedVaultsText language) ++ (translate statsText language) ]
+                [ text <|
+                    translate syncedVaultsText language
+                        ++ translate statsText language
+                ]
             ]
