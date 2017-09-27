@@ -29,8 +29,8 @@ import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Syncrypt.User as User exposing (Email, User, UserKey)
-import Syncrypt.Vault
+import Data.User as User exposing (Email, User, UserKey)
+import Data.Vault
     exposing
         ( Event(..)
         , HistoryItem
@@ -453,7 +453,7 @@ eventDateString now { createdAt } =
             ""
 
 
-viewLogItem : Maybe Date -> Syncrypt.Vault.LogItem -> Html msg
+viewLogItem : Maybe Date -> Data.Vault.LogItem -> Html msg
 viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []

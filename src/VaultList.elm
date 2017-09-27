@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
-import Syncrypt.Vault
+import Data.Vault
     exposing
         ( FlyingVault
         , NameOrId

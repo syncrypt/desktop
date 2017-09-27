@@ -1,4 +1,4 @@
-module Syncrypt.User exposing (..)
+module Data.User exposing (..)
 
 import Date exposing (Date)
 import Json.Encode
@@ -44,7 +44,7 @@ type alias EmailWithFingerPrint =
 -- Decoders
 
 
-{-| Decodes a `Syncrypt.User.User`.
+{-| Decodes a `Data.User.User`.
 -}
 decoder : Json.Decoder User
 decoder =
@@ -55,7 +55,7 @@ decoder =
         |> optional "access_granted_at" dateDecoder Nothing
 
 
-{-| Decodes a `Syncrypt.User.UserKey`.
+{-| Decodes a `Data.User.UserKey`.
 -}
 keyDecoder : Json.Decoder UserKey
 keyDecoder =

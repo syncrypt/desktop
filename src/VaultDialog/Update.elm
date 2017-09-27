@@ -11,7 +11,7 @@ import Platform.Cmd exposing (map)
 import Ports
 import RemoteData exposing (RemoteData(..))
 import Set
-import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
+import Data.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
 import Translation as T
 import Ui.Input
 import Ui.Modal

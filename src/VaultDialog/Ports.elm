@@ -2,7 +2,7 @@ port module VaultDialog.Ports exposing (..)
 
 import VaultDialog.Model exposing (FolderItem)
 import Path exposing (Path)
-import Syncrypt.Vault exposing (VaultId)
+import Data.Vault exposing (VaultId)
 
 
 port openFolderDialog : VaultId -> Cmd msg

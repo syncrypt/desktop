@@ -14,8 +14,8 @@ import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
 import SettingsDialog
-import Syncrypt.User exposing (Email)
-import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
+import Data.User exposing (Email)
+import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Time
 import Translation exposing (Text(..), t, translate)
 import Ui.NotificationCenter
@@ -436,7 +436,7 @@ notifyText transText model =
         |> notify (text (t transText model))
 
 
-saveVault : Syncrypt.Vault.VaultId -> Model -> ( Model, Cmd Msg )
+saveVault : Data.Vault.VaultId -> Model -> ( Model, Cmd Msg )
 saveVault vaultId model =
     let
         state =

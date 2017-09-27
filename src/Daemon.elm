@@ -4,11 +4,20 @@ import Config exposing (..)
 import Http
 import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
-import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Json.Decode.Pipeline
+    exposing
+        ( custom
+        , decode
+        , hardcoded
+        , optional
+        , optionalAt
+        , required
+        , requiredAt
+        )
 import Model exposing (..)
-import Syncrypt.User exposing (Email, Password, User, UserKey, Fingerprint)
-import Syncrypt.Vault exposing (..)
-import Syncrypt.Daemon exposing (daemonConfigDecoder)
+import Data.User exposing (Email, Password, User, UserKey, Fingerprint)
+import Data.Vault exposing (..)
+import Data.Daemon exposing (daemonConfigDecoder)
 import Task exposing (Task)
 import Time exposing (Time)
 import Util exposing (dateDecoder)
@@ -51,24 +60,24 @@ getStats { config } =
 
 getVaults : Model -> Cmd Msg
 getVaults { config } =
-    apiRequest config Get Vaults Nothing (Json.list Syncrypt.Vault.decoder)
+    apiRequest config Get Vaults Nothing (Json.list Data.Vault.decoder)
         |> Cmd.map UpdatedVaultsFromApi
 
 
 getFlyingVaults : Model -> Cmd Msg
 getFlyingVaults { config } =
-    apiRequest config Get FlyingVaults Nothing (Json.list Syncrypt.Vault.flyingVaultDecoder)
+    apiRequest config Get FlyingVaults Nothing (Json.list Data.Vault.flyingVaultDecoder)
         |> Cmd.map UpdatedFlyingVaultsFromApi
 
 
 getVault : VaultId -> Config -> Cmd (WebData Vault)
 getVault vaultId config =
-    apiRequest config Get (Vault vaultId) Nothing Syncrypt.Vault.decoder
+    apiRequest config Get (Vault vaultId) Nothing Data.Vault.decoder
 
 
 getFlyingVault : VaultId -> Config -> Cmd (WebData FlyingVault)
 getFlyingVault vaultId config =
-    apiRequest config Get (FlyingVault vaultId) Nothing Syncrypt.Vault.flyingVaultDecoder
+    apiRequest config Get (FlyingVault vaultId) Nothing Data.Vault.flyingVaultDecoder
 
 
 updateVaultMetadata : VaultId -> Metadata -> Model -> Cmd Msg
@@ -76,24 +85,24 @@ updateVaultMetadata vaultId metadata { config } =
     let
         jsonBody =
             metadata
-                |> Syncrypt.Vault.metadataEncoder
+                |> Data.Vault.metadataEncoder
                 |> Http.jsonBody
     in
-        apiRequest config Put (Vault vaultId) (Just jsonBody) Syncrypt.Vault.decoder
+        apiRequest config Put (Vault vaultId) (Just jsonBody) Data.Vault.decoder
             |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
 
 getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
 getVaultUsers vaultId config =
-    apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Syncrypt.User.decoder)
+    apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Data.User.decoder)
 
 
 getVaultHistory : VaultId -> Config -> Cmd (WebData (List HistoryItem))
 getVaultHistory vaultId config =
-    apiRequest config Get (VaultHistory vaultId) Nothing Syncrypt.Vault.historyItemsDecoder
+    apiRequest config Get (VaultHistory vaultId) Nothing Data.Vault.historyItemsDecoder
 
 
-subscribeVaultLogStream : VaultId -> (Result String Syncrypt.Vault.LogItem -> msg) -> Config -> Sub msg
+subscribeVaultLogStream : VaultId -> (Result String Data.Vault.LogItem -> msg) -> Config -> Sub msg
 subscribeVaultLogStream vaultId toMsg config =
     let
         parseMsg : String -> msg
@@ -108,14 +117,14 @@ subscribeVaultLogStream vaultId toMsg config =
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
 getVaultUser vaultId email config =
-    apiRequest config Get (VaultUser vaultId email) Nothing Syncrypt.User.decoder
+    apiRequest config Get (VaultUser vaultId email) Nothing Data.User.decoder
 
 
 addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd Msg
 addVaultUser vaultId email keys config =
     let
         jsonBody =
-            Syncrypt.Vault.addVaultUserEncoder email keys
+            Data.Vault.addVaultUserEncoder email keys
                 |> Http.jsonBody
     in
         apiRequest config
@@ -134,12 +143,12 @@ removeVaultUser vaultId email config =
 
 getUserKeys : Email -> Config -> Cmd (WebData (List UserKey))
 getUserKeys email config =
-    apiRequest config Get (UserKeys email) Nothing (Json.list Syncrypt.User.keyDecoder)
+    apiRequest config Get (UserKeys email) Nothing (Json.list Data.User.keyDecoder)
 
 
 getUser : Email -> Config -> Cmd (WebData User)
 getUser email config =
-    apiRequest config Get User Nothing Syncrypt.User.decoder
+    apiRequest config Get User Nothing Data.User.decoder
 
 
 getConfig : Model -> Cmd Msg
@@ -178,7 +187,7 @@ updateVault options config =
         Post
         Vaults
         (Just (Http.jsonBody (jsonOptions config options)))
-        Syncrypt.Vault.decoder
+        Data.Vault.decoder
 
 
 removeVault : VaultId -> Model -> Cmd Msg
@@ -186,7 +195,7 @@ removeVault vaultId { config } =
     apiRequest config
         Delete
         (Vault vaultId)
-        (Just (Http.jsonBody (jsonOptions config (Syncrypt.Vault.Remove vaultId))))
+        (Just (Http.jsonBody (jsonOptions config (Data.Vault.Remove vaultId))))
         (succeed vaultId)
         |> Cmd.map RemovedVaultFromSync
 
@@ -224,7 +233,7 @@ login : Email -> Password -> Model -> Cmd Msg
 login email password { config } =
     let
         jsonBody =
-            Syncrypt.User.loginEncoder email password
+            Data.User.loginEncoder email password
                 |> Http.jsonBody
     in
         apiRequest config
@@ -376,7 +385,7 @@ requestMethod rm =
     let
         config = {apiUrl = "http://localhost:28080/", apiAuthToken="123"}
     in
-        apiRequest config Get "vault" (Json.list Syncrypt.Vault.decoder)
+        apiRequest config Get "vault" (Json.list Data.Vault.decoder)
 
 -}
 apiRequest : Config -> RequestMethod -> ApiPath -> Maybe Http.Body -> Json.Decoder a -> Cmd (WebData a)

@@ -9,9 +9,9 @@ module Translation
 
 import Date exposing (Date)
 import Date.Distance
-import Syncrypt.Vault exposing (VaultId)
-import Syncrypt.User exposing (Email)
-import Syncrypt.Daemon exposing (KeyState, Stats)
+import Data.Vault exposing (VaultId)
+import Data.User exposing (Email)
+import Data.Daemon exposing (KeyState, Stats)
 
 
 type Language

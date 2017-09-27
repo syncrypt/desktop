@@ -9,7 +9,7 @@ import Ui.Tabs
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
 import Path exposing (Path, asPath)
-import Syncrypt.Vault
+import Data.Vault
     exposing
         ( Vault
         , FlyingVault
@@ -18,7 +18,7 @@ import Syncrypt.Vault
         , HistoryItem
         , Event(..)
         )
-import Syncrypt.User as User
+import Data.User as User
 import ConfirmationDialog
 
 
@@ -48,7 +48,7 @@ type EventFilter
     | User String
     | Email String
     | Search String Bool -- is case sensitive?
-    | Level Syncrypt.Vault.LogLevel
+    | Level Data.Vault.LogLevel
     | MinDate Date
     | MaxDate Date
     | Operation LogOperationFilter
@@ -60,7 +60,7 @@ type EventSortOrder
 
 
 type alias EventSortBy =
-    Syncrypt.Vault.Event -> Syncrypt.Vault.Event -> Order
+    Data.Vault.Event -> Data.Vault.Event -> Order
 
 
 type alias State =
@@ -79,8 +79,8 @@ type alias State =
     , ignoredFolderItems : Set Path
     , expandedFolders : Set Path
     , users : WebData (List User.User)
-    , logItems : List Syncrypt.Vault.LogItem
-    , historyItems : WebData (List Syncrypt.Vault.HistoryItem)
+    , logItems : List Data.Vault.LogItem
+    , historyItems : WebData (List Data.Vault.HistoryItem)
     , eventFilters : List EventFilter
     , eventSortBy : EventSortBy
     , eventSortOrder : EventSortOrder
@@ -128,7 +128,7 @@ type Msg
     | SelectedIcon String
     | OpenExportDialog
     | SelectedExportFile String
-    | VaultLogStream (Result String Syncrypt.Vault.LogItem)
+    | VaultLogStream (Result String Data.Vault.LogItem)
     | ToggleEventSortOrder
     | SortEventsBy EventSortBy
     | FilterEventsBy EventFilter
@@ -216,7 +216,7 @@ initForFlyingVault : FlyingVault -> State
 initForFlyingVault flyingVault =
     let
         default =
-            initForVault (Syncrypt.Vault.asVault flyingVault)
+            initForVault (Data.Vault.asVault flyingVault)
 
         name =
             nameOrId flyingVault
@@ -392,7 +392,7 @@ hasChanged state =
     { state | hasChangesPending = True }
 
 
-events : State -> List Syncrypt.Vault.Event
+events : State -> List Data.Vault.Event
 events state =
     let
         historyEvents =
@@ -541,7 +541,7 @@ sortEvents state events =
                 )
 
 
-eventSortByCreatedAt : Syncrypt.Vault.Event -> Syncrypt.Vault.Event -> Order
+eventSortByCreatedAt : Data.Vault.Event -> Data.Vault.Event -> Order
 eventSortByCreatedAt a b =
     let
         distA =
@@ -560,7 +560,7 @@ eventSortByCreatedAt a b =
 
 eventDistVal event =
     case event of
-        Syncrypt.Vault.History item ->
+        Data.Vault.History item ->
             case item.createdAt of
                 Nothing ->
                     0
@@ -568,7 +568,7 @@ eventDistVal event =
                 Just val ->
                     Date.toTime val
 
-        Syncrypt.Vault.Log item ->
+        Data.Vault.Log item ->
             case item.createdAt of
                 Nothing ->
                     0

@@ -1,7 +1,7 @@
-module Syncrypt.Vault exposing (..)
+module Data.Vault exposing (..)
 
 import Date exposing (Date)
-import Syncrypt.User exposing (User, UserKey, Email, Fingerprint, EmailWithFingerPrint)
+import Data.User exposing (User, UserKey, Email, Fingerprint, EmailWithFingerPrint)
 import Config exposing (Config)
 import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
@@ -208,7 +208,7 @@ jsonOptions config options =
                 Json.Encode.null
 
 
-{-| Decodes a `Syncrypt.Vault.Vault`.
+{-| Decodes a `Data.Vault.Vault`.
 -}
 decoder : Json.Decoder Vault
 decoder =
@@ -293,7 +293,7 @@ logItemDecoder =
         |> required "vault_id" Json.string
 
 
-{-| Decodes a `Syncrypt.Vault.FlyingVault`.
+{-| Decodes a `Data.Vault.FlyingVault`.
 -}
 flyingVaultDecoder : Json.Decoder FlyingVault
 flyingVaultDecoder =
@@ -309,7 +309,7 @@ flyingVaultDecoder =
         |> optional "icon" (Json.maybe Json.string) Nothing
 
 
-{-| Decodes a `Syncrypt.Vault.Status`.
+{-| Decodes a `Data.Vault.Status`.
 -}
 vaultStatusDecoder : Json.Decoder Status
 vaultStatusDecoder =

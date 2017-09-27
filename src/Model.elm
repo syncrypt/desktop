@@ -8,9 +8,9 @@ import Json.Decode.Pipeline exposing (decode, optional, optionalAt, required, re
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
-import Syncrypt.Daemon exposing (DaemonConfig, KeyState(..), Stats)
-import Syncrypt.User exposing (Email)
-import Syncrypt.Vault exposing (FlyingVault, Vault, VaultId)
+import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
+import Data.User exposing (Email)
+import Data.Vault exposing (FlyingVault, Vault, VaultId)
 import Translation
 import Ui.NotificationCenter
 import Util exposing (findFirst)
@@ -21,7 +21,7 @@ import WizardDialog
 type alias CurrentUser =
     { firstName : String
     , lastName : String
-    , email : Syncrypt.User.Email
+    , email : Data.User.Email
     }
 
 
@@ -221,10 +221,10 @@ vaultWithId vaultId { vaults, flyingVaults } =
             Nothing ->
                 case findFirst hasId (RemoteData.withDefault [] flyingVaults) of
                     Nothing ->
-                        Syncrypt.Vault.init vaultId
+                        Data.Vault.init vaultId
 
                     Just fv ->
-                        fv |> Syncrypt.Vault.asVault
+                        fv |> Data.Vault.asVault
 
             Just v ->
                 v
