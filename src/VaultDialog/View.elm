@@ -203,10 +203,7 @@ usersTab msg vaultId state model =
             isOwner vaultId model
 
         infoText =
-            if ownsVault then
-                "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
-            else
-                "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
+            t (UsersTabInfoText ownsVault) model
     in
         ( t UsersTab model
         , div []
@@ -249,7 +246,7 @@ cryptoTab vaultId state model =
     in
         ( t CryptoTab model
         , div []
-            [ tabInfoText "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
+            [ tabInfoText (t CryptoTabInfoText model)
             , cryptoInfoItem "Vault ID"
                 "Syncrypt Vault ID"
                 (String.toUpper vault.id)

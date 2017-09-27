@@ -73,6 +73,8 @@ type Text
     | LogTab
     | AdminTab
     | VaultListHeaderDescription
+    | UsersTabInfoText Bool -- owns vault?
+    | CryptoTabInfoText
 
 
 type alias HasLanguage a =
@@ -232,6 +234,15 @@ translateEnglish text =
         VaultListHeaderDescription ->
             "These vaults are cloned and synchronized on this computer."
 
+        UsersTabInfoText ownsVault ->
+            if ownsVault then
+                "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
+            else
+                "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
+
+        CryptoTabInfoText ->
+            "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -362,6 +373,15 @@ translateGerman text =
 
         VaultListHeaderDescription ->
             "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."
+
+        UsersTabInfoText ownsVault ->
+            if ownsVault then
+                "Füge andere Nutzer zu diesem Vault hinzu um Dateien und Ordner sicher und einfach zu teilen. Du kannst so viele Leute einladen, wie du willst."
+            else
+                "Diese Nutzer haben derzeit Zugriff auf diesen Vault (dich eingeschlossen). Jeder Nutzer mit Zugriff kann Dateien in diesem Vault hinzufügen, bearbeiten, löschen und lesen."
+
+        CryptoTabInfoText ->
+            "Hier kannst du alle kryptographischen Details dieses Vaults einsehen."
 
 
 germanDistance =
