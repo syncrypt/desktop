@@ -187,15 +187,15 @@ translateEnglish text =
             "Do you really want to delete this vault from the server?"
 
         Stats s ->
-            (toString (s.busySlots + s.idleSlots))
+            toString (s.busySlots + s.idleSlots)
                 ++ " open connections ("
-                ++ (toString s.idleSlots)
+                ++ toString s.idleSlots
                 ++ " idle) / "
-                ++ (toString s.stats)
+                ++ toString s.stats
                 ++ " file queries / "
-                ++ (toString s.downloads)
+                ++ toString s.downloads
                 ++ " downloads / "
-                ++ (toString s.uploads)
+                ++ toString s.uploads
                 ++ " uploads"
 
         StatsLoading ->
@@ -211,7 +211,7 @@ translateEnglish text =
             if vaultCount == 1 then
                 " 1 synchronized vault / "
             else
-                (toString vaultCount) ++ " synchronized vaults / "
+                toString vaultCount ++ " synchronized vaults / "
 
         VaultsLoading ->
             "..."
@@ -229,7 +229,7 @@ translateEnglish text =
             "Vault (not synchronized) " ++ vaultId
 
         Updated date now ->
-            "Synced " ++ (Date.Distance.inWords date now) ++ " ago"
+            "Synced " ++ Date.Distance.inWords date now ++ " ago"
 
         LastUpdateToVault ->
             "Last update "
@@ -391,15 +391,15 @@ translateGerman text =
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
         Stats s ->
-            (toString (s.busySlots + s.idleSlots))
+            toString (s.busySlots + s.idleSlots)
                 ++ " offene Verbindungen ("
-                ++ (toString s.idleSlots)
+                ++ toString s.idleSlots
                 ++ " ruhend) / "
-                ++ (toString s.stats)
+                ++ toString s.stats
                 ++ " Dateiabfragen / "
-                ++ (toString s.downloads)
+                ++ toString s.downloads
                 ++ " Downloads / "
-                ++ (toString s.uploads)
+                ++ toString s.uploads
                 ++ " Uploads"
 
         StatsLoading ->
