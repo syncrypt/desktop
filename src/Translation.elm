@@ -99,6 +99,9 @@ type VaultDialogText
     | AESKeyLengthInfo
     | RSAKeyLengthLabel
     | RSAKeyLengthInfo
+    | VaultRemoveButtonInfo
+    | VaultDeleteButtonInfo
+    | VaultExportButtonInfo
 
 
 type alias HasLanguage a =
@@ -331,6 +334,15 @@ translateEnglishVaultDialogText vt =
         RSAKeyLengthInfo ->
             "Length of vault private key"
 
+        VaultRemoveButtonInfo ->
+            "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
+
+        VaultDeleteButtonInfo ->
+            "Delete this vault with its files from the Syncrypt cloud."
+
+        VaultExportButtonInfo ->
+            "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -534,6 +546,15 @@ translateGermanVaultDialogText vt =
 
         RSAKeyLengthInfo ->
             "Länge des privaten Vault RSA Schlüssels."
+
+        VaultRemoveButtonInfo ->
+            "Stoppt die Sychronisation des Vaults auf diesem Gerät. Dadurch werden keine neuen hochgeladenen Dateien runter- bzw. lokale Veränderungen mehr hochgeladen."
+
+        VaultDeleteButtonInfo ->
+            "Lösche diesen Vault mit allen Dateien in der Syncrypt Cloud (es werden keine Dateien lokal gelöscht)."
+
+        VaultExportButtonInfo ->
+            "Du kannst deinen Vault exportieren um alle relevanten Schlüssel und Einstellungen zu sichern. Es erlaubt das Herunterladen & Wiederherstellen (Entschlüsselung) der Dateien im Falle eines Hardware- bzw. Festplattendefekts oder Diebstahls dieses Gerätes."
 
 
 germanDistance =

@@ -346,13 +346,13 @@ logTab vaultId state model =
 adminTab vaultId state model =
     ( t (VaultDialogText AdminTab) model
     , div [ class "Admin-Buttons" ]
-        [ infoText "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
+        [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
         , removeButton vaultId state
         , separator
-        , infoText "Delete this vault with its files from the Syncrypt cloud."
+        , infoText (t (VaultDialogText VaultDeleteButtonInfo) model)
         , deleteButton vaultId state model
         , separator
-        , infoText "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
+        , infoText (t (VaultDialogText VaultExportButtonInfo) model)
         , exportButton <| Model.vaultWithId vaultId model
         ]
     )
