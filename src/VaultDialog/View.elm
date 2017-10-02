@@ -189,11 +189,12 @@ tabContents vaultId state model =
         ]
 
 
-usersTab msg vaultId state model =
+usersTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
+usersTab toRootMsg vaultId state model =
     let
         -- converter from Html Msg -> Html Model.Msg
         rootMsg =
-            Html.map msg
+            Html.map toRootMsg
 
         searchKeys =
             Model.VaultDialogMsg vaultId <|
@@ -226,6 +227,7 @@ usersTab msg vaultId state model =
         )
 
 
+cryptoTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 cryptoTab vaultId state model =
     let
         vault =
@@ -288,19 +290,21 @@ cryptoTab vaultId state model =
         )
 
 
-filesTab msg vaultId state model =
+filesTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
+filesTab toRootMsg vaultId state model =
     ( t (VaultDialogText NameAndFilesTab) model
     , div []
         [ dialogInput "Name"
-            [ nameInput msg state ]
+            [ nameInput toRootMsg state ]
         , dialogInput "Folder"
-            [ Html.map msg <| openFolderButton vaultId state model ]
+            [ Html.map toRootMsg <| openFolderButton vaultId state model ]
         , dialogInput "FileSelection"
-            [ Html.map msg <| fileSelectionContainer state ]
+            [ Html.map toRootMsg <| fileSelectionContainer state ]
         ]
     )
 
 
+logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
     ( t (VaultDialogText LogTab) model
     , div [] <|
@@ -343,6 +347,7 @@ logTab vaultId state model =
     )
 
 
+adminTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 adminTab vaultId state model =
     ( t (VaultDialogText AdminTab) model
     , div [ class "Admin-Buttons" ]
