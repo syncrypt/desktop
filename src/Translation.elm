@@ -2,6 +2,7 @@ module Translation
     exposing
         ( Language(..)
         , Text(..)
+        , VaultDialogText(..)
         , t
         , translate
         , timeAgo
@@ -67,14 +68,37 @@ type Text
     | LastUpdateToVault
     | LastUpdateToVaultLabel
     | NoFilesUploadedYet
-    | NameAndFilesTab
+    | VaultListHeaderDescription
+    | VaultDialogText VaultDialogText
+
+
+type VaultDialogText
+    = NameAndFilesTab
     | UsersTab
+    | UsersTabInfoText Bool -- owns vault?
     | CryptoTab
     | LogTab
     | AdminTab
-    | VaultListHeaderDescription
-    | UsersTabInfoText Bool -- owns vault?
     | CryptoTabInfoText
+    | VaultIdLabel
+    | VaultIdInfo
+    | FileRevisionsLabel
+    | TotalNumberOfFileRevisionsInfo
+    | LastModifiedLabel
+    | LastModifiedInfo
+    | NoChangesSoFar
+    | KeyAlgorithmLabel
+    | KeyAlgorithmInfo
+    | KeyFingerprintLabel
+    | KeyFingerprintInfo
+    | TransferAlgorithmLabel
+    | TransferAlgorithmInfo
+    | HashAlgorithmLabel
+    | HashAlgorithmInfo
+    | AESKeyLengthLabel
+    | AESKeyLengthInfo
+    | RSAKeyLengthLabel
+    | RSAKeyLengthInfo
 
 
 type alias HasLanguage a =
@@ -216,11 +240,27 @@ translateEnglish text =
         NoFilesUploadedYet ->
             "No files uploaded yet"
 
+        VaultListHeaderDescription ->
+            "These vaults are cloned and synchronized on this computer."
+
+        VaultDialogText vt ->
+            translateEnglishVaultDialogText vt
+
+
+translateEnglishVaultDialogText : VaultDialogText -> String
+translateEnglishVaultDialogText vt =
+    case vt of
         NameAndFilesTab ->
             "Files"
 
         UsersTab ->
             "Users"
+
+        UsersTabInfoText ownsVault ->
+            if ownsVault then
+                "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
+            else
+                "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
 
         CryptoTab ->
             "Metadata"
@@ -231,17 +271,65 @@ translateEnglish text =
         AdminTab ->
             "Administration"
 
-        VaultListHeaderDescription ->
-            "These vaults are cloned and synchronized on this computer."
-
-        UsersTabInfoText ownsVault ->
-            if ownsVault then
-                "Add users to this vault to securely share access to files and collaborate on folders and files with as many people as you like."
-            else
-                "These users have access to this vault (including you). Anyone with access can add, edit and read files in this vault."
-
         CryptoTabInfoText ->
             "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
+
+        VaultIdLabel ->
+            "Vault ID"
+
+        VaultIdInfo ->
+            "Syncrypt Vault ID"
+
+        FileRevisionsLabel ->
+            "File Revisions"
+
+        TotalNumberOfFileRevisionsInfo ->
+            "Total number of file revisions in this vault."
+
+        LastModifiedLabel ->
+            "Last modified"
+
+        LastModifiedInfo ->
+            "Date & time of last update to this vault."
+
+        NoChangesSoFar ->
+            "No changes so far."
+
+        KeyAlgorithmLabel ->
+            "Key Algorithm"
+
+        KeyAlgorithmInfo ->
+            "Asymmetric key algorithm used for vault key"
+
+        KeyFingerprintLabel ->
+            "Vault Key Fingerprint"
+
+        KeyFingerprintInfo ->
+            "Vault public key fingerprint"
+
+        TransferAlgorithmLabel ->
+            "Transfer Algorithm"
+
+        TransferAlgorithmInfo ->
+            "Algorithm used for encrypting data transfer"
+
+        HashAlgorithmLabel ->
+            "Hash Algorithm"
+
+        HashAlgorithmInfo ->
+            "Algorithm used for hashing file contents & names"
+
+        AESKeyLengthLabel ->
+            "AES Key Length"
+
+        AESKeyLengthInfo ->
+            "Length of symmetric file encryption keys in this vault"
+
+        RSAKeyLengthLabel ->
+            "RSA Key Length"
+
+        RSAKeyLengthInfo ->
+            "Length of vault private key"
 
 
 translateGerman : Text -> String
@@ -356,11 +444,27 @@ translateGerman text =
         NoFilesUploadedYet ->
             "Bisher wurden keine Dateien hochgeladen"
 
+        VaultListHeaderDescription ->
+            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."
+
+        VaultDialogText vt ->
+            translateGermanVaultDialogText vt
+
+
+translateGermanVaultDialogText : VaultDialogText -> String
+translateGermanVaultDialogText vt =
+    case vt of
         NameAndFilesTab ->
             "Dateien"
 
         UsersTab ->
             "Benutzer"
+
+        UsersTabInfoText ownsVault ->
+            if ownsVault then
+                "Füge andere Nutzer zu diesem Vault hinzu um Dateien und Ordner sicher und einfach zu teilen. Du kannst so viele Leute einladen, wie du willst."
+            else
+                "Diese Nutzer haben derzeit Zugriff auf diesen Vault (dich eingeschlossen). Jeder Nutzer mit Zugriff kann Dateien in diesem Vault hinzufügen, bearbeiten, löschen und lesen."
 
         CryptoTab ->
             "Metadaten"
@@ -371,17 +475,65 @@ translateGerman text =
         AdminTab ->
             "Administration"
 
-        VaultListHeaderDescription ->
-            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."
-
-        UsersTabInfoText ownsVault ->
-            if ownsVault then
-                "Füge andere Nutzer zu diesem Vault hinzu um Dateien und Ordner sicher und einfach zu teilen. Du kannst so viele Leute einladen, wie du willst."
-            else
-                "Diese Nutzer haben derzeit Zugriff auf diesen Vault (dich eingeschlossen). Jeder Nutzer mit Zugriff kann Dateien in diesem Vault hinzufügen, bearbeiten, löschen und lesen."
-
         CryptoTabInfoText ->
             "Hier kannst du alle kryptographischen Details dieses Vaults einsehen."
+
+        VaultIdLabel ->
+            "Vault ID"
+
+        VaultIdInfo ->
+            "Syncrypt Vault ID"
+
+        FileRevisionsLabel ->
+            "Datei Versionen"
+
+        TotalNumberOfFileRevisionsInfo ->
+            "Anzahl aller Dateiversionen in diesem Vault."
+
+        LastModifiedLabel ->
+            "Zuletzt aktualisiert"
+
+        LastModifiedInfo ->
+            "Zeit der letzten Änderung im Vault."
+
+        NoChangesSoFar ->
+            "Bisher keine Veränderungen."
+
+        KeyAlgorithmLabel ->
+            "Schlüssel Algorithmus"
+
+        KeyAlgorithmInfo ->
+            "Asymmetrischer Verschlüsselungsalgorithmus der für den Vault Schlüssel genutzt wird."
+
+        KeyFingerprintLabel ->
+            "Vault Schlüssel Fingerabdruck"
+
+        KeyFingerprintInfo ->
+            "Vault public key fingerprint"
+
+        TransferAlgorithmLabel ->
+            "Transfer Algorithmus"
+
+        TransferAlgorithmInfo ->
+            "Algorithmus für verschlüsselte Datenübertragung"
+
+        HashAlgorithmLabel ->
+            "Hash Algorithmus"
+
+        HashAlgorithmInfo ->
+            "Datei Hash Algorithmus"
+
+        AESKeyLengthLabel ->
+            "AES Schlüssellänge"
+
+        AESKeyLengthInfo ->
+            "Länge des symmetrischen Schlüssels für die Dateiverschlüsselung in diesem Vault."
+
+        RSAKeyLengthLabel ->
+            "RSA Schlüssellänge"
+
+        RSAKeyLengthInfo ->
+            "Länge des privaten Vault RSA Schlüssels."
 
 
 germanDistance =

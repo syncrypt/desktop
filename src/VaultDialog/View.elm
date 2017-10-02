@@ -38,7 +38,7 @@ import Data.Vault
         , Vault
         , VaultId
         )
-import Translation exposing (Text(..), t, timeAgo)
+import Translation exposing (Text(..), VaultDialogText(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -203,9 +203,9 @@ usersTab msg vaultId state model =
             isOwner vaultId model
 
         infoText =
-            t (UsersTabInfoText ownsVault) model
+            t (VaultDialogText (UsersTabInfoText ownsVault)) model
     in
-        ( t UsersTab model
+        ( t (VaultDialogText UsersTab) model
         , div []
             [ tabInfoText infoText
             , div
@@ -243,42 +243,45 @@ cryptoTab vaultId state model =
                         [ text value ]
                     )
                 ]
+
+        vt vaultDialogText =
+            t (VaultDialogText vaultDialogText) model
     in
-        ( t CryptoTab model
+        ( t (VaultDialogText CryptoTab) model
         , div []
-            [ tabInfoText (t CryptoTabInfoText model)
-            , cryptoInfoItem "Vault ID"
-                "Syncrypt Vault ID"
+            [ tabInfoText (vt CryptoTabInfoText)
+            , cryptoInfoItem (vt VaultIdLabel)
+                (vt VaultIdInfo)
                 (String.toUpper vault.id)
-            , cryptoInfoItem "File Revisions"
-                "Total number of file revisions in this vault."
+            , cryptoInfoItem (vt FileRevisionsLabel)
+                (vt TotalNumberOfFileRevisionsInfo)
                 (toString vault.revisionCount)
-            , cryptoInfoItem "Last modified"
-                "Date & time of last update to this vault."
+            , cryptoInfoItem (vt LastModifiedLabel)
+                (vt LastModifiedInfo)
                 (vault.modificationDate
                     |> Maybe.map (\date -> timeAgo date model)
-                    |> Maybe.withDefault "No changes so far."
+                    |> Maybe.withDefault (vt NoChangesSoFar)
                 )
-            , cryptoInfoItem "Key Algorithm"
-                "Asymmetric key algorithm used for vault key"
+            , cryptoInfoItem (vt KeyAlgorithmLabel)
+                (vt KeyAlgorithmInfo)
                 (String.toUpper vault.crypto.keyAlgorithm)
-            , cryptoInfoItem "Vault Key Fingerprint"
-                "Vault public key fingerprint"
+            , cryptoInfoItem (vt KeyFingerprintLabel)
+                (vt KeyFingerprintInfo)
                 (vault.crypto.fingerprint
                     |> Maybe.map String.toUpper
                     |> Maybe.withDefault "N/A"
                 )
-            , cryptoInfoItem "Transfer Algorithm"
-                "Algorithm used for encrypting data transfer"
+            , cryptoInfoItem (vt TransferAlgorithmLabel)
+                (vt TransferAlgorithmInfo)
                 (String.toUpper vault.crypto.transferAlgorithm)
-            , cryptoInfoItem "Hash Algorithm"
-                "Algorithm used for hashing file contents & names"
+            , cryptoInfoItem (vt HashAlgorithmLabel)
+                (vt HashAlgorithmInfo)
                 (String.toUpper vault.crypto.hashAlgorithm)
-            , cryptoInfoItem "AES Key Length"
-                "Length of symmetric file encryption keys in this vault"
+            , cryptoInfoItem (vt AESKeyLengthLabel)
+                (vt AESKeyLengthInfo)
                 (toString vault.crypto.aesKeyLength)
-            , cryptoInfoItem "RSA Key Length"
-                "Length of vault private key"
+            , cryptoInfoItem (vt RSAKeyLengthLabel)
+                (vt RSAKeyLengthInfo)
                 (toString vault.crypto.rsaKeyLength)
             , separator
             ]
@@ -286,7 +289,7 @@ cryptoTab vaultId state model =
 
 
 filesTab msg vaultId state model =
-    ( t NameAndFilesTab model
+    ( t (VaultDialogText NameAndFilesTab) model
     , div []
         [ dialogInput "Name"
             [ nameInput msg state ]
@@ -299,7 +302,7 @@ filesTab msg vaultId state model =
 
 
 logTab vaultId state model =
-    ( t LogTab model
+    ( t (VaultDialogText LogTab) model
     , div [] <|
         [ div [ class "EventFilters" ] <|
             [ Dialog.labeledItem Left
@@ -341,7 +344,7 @@ logTab vaultId state model =
 
 
 adminTab vaultId state model =
-    ( t AdminTab model
+    ( t (VaultDialogText AdminTab) model
     , div [ class "Admin-Buttons" ]
         [ infoText "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
         , removeButton vaultId state
