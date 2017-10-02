@@ -132,22 +132,21 @@ statsDecoder =
 
 keyStateDecoder : Json.Decoder KeyState
 keyStateDecoder =
-    Json.string
-        |> andThen
-            (\s ->
-                (succeed
-                    (case s of
-                        "initializing" ->
-                            Initializing
+    let
+        parseKeyState s =
+            succeed <|
+                case s of
+                    "initializing" ->
+                        Initializing
 
-                        "initialized" ->
-                            Initialized
+                    "initialized" ->
+                        Initialized
 
-                        _ ->
-                            Uninitialized
-                    )
-                )
-            )
+                    _ ->
+                        Uninitialized
+    in
+        Json.string
+            |> andThen parseKeyState
 
 
 loginStateDecoder : Json.Decoder LoginState
