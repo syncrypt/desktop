@@ -14,6 +14,7 @@
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/websocket": "1.0.2 <= v < 2.0.0",
         "gdotdesign/elm-ui": "1.2.1 <= v < 2.0.0",
+        "jinjor/elm-time-travel": "2.0.0 <= v < 3.0.0",
         "krisajenkins/remotedata": "4.3.0 <= v < 5.0.0",
         "myrho/elm-round": "1.0.1 <= v < 2.0.0",
         "sanichi/elm-md5": "1.0.6 <= v < 2.0.0",

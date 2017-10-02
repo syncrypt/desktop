@@ -21,8 +21,9 @@ run-prod: all
 	NODE_ENV=production electron $(MAIN_FILE)
 
 run-debug: $(BUILD_DIR) static
-	elm make src/Main.elm --output $(JS_FILE) --debug
+	elm make src/Main-Debugger.elm --output $(JS_FILE) --debug
 	NODE_ENV=development electron $(MAIN_FILE)
+	rm $(JS_FILE)
 
 run-watch: all
 	$(SASS_CMD) --watch --recursive --output build/ --source-map true --source-map-contents static/ &
