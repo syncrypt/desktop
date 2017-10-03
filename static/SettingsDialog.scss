@@ -1,0 +1,13 @@
+@import "Common.scss";
+
+.SettingsDialog {
+  .LanguageInfoLabel {
+    margin: $padding-small;
+    font-weight: bold;
+    font-size: $font-size-header;
+  }
+
+  .LanguageButton {
+    margin: $padding-small;
+  }
+}

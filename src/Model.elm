@@ -88,8 +88,8 @@ type Msg
     | ClonedVault VaultId (WebData Vault)
     | CloseVaultDetails VaultId
     | SaveVaultDetails VaultId
-    | OpenProgramSettings
-    | OpenAccountSettings
+    | OpenSettingsDialog
+    | CloseSettingsDialog
     | Logout
     | CreateNewVault
     | CreatedVault VaultDialog.Model.State (WebData Vault)

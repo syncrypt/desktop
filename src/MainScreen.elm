@@ -189,15 +189,16 @@ update action model =
             model
                 ! [ Ports.openVaultFolder vault.folderPath ]
 
-        OpenProgramSettings ->
-            -- TODO
-            model
-                ! []
-
-        OpenAccountSettings ->
+        OpenSettingsDialog ->
             -- TODO
             (model
                 |> SettingsDialog.open
+            )
+                ! []
+
+        CloseSettingsDialog ->
+            (model
+                |> SettingsDialog.close
             )
                 ! []
 
@@ -624,7 +625,7 @@ header =
             []
         , div
             [ class "MainScreen-Buttons" ]
-            [ iconButton SettingsButton [ onClick OpenAccountSettings ]
+            [ iconButton SettingsButton [ onClick OpenSettingsDialog ]
             , iconButton LogoutButton [ onClick Logout ]
             ]
         ]

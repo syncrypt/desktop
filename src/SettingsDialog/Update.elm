@@ -1,7 +1,9 @@
-module SettingsDialog.Update exposing (update, asStateIn)
+module SettingsDialog.Update exposing (update)
 
 import ConfirmationDialog
 import SettingsDialog.Model exposing (..)
+import Ui.Modal
+import Dialog exposing (asModalIn)
 
 
 update : Msg -> HasSettingsDialog a msg -> ( HasSettingsDialog a msg, Cmd msg )
@@ -22,7 +24,14 @@ update msg ({ settingsDialog } as model) =
             (close model)
                 ! []
 
+        LanguageSelection lang ->
+            { model | language = lang }
+                ! []
 
-asStateIn : HasSettingsDialog a msg -> State msg -> HasSettingsDialog a msg
-asStateIn model state =
-    { model | settingsDialog = state }
+        ModalMsg msg ->
+            (settingsDialog.modal
+                |> Ui.Modal.update msg
+                |> asModalIn settingsDialog
+                |> asStateIn model
+            )
+                ! []
