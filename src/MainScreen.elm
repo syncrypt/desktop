@@ -263,7 +263,7 @@ update action model =
                 |> openSetupWizard
 
         SetupWizardFinished ->
-            (model
+            ({ model | isFirstLaunch = False }
                 ! [ Daemon.invalidateFirstLaunch model ]
             )
                 ~> (notify (text "Syncrypt initialized"))

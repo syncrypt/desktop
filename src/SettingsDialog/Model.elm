@@ -10,7 +10,7 @@ module SettingsDialog.Model
         )
 
 import ConfirmationDialog
-import Translation
+import Language exposing (Language(..))
 import Ui.Modal
 import Dialog exposing (asModalIn)
 
@@ -25,14 +25,15 @@ type alias State =
 type Msg
     = ConfirmationDialogMsg ConfirmationDialog.Msg
     | Close
-    | LanguageSelection Translation.Language
+    | LanguageSelection Language
     | ModalMsg Ui.Modal.Msg
 
 
 type alias HasSettingsDialog a =
     { a
         | settingsDialog : State
-        , language : Translation.Language
+        , language : Language
+        , isFirstLaunch : Bool
     }
 
 

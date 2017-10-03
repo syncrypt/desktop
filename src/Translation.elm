@@ -1,7 +1,6 @@
 module Translation
     exposing
-        ( Language(..)
-        , Text(..)
+        ( Text(..)
         , VaultDialogText(..)
         , t
         , translate
@@ -13,11 +12,7 @@ import Date.Distance
 import Data.Vault exposing (VaultId)
 import Data.User exposing (Email)
 import Data.Daemon exposing (KeyState, Stats)
-
-
-type Language
-    = English
-    | German
+import Language exposing (Language(..))
 
 
 type alias Reason =

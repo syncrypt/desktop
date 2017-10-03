@@ -5,7 +5,7 @@ import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList)
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
-import Translation
+import Language exposing (Language(..))
 import Ui.Button
 import Ui.Modal
 
@@ -24,7 +24,7 @@ view ({ settingsDialog } as model) =
             [ Ui.Modal.view viewConfig settingsDialog.modal ]
 
 
-languageButton : Translation.Language -> HasSettingsDialog a -> Html Model.Msg
+languageButton : Language -> HasSettingsDialog a -> Html Model.Msg
 languageButton forLanguage { language, settingsDialog } =
     let
         onClickMsg =
@@ -45,6 +45,6 @@ contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "LanguageInfoLabel" ]
         [ text "Choose your language:" ]
-    , languageButton Translation.German model
-    , languageButton Translation.English model
+    , languageButton German model
+    , languageButton English model
     ]

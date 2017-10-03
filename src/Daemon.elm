@@ -1,27 +1,19 @@
 module Daemon exposing (..)
 
 import Config exposing (..)
-import Http
-import Json.Encode
-import Json.Decode as Json exposing (andThen, fail, succeed)
-import Json.Decode.Pipeline
-    exposing
-        ( custom
-        , decode
-        , hardcoded
-        , optional
-        , optionalAt
-        , required
-        , requiredAt
-        )
-import Model exposing (..)
-import Data.User exposing (Email, Password, User, UserKey, Fingerprint)
+import Data.Daemon exposing (daemonConfigDecoder, GUIConfig)
+import Data.User exposing (Email, Fingerprint, Password, User, UserKey)
 import Data.Vault exposing (..)
-import Data.Daemon exposing (daemonConfigDecoder)
+import Http
+import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Json.Encode
+import Model exposing (..)
+import RemoteData exposing (RemoteData(..), WebData)
 import Task exposing (Task)
 import Time exposing (Time)
+import Language exposing (Language(..))
 import Util exposing (dateDecoder)
-import RemoteData exposing (RemoteData(..), WebData)
 import WebSocket
 
 
@@ -224,6 +216,32 @@ invalidateFirstLaunch { config } =
                 [ ( "gui"
                   , (Json.Encode.object
                         [ ( "is_first_launch", (Json.Encode.bool False) )
+                        ]
+                    )
+                  )
+                ]
+    in
+        config
+            |> apiRequest
+                Patch
+                DaemonConfig
+                (Json json)
+                daemonConfigDecoder
+            |> Cmd.map UpdatedDaemonConfig
+
+
+updateGUIConfig :
+    Model
+    -> GUIConfig
+    -> Cmd Msg
+updateGUIConfig { config } guiConfig =
+    let
+        json =
+            Json.Encode.object
+                [ ( "gui"
+                  , (Json.Encode.object
+                        [ ( "is_first_launch", Json.Encode.bool guiConfig.isFirstLaunch )
+                        , ( "language", Json.Encode.string <| toString guiConfig.language )
                         ]
                     )
                   )

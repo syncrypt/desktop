@@ -1,6 +1,6 @@
 module Data.Daemon exposing (..)
 
-import Json.Decode as Json exposing (andThen, succeed)
+import Json.Decode as Json exposing (andThen, succeed, fail)
 import Json.Decode.Pipeline
     exposing
         ( decode
@@ -9,6 +9,7 @@ import Json.Decode.Pipeline
         , requiredAt
         , optionalAt
         )
+import Language exposing (Language(..))
 
 
 type KeyState
@@ -31,7 +32,7 @@ type alias Stats =
 
 type alias GUIConfig =
     { isFirstLaunch : Bool
-    , language : String
+    , language : Language
     }
 
 
@@ -50,4 +51,31 @@ guiConfigDecoder : Json.Decoder GUIConfig
 guiConfigDecoder =
     decode GUIConfig
         |> required "is_first_launch" Json.bool
-        |> required "language" Json.string
+        |> required "language" languageDecoder
+
+
+languageDecoder : Json.Decoder Language
+languageDecoder =
+    let
+        convert : String -> Json.Decoder Language
+        convert language =
+            case String.toLower language of
+                "english" ->
+                    succeed English
+
+                "german" ->
+                    succeed German
+
+                val ->
+                    fail <|
+                        "Invalid language configured in syncrypt config: "
+                            ++ toString val
+
+        -- let
+        --     _ =
+        --         Debug.log "Invalid language" val
+        -- in
+        --     Json.fail <| "Invalid language: " ++ toString val
+    in
+        Json.string
+            |> Json.andThen convert

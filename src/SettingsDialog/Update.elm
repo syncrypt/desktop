@@ -4,9 +4,11 @@ import ConfirmationDialog
 import SettingsDialog.Model exposing (..)
 import Ui.Modal
 import Dialog exposing (asModalIn)
+import Daemon
+import Model
 
 
-update : Msg -> HasSettingsDialog a -> ( HasSettingsDialog a, Cmd msg )
+update : Msg -> Model.Model -> ( Model.Model, Cmd Model.Msg )
 update msg ({ settingsDialog } as model) =
     case msg of
         ConfirmationDialogMsg ConfirmationDialog.Close ->
@@ -26,7 +28,12 @@ update msg ({ settingsDialog } as model) =
 
         LanguageSelection lang ->
             { model | language = lang }
-                ! []
+                ! [ Daemon.updateGUIConfig
+                        model
+                        { isFirstLaunch = model.isFirstLaunch
+                        , language = model.language
+                        }
+                  ]
 
         ModalMsg msg ->
             (settingsDialog.modal

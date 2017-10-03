@@ -18,7 +18,7 @@ import SettingsDialog.Model
 import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
 import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId)
-import Translation
+import Language exposing (Language(..))
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
@@ -59,7 +59,7 @@ type alias Model =
     , vaultDialogs : Dict VaultId VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
-    , language : Translation.Language
+    , language : Language
     , wizardDialog : WizardDialog.State Msg
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
@@ -210,7 +210,7 @@ init config =
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
-    , language = Translation.English
+    , language = Language.English
     , wizardDialog = WizardDialog.init WizardDialogMsg
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
