@@ -20,13 +20,9 @@ view ({ settingsDialog } as model) =
             , footer = []
             , title = "Program Settings"
             }
-
-        x =
-            10
     in
-        (div [ class "SettingsDialog" ]
+        div [ class "SettingsDialog" ]
             [ Ui.Modal.view viewConfig settingsDialog.modal ]
-        )
 
 
 languageButton : Translation.Language -> HasSettingsDialog a msg -> Html msg
