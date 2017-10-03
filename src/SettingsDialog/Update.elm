@@ -1,4 +1,4 @@
-module SettingsDialog.Update exposing (..)
+module SettingsDialog.Update exposing (update, asStateIn)
 
 import ConfirmationDialog
 import SettingsDialog.Model exposing (..)

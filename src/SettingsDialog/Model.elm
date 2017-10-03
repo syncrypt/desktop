@@ -1,4 +1,12 @@
-module SettingsDialog.Model exposing (..)
+module SettingsDialog.Model
+    exposing
+        ( State
+        , HasSettingsDialog
+        , Msg(..)
+        , init
+        , open
+        , close
+        )
 
 import ConfirmationDialog
 

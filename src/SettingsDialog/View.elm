@@ -1,4 +1,4 @@
-module SettingsDialog.View exposing (..)
+module SettingsDialog.View exposing (view)
 
 import ConfirmationDialog
 import Html
