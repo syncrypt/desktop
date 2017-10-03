@@ -198,6 +198,7 @@ asVault fv =
 jsonOptions : Config -> VaultOptions -> Json.Encode.Value
 jsonOptions config options =
     let
+        pathString : Path -> String
         pathString path =
             String.join config.pathSeparator path
     in
@@ -206,8 +207,10 @@ jsonOptions config options =
                 Json.Encode.object
                     [ ( "folder", Json.Encode.string (pathString folder) )
                     , ( "ignorePaths"
-                      , Json.Encode.list
-                            (List.map (pathString >> Json.Encode.string) ignorePaths)
+                      , Json.Encode.list <|
+                            List.map
+                                (Json.Encode.string << pathString)
+                                ignorePaths
                       )
                     ]
 
@@ -380,5 +383,8 @@ addVaultUserEncoder email keys =
     in
         Json.Encode.object
             [ ( "email", Json.Encode.string email )
-            , ( "fingerprints", Json.Encode.list (List.map Json.Encode.string fingerprints) )
+            , ( "fingerprints"
+              , Json.Encode.list <|
+                    List.map Json.Encode.string fingerprints
+              )
             ]
