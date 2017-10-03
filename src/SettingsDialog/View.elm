@@ -44,13 +44,8 @@ languageButton { language, settingsDialog } forLanguage =
 
 contents : HasSettingsDialog a msg -> List (Html msg)
 contents model =
-    let
-        buttons =
-            [ languageButton model Translation.German
-            , languageButton model Translation.English
-            ]
-    in
-        (div [ class "LanguageInfoLabel" ]
-            [ text "Choose your language:" ]
-        )
-            :: buttons
+    [ div [ class "LanguageInfoLabel" ]
+        [ text "Choose your language:" ]
+    , languageButton model Translation.German
+    , languageButton model Translation.English
+    ]
