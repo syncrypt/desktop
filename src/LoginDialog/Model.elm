@@ -1,4 +1,11 @@
-module LoginDialog.Model exposing (Msg(..), State, init)
+module LoginDialog.Model
+    exposing
+        ( Msg(..)
+        , State
+        , HasLoginDialog
+        , init
+        , asStateIn
+        )
 
 import Ui.Input
 import Ui.Modal
@@ -16,8 +23,17 @@ type Msg
     | PasswordInput Ui.Input.Msg
 
 
+type alias HasLoginDialog a =
+    { a | loginDialog : State }
+
+
 init : State
 init =
     { emailInput = Ui.Input.init ()
     , passwordInput = Ui.Input.init ()
     }
+
+
+asStateIn : HasLoginDialog a -> State -> HasLoginDialog a
+asStateIn model state =
+    { model | loginDialog = state }

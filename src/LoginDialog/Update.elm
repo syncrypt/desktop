@@ -1,33 +1,31 @@
 module LoginDialog.Update exposing (update)
 
 import Ui.Input
-import LoginDialog.Model exposing (State, Msg(..))
+import LoginDialog.Model exposing (State, Msg(..), HasLoginDialog, asStateIn)
 import Model exposing (Model)
 
 
-update : Msg -> Model -> ( Model, Cmd Model.Msg )
-update dialogMsg model =
+update : Msg -> HasLoginDialog a -> ( HasLoginDialog a, Cmd Model.Msg )
+update dialogMsg ({ loginDialog } as model) =
     case dialogMsg of
         EmailInput msg ->
             let
                 ( emailInput, cmd ) =
-                    Ui.Input.update msg model.loginDialog.emailInput
-
-                loginDialog =
-                    model.loginDialog
+                    Ui.Input.update msg loginDialog.emailInput
             in
-                ({ model | loginDialog = { loginDialog | emailInput = emailInput } })
+                ({ loginDialog | emailInput = emailInput }
+                    |> asStateIn model
+                )
                     ! []
 
         PasswordInput msg ->
             let
                 ( passwordInput, cmd ) =
-                    Ui.Input.update msg model.loginDialog.passwordInput
-
-                loginDialog =
-                    model.loginDialog
+                    Ui.Input.update msg loginDialog.passwordInput
             in
-                ({ model | loginDialog = { loginDialog | passwordInput = passwordInput } })
+                ({ loginDialog | passwordInput = passwordInput }
+                    |> asStateIn model
+                )
                     ! []
 
         Modal _ ->
