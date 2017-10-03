@@ -54,7 +54,7 @@ type alias Model =
     , login : LoginState
     , language : Translation.Language
     , wizardDialog : WizardDialog.State Msg
-    , settingsDialog : SettingsDialog.Model.State Msg
+    , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
     }
 
@@ -205,7 +205,7 @@ init config =
     , login = Unknown
     , language = Translation.English
     , wizardDialog = WizardDialog.init WizardDialogMsg
-    , settingsDialog = SettingsDialog.Model.init SettingsDialogMsg
+    , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
     }
 

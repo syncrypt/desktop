@@ -6,7 +6,7 @@ import Ui.Modal
 import Dialog exposing (asModalIn)
 
 
-update : Msg -> HasSettingsDialog a msg -> ( HasSettingsDialog a msg, Cmd msg )
+update : Msg -> HasSettingsDialog a -> ( HasSettingsDialog a, Cmd msg )
 update msg ({ settingsDialog } as model) =
     case msg of
         ConfirmationDialogMsg ConfirmationDialog.Close ->

@@ -15,9 +15,8 @@ import Ui.Modal
 import Dialog exposing (asModalIn)
 
 
-type alias State msg =
-    { toMsg : Msg -> msg
-    , hasChangesPending : Bool
+type alias State =
+    { hasChangesPending : Bool
     , confirmationDialog : ConfirmationDialog.Model Msg
     , modal : Ui.Modal.Model
     }
@@ -30,17 +29,16 @@ type Msg
     | ModalMsg Ui.Modal.Msg
 
 
-type alias HasSettingsDialog a msg =
+type alias HasSettingsDialog a =
     { a
-        | settingsDialog : State msg
+        | settingsDialog : State
         , language : Translation.Language
     }
 
 
-init : (Msg -> msg) -> State msg
-init toMsg =
-    { toMsg = toMsg
-    , hasChangesPending = False
+init : State
+init =
+    { hasChangesPending = False
     , confirmationDialog = ConfirmationDialog.init ConfirmationDialogMsg
     , modal =
         Ui.Modal.init
@@ -49,7 +47,7 @@ init toMsg =
     }
 
 
-open : HasSettingsDialog a msg -> HasSettingsDialog a msg
+open : HasSettingsDialog a -> HasSettingsDialog a
 open ({ settingsDialog } as model) =
     settingsDialog.modal
         |> Ui.Modal.open
@@ -57,7 +55,7 @@ open ({ settingsDialog } as model) =
         |> asStateIn model
 
 
-close : HasSettingsDialog a msg -> HasSettingsDialog a msg
+close : HasSettingsDialog a -> HasSettingsDialog a
 close ({ settingsDialog } as model) =
     settingsDialog.modal
         |> Ui.Modal.close
@@ -65,6 +63,6 @@ close ({ settingsDialog } as model) =
         |> asStateIn model
 
 
-asStateIn : HasSettingsDialog a msg -> State msg -> HasSettingsDialog a msg
+asStateIn : HasSettingsDialog a -> State -> HasSettingsDialog a
 asStateIn model state =
     { model | settingsDialog = state }

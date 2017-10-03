@@ -11,11 +11,11 @@ import Ui.Button
 import Ui.Modal
 
 
-view : HasSettingsDialog a Model.Msg -> Html Model.Msg
+view : HasSettingsDialog a -> Html Model.Msg
 view ({ settingsDialog } as model) =
     let
         viewConfig =
-            { address = settingsDialog.toMsg << ModalMsg
+            { address = Model.SettingsDialogMsg << ModalMsg
             , contents = contents model
             , footer = []
             , title = "Program Settings"
@@ -25,7 +25,7 @@ view ({ settingsDialog } as model) =
             [ Ui.Modal.view viewConfig settingsDialog.modal ]
 
 
-languageButton : Translation.Language -> HasSettingsDialog a msg -> Html msg
+languageButton : Translation.Language -> HasSettingsDialog a -> Html Model.Msg
 languageButton forLanguage { language, settingsDialog } =
     span
         [ classList
@@ -34,11 +34,11 @@ languageButton forLanguage { language, settingsDialog } =
             ]
         ]
         [ Ui.Button.model (toString forLanguage) "secondary" "small"
-            |> Ui.Button.view (settingsDialog.toMsg (LanguageSelection forLanguage))
+            |> Ui.Button.view (Model.SettingsDialogMsg (LanguageSelection forLanguage))
         ]
 
 
-contents : HasSettingsDialog a msg -> List (Html msg)
+contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "LanguageInfoLabel" ]
         [ text "Choose your language:" ]
