@@ -54,30 +54,47 @@ type ApiStreamPath
 
 getStats : Model -> Cmd Msg
 getStats { config } =
-    apiRequest config Get Stats Nothing statsDecoder
+    config
+        |> apiRequest Get Stats Nothing statsDecoder
         |> Cmd.map UpdatedStatsFromApi
 
 
 getVaults : Model -> Cmd Msg
 getVaults { config } =
-    apiRequest config Get Vaults Nothing (Json.list Data.Vault.decoder)
+    config
+        |> apiRequest
+            Get
+            Vaults
+            Nothing
+            (Json.list Data.Vault.decoder)
         |> Cmd.map UpdatedVaultsFromApi
 
 
 getFlyingVaults : Model -> Cmd Msg
 getFlyingVaults { config } =
-    apiRequest config Get FlyingVaults Nothing (Json.list Data.Vault.flyingVaultDecoder)
+    config
+        |> apiRequest
+            Get
+            FlyingVaults
+            Nothing
+            (Json.list Data.Vault.flyingVaultDecoder)
         |> Cmd.map UpdatedFlyingVaultsFromApi
 
 
 getVault : VaultId -> Config -> Cmd (WebData Vault)
 getVault vaultId config =
-    apiRequest config Get (Vault vaultId) Nothing Data.Vault.decoder
+    config
+        |> apiRequest Get (Vault vaultId) Nothing Data.Vault.decoder
 
 
 getFlyingVault : VaultId -> Config -> Cmd (WebData FlyingVault)
 getFlyingVault vaultId config =
-    apiRequest config Get (FlyingVault vaultId) Nothing Data.Vault.flyingVaultDecoder
+    config
+        |> apiRequest
+            Get
+            (FlyingVault vaultId)
+            Nothing
+            Data.Vault.flyingVaultDecoder
 
 
 updateVaultMetadata : VaultId -> Metadata -> Model -> Cmd Msg
@@ -88,18 +105,33 @@ updateVaultMetadata vaultId metadata { config } =
                 |> Data.Vault.metadataEncoder
                 |> Http.jsonBody
     in
-        apiRequest config Put (Vault vaultId) (Just jsonBody) Data.Vault.decoder
+        config
+            |> apiRequest
+                Put
+                (Vault vaultId)
+                (Just jsonBody)
+                Data.Vault.decoder
             |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
 
 getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
 getVaultUsers vaultId config =
-    apiRequest config Get (VaultUsers vaultId) Nothing (Json.list Data.User.decoder)
+    config
+        |> apiRequest
+            Get
+            (VaultUsers vaultId)
+            Nothing
+            (Json.list Data.User.decoder)
 
 
 getVaultHistory : VaultId -> Config -> Cmd (WebData (List HistoryItem))
 getVaultHistory vaultId config =
-    apiRequest config Get (VaultHistory vaultId) Nothing Data.Vault.historyItemsDecoder
+    config
+        |> apiRequest
+            Get
+            (VaultHistory vaultId)
+            Nothing
+            Data.Vault.historyItemsDecoder
 
 
 subscribeVaultLogStream : VaultId -> (Result String Data.Vault.LogItem -> msg) -> Config -> Sub msg
@@ -117,7 +149,8 @@ subscribeVaultLogStream vaultId toMsg config =
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
 getVaultUser vaultId email config =
-    apiRequest config Get (VaultUser vaultId email) Nothing Data.User.decoder
+    config
+        |> apiRequest Get (VaultUser vaultId email) Nothing Data.User.decoder
 
 
 addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd Msg
@@ -127,33 +160,38 @@ addVaultUser vaultId email keys config =
             Data.Vault.addVaultUserEncoder email keys
                 |> Http.jsonBody
     in
-        apiRequest config
-            Post
-            (VaultUsers vaultId)
-            (Just jsonBody)
-            (decode identity |> required "email" Json.string)
+        config
+            |> apiRequest
+                Post
+                (VaultUsers vaultId)
+                (Just jsonBody)
+                (decode identity |> required "email" Json.string)
             |> Cmd.map (Model.VaultUserAdded vaultId email)
 
 
 removeVaultUser : VaultId -> Email -> Config -> Cmd (WebData Email)
 removeVaultUser vaultId email config =
     -- TODO: check response data type
-    apiRequest config Delete (VaultUser vaultId email) Nothing Json.string
+    config
+        |> apiRequest Delete (VaultUser vaultId email) Nothing Json.string
 
 
 getUserKeys : Email -> Config -> Cmd (WebData (List UserKey))
 getUserKeys email config =
-    apiRequest config Get (UserKeys email) Nothing (Json.list Data.User.keyDecoder)
+    config
+        |> apiRequest Get (UserKeys email) Nothing (Json.list Data.User.keyDecoder)
 
 
 getUser : Email -> Config -> Cmd (WebData User)
 getUser email config =
-    apiRequest config Get User Nothing Data.User.decoder
+    config
+        |> apiRequest Get User Nothing Data.User.decoder
 
 
 getConfig : Model -> Cmd Msg
 getConfig { config } =
-    apiRequest config Get DaemonConfig Nothing daemonConfigDecoder
+    config
+        |> apiRequest Get DaemonConfig Nothing daemonConfigDecoder
         |> Cmd.map UpdatedDaemonConfig
 
 
@@ -172,60 +210,68 @@ invalidateFirstLaunch { config } =
                     ]
                 )
     in
-        apiRequest config Patch DaemonConfig (Just body) daemonConfigDecoder
+        config
+            |> apiRequest Patch DaemonConfig (Just body) daemonConfigDecoder
             |> Cmd.map UpdatedDaemonConfig
 
 
 getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
 getVaultFingerprints vaultId config =
-    apiRequest config Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
+    config
+        |> apiRequest Get (VaultFingerprints vaultId) Nothing (Json.list Json.string)
 
 
 updateVault : VaultOptions -> Config -> Cmd (WebData Vault)
 updateVault options config =
-    apiRequest config
-        Post
-        Vaults
-        (Just (Http.jsonBody (jsonOptions config options)))
-        Data.Vault.decoder
+    config
+        |> apiRequest
+            Post
+            Vaults
+            (Just (Http.jsonBody (jsonOptions config options)))
+            Data.Vault.decoder
 
 
 removeVault : VaultId -> Model -> Cmd Msg
 removeVault vaultId { config } =
-    apiRequest config
-        Delete
-        (Vault vaultId)
-        (Just (Http.jsonBody (jsonOptions config (Data.Vault.Remove vaultId))))
-        (succeed vaultId)
+    config
+        |> apiRequest
+            Delete
+            (Vault vaultId)
+            (Just (Http.jsonBody (jsonOptions config (Data.Vault.Remove vaultId))))
+            (succeed vaultId)
         |> Cmd.map RemovedVaultFromSync
 
 
 deleteVault : VaultId -> Config -> Cmd (WebData VaultId)
 deleteVault vaultId config =
-    apiRequest config
-        Delete
-        (DeleteVault vaultId)
-        Nothing
-        (succeed vaultId)
+    config
+        |> apiRequest
+            Delete
+            (DeleteVault vaultId)
+            Nothing
+            (succeed vaultId)
 
 
 sendFeedback : String -> Config -> Cmd (WebData String)
 sendFeedback text config =
-    apiRequest config
-        Post
-        Feedback
-        (Just (Http.jsonBody (Json.Encode.string text)))
-        (succeed "")
+    config
+        |> apiRequest
+            Post
+            Feedback
+            (Just (Http.jsonBody (Json.Encode.string text)))
+            (succeed "")
 
 
 getVersion : Config -> Cmd (WebData String)
 getVersion config =
-    apiRequest config Get Version Nothing Json.string
+    config
+        |> apiRequest Get Version Nothing Json.string
 
 
 getLoginState : Model -> Cmd Msg
 getLoginState { config } =
-    apiRequest config Get User Nothing loginStateDecoder
+    config
+        |> apiRequest Get User Nothing loginStateDecoder
         |> Cmd.map UpdatedLoginState
 
 
@@ -236,22 +282,25 @@ login email password { config } =
             Data.User.loginEncoder email password
                 |> Http.jsonBody
     in
-        apiRequest config
-            Post
-            Login
-            (Just jsonBody)
-            statusResponseDecoder
+        config
+            |> apiRequest
+                Post
+                Login
+                (Just jsonBody)
+                statusResponseDecoder
             |> Cmd.map (LoginResult email)
 
 
 loginCheck : Config -> Cmd (WebData String)
 loginCheck config =
-    apiRequest config Get LoginCheck Nothing Json.string
+    config
+        |> apiRequest Get LoginCheck Nothing Json.string
 
 
 logout : Model -> Cmd Msg
 logout { config } =
-    apiRequest config Get Logout Nothing statusResponseDecoder
+    config
+        |> apiRequest Get Logout Nothing statusResponseDecoder
         |> Cmd.map LogoutResult
 
 
@@ -261,11 +310,12 @@ exportVault vaultId path { config } =
         json =
             Json.Encode.object [ ( "path", Json.Encode.string path ) ]
     in
-        apiRequest config
-            Post
-            (ExportVault vaultId)
-            (Just (Http.jsonBody json))
-            exportStatusResponseDecoder
+        config
+            |> apiRequest
+                Post
+                (ExportVault vaultId)
+                (Just (Http.jsonBody json))
+                exportStatusResponseDecoder
             |> Cmd.map (ExportedVault vaultId)
 
 
@@ -389,13 +439,13 @@ requestMethod rm =
 
 -}
 apiRequest :
-    Config
-    -> RequestMethod
+    RequestMethod
     -> ApiPath
     -> Maybe Http.Body
     -> Json.Decoder a
+    -> Config
     -> Cmd (WebData a)
-apiRequest config method path maybeBody decoder =
+apiRequest method path maybeBody decoder config =
     let
         body =
             case maybeBody of

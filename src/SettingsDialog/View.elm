@@ -1,9 +1,8 @@
 module SettingsDialog.View exposing (view)
 
 import ConfirmationDialog
-import Html exposing (Html, button, div, form, h4, img, input, label, span, text)
-import Html.Attributes exposing (class, classList, for, id, src, style)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (class, classList)
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
 import Translation
@@ -27,15 +26,19 @@ view ({ settingsDialog } as model) =
 
 languageButton : Translation.Language -> HasSettingsDialog a -> Html Model.Msg
 languageButton forLanguage { language, settingsDialog } =
-    span
-        [ classList
-            [ ( "LanguageButton", True )
-            , ( "Active", language == forLanguage )
+    let
+        onClickMsg =
+            Model.SettingsDialogMsg <| LanguageSelection forLanguage
+    in
+        span
+            [ classList
+                [ ( "LanguageButton", True )
+                , ( "Active", language == forLanguage )
+                ]
             ]
-        ]
-        [ Ui.Button.model (toString forLanguage) "secondary" "small"
-            |> Ui.Button.view (Model.SettingsDialogMsg (LanguageSelection forLanguage))
-        ]
+            [ Ui.Button.model (toString forLanguage) "secondary" "small"
+                |> Ui.Button.view onClickMsg
+            ]
 
 
 contents : HasSettingsDialog a -> List (Html Model.Msg)

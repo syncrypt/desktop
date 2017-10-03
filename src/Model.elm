@@ -4,7 +4,14 @@ import Config exposing (Config)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
-import Json.Decode.Pipeline exposing (decode, optional, optionalAt, required, requiredAt)
+import Json.Decode.Pipeline
+    exposing
+        ( decode
+        , optional
+        , optionalAt
+        , required
+        , requiredAt
+        )
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
