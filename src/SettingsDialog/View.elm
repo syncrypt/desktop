@@ -29,8 +29,8 @@ view ({ settingsDialog } as model) =
         )
 
 
-languageButton : HasSettingsDialog a msg -> Translation.Language -> Html msg
-languageButton { language, settingsDialog } forLanguage =
+languageButton : Translation.Language -> HasSettingsDialog a msg -> Html msg
+languageButton forLanguage { language, settingsDialog } =
     span
         [ classList
             [ ( "LanguageButton", True )
@@ -46,6 +46,6 @@ contents : HasSettingsDialog a msg -> List (Html msg)
 contents model =
     [ div [ class "LanguageInfoLabel" ]
         [ text "Choose your language:" ]
-    , languageButton model Translation.German
-    , languageButton model Translation.English
+    , languageButton Translation.German model
+    , languageButton Translation.English model
     ]
