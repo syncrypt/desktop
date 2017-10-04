@@ -1,6 +1,7 @@
 module Translation
     exposing
         ( Text(..)
+        , StatsText(..)
         , VaultDialogText(..)
         , t
         , translate
@@ -41,19 +42,7 @@ type Text
     | NoPathSelected
     | AskDeleteVault
     | AskDeleteVaultExtended
-    | Stats
-        { stats : Int
-        , downloads : Int
-        , uploads : Int
-        , userKeyState : KeyState
-        , totalSlots : Int
-        , busySlots : Int
-        , idleSlots : Int
-        , closedSlots : Int
-        }
-    | StatsLoading
-    | StatsNotAvailable
-    | StatsFailedToLoad Reason
+    | StatsText StatsText
     | SyncedVaults Int
     | VaultsLoading
     | VaultsNotAvailable
@@ -66,6 +55,22 @@ type Text
     | NoFilesUploadedYet
     | VaultListHeaderDescription
     | VaultDialogText VaultDialogText
+
+
+type StatsText
+    = Stats
+        { stats : Int
+        , downloads : Int
+        , uploads : Int
+        , userKeyState : KeyState
+        , totalSlots : Int
+        , busySlots : Int
+        , idleSlots : Int
+        , closedSlots : Int
+        }
+    | StatsLoading
+    | StatsNotAvailable
+    | StatsFailedToLoad Reason
 
 
 type VaultDialogText
@@ -181,26 +186,8 @@ translateEnglish text =
         AskDeleteVaultExtended ->
             "Do you really want to delete this vault from the server?"
 
-        Stats s ->
-            toString (s.busySlots + s.idleSlots)
-                ++ " open connections ("
-                ++ toString s.idleSlots
-                ++ " idle) / "
-                ++ toString s.stats
-                ++ " file queries / "
-                ++ toString s.downloads
-                ++ " downloads / "
-                ++ toString s.uploads
-                ++ " uploads"
-
-        StatsLoading ->
-            "Stats loading ..."
-
-        StatsNotAvailable ->
-            "Stats N/A"
-
-        StatsFailedToLoad reason ->
-            "Stats failed to load: " ++ reason
+        StatsText st ->
+            translateEnglishStatsText st
 
         SyncedVaults vaultCount ->
             if vaultCount == 1 then
@@ -240,6 +227,31 @@ translateEnglish text =
 
         VaultDialogText vt ->
             translateEnglishVaultDialogText vt
+
+
+translateEnglishStatsText : StatsText -> String
+translateEnglishStatsText st =
+    case st of
+        Stats s ->
+            toString (s.busySlots + s.idleSlots)
+                ++ " open connections ("
+                ++ toString s.idleSlots
+                ++ " idle) / "
+                ++ toString s.stats
+                ++ " file queries / "
+                ++ toString s.downloads
+                ++ " downloads / "
+                ++ toString s.uploads
+                ++ " uploads"
+
+        StatsLoading ->
+            "Stats loading ..."
+
+        StatsNotAvailable ->
+            "Stats N/A"
+
+        StatsFailedToLoad reason ->
+            "Stats failed to load: " ++ reason
 
 
 translateEnglishVaultDialogText : VaultDialogText -> String
@@ -394,26 +406,8 @@ translateGerman text =
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
-        Stats s ->
-            toString (s.busySlots + s.idleSlots)
-                ++ " offene Verbindungen ("
-                ++ toString s.idleSlots
-                ++ " ruhend) / "
-                ++ toString s.stats
-                ++ " Dateiabfragen / "
-                ++ toString s.downloads
-                ++ " Downloads / "
-                ++ toString s.uploads
-                ++ " Uploads"
-
-        StatsLoading ->
-            "Stats werden abgerufen ..."
-
-        StatsNotAvailable ->
-            "Stats nicht verfügbar"
-
-        StatsFailedToLoad reason ->
-            "Fehler beim Laden der Stats: " ++ reason
+        StatsText st ->
+            translateGermanStatsText st
 
         SyncedVaults vaultCount ->
             if vaultCount == 1 then
@@ -453,6 +447,31 @@ translateGerman text =
 
         VaultDialogText vt ->
             translateGermanVaultDialogText vt
+
+
+translateGermanStatsText : StatsText -> String
+translateGermanStatsText st =
+    case st of
+        Stats s ->
+            toString (s.busySlots + s.idleSlots)
+                ++ " offene Verbindungen ("
+                ++ toString s.idleSlots
+                ++ " ruhend) / "
+                ++ toString s.stats
+                ++ " Dateiabfragen / "
+                ++ toString s.downloads
+                ++ " Downloads / "
+                ++ toString s.uploads
+                ++ " Uploads"
+
+        StatsLoading ->
+            "Stats werden abgerufen ..."
+
+        StatsNotAvailable ->
+            "Stats nicht verfügbar"
+
+        StatsFailedToLoad reason ->
+            "Fehler beim Laden der Stats: " ++ reason
 
 
 translateGermanVaultDialogText : VaultDialogText -> String

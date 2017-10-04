@@ -635,18 +635,19 @@ footer : Model -> Html Msg
 footer { stats, vaults, language } =
     let
         statsText =
-            case stats of
-                Success s ->
-                    Translation.Stats s
+            Translation.StatsText <|
+                case stats of
+                    Success s ->
+                        Translation.Stats s
 
-                Loading ->
-                    Translation.StatsLoading
+                    Loading ->
+                        Translation.StatsLoading
 
-                NotAsked ->
-                    Translation.StatsNotAvailable
+                    NotAsked ->
+                        Translation.StatsNotAvailable
 
-                Failure reason ->
-                    Translation.StatsFailedToLoad (toString reason)
+                    Failure reason ->
+                        Translation.StatsFailedToLoad (toString reason)
 
         syncedVaultsText =
             case vaults of
