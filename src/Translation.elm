@@ -9,10 +9,11 @@ module Translation
 
 import Date exposing (Date)
 import Date.Distance
+import Date.Distance.Types
 import Data.Vault exposing (VaultId)
 import Data.User exposing (Email)
 import Data.Daemon exposing (KeyState, Stats)
-import Language exposing (Language(..))
+import Language exposing (Language(..), HasLanguage)
 
 
 type alias Reason =
@@ -97,10 +98,6 @@ type VaultDialogText
     | VaultRemoveButtonInfo
     | VaultDeleteButtonInfo
     | VaultExportButtonInfo
-
-
-type alias HasLanguage a =
-    { a | language : Language }
 
 
 {-| Translates a `Text` into a `String` based on `language`.
@@ -562,19 +559,20 @@ type alias HasNowAndLanguage a =
 
 timeAgo : Date -> HasNowAndLanguage a -> String
 timeAgo date { now, language } =
-    let
-        distanceConfig =
-            case language of
-                English ->
-                    Date.Distance.defaultConfig
+    case now of
+        Just now ->
+            Date.Distance.inWordsWithConfig (dateDistanceConfig language) date now
+                ++ " ago"
 
-                German ->
-                    Date.Distance.germanConfig
-    in
-        case now of
-            Just now ->
-                Date.Distance.inWordsWithConfig distanceConfig date now
-                    ++ " ago"
+        Nothing ->
+            toString date
 
-            Nothing ->
-                toString date
+
+dateDistanceConfig : Language -> Date.Distance.Types.Config
+dateDistanceConfig language =
+    case language of
+        English ->
+            Date.Distance.defaultConfig
+
+        German ->
+            Date.Distance.germanConfig
