@@ -41,6 +41,8 @@ type Text
     | LastUpdateToVault
     | LastUpdateToVaultLabel
     | NoFilesUploadedYet
+    | UsersWithAccessTooltip
+    | TotalVaultSizeTooltip
     | VaultListHeaderDescription
     | VaultDialogText VaultDialogText
 
@@ -184,6 +186,12 @@ translateEnglish text =
 
         NoFilesUploadedYet ->
             "No files uploaded yet"
+
+        UsersWithAccessTooltip ->
+            "Users with access"
+
+        TotalVaultSizeTooltip ->
+            "Total vault size (with all file revisions on server)"
 
         VaultListHeaderDescription ->
             "These vaults are cloned and synchronized on this computer."
@@ -407,6 +415,12 @@ translateGerman text =
 
         NoFilesUploadedYet ->
             "Bisher wurden keine Dateien hochgeladen"
+
+        UsersWithAccessTooltip ->
+            "Benutzer mit Zugriff"
+
+        TotalVaultSizeTooltip ->
+            "Gesamtgröße des Vaults (inkl. aller Dateiversionen)"
 
         VaultListHeaderDescription ->
             "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."

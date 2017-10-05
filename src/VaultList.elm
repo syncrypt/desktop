@@ -99,25 +99,25 @@ vaultStatus vault model =
     vaultUpdatedAtInfo vault model
 
 
-vaultActivity : Vault -> Html msg
-vaultActivity vault =
+vaultActivity : Vault -> Model -> Html msg
+vaultActivity vault model =
     vaultInfoItem vault
         [ div [ class "VaultActivity" ]
             [ tooltipItem Top
                 Auto
-                "Total vault size (with all file revisions on server)"
+                (t T.TotalVaultSizeTooltip model)
                 [ text (bytesReadable vault.size) ]
             ]
         ]
 
 
-vaultUserCount : Vault -> Html msg
-vaultUserCount vault =
+vaultUserCount : Vault -> Model -> Html msg
+vaultUserCount vault model =
     vaultInfoItem vault
         [ div [ class "VaultUsers" ]
-            [ tooltipItem Bottom
+            [ tooltipItem Top
                 Auto
-                "Users with access to vault"
+                (t T.UsersWithAccessTooltip model)
                 [ text (toString vault.userCount) ]
             ]
         ]
@@ -223,8 +223,8 @@ vaultItem model vault =
         [ model
             |> vaultInfo vault
                 [ vaultStatus vault model ]
-                [ vaultUserCount vault
-                , vaultActivity vault
+                [ vaultUserCount vault model
+                , vaultActivity vault model
                 , vaultRemoveFromSyncButton vault
                 , openVaultFolderButton vault
                 ]
@@ -240,8 +240,8 @@ flyingVaultItem model flyingVault =
         [ model
             |> vaultInfo flyingVault
                 [ flyingVaultInfoItem flyingVault model ]
-                [ vaultActivity (flyingVault |> asVault)
-                , vaultUserCount (flyingVault |> asVault)
+                [ vaultActivity (flyingVault |> asVault) model
+                , vaultUserCount (flyingVault |> asVault) model
                 ]
         ]
 
