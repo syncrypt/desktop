@@ -87,24 +87,24 @@ type VaultDialogText
     | AdminTab
     | CryptoTabInfoText
     | VaultIdLabel
-    | VaultIdInfo
+    | VaultIdTooltip
     | FileRevisionsLabel
-    | TotalNumberOfFileRevisionsInfo
+    | TotalNumberOfFileRevisionsTooltip
     | LastModifiedLabel
-    | LastModifiedInfo
+    | LastModifiedTooltip
     | NoChangesSoFar
     | KeyAlgorithmLabel
-    | KeyAlgorithmInfo
+    | KeyAlgorithmTooltip
     | KeyFingerprintLabel
-    | KeyFingerprintInfo
+    | KeyFingerprintTooltip
     | TransferAlgorithmLabel
-    | TransferAlgorithmInfo
+    | TransferAlgorithmTooltip
     | HashAlgorithmLabel
-    | HashAlgorithmInfo
+    | HashAlgorithmTooltip
     | AESKeyLengthLabel
-    | AESKeyLengthInfo
+    | AESKeyLengthTooltip
     | RSAKeyLengthLabel
-    | RSAKeyLengthInfo
+    | RSAKeyLengthTooltip
     | VaultRemoveButtonInfo
     | VaultDeleteButtonInfo
     | VaultExportButtonInfo
@@ -298,19 +298,19 @@ translateEnglishVaultDialogText vt =
         VaultIdLabel ->
             "Vault ID"
 
-        VaultIdInfo ->
+        VaultIdTooltip ->
             "Syncrypt Vault ID"
 
         FileRevisionsLabel ->
             "File Revisions"
 
-        TotalNumberOfFileRevisionsInfo ->
+        TotalNumberOfFileRevisionsTooltip ->
             "Total number of file revisions in this vault."
 
         LastModifiedLabel ->
             "Last modified"
 
-        LastModifiedInfo ->
+        LastModifiedTooltip ->
             "Date & time of last update to this vault."
 
         NoChangesSoFar ->
@@ -319,37 +319,37 @@ translateEnglishVaultDialogText vt =
         KeyAlgorithmLabel ->
             "Key Algorithm"
 
-        KeyAlgorithmInfo ->
+        KeyAlgorithmTooltip ->
             "Asymmetric key algorithm used for vault key"
 
         KeyFingerprintLabel ->
             "Vault Key Fingerprint"
 
-        KeyFingerprintInfo ->
+        KeyFingerprintTooltip ->
             "Vault public key fingerprint"
 
         TransferAlgorithmLabel ->
             "Transfer Algorithm"
 
-        TransferAlgorithmInfo ->
+        TransferAlgorithmTooltip ->
             "Algorithm used for encrypting data transfer"
 
         HashAlgorithmLabel ->
             "Hash Algorithm"
 
-        HashAlgorithmInfo ->
+        HashAlgorithmTooltip ->
             "Algorithm used for hashing file contents & names"
 
         AESKeyLengthLabel ->
             "AES Key Length"
 
-        AESKeyLengthInfo ->
+        AESKeyLengthTooltip ->
             "Length of symmetric file encryption keys in this vault"
 
         RSAKeyLengthLabel ->
             "RSA Key Length"
 
-        RSAKeyLengthInfo ->
+        RSAKeyLengthTooltip ->
             "Length of vault private key"
 
         VaultRemoveButtonInfo ->
@@ -530,19 +530,19 @@ translateGermanVaultDialogText vt =
         VaultIdLabel ->
             "Vault ID"
 
-        VaultIdInfo ->
+        VaultIdTooltip ->
             "Syncrypt Vault ID"
 
         FileRevisionsLabel ->
             "Datei Versionen"
 
-        TotalNumberOfFileRevisionsInfo ->
+        TotalNumberOfFileRevisionsTooltip ->
             "Anzahl aller Dateiversionen in diesem Vault."
 
         LastModifiedLabel ->
             "Zuletzt aktualisiert"
 
-        LastModifiedInfo ->
+        LastModifiedTooltip ->
             "Zeit der letzten Änderung im Vault."
 
         NoChangesSoFar ->
@@ -551,37 +551,37 @@ translateGermanVaultDialogText vt =
         KeyAlgorithmLabel ->
             "Schlüssel Algorithmus"
 
-        KeyAlgorithmInfo ->
+        KeyAlgorithmTooltip ->
             "Asymmetrischer Verschlüsselungsalgorithmus der für den Vault Schlüssel genutzt wird."
 
         KeyFingerprintLabel ->
             "Vault Schlüssel Fingerabdruck"
 
-        KeyFingerprintInfo ->
+        KeyFingerprintTooltip ->
             "Vault public key fingerprint"
 
         TransferAlgorithmLabel ->
             "Transfer Algorithmus"
 
-        TransferAlgorithmInfo ->
+        TransferAlgorithmTooltip ->
             "Algorithmus für verschlüsselte Datenübertragung"
 
         HashAlgorithmLabel ->
             "Hash Algorithmus"
 
-        HashAlgorithmInfo ->
+        HashAlgorithmTooltip ->
             "Datei Hash Algorithmus"
 
         AESKeyLengthLabel ->
             "AES Schlüssellänge"
 
-        AESKeyLengthInfo ->
+        AESKeyLengthTooltip ->
             "Länge des symmetrischen Schlüssels für die Dateiverschlüsselung in diesem Vault."
 
         RSAKeyLengthLabel ->
             "RSA Schlüssellänge"
 
-        RSAKeyLengthInfo ->
+        RSAKeyLengthTooltip ->
             "Länge des privaten Vault RSA Schlüssels."
 
         VaultRemoveButtonInfo ->
