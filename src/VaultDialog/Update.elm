@@ -352,10 +352,10 @@ update msg vaultId ({ vaultDialogs } as model) =
             Confirm DeleteVault ->
                 let
                     title =
-                        T.t T.AskDeleteVault model
+                        T.t (T.VaultDialogText T.AskDeleteVault) model
 
                     question =
-                        T.t T.AskDeleteVaultExtended model
+                        T.t (T.VaultDialogText T.AskDeleteVaultExtended) model
 
                     confirmMsg =
                         Confirmed DeleteVault

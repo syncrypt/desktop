@@ -28,8 +28,6 @@ type alias Now =
 
 type Text
     = NotificationText NotificationText
-    | AskDeleteVault
-    | AskDeleteVaultExtended
     | StatsText StatsText
     | SyncedVaults Int
     | VaultsLoading
@@ -110,6 +108,8 @@ type VaultDialogText
     | VaultRemoveButtonInfo
     | VaultDeleteButtonInfo
     | VaultExportButtonInfo
+    | AskDeleteVault
+    | AskDeleteVaultExtended
 
 
 {-| Translates a `Text` into a `String` based on `language`.
@@ -144,12 +144,6 @@ translateEnglish text =
     case text of
         NotificationText t ->
             translateEnglishNotificationText t
-
-        AskDeleteVault ->
-            "Delete vault?"
-
-        AskDeleteVaultExtended ->
-            "Do you really want to delete this vault from the server?"
 
         StatsText st ->
             translateEnglishStatsText st
@@ -367,18 +361,18 @@ translateEnglishVaultDialogText vt =
         VaultExportButtonInfo ->
             "You can export your vault here to backup the vault's configuration, private metadata and encryption key. This allows you to re-download the vault in case of a disk failure or theft of the computer you're currently uploading files to this vault from."
 
+        AskDeleteVault ->
+            "Delete vault?"
+
+        AskDeleteVaultExtended ->
+            "Do you really want to delete this vault from the server?"
+
 
 translateGerman : Text -> String
 translateGerman text =
     case text of
         NotificationText t ->
             translateGermanNotificationText t
-
-        AskDeleteVault ->
-            "Vault löschen?"
-
-        AskDeleteVaultExtended ->
-            "Soll der Vault wirklich vom Server gelöscht werden?"
 
         StatsText st ->
             translateGermanStatsText st
@@ -598,6 +592,12 @@ translateGermanVaultDialogText vt =
 
         VaultExportButtonInfo ->
             "Du kannst deinen Vault exportieren um alle relevanten Schlüssel und Einstellungen zu sichern. Es erlaubt das Herunterladen & Wiederherstellen (Entschlüsselung) der Dateien im Falle eines Hardware- bzw. Festplattendefekts oder Diebstahls dieses Gerätes."
+
+        AskDeleteVault ->
+            "Vault löschen?"
+
+        AskDeleteVaultExtended ->
+            "Soll der Vault wirklich vom Server gelöscht werden?"
 
 
 germanDistance =
