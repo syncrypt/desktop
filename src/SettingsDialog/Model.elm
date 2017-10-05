@@ -10,9 +10,9 @@ module SettingsDialog.Model
         )
 
 import ConfirmationDialog
+import Dialog exposing (asModalIn)
 import Language exposing (Language(..))
 import Ui.Modal
-import Dialog exposing (asModalIn)
 
 
 type alias State =

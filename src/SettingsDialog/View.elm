@@ -3,9 +3,9 @@ module SettingsDialog.View exposing (view)
 import ConfirmationDialog
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList)
+import Language exposing (Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
-import Language exposing (Language(..))
 import Ui.Button
 import Ui.Modal
 

@@ -3,6 +3,15 @@ module VaultDialog.View exposing (..)
 import Animation exposing (..)
 import ConfirmationDialog
 import Daemon
+import Data.User as User exposing (Email, User, UserKey)
+import Data.Vault
+    exposing
+        ( Event(..)
+        , HistoryItem
+        , LogLevel(..)
+        , Vault
+        , VaultId
+        )
 import Date exposing (Date)
 import Date.Distance
 import Dialog exposing (labeledItem)
@@ -29,15 +38,6 @@ import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Data.User as User exposing (Email, User, UserKey)
-import Data.Vault
-    exposing
-        ( Event(..)
-        , HistoryItem
-        , LogLevel(..)
-        , Vault
-        , VaultId
-        )
 import Translation exposing (Text(..), VaultDialogText(..), t, timeAgo)
 import Ui.Button
 import Ui.Checkbox

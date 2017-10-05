@@ -1,11 +1,11 @@
 module SettingsDialog.Update exposing (update)
 
 import ConfirmationDialog
+import Daemon
+import Dialog exposing (asModalIn)
+import Model
 import SettingsDialog.Model exposing (..)
 import Ui.Modal
-import Dialog exposing (asModalIn)
-import Daemon
-import Model
 
 
 update : Msg -> Model.Model -> ( Model.Model, Cmd Model.Msg )

@@ -1,9 +1,9 @@
 module Main exposing (..)
 
-import Html
-import Model exposing (Model, Msg)
-import MainScreen
 import Config exposing (Config)
+import Html
+import MainScreen
+import Model exposing (Model, Msg)
 
 
 main : Program Config Model Msg

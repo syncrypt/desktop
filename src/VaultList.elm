@@ -1,12 +1,5 @@
 module VaultList exposing (..)
 
-import Date exposing (Date)
-import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
-import Html.Attributes exposing (attribute, class, height, id, src, width)
-import Html.Events exposing (onClick)
-import Model exposing (..)
-import RemoteData exposing (RemoteData(..))
-import Set
 import Data.Vault
     exposing
         ( FlyingVault
@@ -16,6 +9,13 @@ import Data.Vault
         , asVault
         , nameOrId
         )
+import Date exposing (Date)
+import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
+import Html.Attributes exposing (attribute, class, height, id, src, width)
+import Html.Events exposing (onClick)
+import Model exposing (..)
+import RemoteData exposing (RemoteData(..))
+import Set
 import Translation as T exposing (t)
 import Util
     exposing

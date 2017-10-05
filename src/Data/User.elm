@@ -1,9 +1,9 @@
 module Data.User exposing (..)
 
 import Date exposing (Date)
-import Json.Encode
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required)
+import Json.Encode
 import Util exposing (dateDecoder)
 
 

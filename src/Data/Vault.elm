@@ -1,16 +1,15 @@
 module Data.Vault exposing (..)
 
-import Date exposing (Date)
+import Config exposing (Config)
 import Data.User
     exposing
-        ( User
-        , UserKey
-        , Email
-        , Fingerprint
+        ( Email
         , EmailWithFingerPrint
+        , Fingerprint
+        , User
+        , UserKey
         )
-import Config exposing (Config)
-import Json.Encode
+import Date exposing (Date)
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline
     exposing
@@ -22,8 +21,9 @@ import Json.Decode.Pipeline
         , required
         , requiredAt
         )
-import Util exposing (dateDecoder)
+import Json.Encode
 import Path exposing (Path)
+import Util exposing (dateDecoder)
 
 
 type alias VaultId =

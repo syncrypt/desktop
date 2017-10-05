@@ -8,13 +8,13 @@ module Translation
         , timeAgo
         )
 
+import Data.Daemon exposing (KeyState, Stats)
+import Data.User exposing (Email)
+import Data.Vault exposing (VaultId)
 import Date exposing (Date)
 import Date.Distance
 import Date.Distance.Types
-import Data.Vault exposing (VaultId)
-import Data.User exposing (Email)
-import Data.Daemon exposing (KeyState, Stats)
-import Language exposing (Language(..), HasLanguage)
+import Language exposing (HasLanguage, Language(..))
 
 
 type alias Reason =

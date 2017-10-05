@@ -1,6 +1,9 @@
 module Model exposing (..)
 
 import Config exposing (Config)
+import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
+import Data.User exposing (Email)
+import Data.Vault exposing (FlyingVault, Vault, VaultId)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
@@ -12,13 +15,10 @@ import Json.Decode.Pipeline
         , required
         , requiredAt
         )
+import Language exposing (Language(..))
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
-import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
-import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Vault, VaultId)
-import Language exposing (Language(..))
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model

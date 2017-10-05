@@ -1,14 +1,14 @@
 module LoginDialog.View exposing (..)
 
 import Dialog exposing (labeledItem)
-import Util exposing (Direction(..))
 import Html exposing (Html, button, div, form, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
+import LoginDialog.Model exposing (Msg(..), State)
 import Model exposing (Model)
 import Ui.Button
 import Ui.Input
 import Ui.Modal
-import LoginDialog.Model exposing (State, Msg(..))
+import Util exposing (Direction(..))
 
 
 view : Model -> Html Model.Msg

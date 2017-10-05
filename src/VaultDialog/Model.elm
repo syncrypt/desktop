@@ -1,25 +1,27 @@
 module VaultDialog.Model exposing (..)
 
+import ConfirmationDialog
+import Data.User as User
+import Data.Vault
+    exposing
+        ( Event(..)
+        , FlyingVault
+        , HistoryItem
+        , LogLevel(Debug)
+        , Vault
+        , VaultId
+        , nameOrId
+        )
 import Date exposing (Date)
 import Dict exposing (Dict)
+import Path exposing (Path, asPath)
+import RemoteData exposing (RemoteData(..), WebData)
+import Set exposing (Set)
+import Ui
 import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import RemoteData exposing (RemoteData(..), WebData)
-import Set exposing (Set)
-import Path exposing (Path, asPath)
-import Data.Vault
-    exposing
-        ( Vault
-        , FlyingVault
-        , VaultId
-        , nameOrId
-        , HistoryItem
-        , Event(..)
-        )
-import Data.User as User
-import ConfirmationDialog
 
 
 type alias FileName =

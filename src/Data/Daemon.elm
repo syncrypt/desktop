@@ -1,13 +1,13 @@
 module Data.Daemon exposing (..)
 
-import Json.Decode as Json exposing (andThen, succeed, fail)
+import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline
     exposing
         ( decode
         , optional
+        , optionalAt
         , required
         , requiredAt
-        , optionalAt
         )
 import Language exposing (Language(..))
 

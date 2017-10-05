@@ -1,18 +1,27 @@
 module Daemon exposing (..)
 
 import Config exposing (..)
-import Data.Daemon exposing (daemonConfigDecoder, GUIConfig)
+import Data.Daemon exposing (GUIConfig, daemonConfigDecoder)
 import Data.User exposing (Email, Fingerprint, Password, User, UserKey)
 import Data.Vault exposing (..)
 import Http
 import Json.Decode as Json exposing (andThen, fail, succeed)
-import Json.Decode.Pipeline exposing (custom, decode, hardcoded, optional, optionalAt, required, requiredAt)
+import Json.Decode.Pipeline
+    exposing
+        ( custom
+        , decode
+        , hardcoded
+        , optional
+        , optionalAt
+        , required
+        , requiredAt
+        )
 import Json.Encode
+import Language exposing (Language(..))
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..), WebData)
 import Task exposing (Task)
 import Time exposing (Time)
-import Language exposing (Language(..))
 import Util exposing (dateDecoder)
 import WebSocket
 

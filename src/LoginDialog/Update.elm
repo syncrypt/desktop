@@ -1,8 +1,8 @@
 module LoginDialog.Update exposing (update)
 
-import Ui.Input
-import LoginDialog.Model exposing (State, Msg(..), HasLoginDialog, asStateIn)
+import LoginDialog.Model exposing (HasLoginDialog, Msg(..), State, asStateIn)
 import Model exposing (Model)
+import Ui.Input
 
 
 update : Msg -> HasLoginDialog a -> ( HasLoginDialog a, Cmd Model.Msg )

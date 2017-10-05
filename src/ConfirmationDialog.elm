@@ -9,10 +9,11 @@ module ConfirmationDialog
         , update
         )
 
-import Ui.Button
-import Ui.Modal
 import Html exposing (Html, div, form, span, text)
 import Html.Attributes exposing (class)
+import Http
+import Ui.Button
+import Ui.Modal
 
 
 type alias ViewSettings msg =
