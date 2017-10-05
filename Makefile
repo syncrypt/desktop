@@ -41,9 +41,9 @@ release-setup: all
 	cp -r $(BUILD_DIR)/* $(RELEASE_DIR)/tmp/syncrypt
 	cp package.json $(RELEASE_DIR)/tmp/
 	sed -i -e "s/build\/main/syncrypt\/main/g" $(RELEASE_DIR)/tmp/package.json
-	sed -i -e "s/\"electron-forge\": \"^2.12.0\",//g" $(RELEASE_DIR)/tmp/package.json
+	sed -i -e "s/\"electron-forge\": \"^4.0.2\",//g" $(RELEASE_DIR)/tmp/package.json
 	cp client/* $(RELEASE_DIR)/tmp/syncrypt/
-	cd $(RELEASE_DIR)/tmp && npm install
+	cd $(RELEASE_DIR)/tmp && npm install --only=prod
 
 release: release-setup
 	#cd $(BUILD_DIR) && electron-packager ./ Syncrypt --overwrite
