@@ -537,13 +537,13 @@ translateGermanVaultDialogText vt =
             "Datei Versionen"
 
         TotalNumberOfFileRevisionsTooltip ->
-            "Anzahl aller Dateiversionen in diesem Vault."
+            "Anzahl aller Dateiversionen in diesem Vault"
 
         LastModifiedLabel ->
             "Zuletzt aktualisiert"
 
         LastModifiedTooltip ->
-            "Zeit der letzten Änderung im Vault."
+            "Zeit der letzten Änderung im Vault"
 
         NoChangesSoFar ->
             "Bisher keine Veränderungen."
@@ -552,10 +552,10 @@ translateGermanVaultDialogText vt =
             "Schlüssel Algorithmus"
 
         KeyAlgorithmTooltip ->
-            "Asymmetrischer Verschlüsselungsalgorithmus der für den Vault Schlüssel genutzt wird."
+            "Asymmetrischer Verschlüsselungsalgorithmus der für den Vault Schlüssel genutzt wird"
 
         KeyFingerprintLabel ->
-            "Vault Schlüssel Fingerabdruck"
+            "Schlüssel Fingerabdruck"
 
         KeyFingerprintTooltip ->
             "Vault public key fingerprint"
@@ -576,13 +576,13 @@ translateGermanVaultDialogText vt =
             "AES Schlüssellänge"
 
         AESKeyLengthTooltip ->
-            "Länge des symmetrischen Schlüssels für die Dateiverschlüsselung in diesem Vault."
+            "Schlüssellänge für die symmetrische Dateiverschlüsselung"
 
         RSAKeyLengthLabel ->
             "RSA Schlüssellänge"
 
         RSAKeyLengthTooltip ->
-            "Länge des privaten Vault RSA Schlüssels."
+            "Schlüssellänge des privaten Vault RSA Schlüssels"
 
         VaultRemoveButtonInfo ->
             "Stoppt die Sychronisation des Vaults auf diesem Gerät. Dadurch werden keine neuen hochgeladenen Dateien runter- bzw. lokale Veränderungen mehr hochgeladen."
