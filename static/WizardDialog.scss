@@ -1,13 +1,6 @@
 @import "Common.scss";
 
 .WizardDialog {
-  ui-modal-header,
-  ui-modal-footer {
-    background-color: $color-bg-dark;
-    color: $color-highlight;
-    font-family: $font-family-main;
-  }
-
   ui-modal-footer {
     height: 25px;
   }
