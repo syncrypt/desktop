@@ -31,7 +31,7 @@ update msg ({ settingsDialog } as model) =
                 ! [ Daemon.updateGUIConfig
                         model
                         { isFirstLaunch = model.isFirstLaunch
-                        , language = model.language
+                        , language = lang
                         }
                   ]
 

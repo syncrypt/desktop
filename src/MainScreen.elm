@@ -276,8 +276,11 @@ update action model =
                 { model | emailCompletionList = emails }
                     ! []
 
-        UpdatedDaemonConfig (Success daemonConfig) ->
-            { model | isFirstLaunch = daemonConfig.gui.isFirstLaunch }
+        UpdatedDaemonConfig (Success { gui }) ->
+            { model
+                | isFirstLaunch = gui.isFirstLaunch
+                , language = gui.language
+            }
                 |> openSetupWizardIfFirstLaunch
 
         UpdatedDaemonConfig msg ->
