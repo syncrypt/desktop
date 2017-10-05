@@ -3,6 +3,7 @@ module MainScreen exposing (..)
 import Animation exposing (..)
 import Config exposing (Config)
 import Daemon
+import Data.Daemon exposing (GUIConfig)
 import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Date
@@ -123,7 +124,7 @@ update action model =
         CloneVault vaultId ->
             model
                 |> cloneVault vaultId
-                ~> (VaultDialog.Update.close vaultId)
+                ~> VaultDialog.Update.close vaultId
 
         ClonedVault vaultId data ->
             model
@@ -136,7 +137,7 @@ update action model =
         SaveVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
-                ~> (saveVault vaultId)
+                ~> saveVault vaultId
 
         Model.CreateNewVault ->
             { model | state = CreatingNewVault }
@@ -146,7 +147,7 @@ update action model =
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
                 ~> (notifyText <| VaultCreated vault.id)
-                ~> (\model -> ( model, Daemon.getVaults model ))
+                ~> updateVaults
 
         CreatedVault _ (Failure reason) ->
             model
@@ -259,8 +260,10 @@ update action model =
                 |> SettingsDialog.Update.update msg
 
         OpenSetupWizardDialog ->
-            model
+            (model
                 |> openSetupWizard
+            )
+                ! []
 
         SetupWizardFinished ->
             ({ model | isFirstLaunch = False }
@@ -277,28 +280,35 @@ update action model =
                     ! []
 
         UpdatedDaemonConfig (Success { gui }) ->
-            { model
-                | isFirstLaunch = gui.isFirstLaunch
-                , language = gui.language
-            }
+            (model
+                |> updateGUIConfig gui
                 |> openSetupWizardIfFirstLaunch
+            )
+                ! []
 
         UpdatedDaemonConfig msg ->
             model
                 |> Model.retryOnFailure msg UpdateDaemonConfig
 
 
-openSetupWizardIfFirstLaunch : Model -> ( Model, Cmd msg )
+updateGUIConfig : GUIConfig -> Model -> Model
+updateGUIConfig { isFirstLaunch, language } model =
+    { model
+        | isFirstLaunch = isFirstLaunch
+        , language = language
+    }
+
+
+openSetupWizardIfFirstLaunch : Model -> Model
 openSetupWizardIfFirstLaunch model =
     if model.isFirstLaunch then
         model
             |> openSetupWizard
     else
         model
-            ! []
 
 
-openSetupWizard : Model -> ( Model, Cmd msg )
+openSetupWizard : Model -> Model
 openSetupWizard model =
     let
         wizardContent body =
@@ -322,10 +332,8 @@ openSetupWizard model =
                 }
             ]
     in
-        (model
+        model
             |> WizardDialog.open steps SetupWizardFinished
-        )
-            ! []
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
