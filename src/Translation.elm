@@ -1,6 +1,7 @@
 module Translation
     exposing
         ( Text(..)
+        , NotificationText(..)
         , StatsText(..)
         , VaultDialogText(..)
         , t
@@ -26,20 +27,7 @@ type alias Now =
 
 
 type Text
-    = VaultCreated VaultId
-    | VaultRemoved VaultId
-    | VaultDeleted VaultId
-    | VaultUpdated VaultId
-    | VaultCreateFailed Reason
-    | VaultRemoveFailed Reason
-    | VaultDeleteFailed Reason
-    | VaultMetadataUpdateFailed VaultId
-    | VaultCloneFailed VaultId Reason
-    | VaultAddUserFailed VaultId Email
-    | VaultExported VaultId
-    | VaultExportFailed Reason
-    | CouldNotCloneVaultWithoutFolder VaultId
-    | NoPathSelected
+    = NotificationText NotificationText
     | AskDeleteVault
     | AskDeleteVaultExtended
     | StatsText StatsText
@@ -55,6 +43,23 @@ type Text
     | NoFilesUploadedYet
     | VaultListHeaderDescription
     | VaultDialogText VaultDialogText
+
+
+type NotificationText
+    = VaultCreated VaultId
+    | VaultRemoved VaultId
+    | VaultDeleted VaultId
+    | VaultUpdated VaultId
+    | VaultCreateFailed Reason
+    | VaultRemoveFailed Reason
+    | VaultDeleteFailed Reason
+    | VaultMetadataUpdateFailed VaultId
+    | VaultCloneFailed VaultId Reason
+    | VaultAddUserFailed VaultId Email
+    | VaultExported VaultId
+    | VaultExportFailed Reason
+    | CouldNotCloneVaultWithoutFolder VaultId
+    | NoPathSelected
 
 
 type StatsText
@@ -135,50 +140,8 @@ translate text lang =
 translateEnglish : Text -> String
 translateEnglish text =
     case text of
-        VaultCreated vaultId ->
-            "Vault created: " ++ vaultId
-
-        VaultDeleted vaultId ->
-            "Vault deleted from server: " ++ vaultId
-
-        VaultUpdated vaultId ->
-            "Vault updated: " ++ vaultId
-
-        VaultRemoved vaultId ->
-            "Vault removed from sync: " ++ vaultId
-
-        VaultCreateFailed reason ->
-            "Failed to create vault: " ++ reason
-
-        VaultRemoveFailed reason ->
-            "Failed to remove vault: " ++ reason
-
-        VaultDeleteFailed reason ->
-            "Vault deletion failed: " ++ reason
-
-        VaultMetadataUpdateFailed vaultId ->
-            "Failed to update metadata for vault " ++ vaultId
-
-        VaultCloneFailed vaultId reason ->
-            "Something went wrong while cloning the vault "
-                ++ vaultId
-                ++ " : "
-                ++ reason
-
-        VaultAddUserFailed vaultId email ->
-            "Failed to add user " ++ email ++ " to vault " ++ vaultId
-
-        VaultExported vaultId ->
-            "Vault exported: " ++ vaultId
-
-        VaultExportFailed _ ->
-            "Vault export failed"
-
-        CouldNotCloneVaultWithoutFolder vaultId ->
-            "Could not clone vault - no folder specified"
-
-        NoPathSelected ->
-            "No path selected - vault not created"
+        NotificationText t ->
+            translateEnglishNotificationText t
 
         AskDeleteVault ->
             "Delete vault?"
@@ -227,6 +190,55 @@ translateEnglish text =
 
         VaultDialogText vt ->
             translateEnglishVaultDialogText vt
+
+
+translateEnglishNotificationText : NotificationText -> String
+translateEnglishNotificationText t =
+    case t of
+        VaultCreated vaultId ->
+            "Vault created: " ++ vaultId
+
+        VaultDeleted vaultId ->
+            "Vault deleted from server: " ++ vaultId
+
+        VaultUpdated vaultId ->
+            "Vault updated: " ++ vaultId
+
+        VaultRemoved vaultId ->
+            "Vault removed from sync: " ++ vaultId
+
+        VaultCreateFailed reason ->
+            "Failed to create vault: " ++ reason
+
+        VaultRemoveFailed reason ->
+            "Failed to remove vault: " ++ reason
+
+        VaultDeleteFailed reason ->
+            "Vault deletion failed: " ++ reason
+
+        VaultMetadataUpdateFailed vaultId ->
+            "Failed to update metadata for vault " ++ vaultId
+
+        VaultCloneFailed vaultId reason ->
+            "Something went wrong while cloning the vault "
+                ++ vaultId
+                ++ " : "
+                ++ reason
+
+        VaultAddUserFailed vaultId email ->
+            "Failed to add user " ++ email ++ " to vault " ++ vaultId
+
+        VaultExported vaultId ->
+            "Vault exported: " ++ vaultId
+
+        VaultExportFailed _ ->
+            "Vault export failed"
+
+        CouldNotCloneVaultWithoutFolder vaultId ->
+            "Could not clone vault - no folder specified"
+
+        NoPathSelected ->
+            "No path selected - vault not created"
 
 
 translateEnglishStatsText : StatsText -> String
@@ -351,54 +363,8 @@ translateEnglishVaultDialogText vt =
 translateGerman : Text -> String
 translateGerman text =
     case text of
-        VaultCreated vaultId ->
-            "Vault wurde erstellt: " ++ vaultId
-
-        VaultDeleted vaultId ->
-            "Vault wurde in der cloud gelöscht: " ++ vaultId
-
-        VaultUpdated vaultId ->
-            "Vault wurde aktualisiert: " ++ vaultId
-
-        VaultRemoved vaultId ->
-            "Vault sync wurde deaktiviert: " ++ vaultId
-
-        VaultCreateFailed reason ->
-            "Es gab einen Fehler beim Erstellen des Vaults: " ++ reason
-
-        VaultRemoveFailed reason ->
-            "Es gab einen Fehler beim Deaktivieren des Vaults: " ++ reason
-
-        VaultDeleteFailed reason ->
-            "Es gab einen Fehler beim Löschen des Vaults: " ++ reason
-
-        VaultMetadataUpdateFailed vaultId ->
-            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults: "
-                ++ vaultId
-
-        VaultCloneFailed vaultId reason ->
-            "Es gab einen Fehler beim Download des Vaults "
-                ++ vaultId
-                ++ " : "
-                ++ reason
-
-        VaultAddUserFailed vaultId email ->
-            "Es gab einen Fehler beim Hinzufügen des Users "
-                ++ email
-                ++ " zum Vault: "
-                ++ vaultId
-
-        VaultExported vaultId ->
-            "Vault wurde exportiert: " ++ vaultId
-
-        VaultExportFailed _ ->
-            "Vault Export ist fehlgeschlagen"
-
-        CouldNotCloneVaultWithoutFolder vaultId ->
-            "Konnte den Vault nicht klonen - Kein Ordner für die Dateien wurde festgelegt."
-
-        NoPathSelected ->
-            "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
+        NotificationText t ->
+            translateGermanNotificationText t
 
         AskDeleteVault ->
             "Vault löschen?"
@@ -447,6 +413,58 @@ translateGerman text =
 
         VaultDialogText vt ->
             translateGermanVaultDialogText vt
+
+
+translateGermanNotificationText t =
+    case t of
+        VaultCreated vaultId ->
+            "Vault wurde erstellt: " ++ vaultId
+
+        VaultDeleted vaultId ->
+            "Vault wurde in der cloud gelöscht: " ++ vaultId
+
+        VaultUpdated vaultId ->
+            "Vault wurde aktualisiert: " ++ vaultId
+
+        VaultRemoved vaultId ->
+            "Vault sync wurde deaktiviert: " ++ vaultId
+
+        VaultCreateFailed reason ->
+            "Es gab einen Fehler beim Erstellen des Vaults: " ++ reason
+
+        VaultRemoveFailed reason ->
+            "Es gab einen Fehler beim Deaktivieren des Vaults: " ++ reason
+
+        VaultDeleteFailed reason ->
+            "Es gab einen Fehler beim Löschen des Vaults: " ++ reason
+
+        VaultMetadataUpdateFailed vaultId ->
+            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults: "
+                ++ vaultId
+
+        VaultCloneFailed vaultId reason ->
+            "Es gab einen Fehler beim Download des Vaults "
+                ++ vaultId
+                ++ " : "
+                ++ reason
+
+        VaultAddUserFailed vaultId email ->
+            "Es gab einen Fehler beim Hinzufügen des Users "
+                ++ email
+                ++ " zum Vault: "
+                ++ vaultId
+
+        VaultExported vaultId ->
+            "Vault wurde exportiert: " ++ vaultId
+
+        VaultExportFailed _ ->
+            "Vault Export ist fehlgeschlagen"
+
+        CouldNotCloneVaultWithoutFolder vaultId ->
+            "Konnte den Vault nicht klonen - Kein Ordner für die Dateien wurde festgelegt."
+
+        NoPathSelected ->
+            "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
 
 
 translateGermanStatsText : StatsText -> String

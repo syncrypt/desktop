@@ -20,7 +20,7 @@ import SettingsDialog.Model as SettingsDialog
 import SettingsDialog.Update
 import SettingsDialog.View
 import Time
-import Translation exposing (Text(..), t, translate)
+import Translation exposing (Text(..), NotificationText(..), t, translate)
 import Ui.NotificationCenter
 import Util exposing (Direction(..), IconButton(..), iconButton, (~>))
 import VaultDialog.Model exposing (CloneStatus(..))
@@ -444,10 +444,13 @@ notify body model =
             ! [ Cmd.map NotificationCenterMsg cmd ]
 
 
-notifyText : Translation.Text -> Model -> ( Model, Cmd Msg )
-notifyText transText model =
+notifyText : Translation.NotificationText -> Model -> ( Model, Cmd Msg )
+notifyText notificationText model =
     model
-        |> notify (text (t transText model))
+        |> notify
+            (text <|
+                t (NotificationText notificationText) model
+            )
 
 
 saveVault : Data.Vault.VaultId -> Model -> ( Model, Cmd Msg )
