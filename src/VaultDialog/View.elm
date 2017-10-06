@@ -349,18 +349,26 @@ logTab vaultId state model =
 
 adminTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 adminTab vaultId state model =
-    ( t (VaultDialogText AdminTab) model
-    , div [ class "Admin-Buttons" ]
-        [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-        , removeButton vaultId state
-        , separator
-        , infoText (t (VaultDialogText VaultDeleteButtonInfo) model)
-        , deleteButton vaultId state model
-        , separator
-        , infoText (t (VaultDialogText VaultExportButtonInfo) model)
-        , exportButton <| Model.vaultWithId vaultId model
-        ]
-    )
+    let
+        adminActions =
+            if state.cloneStatus == New || not (isOwner vaultId model) then
+                []
+            else
+                [ infoText (t (VaultDialogText VaultDeleteButtonInfo) model)
+                , deleteButton vaultId state model
+                ]
+    in
+        ( t (VaultDialogText AdminTab) model
+        , div [ class "Admin-Buttons" ] <|
+            [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+            , removeButton vaultId state
+            , separator
+            , infoText (t (VaultDialogText VaultExportButtonInfo) model)
+            , exportButton <| Model.vaultWithId vaultId model
+            , separator
+            ]
+                ++ adminActions
+        )
 
 
 eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
@@ -528,13 +536,7 @@ cancelButton vaultId state =
 
 deleteButton : VaultId -> State -> Model -> Html Model.Msg
 deleteButton vaultId state model =
-    span
-        [ classList
-            [ ( "Hidden"
-              , state.cloneStatus == New || not (isOwner vaultId model)
-              )
-            ]
-        ]
+    span []
         [ Ui.Button.model "Delete from Server" "danger" "small"
             |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm DeleteVault))
         ]
