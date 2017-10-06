@@ -395,6 +395,7 @@ dateDecoder =
 type IconButton
     = SettingsButton
     | LogoutButton
+    | FeedbackButton
 
 
 iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
@@ -427,6 +428,9 @@ iconName buttonType =
         SettingsButton ->
             "settings"
 
+        FeedbackButton ->
+            "feedback"
+
 
 iconButtonTooltip buttonType =
     case buttonType of
@@ -435,6 +439,9 @@ iconButtonTooltip buttonType =
 
         SettingsButton ->
             "Account & Software Settings"
+
+        FeedbackButton ->
+            "Send us feedback & bug reports"
 
 
 shortenString maxSize string =

@@ -165,3 +165,18 @@ li {
   width: 600px;
   min-height: 300px;
 }
+
+.FeedbackWizard {
+  display: block;
+
+  .Label {
+    font-weight: bold;
+    font-size: $font-size-header;
+    margin-bottom: $padding-large;
+  }
+
+  .FeedbackTextArea {
+    width: 300px;
+    height: 300px;
+  }
+}

@@ -63,6 +63,7 @@ type alias Model =
     , wizardDialog : WizardDialog.State Msg
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
+    , feedback : Maybe String
     }
 
 
@@ -118,6 +119,10 @@ type Msg
     | OpenSetupWizardDialog
     | SetupWizardFinished
     | EmailCompletionList (List Email)
+    | OpenFeedbackWizard
+    | SentFeedback (WebData String)
+    | FeedbackEntered String
+    | SendFeedback
 
 
 
@@ -214,6 +219,7 @@ init config =
     , wizardDialog = WizardDialog.init WizardDialogMsg
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
+    , feedback = Nothing
     }
 
 

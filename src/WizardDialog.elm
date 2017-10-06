@@ -231,13 +231,13 @@ wizardButtons address view buttonSettings =
                     [ navigationButtons [ prevButton, nextButton ] ]
 
                 ( True, False ) ->
-                    [ navigationButtons [ prevButton ], finishButton ]
+                    [ finishButton, navigationButtons [ prevButton ] ]
 
                 ( False, True ) ->
                     [ navigationButtons [ nextButton ] ]
 
                 ( False, False ) ->
-                    []
+                    [ finishButton ]
 
         toHtml : Button msg -> Html msg
         toHtml btn =

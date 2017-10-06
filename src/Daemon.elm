@@ -311,14 +311,18 @@ deleteVault vaultId config =
             (succeed vaultId)
 
 
-sendFeedback : String -> Config -> Cmd (WebData String)
+sendFeedback : String -> Config -> Cmd Msg
 sendFeedback text config =
     config
         |> apiRequest
             Post
             Feedback
-            (Json <| Json.Encode.string text)
-            (succeed "")
+            (Json <|
+                Json.Encode.object
+                    [ ( "feedback_text", Json.Encode.string text ) ]
+            )
+            (succeed "Ok")
+        |> Cmd.map SentFeedback
 
 
 getVersion : Config -> Cmd (WebData String)

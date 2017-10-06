@@ -9,7 +9,7 @@ import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Date
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import LoginDialog.Update
 import LoginDialog.View
 import Model exposing (..)
@@ -20,7 +20,7 @@ import SettingsDialog.Model as SettingsDialog
 import SettingsDialog.Update
 import SettingsDialog.View
 import Time
-import Translation exposing (Text(..), NotificationText(..), t, translate)
+import Translation exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
 import Util exposing (Direction(..), IconButton(..), iconButton, (~>))
 import VaultDialog.Model exposing (CloneStatus(..))
@@ -290,6 +290,46 @@ update action model =
             model
                 |> Model.retryOnFailure msg UpdateDaemonConfig
 
+        OpenFeedbackWizard ->
+            (model
+                |> openFeedbackWizard
+            )
+                ! []
+
+        SentFeedback (Success _) ->
+            { model | feedback = Nothing }
+                |> notify (text "Thanks for your feedback!")
+
+        SentFeedback error ->
+            model
+                |> notify (text "Sending feedback failed. Please try again.")
+
+        --  ~> (notify (text "Failed to send feedback. Retrying."))
+        FeedbackEntered text ->
+            case String.trim text of
+                "" ->
+                    { model | feedback = Nothing }
+                        ! []
+
+                trimmedText ->
+                    { model | feedback = Just trimmedText }
+                        ! []
+
+        SendFeedback ->
+            sendFeedback model
+
+
+sendFeedback : Model -> ( Model, Cmd Msg )
+sendFeedback model =
+    case model.feedback of
+        Nothing ->
+            model
+                ! []
+
+        Just feedback ->
+            model
+                ! [ Daemon.sendFeedback feedback model.config ]
+
 
 updateGUIConfig : GUIConfig -> Model -> Model
 updateGUIConfig { isFirstLaunch, language } model =
@@ -334,6 +374,38 @@ openSetupWizard model =
     in
         model
             |> WizardDialog.open steps SetupWizardFinished
+
+
+openFeedbackWizard model =
+    let
+        wizardContent body =
+            div [ class "FeedbackWizard" ]
+                body
+
+        steps =
+            [ Step
+                { title = "Send us feedback"
+                , contents =
+                    wizardContent
+                        [ div [ class "Label" ]
+                            [ text "Your feedback, suggestions or bug report:" ]
+                        , div []
+                            [ Html.textarea
+                                [ class "FeedbackTextArea"
+                                , cols 40
+                                , rows 10
+                                , placeholder "Type your feedback here"
+                                , onInput FeedbackEntered
+                                ]
+                                []
+                            ]
+                        ]
+                , buttons = Default
+                }
+            ]
+    in
+        model
+            |> WizardDialog.open steps SendFeedback
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
@@ -637,9 +709,9 @@ header =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-HeaderLogo" ]
             []
-        , div
-            [ class "MainScreen-Buttons" ]
-            [ iconButton SettingsButton [ onClick OpenSettingsDialog ]
+        , div [ class "MainScreen-Buttons" ]
+            [ iconButton FeedbackButton [ onClick OpenFeedbackWizard ]
+            , iconButton SettingsButton [ onClick OpenSettingsDialog ]
             , iconButton LogoutButton [ onClick Logout ]
             ]
         ]
