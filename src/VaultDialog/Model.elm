@@ -150,7 +150,7 @@ init =
     , expandedFolders = Set.fromList [ [] ]
     , modal =
         Ui.Modal.init
-            |> Ui.Modal.closable False
+            |> Ui.Modal.closable True
             |> Ui.Modal.backdrop True
     , confirmationDialog =
         ConfirmationDialog.init ConfirmationDialogMsg

@@ -208,13 +208,14 @@ update msg vaultId ({ vaultDialogs } as model) =
             dialogState vaultId model
     in
         case msg of
+            -- ModalMsg only has Close so we know we'll want to close the
+            -- dialog window because the user has clicked outside of it
             ModalMsg msg ->
-                (state.modal
+                state.modal
                     |> Ui.Modal.update msg
                     |> asModalIn state
-                    |> asStateIn vaultId model
-                )
-                    ! []
+                    |> asStateIn vaultId { model | state = Model.ShowingAllVaults }
+                    |> close vaultId
 
             NameChanged ->
                 (state
