@@ -27,7 +27,7 @@ type Button msg
     | Prev
     | Cancel
     | Finish
-    | CustomButton String msg
+    | CustomButton (List (Html.Attribute msg)) String msg
 
 
 type ButtonSettings msg
@@ -254,8 +254,8 @@ wizardButtons address view buttonSettings =
                 Finish ->
                     finishButton
 
-                CustomButton title msg ->
-                    button [ class "Custom-Button" ] title msg
+                CustomButton attrs title msg ->
+                    button (attrs ++ [ class "Custom-Button" ]) title msg
     in
         case buttonSettings of
             Default ->

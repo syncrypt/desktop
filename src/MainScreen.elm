@@ -27,7 +27,12 @@ import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
 import VaultList
-import WizardDialog exposing (ButtonSettings(Default), Step(..))
+import WizardDialog
+    exposing
+        ( ButtonSettings(Default, Visible)
+        , Button(Cancel, CustomButton)
+        , Step(..)
+        )
 
 
 -- INIT
@@ -316,7 +321,9 @@ update action model =
                         ! []
 
         SendFeedback ->
-            sendFeedback model
+            model
+                |> WizardDialog.close
+                |> sendFeedback
 
 
 sendFeedback : Model -> ( Model, Cmd Msg )
@@ -401,7 +408,13 @@ openFeedbackWizard model =
                                 []
                             ]
                         ]
-                , buttons = Default
+                , buttons =
+                    Visible
+                        [ Cancel
+                        , CustomButton [ style [ ( "float", "right" ) ] ]
+                            "Send Feedback"
+                            SendFeedback
+                        ]
                 }
             ]
     in
