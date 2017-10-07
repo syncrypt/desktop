@@ -40,7 +40,6 @@ build_script:
   - npm run make-installer
   #- 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
 
-  # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
 test: off
 shallow_clone: true
 clone_depth: 1
