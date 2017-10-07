@@ -376,6 +376,7 @@ openSetupWizard model =
             |> WizardDialog.open steps SetupWizardFinished
 
 
+openFeedbackWizard : Model -> Model
 openFeedbackWizard model =
     let
         wizardContent body =
