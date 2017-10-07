@@ -1,0 +1,57 @@
+os: unstable
+cache:
+  - node_modules
+  - .elm
+  - elm-stuff
+  - '%USERPROFILE%\.electron'
+  - '%APPDATA%\npm-cache'               # npm cache
+environment:
+  matrix:
+    - nodejs_version: 6
+platform:
+  - x86
+  - x64
+init:
+  # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
+  - ps: >-
+      if ($env:APPVEYOR_REPO_TAG -eq "true")
+      {
+        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
+        Set-AppveyorBuildVariable -Name "SYNCRYPT_VER" -Value "$($env:APPVEYOR_REPO_TAG_NAME.TrimStart('v'))"
+      }
+      else
+      {
+        Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.substring(0,7))"
+        Set-AppveyorBuildVariable -Name "SYNCRYPT_VER" -Value "dev-$($env:APPVEYOR_REPO_COMMIT.substring(0,7))"
+      }
+install:
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - set CI=true
+  - npm install -g npm@latest
+  - set PATH=%APPDATA%\npm;%PATH%
+  - npm install
+  - elm install
+matrix:
+  fast_finish: true
+artifacts:
+  - path: \*.zip
+build_script:
+  # Build the compiled extension
+  - npm run make-installer
+  #- 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
+
+  # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
+test: off
+shallow_clone: true
+clone_depth: 1
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: cm6YGcbZ4btLnz/4ZdN9FsqObCDSK3QC9i5XIP2TmUcWVQ45sKjDSdBLGMgb0XVm
+  artifact: /.*\.zip/
+  draft: true
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true
+
