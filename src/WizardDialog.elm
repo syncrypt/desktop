@@ -86,7 +86,7 @@ init : (Msg -> msg) -> State msg
 init address =
     { modal =
         Ui.Modal.init
-            |> Ui.Modal.closable False
+            |> Ui.Modal.closable True
             |> Ui.Modal.backdrop True
     , view = Nothing
     , address = address
