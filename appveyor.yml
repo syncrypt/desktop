@@ -27,7 +27,7 @@ init:
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - set CI=true
-  - npm install -g npm@latest elm
+  - npm install -g npm@latest elm elm-github-install
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
   - elm install
@@ -37,7 +37,8 @@ artifacts:
   - path: \*.zip
 build_script:
   # Build the compiled extension
-  - npm run make-installer
+  - make release-win
+  #- npm run make-installer
   #- 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
 
 test: off

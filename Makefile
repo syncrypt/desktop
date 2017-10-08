@@ -51,6 +51,9 @@ release: release-setup
 		npm run make-installer
 	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
 
+release-win: all
+	npm run make-installer
+
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
