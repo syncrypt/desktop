@@ -30,7 +30,7 @@ install:
   - npm install -g npm@latest elm elm-github-install
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install
-  - elm install
+  - elm-install
 matrix:
   fast_finish: true
 artifacts:
@@ -38,6 +38,21 @@ artifacts:
 build_script:
   # Build the compiled extension
   #- make release-win
+  - mkdir build
+  - mkdir build\assets
+  - elm make src\Main.elm --output=build\elm.js
+  - cp static\*.js build\
+  - cp static\main.html build\index.html
+  - cp assets\* build\assets\
+  - node_modules\node-sass\bin\node-sass static\Animations.scss build\Animations.css
+  - node_modules\node-sass\bin\node-sass static\Common.scss build\Common.css
+  - node_modules\node-sass\bin\node-sass static\ConfirmationDialog.scss build\ConfirmationDialog.css
+  - node_modules\node-sass\bin\node-sass static\MainScreen.scss build\MainScreen.css
+  - node_modules\node-sass\bin\node-sass static\SettingsDialog.scss build\SettingsDialog.css
+  - node_modules\node-sass\bin\node-sass static\Tooltip.scss build\Tooltip.css
+  - node_modules\node-sass\bin\node-sass static\VaultDialog.scss build\VaultDialog.css
+  - node_modules\node-sass\bin\node-sass static\VaultList.scss build\VaultList.css
+  - node_modules\node-sass\bin\node-sass static\WizardDialog.scss build\WizardDialog.css
   - npm run make-installer
   - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
 
