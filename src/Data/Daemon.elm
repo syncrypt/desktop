@@ -70,12 +70,6 @@ languageDecoder =
                     fail <|
                         "Invalid language configured in syncrypt config: "
                             ++ toString val
-
-        -- let
-        --     _ =
-        --         Debug.log "Invalid language" val
-        -- in
-        --     Json.fail <| "Invalid language: " ++ toString val
     in
         Json.string
             |> Json.andThen convert
