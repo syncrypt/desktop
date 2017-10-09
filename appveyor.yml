@@ -37,9 +37,9 @@ artifacts:
   - path: \*.zip
 build_script:
   # Build the compiled extension
-  - make release-win
-  #- npm run make-installer
-  #- 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
+  #- make release-win
+  - npm run make-installer
+  - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
 
 test: off
 shallow_clone: true
@@ -54,4 +54,3 @@ deploy:
   on:
     branch: master
     appveyor_repo_tag: true
-
