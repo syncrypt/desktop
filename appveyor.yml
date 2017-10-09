@@ -42,9 +42,9 @@ build_script:
   - mkdir build
   - mkdir build\assets
   - elm make src\Main.elm --output=build\elm.js
-  - cp static\*.js build\
-  - cp static\main.html build\index.html
-  - cp assets\* build\assets\
+  - xcopy static\*.js build\
+  - echo f | xcopy static\main.html build\index.html
+  - xcopy assets\* build\assets\
   - node_modules\node-sass\bin\node-sass static\Animations.scss build\Animations.css
   - node_modules\node-sass\bin\node-sass static\Common.scss build\Common.css
   - node_modules\node-sass\bin\node-sass static\ConfirmationDialog.scss build\ConfirmationDialog.css
