@@ -54,8 +54,8 @@ build_script:
   - node-sass static\VaultDialog.scss build\VaultDialog.css
   - node-sass static\VaultList.scss build\VaultList.css
   - node-sass static\WizardDialog.scss build\WizardDialog.css
-  - npm run make-installer
-  - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip release\*
+  - cd build && electron-forge make
+  - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip build\out\Syncrypt*
 
 test: off
 shallow_clone: true
