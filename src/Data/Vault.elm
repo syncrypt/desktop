@@ -278,26 +278,21 @@ logLevelDecoder =
     let
         convert : String -> Json.Decoder LogLevel
         convert level =
-            succeed <|
-                case String.toLower level of
-                    "debug" ->
-                        Debug
+            case String.toLower level of
+                "debug" ->
+                    succeed Debug
 
-                    "info" ->
-                        Info
+                "info" ->
+                    succeed Info
 
-                    "warning" ->
-                        Warning
+                "warning" ->
+                    succeed Warning
 
-                    "error" ->
-                        Error
+                "error" ->
+                    succeed Error
 
-                    val ->
-                        let
-                            _ =
-                                Debug.log "Invalid log stream level" val
-                        in
-                            Error
+                val ->
+                    fail <| "Invalid log level: " ++ val
     in
         Json.string
             |> Json.andThen convert
