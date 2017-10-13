@@ -332,7 +332,7 @@ tooltipItem { position, length, text } body =
     let
         baseAttrs =
             [ attribute "data-balloon" text
-            , attribute "data-balloon-pos" (position |> toString |> String.toLower)
+            , attribute "data-balloon-pos" (tooltipPositionString position)
             , class "Tooltip"
             ]
 
