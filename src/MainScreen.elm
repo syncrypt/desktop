@@ -80,8 +80,8 @@ subscriptions model =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update action model =
-    case action of
+update msg model =
+    case msg of
         SetTime time ->
             { model | now = Just time }
                 ! []
