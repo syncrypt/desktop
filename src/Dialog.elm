@@ -4,7 +4,7 @@ import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Ui.Modal
-import Util exposing (Direction(..))
+import Util exposing (Position(..))
 
 
 type alias WithModalState a =
@@ -17,7 +17,7 @@ asModalIn state modal =
 
 
 labeledItem :
-    Direction
+    Position
     -> List (Html.Attribute msg)
     -> Maybe msg
     -> Html msg
@@ -26,18 +26,7 @@ labeledItem :
 labeledItem side attributes onClickMsg labelContent content =
     let
         className =
-            case side of
-                Top ->
-                    "Dialog-Label-Top"
-
-                Bottom ->
-                    "Dialog-Label-Bottom"
-
-                Left ->
-                    "Dialog-Label-Left"
-
-                Right ->
-                    "Dialog-Label-Right"
+            "Dialog-Label-" ++ toString side
 
         attrs =
             case onClickMsg of

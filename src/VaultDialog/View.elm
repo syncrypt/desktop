@@ -47,7 +47,7 @@ import Ui.Modal
 import Ui.Tabs
 import Util
     exposing
-        ( Direction(..)
+        ( Position(..)
         , TooltipLength(..)
         , dateParts
         , fullDateString
@@ -239,9 +239,11 @@ cryptoTab vaultId state model =
                     [ class "InputLabel CryptoInfoItem-Label" ]
                     Nothing
                     (text label)
-                    (tooltipItem Bottom
-                        Auto
-                        tooltip
+                    (tooltipItem
+                        { position = Bottom
+                        , length = Auto
+                        , text = tooltip
+                        }
                         [ text value ]
                     )
                 ]
@@ -627,9 +629,11 @@ openFolderButton vaultId state model =
                 [ class "InputLabel" ]
                 Nothing
                 (text "Folder")
-                (tooltipItem Bottom
-                    Auto
-                    tooltipMsg
+                (tooltipItem
+                    { position = Bottom
+                    , length = Auto
+                    , text = tooltipMsg
+                    }
                     [ Ui.Button.model folderPath "primary" "small"
                         |> Ui.Button.view msg
                     ]
@@ -644,9 +648,11 @@ nameInput msg state =
             [ class "InputLabel" ]
             (Just (Model.FocusOn state.nameInput.uid))
             (text "Name")
-            (tooltipItem Bottom
-                Auto
-                "The name of the vault. Chosen by the owner."
+            (tooltipItem
+                { position = Bottom
+                , length = Auto
+                , text = "The name of the vault. Chosen by the owner."
+                }
                 [ Ui.Input.view state.nameInput
                     |> Html.map (msg << NameInputMsg)
                 ]
@@ -676,9 +682,11 @@ iconInput state model =
                 )
                 []
     in
-        tooltipItem Right
-            Auto
-            "Vault icon that can be seen by any invited user"
+        tooltipItem
+            { position = Right
+            , length = Auto
+            , text = "Vault icon that can be seen by any invited user"
+            }
             [ icon ]
 
 
@@ -688,9 +696,11 @@ userInput vaultId state =
         [ class "InputLabel" ]
         (Just (Model.FocusOn state.userInput.uid))
         (text "Invite User")
-        (tooltipItem Bottom
-            Auto
-            "Search for a user's email address to add them to this vault"
+        (tooltipItem
+            { position = Bottom
+            , length = Auto
+            , text = "Search for a user's email address to add them to this vault"
+            }
             [ Ui.Input.view
                 state.userInput
                 |> Html.map (Model.VaultDialogMsg vaultId << UserInputMsg)
@@ -736,9 +746,11 @@ renderFolders state =
                 rootFolders =
                     List.map (renderFolder state) folders
             in
-                [ tooltipItem Top
-                    XLarge
-                    "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
+                [ tooltipItem
+                    { position = Top
+                    , length = XLarge
+                    , text = "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
+                    }
                     (rootFiles ++ rootFolders)
                 ]
 

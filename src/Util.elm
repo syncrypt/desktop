@@ -23,6 +23,7 @@ module Util
         , onAnyKeyDown
         , tooltipItem
         , Direction(..)
+        , Position(..)
         , TooltipLength(..)
         , dateDecoder
         , IconButton(..)
@@ -300,6 +301,13 @@ onAnyKeyDown msg =
 
 
 type Direction
+    = Up
+    | Down
+    | ToRight
+    | ToLeft
+
+
+type Position
     = Top
     | Bottom
     | Right
@@ -315,12 +323,16 @@ type TooltipLength
     | Auto
 
 
-tooltipItem : Direction -> TooltipLength -> String -> List (Html msg) -> Html msg
-tooltipItem dir length text body =
+type alias TooltipConfig =
+    { position : Position, length : TooltipLength, text : String }
+
+
+tooltipItem : TooltipConfig -> List (Html msg) -> Html msg
+tooltipItem { position, length, text } body =
     let
         baseAttrs =
             [ attribute "data-balloon" text
-            , attribute "data-balloon-pos" (tooltipDirString dir)
+            , attribute "data-balloon-pos" (position |> toString |> String.toLower)
             , class "Tooltip"
             ]
 
@@ -336,9 +348,9 @@ tooltipItem dir length text body =
         span attributes body
 
 
-tooltipDirString : Direction -> String
-tooltipDirString dir =
-    case dir of
+tooltipPositionString : Position -> String
+tooltipPositionString position =
+    case position of
         Top ->
             "up"
 
@@ -400,9 +412,12 @@ type IconButton
 
 iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
 iconButton buttonType attrs =
-    (tooltipItem Bottom
-        Auto
-        (iconButtonTooltip buttonType)
+    (tooltipItem
+        { position = Top
+        , length =
+            Auto
+        , text = (iconButtonTooltip buttonType)
+        }
         [ div
             (class "MainScreen-IconButton" :: attrs)
             [ div

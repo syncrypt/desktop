@@ -8,7 +8,7 @@ import Model exposing (Model)
 import Ui.Button
 import Ui.Input
 import Ui.Modal
-import Util exposing (Direction(..))
+import Util exposing (Position(..))
 
 
 view : Model -> Html Model.Msg

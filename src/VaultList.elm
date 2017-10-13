@@ -19,7 +19,7 @@ import Set
 import Translation as T exposing (t)
 import Util
     exposing
-        ( Direction(..)
+        ( Position(..)
         , TooltipLength(..)
         , bytesReadable
         , tooltipItem
@@ -57,9 +57,11 @@ updatedAtInfo vault updatedAtHeader model =
                     text <| (t (T.Updated date now) model)
     in
         div [ class "VaultUpdatedAt" ]
-            [ tooltipItem Top
-                Auto
-                (t T.LastUpdateToVaultLabel model)
+            [ tooltipItem
+                { position = Top
+                , length = Auto
+                , text = t T.LastUpdateToVaultLabel model
+                }
                 [ header, updatedText ]
             ]
 
@@ -103,9 +105,11 @@ vaultActivity : Vault -> Model -> Html msg
 vaultActivity vault model =
     vaultInfoItem vault
         [ div [ class "VaultActivity" ]
-            [ tooltipItem Top
-                Auto
-                (t T.TotalVaultSizeTooltip model)
+            [ tooltipItem
+                { position = Top
+                , length = Auto
+                , text = t T.TotalVaultSizeTooltip model
+                }
                 [ text (bytesReadable vault.size) ]
             ]
         ]
@@ -115,9 +119,11 @@ vaultUserCount : Vault -> Model -> Html msg
 vaultUserCount vault model =
     vaultInfoItem vault
         [ div [ class "VaultUsers" ]
-            [ tooltipItem Top
-                Auto
-                (t T.UsersWithAccessTooltip model)
+            [ tooltipItem
+                { position = Top
+                , length = Auto
+                , text = t T.UsersWithAccessTooltip model
+                }
                 [ text (toString vault.userCount) ]
             ]
         ]
