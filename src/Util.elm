@@ -413,9 +413,8 @@ type IconButton
 iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
 iconButton buttonType attrs =
     (tooltipItem
-        { position = Top
-        , length =
-            Auto
+        { position = Bottom
+        , length = Auto
         , text = (iconButtonTooltip buttonType)
         }
         [ div
