@@ -93,7 +93,9 @@ type VaultDialogText
     | FolderButtonTooltip FolderButtonType
     | FilesLabel
     | FileSelectionTooltip
+    | UserInputLabel
     | UserInputTooltip
+    | VaultUsersLabel
     | CryptoTabInfoText
     | VaultIdLabel
     | VaultIdTooltip
@@ -351,8 +353,14 @@ translateEnglishVaultDialogText vt =
         FileSelectionTooltip ->
             "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
 
+        UserInputLabel ->
+            "Invite User"
+
         UserInputTooltip ->
             "Search for a user's email address to add them to this vault."
+
+        VaultUsersLabel ->
+            "Vault Users"
 
         CryptoTabInfoText ->
             "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
@@ -629,8 +637,14 @@ translateGermanVaultDialogText vt =
         FileSelectionTooltip ->
             "Hier siehst du alle Dateien in diesem Vault. Du kannst einzelne Dateien und Unterordner von der automatischen Synchronisation ausschließen, falls du bestimmte Dateien nicht hoch- bzw. runterladen willst."
 
+        UserInputLabel ->
+            "User einladen"
+
         UserInputTooltip ->
             "Gib die Email einer Person ein, die du in diesen Vault einladen möchtest."
+
+        VaultUsersLabel ->
+            "Vault User"
 
         CryptoTabInfoText ->
             "Hier kannst du alle kryptographischen Details dieses Vaults einsehen."
