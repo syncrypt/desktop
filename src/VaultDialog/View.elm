@@ -35,10 +35,18 @@ import Html
         )
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
+import Language exposing (HasLanguage)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Translation exposing (Text(..), VaultDialogText(..), t, timeAgo)
+import Translation
+    exposing
+        ( FolderButtonType(..)
+        , Text(..)
+        , VaultDialogText(..)
+        , t
+        , timeAgo
+        )
 import Ui.Button
 import Ui.Checkbox
 import Ui.Container
@@ -68,6 +76,7 @@ import VaultDialog.Model
         , RequiresConfirmation(..)
         , State
         , folderIsEmpty
+        , hasFiles
         , isExpanded
         , isIgnored
         , isUserKeyAlreadyAdded
@@ -239,7 +248,7 @@ usersTab toRootMsg vaultId state model =
                 [ div
                     [ class "Add-User", onEnter searchKeys ]
                     [ dialogInput "User"
-                        [ userInput vaultId state ]
+                        [ userInput vaultId state model ]
                     ]
                 , div [ class "UserKey-Selection" ]
                     [ rootMsg <| userKeySelection state model
@@ -322,11 +331,11 @@ filesTab toRootMsg vaultId state model =
     ( t (VaultDialogText NameAndFilesTab) model
     , div []
         [ dialogInput "Name"
-            [ nameInput toRootMsg state ]
+            [ nameInput toRootMsg state model ]
         , dialogInput "Folder"
             [ Html.map toRootMsg <| openFolderButton vaultId state model ]
         , dialogInput "FileSelection"
-            [ Html.map toRootMsg <| fileSelectionContainer state ]
+            [ Html.map toRootMsg <| fileSelectionContainer state model ]
         ]
     )
 
@@ -622,31 +631,59 @@ openFolderButton vaultId state model =
         ( folderPath, msg, tooltipMsg ) =
             case ( state.cloneStatus, state.localFolderPath ) of
                 ( NotCloned, Nothing ) ->
-                    ( "Select Folder to clone vault to"
+                    ( t (VaultDialogText <| FolderButtonLabel CloneIntoFolder)
+                        model
                     , OpenFolderDialog
-                    , "By clicking here, you select a folder to use for this vault to download its files to."
+                    , t (VaultDialogText <| FolderButtonTooltip CloneIntoFolder)
+                        model
                     )
 
                 ( _, Nothing ) ->
-                    ( "Select Folder"
+                    ( t (VaultDialogText <| FolderButtonLabel SelectFolder)
+                        model
                     , OpenFolderDialog
-                    , "Select a new folder for this vault."
+                    , t (VaultDialogText <| FolderButtonTooltip SelectFolder)
+                        model
                     )
 
                 ( New, Just path ) ->
-                    ( pathString path
-                    , OpenFolderDialog
-                    , "This new vault will synchronize files in this folder."
-                    )
+                    let
+                        ps =
+                            pathString path
+                    in
+                        ( t
+                            (VaultDialogText <|
+                                FolderButtonLabel <|
+                                    FolderSelectedForSync ps
+                            )
+                            model
+                        , OpenFolderDialog
+                        , t
+                            (VaultDialogText <|
+                                FolderButtonTooltip <|
+                                    FolderSelectedForSync ps
+                            )
+                            model
+                        )
 
                 ( _, Just path ) ->
                     let
                         ps =
                             pathString path
                     in
-                        ( ps
+                        ( t
+                            (VaultDialogText <|
+                                FolderButtonLabel <|
+                                    SyncedFolder ps
+                            )
+                            model
                         , OpenFolder ps
-                        , "This vault is synchronizing files from and to this folder."
+                        , t
+                            (VaultDialogText <|
+                                FolderButtonTooltip <|
+                                    SyncedFolder ps
+                            )
+                            model
                         )
     in
         span [ class "Button-Folder" ]
@@ -666,8 +703,8 @@ openFolderButton vaultId state model =
             ]
 
 
-nameInput : (Msg -> Model.Msg) -> State -> Html Model.Msg
-nameInput msg state =
+nameInput : (Msg -> Model.Msg) -> State -> HasLanguage a -> Html Model.Msg
+nameInput msg state model =
     span [ onAnyKeyDown (msg NameChanged) ]
         [ labeledItem Left
             [ class "InputLabel" ]
@@ -676,7 +713,7 @@ nameInput msg state =
             (tooltipItem
                 { position = Bottom
                 , length = Auto
-                , text = "The name of the vault. Chosen by the owner."
+                , text = t (VaultDialogText VaultNameTooltip) model
                 }
                 [ Ui.Input.view state.nameInput
                     |> Html.map (msg << NameInputMsg)
@@ -715,8 +752,8 @@ iconInput state model =
             [ icon ]
 
 
-userInput : VaultId -> State -> Html Model.Msg
-userInput vaultId state =
+userInput : VaultId -> State -> HasLanguage a -> Html Model.Msg
+userInput vaultId state model =
     labeledItem Left
         [ class "InputLabel" ]
         (Just (Model.FocusOn state.userInput.uid))
@@ -724,7 +761,7 @@ userInput vaultId state =
         (tooltipItem
             { position = Bottom
             , length = Auto
-            , text = "Search for a user's email address to add them to this vault"
+            , text = t (VaultDialogText UserInputTooltip) model
             }
             [ Ui.Input.view
                 state.userInput
@@ -733,8 +770,8 @@ userInput vaultId state =
         )
 
 
-fileSelectionContainer : State -> Html Msg
-fileSelectionContainer state =
+fileSelectionContainer : State -> HasLanguage a -> Html Msg
+fileSelectionContainer state model =
     let
         settings =
             { direction = "column"
@@ -742,16 +779,24 @@ fileSelectionContainer state =
             , align = "start"
             }
 
-        hasFiles =
-            not <| Dict.isEmpty state.localFolderItems
-
         body =
-            if hasFiles then
+            if hasFiles state then
                 [ labeledItem Left
                     [ class "InputLabel" ]
                     Nothing
-                    (text "Files")
-                    (Ui.Container.view settings [] (renderFolders state))
+                    (text <| t (VaultDialogText FilesLabel) model)
+                    (Ui.Container.view settings
+                        []
+                        [ (tooltipItem
+                            { position = Top
+                            , length = XLarge
+                            , text =
+                                t (VaultDialogText FileSelectionTooltip) model
+                            }
+                            (renderFolders state)
+                          )
+                        ]
+                    )
                 ]
             else
                 []
@@ -771,13 +816,7 @@ renderFolders state =
                 rootFolders =
                     List.map (renderFolder state) folders
             in
-                [ tooltipItem
-                    { position = Top
-                    , length = XLarge
-                    , text = "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
-                    }
-                    (rootFiles ++ rootFolders)
-                ]
+                (rootFiles ++ rootFolders)
 
         [] ->
             []

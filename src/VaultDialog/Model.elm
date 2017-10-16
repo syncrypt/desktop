@@ -577,3 +577,8 @@ eventDistVal event =
 
                 Just val ->
                     Date.toTime val
+
+
+hasFiles : State -> Bool
+hasFiles state =
+    not <| Dict.isEmpty state.localFolderItems

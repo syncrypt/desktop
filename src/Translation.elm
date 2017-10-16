@@ -4,6 +4,7 @@ module Translation
         , NotificationText(..)
         , StatsText(..)
         , VaultDialogText(..)
+        , FolderButtonType(..)
         , t
         , translate
         , timeAgo
@@ -85,6 +86,14 @@ type VaultDialogText
     | CryptoTab
     | LogTab
     | AdminTab
+    | VaultNameLabel
+    | VaultNameTooltip
+    | FolderLabel
+    | FolderButtonLabel FolderButtonType
+    | FolderButtonTooltip FolderButtonType
+    | FilesLabel
+    | FileSelectionTooltip
+    | UserInputTooltip
     | CryptoTabInfoText
     | VaultIdLabel
     | VaultIdTooltip
@@ -110,6 +119,13 @@ type VaultDialogText
     | VaultExportButtonInfo
     | AskDeleteVault
     | AskDeleteVaultExtended
+
+
+type FolderButtonType
+    = SelectFolder
+    | CloneIntoFolder
+    | FolderSelectedForSync String
+    | SyncedFolder String
 
 
 {-| Translates a `Text` into a `String` based on `language`.
@@ -291,6 +307,52 @@ translateEnglishVaultDialogText vt =
 
         AdminTab ->
             "Administration"
+
+        VaultNameLabel ->
+            "Name"
+
+        VaultNameTooltip ->
+            "The name of the vault. Chosen by the owner."
+
+        FolderLabel ->
+            "Folder"
+
+        FolderButtonLabel t ->
+            case t of
+                SelectFolder ->
+                    "Select Folder"
+
+                CloneIntoFolder ->
+                    "Select Folder to clone vault to"
+
+                FolderSelectedForSync path ->
+                    path
+
+                SyncedFolder path ->
+                    path
+
+        FolderButtonTooltip t ->
+            case t of
+                SelectFolder ->
+                    "Select a new folder for this vault."
+
+                CloneIntoFolder ->
+                    "By clicking here, you select a folder to use for this vault to download its files to."
+
+                FolderSelectedForSync _ ->
+                    "This new vault will synchronize files in this folder."
+
+                SyncedFolder _ ->
+                    "This vault is synchronizing files from and to this folder."
+
+        FilesLabel ->
+            "Files"
+
+        FileSelectionTooltip ->
+            "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
+
+        UserInputTooltip ->
+            "Search for a user's email address to add them to this vault."
 
         CryptoTabInfoText ->
             "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
@@ -523,6 +585,52 @@ translateGermanVaultDialogText vt =
 
         AdminTab ->
             "Administration"
+
+        VaultNameLabel ->
+            "Name"
+
+        VaultNameTooltip ->
+            "Name des Vaults. Wird vom Eigentümer festgelegt."
+
+        FolderLabel ->
+            "Ordner"
+
+        FolderButtonLabel t ->
+            case t of
+                SelectFolder ->
+                    "Ordner auswählen"
+
+                CloneIntoFolder ->
+                    "Ordner für Synchronisation auswählen"
+
+                FolderSelectedForSync path ->
+                    path
+
+                SyncedFolder path ->
+                    path
+
+        FolderButtonTooltip t ->
+            case t of
+                SelectFolder ->
+                    "Wähle einen neuen Ordner für diesen Vault aus."
+
+                CloneIntoFolder ->
+                    "Klicke hier um einen Ordner für diesen Vault auszuwählen."
+
+                FolderSelectedForSync _ ->
+                    "Dieser neue Vault wird Dateien in diesem Ordner synchronisieren."
+
+                SyncedFolder _ ->
+                    "Dieser Vault synchronisiert Dateien in diesem Ordner."
+
+        FilesLabel ->
+            "Dateien"
+
+        FileSelectionTooltip ->
+            "Hier siehst du alle Dateien in diesem Vault. Du kannst einzelne Dateien und Unterordner von der automatischen Synchronisation ausschließen, falls du bestimmte Dateien nicht hoch- bzw. runterladen willst."
+
+        UserInputTooltip ->
+            "Gib die Email einer Person ein, die du in diesen Vault einladen möchtest."
 
         CryptoTabInfoText ->
             "Hier kannst du alle kryptographischen Details dieses Vaults einsehen."
