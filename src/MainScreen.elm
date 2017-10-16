@@ -21,6 +21,7 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import Time
 import Translation exposing (NotificationText(..), Text(..), t, translate)
+import Ui.Input
 import Ui.NotificationCenter
 import Util exposing (Direction(..), IconButton(..), iconButton, (~>))
 import VaultDialog.Model exposing (CloneStatus(..))
@@ -29,8 +30,8 @@ import VaultDialog.View
 import VaultList
 import WizardDialog
     exposing
-        ( ButtonSettings(Default, Visible)
-        , Button(Cancel, CustomButton)
+        ( Button(Cancel, CustomButton)
+        , ButtonSettings(Default, Visible)
         , Step(..)
         )
 
@@ -325,6 +326,23 @@ update msg model =
                 |> WizardDialog.close
                 |> sendFeedback
 
+        SetupWizardMsg msg ->
+            model ! []
+
+
+
+-- TODO:
+-- case msg of
+--     EmailInputMsg msg ->
+--         Ui.Input.update msg model.accountSetupWizard.emailInput
+--
+--
+--     PasswordInputMsg msg ->
+--         Ui.Input.update msg model.accountSetupWizard.passwordInput
+--
+--     PasswordConfirmationInputMsg msg ->
+--         Ui.Input.update msg model.accountSetupWizard.passwordConfirmationInput
+
 
 sendFeedback : Model -> ( Model, Cmd Msg )
 sendFeedback model =
@@ -355,13 +373,15 @@ openSetupWizardIfFirstLaunch model =
         model
 
 
+wizardContent : List (Html msg) -> Html msg
+wizardContent body =
+    div [ class "MainScreen-SetupWizard" ]
+        body
+
+
 openSetupWizard : Model -> Model
 openSetupWizard model =
     let
-        wizardContent body =
-            div [ class "MainScreen-SetupWizard" ]
-                body
-
         steps =
             [ Step
                 { title = "Welcome to Syncrypt"
@@ -370,17 +390,32 @@ openSetupWizard model =
                         [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
                 , buttons = Default
                 }
-            , Step
-                { title = "Account setup"
-                , contents =
-                    wizardContent
-                        [ text "Setup your account here" ]
-                , buttons = Default
-                }
+            , setupWizardAccountSetupStep model
             ]
     in
         model
             |> WizardDialog.open steps SetupWizardFinished
+
+
+setupWizardAccountSetupStep : HasAccountSetupWizard a -> Step Msg
+setupWizardAccountSetupStep ({ accountSetupWizard } as model) =
+    Step
+        { title = "Account Setup"
+        , contents =
+            wizardContent
+                [ text "Setup your account here"
+                , text "Email"
+                , Ui.Input.view accountSetupWizard.emailInput
+                    |> Html.map (Model.SetupWizardMsg << EmailInputMsg)
+                , text "Password"
+                , Ui.Input.view accountSetupWizard.passwordInput
+                    |> Html.map (Model.SetupWizardMsg << PasswordInputMsg)
+                , text "Password Confirmation"
+                , Ui.Input.view accountSetupWizard.passwordConfirmationInput
+                    |> Html.map (Model.SetupWizardMsg << PasswordConfirmationInputMsg)
+                ]
+        , buttons = Default
+        }
 
 
 openFeedbackWizard : Model -> Model

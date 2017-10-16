@@ -7,18 +7,12 @@ import Data.Vault exposing (FlyingVault, Vault, VaultId)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
-import Json.Decode.Pipeline
-    exposing
-        ( decode
-        , optional
-        , optionalAt
-        , required
-        , requiredAt
-        )
+import Json.Decode.Pipeline exposing (decode, optional, optionalAt, required, requiredAt)
 import Language exposing (Language(..))
 import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
+import Ui.Input
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
@@ -64,7 +58,19 @@ type alias Model =
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
     , feedback : Maybe String
+    , accountSetupWizard : AccountSetupWizardState
     }
+
+
+type alias AccountSetupWizardState =
+    { emailInput : Ui.Input.Model
+    , passwordInput : Ui.Input.Model
+    , passwordConfirmationInput : Ui.Input.Model
+    }
+
+
+type alias HasAccountSetupWizard a =
+    { a | accountSetupWizard : AccountSetupWizardState }
 
 
 type State
@@ -123,6 +129,13 @@ type Msg
     | SentFeedback (WebData String)
     | FeedbackEntered String
     | SendFeedback
+    | SetupWizardMsg SetupWizardMsg
+
+
+type SetupWizardMsg
+    = EmailInputMsg Ui.Input.Msg
+    | PasswordInputMsg Ui.Input.Msg
+    | PasswordConfirmationInputMsg Ui.Input.Msg
 
 
 
@@ -220,6 +233,15 @@ init config =
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
     , feedback = Nothing
+    , accountSetupWizard =
+        { emailInput = Ui.Input.init ()
+        , passwordInput =
+            Ui.Input.init ()
+                |> Ui.Input.kind "password"
+        , passwordConfirmationInput =
+            Ui.Input.init ()
+                |> Ui.Input.kind "password"
+        }
     }
 
 
