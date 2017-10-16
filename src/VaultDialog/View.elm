@@ -985,7 +985,7 @@ userKeyCheckbox email userKey state model =
 
 userList : State -> Model -> Html Msg
 userList state model =
-    div [ class "Vault-Dialog-UserList" ] <|
+    div [ class "UserList" ] <|
         (h4 [] [ text <| t (VaultDialogText VaultUsersLabel) model ])
             :: case state.users of
                 Success users ->

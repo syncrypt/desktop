@@ -125,7 +125,8 @@
 
 
   .Input-User ui-input {
-    width: 495px
+    width: 600px;
+    display: table-cell;
   }
 
 
@@ -212,12 +213,11 @@
   .User {
     margin-top: 5px;
     margin-bottom: 5px;
-    padding: 5px;
     cursor: default;
   }
 
   .UserList {
-    margin-bot: 20px;
+    margin-bottom: 20px;
   }
 
   .User:hover {
@@ -235,8 +235,8 @@
   }
 
   .UserAddedTime {
-    right: 35px;
-    position: absolute;
+    position: relative;
+    float: right;
     font-weight: normal;
   }
 
@@ -253,7 +253,8 @@
   }
 
   .SelectKey {
-    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
   .SelectKey:hover {
@@ -262,8 +263,8 @@
   }
 
   .UserKeyFingerprints {
-    right: 35px;
-    position: absolute;
+    position: relative;
+    float: right;
     font-family: monospace;
     text-transform: uppercase;
     margin-top: 7px;
@@ -278,8 +279,8 @@
   }
 
   .UserKeyCreatedTime {
-    right: 35px;
-    position: absolute;
+    position: relative;
+    float: right;
   }
 
   .Icon-Label {
