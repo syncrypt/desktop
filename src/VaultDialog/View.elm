@@ -180,13 +180,38 @@ tabContents vaultId state model =
     let
         msg =
             Model.VaultDialogMsg vaultId
+
+        basicTabs =
+            if isOwner vaultId model then
+                [ filesTab msg vaultId state model
+                , usersTab msg vaultId state model
+                ]
+            else
+                [ filesTab msg vaultId state model ]
+
+        clonedTabs =
+            [ cryptoTab vaultId state model
+            , logTab vaultId state model
+            , adminTab vaultId state model
+            ]
+
+        notClonedTabs =
+            [ cryptoTab vaultId state model
+            , adminTab vaultId state model
+            ]
+
+        tabs =
+            case state.cloneStatus of
+                New ->
+                    basicTabs
+
+                Cloned ->
+                    basicTabs ++ clonedTabs
+
+                NotCloned ->
+                    basicTabs ++ notClonedTabs
     in
-        [ filesTab msg vaultId state model
-        , usersTab msg vaultId state model
-        , cryptoTab vaultId state model
-        , logTab vaultId state model
-        , adminTab vaultId state model
-        ]
+        tabs
 
 
 usersTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
