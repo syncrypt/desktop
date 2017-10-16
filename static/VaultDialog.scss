@@ -1,10 +1,11 @@
 @import "Common.scss";
 
 .VaultDialog {
+  .InputLabel {
+    font-weight: bold;
+  }
+
   .EventFilters {
-    .Dialog-Label-Left {
-      font-weight: bold;
-    }
 
     ui-button {
       margin: $padding-small;
@@ -87,17 +88,27 @@
     }
   }
 
+  .Dialog-Label-Left,
+  .Dialog-Label-Right,
+  .Dialog-Label-Top,
+  .Dialog-Label-Bottom {
+    display: inline-block;
+  }
+
+
   .Dialog-Label-Left.InputLabel,
   .Dialog-Label-Right.InputLabel {
-    font-weight: bold;
     min-width: 60px;
-    display: inline-block;
     margin-right: 10px;
   }
 
   .Input {
     margin-top: 10px;
     margin-bottom: 10px;
+
+    .Dialog-Label-Top.InputLabel {
+      margin-bottom: 10px;
+    }
   }
 
   .Input-Name {

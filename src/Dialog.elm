@@ -37,7 +37,7 @@ labeledItem side attributes onClickMsg labelContent content =
                     (onClick msg) :: attributes
 
         label =
-            span (class className :: attrs)
+            div (class className :: attrs)
                 [ labelContent ]
     in
         orderedLabeling side label content

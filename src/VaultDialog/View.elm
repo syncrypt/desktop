@@ -346,7 +346,7 @@ logTab vaultId state model =
     , div [] <|
         [ div [ class "EventFilters" ] <|
             [ Dialog.labeledItem Left
-                []
+                [ class "InputLabel" ]
                 Nothing
                 (text "Filters")
                 (span []
@@ -754,7 +754,7 @@ iconInput state model =
 
 userInput : VaultId -> State -> HasLanguage a -> Html Model.Msg
 userInput vaultId state model =
-    labeledItem Left
+    labeledItem Top
         [ class "InputLabel" ]
         (Just (Model.FocusOn state.userInput.uid))
         (text <| t (VaultDialogText UserInputLabel) model)
