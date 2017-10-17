@@ -23,13 +23,18 @@
       }
     }
 
+    .LogLevelMenuButton {
+      margin-bottom: $padding-micro;
+      display: inline-block;
+    }
+
     .LogLevelButtons {
-      position: absolute;
+      position: fixed;
       display: inline-block;
       z-index: 5;
       width: 85px;
-      left: 0px;
-      top: 0px;
+      margin-left: $padding-small;
+      background-color: $color-bg-light;
 
       ui-button {
         position: relative;
@@ -38,8 +43,6 @@
         margin-left: auto;
         margin-right: auto;
         width: 85px;
-        left: 244px;
-        top: 30px;
       }
     }
   }

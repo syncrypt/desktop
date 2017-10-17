@@ -79,6 +79,7 @@ import VaultDialog.Model
         , hasFiles
         , isExpanded
         , isIgnored
+        , isFilterEnabled
         , isUserKeyAlreadyAdded
         , isUserKeySelected
         , keysToAdd
@@ -441,17 +442,24 @@ eventFilterButtons vaultId state =
             ]
 
         logLevelButton =
-            button [] "Log Level" (rootMsg <| ToggleViewLogLevelFilters)
+            button [ class "LogLevelMenuButton" ]
+                "Log Levels"
+                (rootMsg ToggleViewLogLevelFilters)
 
         buttons =
             [ filterButton "History" <| IsHistoryItem
             , filterButton "Log" <| IsLogItem
-            , logLevelButton
             , span [ class "LogLevelButtons" ] <|
-                if state.viewLogLevelFilters then
-                    logLevelButtons
-                else
+                if isFilterEnabled IsLogItem state then
                     []
+                else
+                    [ div [] <|
+                        logLevelButton
+                            :: if state.viewLogLevelFilters then
+                                logLevelButtons
+                               else
+                                []
+                    ]
             ]
     in
         buttons
