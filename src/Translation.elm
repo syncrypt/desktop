@@ -469,7 +469,7 @@ translateGerman text =
             "Vault (nicht synchronisiert) " ++ vaultId
 
         Updated date now ->
-            "Synchronisiert vor " ++ germanDistance date now
+            "Aktualisiert vor " ++ germanDistance date now
 
         LastUpdateToVault ->
             "Letzte Änderung am "
