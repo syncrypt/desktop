@@ -739,13 +739,17 @@ type alias HasNowAndLanguage a =
 
 timeAgo : Date -> HasNowAndLanguage a -> String
 timeAgo date { now, language } =
-    case now of
-        Just now ->
-            Date.Distance.inWordsWithConfig (dateDistanceConfig language) date now
-                ++ " ago"
+    let
+        config =
+            dateDistanceConfig language
+    in
+        case now of
+            Just now ->
+                Date.Distance.inWordsWithConfig config date now
+                    ++ " ago"
 
-        Nothing ->
-            toString date
+            Nothing ->
+                toString date
 
 
 dateDistanceConfig : Language -> Date.Distance.Types.Config

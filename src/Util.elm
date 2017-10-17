@@ -343,7 +343,9 @@ tooltipItem { position, length, text } body =
                     baseAttrs
 
                 _ ->
-                    (attribute "data-balloon-length" (tooltipLengthString length))
+                    (attribute "data-balloon-length"
+                        (tooltipLengthString length)
+                    )
                         :: baseAttrs
     in
         span attributes body

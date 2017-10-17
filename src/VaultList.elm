@@ -343,7 +343,9 @@ flyingVaultList model =
                         [ text "Load remote vaults" ]
 
                 Loading ->
-                    text <| "Fetching remote vault info " ++ Util.animatedDots model.now
+                    text <|
+                        "Fetching remote vault info "
+                            ++ Util.animatedDots model.now
 
                 Failure reason ->
                     text <| "Error fetching remote vaults: " ++ toString reason
