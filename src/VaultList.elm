@@ -49,13 +49,13 @@ updatedAtInfo vault updatedAtHeader model =
         updatedText =
             case ( vault.modificationDate, model.now ) of
                 ( Nothing, _ ) ->
-                    text (t T.NoFilesUploadedYet model)
+                    text <| t T.NoFilesUploadedYet model
 
                 ( Just date, Nothing ) ->
-                    text (toString date)
+                    text <| toString date
 
                 ( Just date, Just now ) ->
-                    text <| (t (T.Updated date now) model)
+                    text <| t (T.Updated date now) model
     in
         div [ class "VaultUpdatedAt" ]
             [ tooltipItem
