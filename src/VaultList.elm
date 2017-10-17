@@ -69,12 +69,10 @@ updatedAtInfo vault updatedAtHeader model =
 
 vaultUpdatedAtInfo : Vault -> Model -> Html msg
 vaultUpdatedAtInfo vault =
-    updatedAtInfo vault
-        (Just
-            (div [ class (vaultItemSyncStateClass vault) ]
+    updatedAtInfo vault <|
+        Just <|
+            div [ class (vaultItemSyncStateClass vault) ]
                 []
-            )
-        )
 
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
