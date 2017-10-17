@@ -145,11 +145,7 @@
     font-size: 15px;
   }
 
-  .FolderItem {
-    padding-top: 5px;
-    position: relative;
-  }
-
+  .FolderItem,
   .FolderItem-Collapsed {
     padding-top: 5px;
     position: relative;
@@ -200,7 +196,13 @@
   .FolderItem-Collapse-Toggle {
     font-size: $font-size-regular;
     font-weight: bold;
-    margin-left: 10px;
+    margin-left: $padding-small / 2;
+    background-color: $color-bg-light;
+    border: 0px;
+  }
+
+  .FolderItem-Collapse-Toggle:hover {
+    background-color: $color-highlight;
   }
 
   .Buttons {

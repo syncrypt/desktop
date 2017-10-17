@@ -892,7 +892,7 @@ folderCollapseToggle path state =
             [ onClick (CollapseFolder path)
             , class "FolderItem-Collapse-Toggle"
             ]
-            [ text "-" ]
+            [ text "v" ]
     else
         button
             [ onClick (ExpandFolder path)
@@ -901,7 +901,7 @@ folderCollapseToggle path state =
                 , ( "Hidden", isIgnored path state || folderIsEmpty path state )
                 ]
             ]
-            [ text "+" ]
+            [ text ">" ]
 
 
 fileCheckbox : Path -> State -> Html Msg
