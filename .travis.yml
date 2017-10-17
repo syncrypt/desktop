@@ -1,0 +1,35 @@
+sudo: false
+language: node_js
+node_js:
+  - "6"
+
+cache:
+  directories:
+    - node_modules
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+
+install:
+  - export CXX="g++-4.8"
+  - npm install -g npm@latest elm elm-github-install node-sass electron-forge
+  - npm install
+  - elm-install
+
+script: |
+  make release-setup
+
+#deploy:
+#  provider: releases
+#  api_key:
+#    secure: Yj2BemU/gOMNMB1P6VfUFTr6tYm5zM0Gu2dp54UOeY3FAiTz8LdI4pMv5unXtJmyFVczVpZHXoHmuHpbIrzxBZKOjlStc8C/pMo+haDjoGOBbfCC5ke7u8qbtJ3FhEmZ/BMg/UpTNi9dhjsFhuQwUZwsO6uoBU0LuPiTjZHAV2vFNKiENshE5XlPZ1SJV6QrwXRlpSJzjr8ZBeae1jpQ4BhVmatJrnoENwp/K/jPCYEqESGTWbq/mVRtgwxaTRsnP7jFdZHV4zSCIc5UrXJIAm73KsZxWc/GKYJIoArvAurwQ3ZSv8rzAvjtFOyOmDES/qHg7IOndTt5ciKM8nAetZleht2iuGDIkSLa0qrpre7rcwlahhEiGuRL/Fov3VfLctcGeRGDOAftdlWWjRxyjFHN2jt5RO3HpWW3ccNtDQX+2BOjB/ToWQa8PcMQijgSroimJExP7GB4U36mV44EpI5H1NKQb6FjkaoTUwwJJRBwzXMeB8T8R3u/ux/E7J9lhRpAD05JcBv6aULtG9KQS4C1TwAAoiDvbFniqzb8qwLfMHTt9y2DenLmc6oQIBPbFroA9Hnx6XoYIvtUK/PuMu8WIirUkugdQRJfQiiNiWoOsVYZJpxCCKC7QU3TZDl7rGSxhE6Mfk4mUicEzNwT/52zkqA+haepljfYT23BW3E=
+#  file: SyncryptDesktop-*.zip
+#  file_glob: true
+#  skip_cleanup: true
+#  on:
+#    tags: true
+#    repo: syncrypt/desktop
