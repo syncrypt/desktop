@@ -25,27 +25,6 @@ import VaultDialog.Model
 import WizardDialog
 
 
-type alias CurrentUser =
-    { firstName : String
-    , lastName : String
-    , email : Data.User.Email
-    }
-
-
-type LoginState
-    = Unknown
-    | LoggedOut
-    | LoggedIn CurrentUser
-
-
-type alias StatusResponse =
-    { success : Bool, text : Maybe String }
-
-
-type alias ExportStatusResponse =
-    { success : Bool, filename : String }
-
-
 type alias Model =
     { config : Config
     , vaults : WebData (List Vault)
@@ -65,6 +44,27 @@ type alias Model =
     , emailCompletionList : List Email
     , feedback : Maybe String
     }
+
+
+type alias CurrentUser =
+    { firstName : String
+    , lastName : String
+    , email : Data.User.Email
+    }
+
+
+type LoginState
+    = Unknown
+    | LoggedOut
+    | LoggedIn CurrentUser
+
+
+type alias StatusResponse =
+    { success : Bool, text : Maybe String }
+
+
+type alias ExportStatusResponse =
+    { success : Bool, filename : String }
 
 
 type State
