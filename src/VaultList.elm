@@ -13,6 +13,7 @@ import Date exposing (Date)
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
+import Language exposing (Language)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
@@ -27,7 +28,7 @@ import Util
 
 
 type alias HasId a =
-    { a | id : String, icon : Maybe String }
+    { a | id : String }
 
 
 type alias HasModificationDate a =
@@ -115,7 +116,11 @@ vaultActivity vault model =
         ]
 
 
-vaultUserCount : Vault -> Model -> Html msg
+type alias HasUserCountAndId a =
+    { a | userCount : Int, id : String }
+
+
+vaultUserCount : HasUserCountAndId a -> Model -> Html msg
 vaultUserCount vault model =
     vaultInfoItem vault
         [ div [ class "VaultUsers" ]
@@ -125,6 +130,24 @@ vaultUserCount vault model =
                 , text = t T.UsersWithAccessTooltip model
                 }
                 [ text (toString vault.userCount) ]
+            ]
+        ]
+
+
+type alias HasRevisionCountAndId a =
+    { a | revisionCount : Int, id : String }
+
+
+vaultRevisionCount : HasRevisionCountAndId a -> Model -> Html msg
+vaultRevisionCount vault model =
+    vaultInfoItem vault
+        [ div [ class "VaultRevisions" ]
+            [ tooltipItem
+                { position = Left
+                , length = Auto
+                , text = t T.TotalVaultRevisionsTooltip model
+                }
+                [ text (toString vault.revisionCount) ]
             ]
         ]
 
@@ -231,6 +254,7 @@ vaultItem model vault =
                 [ vaultStatus vault model ]
                 [ vaultUserCount vault model
                 , vaultActivity vault model
+                , vaultRevisionCount vault model
                 , vaultRemoveFromSyncButton vault
                 , openVaultFolderButton vault
                 ]
@@ -239,17 +263,22 @@ vaultItem model vault =
 
 flyingVaultItem : Model -> FlyingVault -> Html Msg
 flyingVaultItem model flyingVault =
-    div
-        [ class (flyingVaultItemClass model flyingVault)
-        , onClick (flyingVaultItemOnClick model flyingVault)
-        ]
-        [ model
-            |> vaultInfo flyingVault
-                [ flyingVaultInfoItem flyingVault model ]
-                [ vaultActivity (flyingVault |> asVault) model
-                , vaultUserCount (flyingVault |> asVault) model
-                ]
-        ]
+    let
+        vault =
+            flyingVault |> asVault
+    in
+        div
+            [ class (flyingVaultItemClass model flyingVault)
+            , onClick (flyingVaultItemOnClick model flyingVault)
+            ]
+            [ model
+                |> vaultInfo flyingVault
+                    [ flyingVaultInfoItem flyingVault model ]
+                    [ vaultUserCount vault model
+                    , vaultActivity vault model
+                    , vaultRevisionCount vault model
+                    ]
+            ]
 
 
 newVaultItemButton : Html Msg

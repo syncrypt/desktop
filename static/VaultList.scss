@@ -104,10 +104,6 @@ $vault-card-width: 270px;
 
   .FlyingVaultCard {
     border: 1px dashed #e6e6e6;
-    display: inline-block;
-    margin-left: 20px;
-    margin-top: 10px;
-    padding: 10px;
     transition: all 0.5s;
     background-color: #aaa;
   }
@@ -279,6 +275,12 @@ $vault-card-width: 270px;
 
   .VaultActivity {
     @include vault-info-item(url(assets/data_usage.png), 20px, -8px, 30px);
+  }
+
+  .VaultRevisions {
+    @include vault-info-item(url(assets/folder_open.png), 20px, -8px, 30px);
+    margin-left: 40px;
+    width: 100%;
   }
 
   .VaultRemoveButton {

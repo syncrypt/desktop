@@ -42,6 +42,7 @@ type Text
     | NoFilesUploadedYet
     | UsersWithAccessTooltip
     | TotalVaultSizeTooltip
+    | TotalVaultRevisionsTooltip
     | VaultListHeaderDescription
     | VaultDialogText VaultDialogText
 
@@ -205,8 +206,11 @@ translateEnglish text =
         TotalVaultSizeTooltip ->
             "Total vault size (with all file revisions on server)"
 
+        TotalVaultRevisionsTooltip ->
+            "Total number of file revisions in the vault"
+
         VaultListHeaderDescription ->
-            "These vaults are cloned and synchronized on this computer."
+            "These vaults are cloned and synchronized on this computer"
 
         VaultDialogText vt ->
             translateEnglishVaultDialogText vt
@@ -486,8 +490,11 @@ translateGerman text =
         TotalVaultSizeTooltip ->
             "Gesamtgröße des Vaults (inkl. aller Dateiversionen)"
 
+        TotalVaultRevisionsTooltip ->
+            "Anzahl aller Dateirevisionen in diesem Vault"
+
         VaultListHeaderDescription ->
-            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert."
+            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert"
 
         VaultDialogText vt ->
             translateGermanVaultDialogText vt
