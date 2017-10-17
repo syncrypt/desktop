@@ -34,6 +34,7 @@ module Util
         , monthNumber
         , fullDateString
         , shortDateString
+        , animatedDots
         )
 
 import Date exposing (Date)
@@ -551,3 +552,24 @@ shortDateString date =
             ++ (minute |> padNumber)
             ++ ":"
             ++ (second |> padNumber)
+
+
+animatedDots : Maybe Date -> String
+animatedDots maybeNow =
+    case maybeNow of
+        Just now ->
+            case Date.second now % 4 of
+                0 ->
+                    ""
+
+                1 ->
+                    "."
+
+                2 ->
+                    ".."
+
+                _ ->
+                    "..."
+
+        Nothing ->
+            "."

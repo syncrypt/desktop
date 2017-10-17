@@ -345,27 +345,7 @@ flyingVaultList model =
                         [ text "Load remote vaults" ]
 
                 Loading ->
-                    let
-                        suffix =
-                            case model.now of
-                                Just now ->
-                                    case Date.second now % 4 of
-                                        0 ->
-                                            ""
-
-                                        1 ->
-                                            "."
-
-                                        2 ->
-                                            ".."
-
-                                        _ ->
-                                            "..."
-
-                                Nothing ->
-                                    "."
-                    in
-                        text <| "Fetching remote vault info " ++ suffix
+                    text <| "Fetching remote vault info " ++ Util.animatedDots model.now
 
                 Failure reason ->
                     text <| "Error fetching remote vaults: " ++ toString reason
