@@ -29,8 +29,8 @@ install:
   - set CI=true
   - npm install -g npm@latest elm elm-github-install node-sass electron-forge
   - set PATH=%APPDATA%\npm;%PATH%
-  - npm install -g --dev
-  - npm install
+  - npm install -g
+  - npm install -g --only=dev
   - elm-install
 matrix:
   fast_finish: true
