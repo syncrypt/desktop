@@ -358,13 +358,13 @@ translateEnglishVaultDialogText vt =
             "This shows all local files in your vault. Toggle individual files or whole subdirectories from automated synchronization if you don't want all files to be uploaded & synchronized automatically."
 
         UserInputLabel ->
-            "Invite User"
+            "Invite"
 
         UserInputTooltip ->
             "Search for a user's email address to add them to this vault."
 
         VaultUsersLabel ->
-            "Vault Users"
+            "Current Members"
 
         CryptoTabInfoText ->
             "Here you can see detailed information on this vault's cryptographic settings, used algorithms and keys."
@@ -645,13 +645,13 @@ translateGermanVaultDialogText vt =
             "Hier siehst du alle Dateien in diesem Vault. Du kannst einzelne Dateien und Unterordner von der automatischen Synchronisation ausschließen, falls du bestimmte Dateien nicht hoch- bzw. runterladen willst."
 
         UserInputLabel ->
-            "User einladen"
+            "Einladen"
 
         UserInputTooltip ->
             "Gib die Email einer Person ein, die du in diesen Vault einladen möchtest."
 
         VaultUsersLabel ->
-            "Vault User"
+            "Aktuelle Mitglieder"
 
         CryptoTabInfoText ->
             "Hier kannst du alle kryptographischen Details dieses Vaults einsehen."

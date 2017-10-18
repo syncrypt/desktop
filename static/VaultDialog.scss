@@ -1,12 +1,13 @@
 @import "Common.scss";
 
+$width-files-tab-input: 250px;
+
 .VaultDialog {
   .InputLabel {
     font-weight: bold;
   }
 
   .EventFilters {
-
     ui-button {
       margin: $padding-small;
     }
@@ -32,7 +33,7 @@
       position: fixed;
       display: inline-block;
       z-index: 5;
-      width: 85px;
+      min-width: 85px;
       margin-left: $padding-small;
       background-color: $color-bg-light;
 
@@ -42,7 +43,7 @@
         margin-bottom: -10px;
         margin-left: auto;
         margin-right: auto;
-        width: 85px;
+        min-width: 85px;
       }
     }
   }
@@ -101,7 +102,7 @@
 
   .Dialog-Label-Left.InputLabel,
   .Dialog-Label-Right.InputLabel {
-    min-width: 60px;
+    min-width: 110px;
     margin-right: 10px;
   }
 
@@ -134,18 +135,21 @@
   }
 
   .Input ui-input {
-    width: 415px;
+    width: $width-files-tab-input;
+    padding: 0px;
   }
 
+  .Input ui-input {
+    input {
+      font-size: $font-size-regular;
+      height: 28px;
+      padding-left: 20px  !important;
+      padding-right: 20px !important;
+    }
 
-  .Input-User ui-input {
-    width: 600px;
-    display: table-cell;
-  }
-
-
-  .Input ui-input input {
-    font-size: 15px;
+    svg {
+      top: 8px;
+    }
   }
 
   .FolderItem,
@@ -221,9 +225,11 @@
   }
 
   .Button-Folder ui-button {
-    width: 415px;
+    width: $width-files-tab-input;
     margin-top: 5px;
     margin-bottom: 5px;
+    padding-left: 20px  !important;
+    padding-right: 20px !important;
   }
 
   .User {
@@ -314,7 +320,7 @@
   .TabInfoText {
     text-align: center;
     margin: 0.5em;
-    width: 450px;
+    width: 475px;
     margin-left: auto;
     margin-right: auto;
   }

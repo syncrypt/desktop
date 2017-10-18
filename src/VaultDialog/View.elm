@@ -765,7 +765,7 @@ iconInput state model =
 
 userInput : VaultId -> State -> HasLanguage a -> Html Model.Msg
 userInput vaultId state model =
-    labeledItem Top
+    labeledItem Left
         [ class "InputLabel" ]
         (Just (Model.FocusOn state.userInput.uid))
         (text <| t (VaultDialogText UserInputLabel) model)
