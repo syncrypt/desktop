@@ -17,6 +17,8 @@ $padding-medium: 22px;
 $padding-large: 30px;
 $padding-extra-large: 30px;
 
+$border-radius-modal: 5px;
+
 @mixin shadow {
   box-shadow: 0 5px 20px 0 rgba(0,0,0,0.1)
 }
@@ -46,6 +48,18 @@ ui-input input {
 
 ui-modal-backdrop {
   background: rgba(224, 224, 224, 0.65) !important;
+}
+
+ui-modal-wrapper {
+  border-radius: $border-radius-modal !important;
+}
+
+ui-modal-header {
+  border-radius: $border-radius-modal $border-radius-modal 0px 0px !important;
+}
+
+ui-modal-footer {
+  border-radius: 0px 0px $border-radius-modal $border-radius-modal !important;
 }
 
 ui-modal-header,

@@ -4,8 +4,9 @@ $margin-vault-list: 70px;
 $margin-vault-card-horizontal: 30px;
 $margin-vault-card-vertical: 35px;
 $padding-vault-card: 22px;
-$vault-card-height: 165px;
-$vault-card-width: 270px;
+$height-vault-card: 165px;
+$width-vault-card: 270px;
+$border-radius-vault-card: 5px;
 
 @keyframes rotating {
   from { transform: rotate(0deg); }
@@ -77,8 +78,9 @@ $vault-card-width: 270px;
 
     display: inline-block;
     border: 1px solid #e6e6e6;
-    height: $vault-card-height;
-    width: $vault-card-width;
+    border-radius: $border-radius-vault-card;
+    height: $height-vault-card;
+    width: $width-vault-card;
     overflow: hidden;
     margin-right: $margin-vault-card-horizontal;
     margin-top: $margin-vault-card-vertical;
