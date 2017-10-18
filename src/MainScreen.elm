@@ -464,8 +464,21 @@ updatedLoginState data model =
 
 updatedVaults : WebData (List Vault) -> Model -> ( Model, Cmd Msg )
 updatedVaults vaults model =
-    { model | vaults = vaults }
-        ! []
+    let
+        cmds =
+            case vaults of
+                RemoteData.Failure error ->
+                    let
+                        _ =
+                            Debug.log "Failed to get vaults, retrying" error
+                    in
+                        [ Util.delayMsg 1000 UpdateVaults ]
+
+                _ ->
+                    []
+    in
+        { model | vaults = vaults }
+            ! cmds
 
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
