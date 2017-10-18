@@ -151,6 +151,7 @@ $border-radius-vault-card: 5px;
     text-transform: uppercase;
     padding-bottom: $padding-small;
     border-bottom: 1px solid $color-bg-dark;
+    margin-right: $margin-vault-card-horizontal;
   }
 
   .VaultListInfo .Subtitle {
