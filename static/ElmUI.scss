@@ -90,8 +90,9 @@ ui-tabs-handle {
   border: 0px !important;
   border-bottom: 1px solid $color-bg-dark !important;
   background-color: $color-bg-light !important;
-  padding: 0px 10px 5px 10px !important;
-  margin: 0px auto 0px 0px;
+  padding: 0px 0px 5px 0px !important;
+  margin: 0px $padding-large 0px 0px !important;
+  text-transform: uppercase;
 
   span {
     font-size: $font-size-header !important;
