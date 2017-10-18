@@ -56,7 +56,8 @@ build_script:
   - node-sass static\VaultList.scss build\VaultList.css
   - node-sass static\WizardDialog.scss build\WizardDialog.css
   - set PATH=%APPDATA%\npm;%PATH%
-  - cd build && electron-forge make
+  - cd build && npm run make-installer
+  #electron-forge make
   - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip build\out\Syncrypt*
 
 test: off
