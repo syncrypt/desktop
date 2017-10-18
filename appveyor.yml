@@ -31,6 +31,7 @@ install:
   - set PATH=%APPDATA%\npm;%PATH%
   - npm install -g
   - npm install -g --only=dev
+  - npm install
   - elm-install
 matrix:
   fast_finish: true
