@@ -94,24 +94,27 @@ import VaultDialog.Update exposing (dialogState, isOwner)
 subscriptions : Model -> Sub Model.Msg
 subscriptions model =
     let
+        msg =
+            Model.VaultDialogMsg
+
         fileListMsg ( vaultId, rootPath, folderItem ) =
-            Model.VaultDialogMsg vaultId (NestedFileList rootPath folderItem)
+            msg vaultId <| NestedFileList rootPath folderItem
 
         selectedFolderMsg ( vaultId, path ) =
-            Model.VaultDialogMsg vaultId (SelectedFolder path)
+            msg vaultId <| SelectedFolder path
 
         selectedExportFileMsg ( vaultId, path ) =
-            Model.VaultDialogMsg vaultId (SelectedExportFile path)
+            msg vaultId <| SelectedExportFile path
 
         logStream =
             case model.state of
                 Model.ShowingVaultDetails vault ->
                     let
-                        msg =
-                            Model.VaultDialogMsg vault.id << VaultLogStream
+                        logMsg =
+                            msg vault.id << VaultLogStream
                     in
                         model.config
-                            |> Daemon.subscribeVaultLogStream vault.id msg
+                            |> Daemon.subscribeVaultLogStream vault.id logMsg
 
                 _ ->
                     Sub.none
