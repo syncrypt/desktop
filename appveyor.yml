@@ -58,7 +58,7 @@ build_script:
   - set PATH=%APPDATA%\npm;%PATH%
   - cd build && npm run make-installer
   #electron-forge make
-  - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip build\
+  - 7z a syncrypt-desktop-%SYNCRYPT_VER%-win-%PLATFORM%.zip out\
 
 test: off
 shallow_clone: true
