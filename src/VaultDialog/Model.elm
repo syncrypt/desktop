@@ -430,13 +430,10 @@ sortBy newSortBy state =
 
 filterEventsBy : EventFilter -> State -> State
 filterEventsBy filter state =
-    -- if List.member filter state.eventFilters then
-    --     { state | eventFilters = List.filter ((==) filter) state.eventFilters }
-    -- else
-    --     { state | eventFilters = filter :: state.eventFilters }
     { state | eventFilters = toggleFilter filter state.eventFilters }
 
 
+toggleFilter : EventFilter -> List EventFilter -> List EventFilter
 toggleFilter filter filters =
     case filters of
         [] ->
