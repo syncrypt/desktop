@@ -37,7 +37,7 @@ type alias UserKey =
 
 
 type alias EmailWithFingerPrint =
-    ( String, Fingerprint )
+    ( Email, Fingerprint )
 
 
 
