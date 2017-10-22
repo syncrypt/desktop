@@ -7,6 +7,7 @@ import Dialog exposing (asModalIn)
 import Dict
 import Json.Decode
 import Model exposing (Model, vaultWithId)
+import Mouse
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
@@ -23,6 +24,7 @@ import VaultDialog.Model
         , Msg(..)
         , RequiresConfirmation(..)
         , State
+        , MouseDrag
         , addFolder
         , collapseFolder
         , expandFolder
@@ -30,6 +32,7 @@ import VaultDialog.Model
         , isIgnored
         , toggleIgnorePath
         , toggleUserKey
+        , getMousePosition
         )
 import VaultDialog.Ports
 
@@ -216,6 +219,33 @@ update msg vaultId ({ vaultDialogs } as model) =
                     |> asModalIn state
                     |> asStateIn vaultId { model | state = Model.ShowingAllVaults }
                     |> close vaultId
+
+            DragStart xy ->
+                ({ state
+                    | mouseDrag = Just (MouseDrag xy xy)
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            DragAt xy ->
+                ({ state
+                    | mouseDrag =
+                        state.mouseDrag
+                            |> Maybe.map (\{ start } -> MouseDrag start xy)
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
+
+            DragEnd _ ->
+                ({ state
+                    | mousePos = getMousePosition state
+                    , mouseDrag = Nothing
+                 }
+                    |> asStateIn vaultId model
+                )
+                    ! []
 
             NameChanged ->
                 (state

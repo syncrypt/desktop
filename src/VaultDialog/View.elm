@@ -35,8 +35,10 @@ import Html
         )
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
+import Json.Decode
 import Language exposing (HasLanguage)
 import Model exposing (Model)
+import Mouse
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
 import Translation
@@ -86,6 +88,7 @@ import VaultDialog.Model
         , sortedFolders
         , userInputEmail
         , userKeys
+        , getMousePosition
         )
 import VaultDialog.Ports
 import VaultDialog.Update exposing (dialogState, isOwner)
@@ -124,7 +127,33 @@ subscriptions model =
             , VaultDialog.Ports.selectedFolder selectedFolderMsg
             , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
             , logStream
+            , mouseSubscriptions model
             ]
+
+
+mouseSubscriptions : Model -> Sub Model.Msg
+mouseSubscriptions model =
+    case model.state of
+        Model.ShowingVaultDetails v ->
+            let
+                state =
+                    dialogState v.id model
+
+                msg =
+                    Model.VaultDialogMsg v.id
+            in
+                case state.mouseDrag of
+                    Nothing ->
+                        Sub.none
+
+                    Just _ ->
+                        Sub.batch
+                            [ Mouse.moves (msg << DragAt)
+                            , Mouse.ups (msg << DragEnd)
+                            ]
+
+        _ ->
+            Sub.none
 
 
 viewAll : Model -> List (Html Model.Msg)
@@ -160,8 +189,36 @@ view vaultId model =
                     NotCloned ->
                         t (VaultNotSynced vaultId) model
             }
+
+        realPosition =
+            getMousePosition state
+
+        -- onMouseDown : Attribute Msg
+        onMouseDown =
+            Html.Events.on "mousedown" <|
+                Json.Decode.map (Model.VaultDialogMsg vaultId << DragStart)
+                    Mouse.position
+
+        vaultDialogIsOpen =
+            case model.state of
+                Model.ShowingVaultDetails _ ->
+                    True
+
+                _ ->
+                    False
     in
-        div [ class "VaultDialog" ]
+        div
+            [ classList
+                [ ( "VaultDialog", True )
+                , ( "Dragging", vaultDialogIsOpen )
+                ]
+            , onMouseDown
+            , style
+                [ ( "position", "absolute" )
+                , ( "left", toString realPosition.x ++ "px" )
+                , ( "top", toString realPosition.y ++ "px" )
+                ]
+            ]
             [ Ui.Modal.view viewConfig state.modal ]
 
 

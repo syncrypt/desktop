@@ -20,6 +20,12 @@ ui-input input {
   font-size: $font-size-regular;
 }
 
+.Dragging {
+  ui-modal {
+    position: relative !important;
+  }
+}
+
 ui-modal-backdrop {
   background: rgba(224, 224, 224, 0.65) !important;
 }

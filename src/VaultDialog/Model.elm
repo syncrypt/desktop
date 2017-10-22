@@ -14,6 +14,7 @@ import Data.Vault
         )
 import Date exposing (Date)
 import Dict exposing (Dict)
+import Mouse
 import Path exposing (Path, asPath)
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
@@ -90,6 +91,14 @@ type alias State =
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
     , viewLogLevelFilters : Bool
+    , mousePos : Mouse.Position
+    , mouseDrag : Maybe MouseDrag
+    }
+
+
+type alias MouseDrag =
+    { start : Mouse.Position
+    , current : Mouse.Position
     }
 
 
@@ -102,6 +111,9 @@ type RequiresConfirmation
 type Msg
     = ModalMsg Ui.Modal.Msg
     | ConfirmationDialogMsg ConfirmationDialog.Msg
+    | DragStart Mouse.Position
+    | DragAt Mouse.Position
+    | DragEnd Mouse.Position
     | NameChanged
     | NameInputMsg Ui.Input.Msg
     | UserInputMsg Ui.Input.Msg
@@ -175,6 +187,8 @@ init =
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked
     , viewLogLevelFilters = False
+    , mousePos = Mouse.Position 0 0
+    , mouseDrag = Nothing
     }
 
 
@@ -582,3 +596,15 @@ eventDistVal event =
 hasFiles : State -> Bool
 hasFiles state =
     not <| Dict.isEmpty state.localFolderItems
+
+
+getMousePosition : State -> Mouse.Position
+getMousePosition { mousePos, mouseDrag } =
+    case mouseDrag of
+        Nothing ->
+            mousePos
+
+        Just { start, current } ->
+            { x = mousePos.x + current.x - start.x
+            , y = mousePos.y + current.y - start.y
+            }

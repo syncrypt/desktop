@@ -13,6 +13,7 @@ import Html.Events exposing (onClick, onInput)
 import LoginDialog.Update
 import LoginDialog.View
 import Model exposing (..)
+import Mouse
 import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
@@ -73,6 +74,7 @@ subscriptions model =
 
         _ ->
             Sub.none
+
 
 
 
