@@ -36,10 +36,6 @@ type alias UserKey =
     }
 
 
-type alias EmailWithFingerPrint =
-    ( Email, Fingerprint )
-
-
 
 -- Decoders
 

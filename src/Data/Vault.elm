@@ -4,7 +4,6 @@ import Config exposing (Config)
 import Data.User
     exposing
         ( Email
-        , EmailWithFingerPrint
         , Fingerprint
         , User
         , UserKey
