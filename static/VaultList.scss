@@ -26,7 +26,7 @@ $border-radius-vault-card: 5px;
     height: 22px;
     background-repeat: no-repeat;
     float: left;
-    background-image: url(assets/check_circle.png);
+    background-image: url(assets/check_circle_24px.svg);
     background-position: 0px;
     padding-right: 8px;
   }
@@ -42,7 +42,7 @@ $border-radius-vault-card: 5px;
     float: left;
     animation: rotating 2s linear infinite;
     animation-direction: reverse;
-    background-image: url(assets/sync_white.png);
+    background-image: url(assets/sync_white_24px.svg);
     background-position: 0px;
   }
 
@@ -70,7 +70,7 @@ $border-radius-vault-card: 5px;
     height: 22px;
     background-repeat: no-repeat;
     float: left;
-    background-image: url(assets/check.png);
+    background-image: url(assets/check_circle_24px.svg);
   }
 
   .Card {
@@ -192,7 +192,7 @@ $border-radius-vault-card: 5px;
   .VaultPlusIcon {
     height: 90px;
     width: 90px;
-    background-image: url(assets/add_orange.png);
+    background-image: url(assets/add_80px.svg);
     background-size: 90px 90px;
     background-repeat: no-repeat;
     display: inline-block;
@@ -203,13 +203,12 @@ $border-radius-vault-card: 5px;
   }
 
   .VaultPlusIcon:hover {
-    background-image: url(assets/add.png);
+    background-image: url(assets/add_80px.svg);
     opacity: 1;
   }
 
   .VaultInfo {
-    // padding-left: 70px;
-    // margin-right: 18px;
+    @include defaultCursor;
   }
 
   .VaultInfo hr {
@@ -251,6 +250,7 @@ $border-radius-vault-card: 5px;
     position: relative;
     color: $color-bg-extra-light;
     font-size: $font-size-small;
+    @include defaultCursor;
   }
 
   .VaultUpdatedAt {
@@ -265,7 +265,7 @@ $border-radius-vault-card: 5px;
     background-position-y: $bgYOffset;
     white-space: nowrap;
     width: 60px;
-    height: 25px;
+    min-height: $bgSize;
     vertical-align: middle;
     margin-top: 8px;
     padding-top: 4px;
@@ -273,15 +273,15 @@ $border-radius-vault-card: 5px;
   }
 
   .VaultUsers {
-    @include vault-info-item(url(assets/people.png), 30px, -18px, 34px);
+    @include vault-info-item(url(assets/people_24px.svg), 24px, -2px, 30px);
   }
 
   .VaultActivity {
-    @include vault-info-item(url(assets/data_usage.png), 20px, -8px, 30px);
+    @include vault-info-item(url(assets/data_usage_24px.svg), 24px, -2px, 30px);
   }
 
   .VaultRevisions {
-    @include vault-info-item(url(assets/folder_open.png), 20px, -8px, 30px);
+    @include vault-info-item(url(assets/folder_open_24px.svg), 24px, -2px, 30px);
     margin-left: 40px;
     width: 100%;
   }
@@ -305,7 +305,7 @@ $border-radius-vault-card: 5px;
 
   .VaultFolderButton {
     display: none;
-    background-image: url(assets/folder_open.png);
+    background-image: url(assets/folder_open_24px.svg);
     background-repeat: no-repeat;
     background-size: 20px 20px;
     width: 20px;

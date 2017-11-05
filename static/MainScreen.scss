@@ -136,9 +136,11 @@ li {
 .MainScreen-IconButton .Icon {
   display: inline-block;
   background-repeat:no-repeat;
-  background-size: 40px 40px;
-  width:  40px;
-  height: 40px;
+  background-size: 24px 24px;
+  width: 24px;
+  height: 24px;
+  margin-top: $padding-small;
+  margin-left: $padding-small;
 }
 
 .Hidden {

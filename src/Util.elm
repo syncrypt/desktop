@@ -426,7 +426,7 @@ iconButton buttonType attrs =
                 [ class "Icon"
                 , style
                     [ ( "backgroundImage"
-                      , "url(assets/" ++ (iconName buttonType) ++ ".png)"
+                      , "url(assets/" ++ (iconName buttonType) ++ ")"
                       )
                     ]
                 ]
@@ -440,13 +440,13 @@ iconName : IconButton -> String
 iconName buttonType =
     case buttonType of
         LogoutButton ->
-            "logout"
+            "logout.png"
 
         SettingsButton ->
-            "settings"
+            "settings_24px.svg"
 
         FeedbackButton ->
-            "feedback"
+            "feedback_24px.svg"
 
 
 iconButtonTooltip buttonType =
