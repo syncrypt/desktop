@@ -123,11 +123,11 @@ contents address { question, confirmMsg } =
         [ text question
         , div [ class "ConfirmationDialog-Buttons" ]
             [ span [ class "ConfirmationDialog-Button-Cancel" ]
-                [ Ui.Button.model "Cancel" "secondary" "medium"
+                [ Ui.Button.model "Cancel" "secondary" "small"
                     |> Ui.Button.view (address Close)
                 ]
             , span [ class "ConfirmationDialog-Button-Confirm" ]
-                [ Ui.Button.model "Confirm" "danger" "medium"
+                [ Ui.Button.model "Confirm" "danger" "small"
                     |> Ui.Button.view confirmMsg
                 ]
             ]

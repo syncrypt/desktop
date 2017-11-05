@@ -156,28 +156,6 @@ flyingVaultInfoItem vault model =
         [ flyingVaultUpdatedAtInfo vault model ]
 
 
-vaultRemoveFromSyncButton : Vault -> Html Msg
-vaultRemoveFromSyncButton vault =
-    div
-        [ class "VaultRemoveButton"
-        , attribute "data-for" "button-tooltip"
-        , attribute "data-tip" "Remove vault from sync"
-        , onClick (RemoveVaultFromSync vault.id)
-        ]
-        []
-
-
-openVaultFolderButton : Vault -> Html Msg
-openVaultFolderButton vault =
-    div
-        [ class "VaultFolderButton"
-        , attribute "data-for" "button-tooltip"
-        , attribute "data-tip" "Open Vault Folder"
-        , onClick (OpenVaultFolder vault)
-        ]
-        []
-
-
 vaultInfo :
     NameOrId vault
     -> List (Html msg)
@@ -253,8 +231,6 @@ vaultItem model vault =
                 [ vaultUserCount vault model
                 , vaultActivity vault model
                 , vaultRevisionCount vault model
-                , vaultRemoveFromSyncButton vault
-                , openVaultFolderButton vault
                 ]
         ]
 
@@ -281,15 +257,8 @@ flyingVaultItem model flyingVault =
 
 newVaultItemButton : Html Msg
 newVaultItemButton =
-    div
-        [ attribute "data-tip" "Create a new vault / Add an existing vault folder"
-        , attribute "data-offset" "{'bottom': -15, 'left': 0}"
-        , attribute "data-for" "new-vault-item-tooltip"
-        , class "VaultPlus"
-        ]
-        [ div [ class "VaultPlusIcon", onClick CreateNewVault ]
-            []
-        ]
+    div [ class "VaultPlusIcon", onClick CreateNewVault ]
+        []
 
 
 vaultList : Model -> Html Msg
