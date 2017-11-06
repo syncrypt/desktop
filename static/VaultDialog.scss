@@ -176,18 +176,6 @@ $width-files-tab-input: 250px;
     margin-top: 10px;
   }
 
-  .Checkbox ui-checkbox {
-    @include defaultCursor;
-    width:  20px !important;
-    height: 20px !important;
-    display: inline-flex !important;
-  }
-
-  .Checkbox ui-checkbox svg {
-    width:  10px !important;
-    height: 10px !important;
-  }
-
   .FolderItem-Nested {
     padding-left: $padding-large;
   }

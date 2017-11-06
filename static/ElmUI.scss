@@ -111,3 +111,15 @@ ui-tabs-handles {
   background-color: $color-bg-light !important;
   margin-bottom: 5px !important
 }
+
+ui-checkbox {
+  @include defaultCursor;
+  width:  20px !important;
+  height: 20px !important;
+  display: inline-flex !important;
+
+  svg {
+    width:  10px !important;
+    height: 10px !important;
+  }
+}
