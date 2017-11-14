@@ -28,10 +28,12 @@ import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
 import VaultList
 import WizardDialog
+import WizardDialog.Model
     exposing
         ( ButtonSettings(Default, Visible)
         , Button(Cancel, CustomButton)
         , Step(..)
+        , WizardType(..)
         )
 
 
@@ -265,10 +267,8 @@ update msg model =
                 |> SettingsDialog.Update.update msg
 
         OpenSetupWizardDialog ->
-            (model
+            model
                 |> openSetupWizard
-            )
-                ! []
 
         SetupWizardFinished ->
             ({ model | isFirstLaunch = False }
@@ -285,21 +285,17 @@ update msg model =
                     ! []
 
         UpdatedDaemonConfig (Success { gui }) ->
-            (model
+            model
                 |> updateGUIConfig gui
                 |> openSetupWizardIfFirstLaunch
-            )
-                ! []
 
         UpdatedDaemonConfig msg ->
             model
                 |> Model.retryOnFailure msg UpdateDaemonConfig
 
         OpenFeedbackWizard ->
-            (model
+            model
                 |> openFeedbackWizard
-            )
-                ! []
 
         SentFeedback (Success _) ->
             { model | feedback = Nothing }
@@ -346,80 +342,36 @@ updateGUIConfig { isFirstLaunch, language } model =
     }
 
 
-openSetupWizardIfFirstLaunch : Model -> Model
+openSetupWizardIfFirstLaunch : Model -> ( Model, Cmd Msg )
 openSetupWizardIfFirstLaunch model =
     if model.isFirstLaunch then
         model
             |> openSetupWizard
     else
         model
+            ! []
 
 
-openSetupWizard : Model -> Model
+openSetupWizard : Model -> ( Model, Cmd Msg )
 openSetupWizard model =
-    let
-        wizardContent body =
-            div [ class "MainScreen-SetupWizard" ]
-                body
-
-        steps =
-            [ Step
-                { title = "Welcome to Syncrypt"
-                , contents =
-                    wizardContent
-                        [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
-                , buttons = Default
-                }
-            , Step
-                { title = "Account setup"
-                , contents =
-                    wizardContent
-                        [ text "Setup your account here" ]
-                , buttons = Default
-                }
-            ]
-    in
-        model
-            |> WizardDialog.open steps SetupWizardFinished
+    model
+        |> WizardDialog.open
+            { address = WizardDialogMsg
+            , onFinishMsg = Just SetupWizardFinished
+            , steps = 2
+            , wizardType = SetupWizard
+            }
 
 
-openFeedbackWizard : Model -> Model
+openFeedbackWizard : Model -> ( Model, Cmd Msg )
 openFeedbackWizard model =
-    let
-        wizardContent body =
-            div [ class "FeedbackWizard" ]
-                body
-
-        steps =
-            [ Step
-                { title = "Send us feedback"
-                , contents =
-                    wizardContent
-                        [ div [ class "Label" ]
-                            [ text "Your feedback, suggestions or bug report:" ]
-                        , div []
-                            [ Html.textarea
-                                [ class "FeedbackTextArea"
-                                , cols 40
-                                , rows 10
-                                , placeholder "Type your feedback here"
-                                , onInput FeedbackEntered
-                                ]
-                                []
-                            ]
-                        ]
-                , buttons =
-                    Visible
-                        [ Cancel
-                        , CustomButton [ style [ ( "float", "right" ) ] ]
-                            "Send Feedback"
-                            SendFeedback
-                        ]
-                }
-            ]
-    in
-        model
-            |> WizardDialog.open steps SendFeedback
+    model
+        |> WizardDialog.open
+            { address = WizardDialogMsg
+            , onFinishMsg = Just SendFeedback
+            , steps = 1
+            , wizardType = FeedbackWizard
+            }
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )

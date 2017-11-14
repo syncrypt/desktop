@@ -22,7 +22,7 @@ import SettingsDialog.Model
 import Ui.NotificationCenter
 import Util exposing (findFirst)
 import VaultDialog.Model
-import WizardDialog
+import WizardDialog.Model
 
 
 type alias Model =
@@ -39,7 +39,7 @@ type alias Model =
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
     , language : Language
-    , wizardDialog : WizardDialog.State Msg
+    , wizardDialog : Maybe (WizardDialog.Model.State Msg)
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
     , feedback : Maybe String
@@ -114,7 +114,7 @@ type Msg
     | LoginResult Email (WebData StatusResponse)
     | LogoutResult (WebData StatusResponse)
     | LoginDialogMsg LoginDialog.Model.Msg
-    | WizardDialogMsg WizardDialog.Msg
+    | WizardDialogMsg WizardDialog.Model.Msg
     | SettingsDialogMsg SettingsDialog.Model.Msg
     | OpenSetupWizardDialog
     | SetupWizardFinished
@@ -216,7 +216,7 @@ init config =
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
     , language = Language.English
-    , wizardDialog = WizardDialog.init WizardDialogMsg
+    , wizardDialog = Nothing
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
     , feedback = Nothing

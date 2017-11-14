@@ -1,122 +1,78 @@
 module WizardDialog
     exposing
-        ( State
-        , Msg(..)
-        , Step(..)
-        , StepSettings
-        , Button(..)
-        , ButtonSettings(..)
-        , StepList
-        , init
-        , open
+        ( open
         , close
         , view
         , update
-        , stepsFromList
         )
 
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes
+    exposing
+        ( class
+        , classList
+        , style
+        )
 import Ui.Button
 import Ui.Modal
 import Util
+import Model
+import WizardDialog.Model exposing (..)
+import SetupWizard
+import FeedbackWizard
 
 
-type Button msg
-    = Next
-    | Prev
-    | Cancel
-    | Finish
-    | CustomButton (List (Html.Attribute msg)) String msg
-
-
-type ButtonSettings msg
-    = Default
-    | Visible (List (Button msg))
-
-
-type alias StepSettings msg =
-    { title : String, contents : Html msg, buttons : ButtonSettings msg }
-
-
-type Step msg
-    = Step (StepSettings msg)
-    | Finished
-
-
-type alias FinishedSteps msg =
-    List (Step msg)
-
-
-type alias UnfinishedSteps msg =
-    List (Step msg)
-
-
-type StepList msg
-    = StepList (FinishedSteps msg) (Step msg) (UnfinishedSteps msg)
-
-
-type alias State msg =
-    { modal : Ui.Modal.Model
-    , view : Maybe (ViewSettings msg)
-    , address : Msg -> msg
-    }
-
-
-type alias HasWizardDialog a m =
-    { a | wizardDialog : State m }
-
-
-type alias ViewSettings msg =
-    { steps : StepList msg
-    , onFinishMsg : msg
-    }
-
-
-type Msg
-    = Modal Ui.Modal.Msg
-    | Close
-    | ToNextStep
-    | ToPreviousStep
-    | ToStep Int
-    | FinishWizard
-
-
-init : (Msg -> msg) -> State msg
-init address =
-    { modal =
-        Ui.Modal.init
-            |> Ui.Modal.closable True
-            |> Ui.Modal.backdrop True
-    , view = Nothing
-    , address = address
-    }
-
-
-open : List (Step msg) -> msg -> HasWizardDialog a msg -> HasWizardDialog a msg
-open steps onFinishMsg ({ wizardDialog } as model) =
-    case steps of
-        [] ->
+open : WizardSettings msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
+open settings ({ wizardDialog } as model) =
+    case ( wizardDialog, settings.steps ) of
+        ( _, 0 ) ->
             model
+                ! []
 
-        step1 :: steps ->
-            { wizardDialog
-                | modal = Ui.Modal.open wizardDialog.modal
-                , view =
-                    Just
-                        { steps = stepsFromList step1 steps
-                        , onFinishMsg = onFinishMsg
-                        }
-            }
+        ( Nothing, _ ) ->
+            (settings
+                |> init
+                |> Just
                 |> asWizardIn model
+            )
+                ! [ Util.delayMsg 150 (settings.address Show) ]
+
+        ( Just state, _ ) ->
+            ({ state | modal = Ui.Modal.open state.modal }
+                |> Just
+                |> asWizardIn model
+            )
+                ! []
 
 
 close : HasWizardDialog a msg -> HasWizardDialog a msg
 close ({ wizardDialog } as model) =
-    { wizardDialog
-        | modal = Ui.Modal.close wizardDialog.modal
-        , view = Nothing
-    }
+    { model | wizardDialog = Nothing }
+
+
+show : HasWizardDialog a msg -> HasWizardDialog a msg
+show ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map
+            (\wizard ->
+                { wizard
+                    | modal = Ui.Modal.open wizard.modal
+                    , currentStep = 1
+                }
+            )
+        |> asWizardIn model
+
+
+hide : HasWizardDialog a msg -> HasWizardDialog a msg
+hide ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map
+            (\wizard ->
+                { wizard
+                    | modal = Ui.Modal.close wizard.modal
+                    , currentStep = 1
+                }
+            )
         |> asWizardIn model
 
 
@@ -124,9 +80,24 @@ update : Msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 update msg ({ wizardDialog } as model) =
     case msg of
         Modal msg ->
-            ({ wizardDialog | modal = Ui.Modal.update msg wizardDialog.modal }
-                |> asWizardIn model
-            )
+            case wizardDialog of
+                Nothing ->
+                    model
+                        ! []
+
+                Just state ->
+                    ({ state | modal = Ui.Modal.update msg state.modal }
+                        |> Just
+                        |> asWizardIn model
+                    )
+                        ! [ Util.delayMsg 150 (state.address Close) ]
+
+        Show ->
+            (show model)
+                ! []
+
+        Hide ->
+            (hide model)
                 ! []
 
         Close ->
@@ -146,34 +117,40 @@ update msg ({ wizardDialog } as model) =
                 ! []
 
         FinishWizard ->
-            case wizardDialog.view of
+            case wizardDialog of
                 Just { onFinishMsg } ->
-                    (close model)
-                        ! [ Util.sendMsg onFinishMsg ]
+                    case onFinishMsg of
+                        Just msg ->
+                            (close model)
+                                ! [ Util.sendMsg msg ]
 
-                Nothing ->
+                        _ ->
+                            (close model)
+                                ! []
+
+                _ ->
                     (close model)
                         ! []
 
 
-view : HasWizardDialog a msg -> Html msg
-view { wizardDialog } =
+view : Model.Model -> Html Model.Msg
+view ({ wizardDialog } as model) =
     -- don't display anything unless we have messages to produce
-    case wizardDialog.view of
+    case wizardDialog of
         Nothing ->
             div [] []
 
-        Just view ->
-            case currentStep view.steps of
-                Step stepSettings ->
-                    viewDialog wizardDialog stepSettings view
-
-                Finished ->
+        Just state ->
+            case stepSettings model state of
+                Nothing ->
                     div [] []
 
+                Just settings ->
+                    viewDialog state settings
 
-viewDialog : State msg -> StepSettings msg -> ViewSettings msg -> Html msg
-viewDialog state step view =
+
+viewDialog : State Model.Msg -> StepSettings Model.Msg -> Html Model.Msg
+viewDialog state step =
     let
         viewConfig =
             { address = state.address << Modal
@@ -181,7 +158,7 @@ viewDialog state step view =
                 [ div [ class "Content" ]
                     [ step.contents ]
                 ]
-            , footer = wizardButtons state.address view step.buttons
+            , footer = wizardButtons state step.buttons
             , title = step.title
             }
     in
@@ -198,27 +175,30 @@ button attributes title msg =
 
 
 wizardButtons :
-    (Msg -> msg)
-    -> ViewSettings msg
+    State msg
     -> ButtonSettings msg
     -> List (Html msg)
-wizardButtons address view buttonSettings =
+wizardButtons state buttonSettings =
     let
-        step : Step msg
-        step =
-            currentStep view.steps
-
         prevButton =
-            button [ class "Button-Previous" ] "Previous" (address ToPreviousStep)
+            button [ class "Button-Previous" ]
+                "Previous"
+                (state.address ToPreviousStep)
 
         nextButton =
-            button [ class "Button-Next" ] "Next" (address ToNextStep)
+            button [ class "Button-Next" ]
+                "Next"
+                (state.address ToNextStep)
 
         finishButton =
-            button [ class "Button-Finish" ] "Finish" (address FinishWizard)
+            button [ class "Button-Finish" ]
+                "Finish"
+                (state.address FinishWizard)
 
         cancelButton =
-            button [ class "Button-Cancel" ] "Cancel" (address Close)
+            button [ class "Button-Cancel" ]
+                "Cancel"
+                (state.address Close)
 
         navigationButtons buttons =
             div [ class "NavigationButtons" ]
@@ -226,7 +206,7 @@ wizardButtons address view buttonSettings =
 
         buttons : List (Html msg)
         buttons =
-            case ( hasPreviousStep view.steps, hasNextStep view.steps ) of
+            case ( hasPreviousStep state, hasNextStep state ) of
                 ( True, True ) ->
                     [ navigationButtons [ prevButton, nextButton ] ]
 
@@ -265,82 +245,62 @@ wizardButtons address view buttonSettings =
                 List.map toHtml buttons
 
 
-stepsFromList : Step msg -> List (Step msg) -> StepList msg
-stepsFromList firstStep steps =
-    StepList [] firstStep steps
+hasPreviousStep : State msg -> Bool
+hasPreviousStep { currentStep } =
+    currentStep > 1
 
 
-currentStep : StepList msg -> Step msg
-currentStep (StepList _ current _) =
-    current
+hasNextStep : State msg -> Bool
+hasNextStep { currentStep, steps } =
+    currentStep < steps
 
 
-hasPreviousStep : StepList msg -> Bool
-hasPreviousStep steps =
-    case steps of
-        StepList [] _ _ ->
-            False
-
-        _ ->
-            True
+toNextStep : State msg -> State msg
+toNextStep state =
+    if hasNextStep state then
+        { state | currentStep = state.currentStep + 1 }
+    else
+        state
 
 
-hasNextStep : StepList msg -> Bool
-hasNextStep steps =
-    case steps of
-        StepList _ _ [] ->
-            False
-
-        _ ->
-            True
-
-
-toNextStep : StepList msg -> StepList msg
-toNextStep (StepList prev current next) =
-    case next of
-        [] ->
-            StepList (current :: prev) Finished []
-
-        s :: rest ->
-            StepList (current :: prev) s rest
-
-
-toPreviousStep : StepList msg -> StepList msg
-toPreviousStep (StepList prev current next) =
-    case prev of
-        [] ->
-            StepList [] current next
-
-        s :: rest ->
-            StepList rest s (current :: next)
+toPreviousStep : State msg -> State msg
+toPreviousStep state =
+    if hasPreviousStep state then
+        { state | currentStep = state.currentStep - 1 }
+    else
+        state
 
 
 moveToPreviousStep : HasWizardDialog a msg -> HasWizardDialog a msg
 moveToPreviousStep ({ wizardDialog } as model) =
-    case wizardDialog.view of
-        Nothing ->
-            model
-
-        Just view ->
-            { wizardDialog
-                | view = Just { view | steps = toPreviousStep view.steps }
-            }
-                |> asWizardIn model
+    wizardDialog
+        |> Maybe.map toPreviousStep
+        |> asWizardIn model
 
 
 moveToNextStep : HasWizardDialog a msg -> HasWizardDialog a msg
 moveToNextStep ({ wizardDialog } as model) =
-    case wizardDialog.view of
-        Nothing ->
-            model
-
-        Just view ->
-            { wizardDialog
-                | view = Just { view | steps = toNextStep view.steps }
-            }
-                |> asWizardIn model
+    wizardDialog
+        |> Maybe.map toNextStep
+        |> asWizardIn model
 
 
-asWizardIn : HasWizardDialog a msg -> State msg -> HasWizardDialog a msg
-asWizardIn model wizard =
-    { model | wizardDialog = wizard }
+asWizardIn :
+    HasWizardDialog a msg
+    -> Maybe (State msg)
+    -> HasWizardDialog a msg
+asWizardIn model maybeWizard =
+    { model | wizardDialog = maybeWizard }
+
+
+stepSettings :
+    Model.Model
+    -> State Model.Msg
+    -> Maybe (StepSettings Model.Msg)
+stepSettings model state =
+    case state.wizardType of
+        SetupWizard ->
+            SetupWizard.stepSettings model state
+
+        FeedbackWizard ->
+            FeedbackWizard.stepSettings model state
