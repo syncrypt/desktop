@@ -7,12 +7,7 @@ module WizardDialog
         )
 
 import Html exposing (Html, div, span, text)
-import Html.Attributes
-    exposing
-        ( class
-        , classList
-        , style
-        )
+import Html.Attributes exposing (class, classList, style)
 import Ui.Button
 import Ui.Modal
 import Util
