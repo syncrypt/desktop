@@ -71,6 +71,17 @@ hide ({ wizardDialog } as model) =
         |> asWizardIn model
 
 
+hideAndClose model =
+    case model.wizardDialog of
+        Nothing ->
+            model
+                ! []
+
+        Just state ->
+            hide model
+                ! [ Util.delayMsg 250 (state.address Close) ]
+
+
 update : Msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 update msg ({ wizardDialog } as model) =
     case msg of
@@ -85,7 +96,7 @@ update msg ({ wizardDialog } as model) =
                         |> Just
                         |> asWizardIn model
                     )
-                        ! [ Util.delayMsg 150 (state.address Close) ]
+                        ! [ Util.delayMsg 150 (state.address HideAndClose) ]
 
         Show ->
             show model
@@ -98,6 +109,10 @@ update msg ({ wizardDialog } as model) =
         Close ->
             close model
                 ! []
+
+        HideAndClose ->
+            model
+                |> hideAndClose
 
         ToNextStep ->
             moveToNextStep model
@@ -193,7 +208,7 @@ wizardButtons state buttonSettings =
         cancelButton =
             button [ class "Button-Cancel" ]
                 "Cancel"
-                (state.address Close)
+                (state.address HideAndClose)
 
         navigationButtons buttons =
             div [ class "NavigationButtons" ]

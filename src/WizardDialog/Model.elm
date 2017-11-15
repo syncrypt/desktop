@@ -64,6 +64,7 @@ type Msg
     | Show
     | Hide
     | Close
+    | HideAndClose
     | ToNextStep
     | ToPreviousStep
     | ToStep Int
