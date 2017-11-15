@@ -112,20 +112,19 @@ update msg ({ wizardDialog } as model) =
                 ! []
 
         FinishWizard ->
-            case wizardDialog of
-                Just { onFinishMsg } ->
-                    case onFinishMsg of
-                        Just msg ->
-                            (close model)
-                                ! [ Util.sendMsg msg ]
-
-                        _ ->
-                            (close model)
-                                ! []
-
-                _ ->
-                    (close model)
-                        ! []
+            let
+                cmds =
+                    wizardDialog
+                        |> Maybe.map
+                            (\{ onFinishMsg } ->
+                                onFinishMsg
+                                    |> Maybe.map (\msg -> [ Util.sendMsg msg ])
+                                    |> Maybe.withDefault []
+                            )
+                        |> Maybe.withDefault []
+            in
+                (close model)
+                    ! cmds
 
 
 view : Model.Model -> Html Model.Msg
