@@ -7,6 +7,7 @@ import Model
 import WizardDialog.Model exposing (..)
 
 
+stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)
 stepSettings model state =
     let
         wizardContent body =
