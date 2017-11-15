@@ -1,9 +1,18 @@
-module SetupWizard exposing (stepSettings)
+module SetupWizard exposing (settings, stepSettings)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Model
 import WizardDialog.Model exposing (..)
+
+
+settings : Model.Model -> WizardSettings Model.Msg
+settings model =
+    { address = Model.WizardDialogMsg
+    , onFinishMsg = Just Model.SetupWizardFinished
+    , steps = 2
+    , wizardType = SetupWizard
+    }
 
 
 stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)

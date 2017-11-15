@@ -34,6 +34,8 @@ import WizardDialog.Model
         , Button(Cancel, CustomButton)
         , WizardType(..)
         )
+import SetupWizard
+import FeedbackWizard
 
 
 -- INIT
@@ -354,23 +356,13 @@ openSetupWizardIfFirstLaunch model =
 openSetupWizard : Model -> ( Model, Cmd Msg )
 openSetupWizard model =
     model
-        |> WizardDialog.open
-            { address = WizardDialogMsg
-            , onFinishMsg = Just SetupWizardFinished
-            , steps = 2
-            , wizardType = SetupWizard
-            }
+        |> WizardDialog.open (SetupWizard.settings model)
 
 
 openFeedbackWizard : Model -> ( Model, Cmd Msg )
 openFeedbackWizard model =
     model
-        |> WizardDialog.open
-            { address = WizardDialogMsg
-            , onFinishMsg = Just SendFeedback
-            , steps = 1
-            , wizardType = FeedbackWizard
-            }
+        |> WizardDialog.open (FeedbackWizard.settings model)
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )

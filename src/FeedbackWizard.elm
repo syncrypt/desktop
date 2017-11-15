@@ -1,10 +1,19 @@
-module FeedbackWizard exposing (stepSettings)
+module FeedbackWizard exposing (settings, stepSettings)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class, style, placeholder, rows, cols)
 import Html.Events exposing (onInput)
 import Model
 import WizardDialog.Model exposing (..)
+
+
+settings : Model.Model -> WizardSettings Model.Msg
+settings model =
+    { address = Model.WizardDialogMsg
+    , onFinishMsg = Just Model.SendFeedback
+    , steps = 1
+    , wizardType = FeedbackWizard
+    }
 
 
 stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)
