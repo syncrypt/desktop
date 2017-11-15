@@ -2,7 +2,6 @@ module WizardDialog.Model
     exposing
         ( State
         , Msg(..)
-        , Step(..)
         , StepSettings
         , Button(..)
         , ButtonSettings(..)
@@ -44,19 +43,6 @@ type ButtonSettings msg
 
 type alias StepSettings msg =
     { title : String, contents : Html msg, buttons : ButtonSettings msg }
-
-
-type Step msg
-    = Step (StepSettings msg)
-    | Finished
-
-
-type alias FinishedSteps msg =
-    List (Step msg)
-
-
-type alias UnfinishedSteps msg =
-    List (Step msg)
 
 
 type alias State msg =

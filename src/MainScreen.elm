@@ -32,7 +32,6 @@ import WizardDialog.Model
     exposing
         ( ButtonSettings(Default, Visible)
         , Button(Cancel, CustomButton)
-        , Step(..)
         , WizardType(..)
         )
 
