@@ -217,7 +217,7 @@ wizardButtons state buttonSettings =
         toHtml : Button msg -> Html msg
         toHtml btn =
             case btn of
-                Prev ->
+                Previous ->
                     prevButton
 
                 Next ->

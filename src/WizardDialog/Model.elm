@@ -29,8 +29,8 @@ type alias WizardSettings msg =
 
 
 type Button msg
-    = Next
-    | Prev
+    = Previous
+    | Next
     | Cancel
     | Finish
     | CustomButton (List (Html.Attribute msg)) String msg
