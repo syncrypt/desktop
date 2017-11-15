@@ -19,75 +19,92 @@ settings model =
     }
 
 
+wizardContent : List (Html msg) -> Html msg
+wizardContent body =
+    div [ class "MainScreen-SetupWizard" ]
+        body
+
+
 viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
 viewSettings model state =
-    let
-        wizardContent body =
-            div [ class "MainScreen-SetupWizard" ]
-                body
-    in
-        case state.currentStep of
-            1 ->
-                Just
-                    { title = "Welcome to Syncrypt"
-                    , contents =
-                        wizardContent
-                            [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
-                            , text "Please pick a language:"
-                            , button [ onClick <| Model.SetLanguage German ]
-                                [ text "GERMAN" ]
-                            , button [ onClick <| Model.SetLanguage English ]
-                                [ text "ENGLISH" ]
-                            ]
-                    , buttons = Default
-                    }
+    case state.currentStep of
+        1 ->
+            step1 model state
 
-            2 ->
-                Just
-                    { title = "Account setup"
-                    , contents =
-                        wizardContent
-                            [ text "Do you already have a Syncrypt Account?"
-                            , button [ onClick <| state.address (ToStep 3) ]
-                                [ text "Yes, login with account" ]
-                            , button [ onClick <| state.address (ToStep 4) ]
-                                [ text "No, sign up with new account" ]
-                            ]
-                    , buttons = Default
-                    }
+        2 ->
+            step2 model state
 
-            3 ->
-                Just
-                    { title = "Account Login"
-                    , contents =
-                        wizardContent
-                            [ labeledItem [ class "InputLabel" ]
-                                { side = Left
-                                , onClick = Nothing
-                                , label = text "Email"
-                                , item =
-                                    div []
-                                        [ input [ type_ "email" ] [ text "Your Email" ] ]
-                                }
-                            , labeledItem [ class "InputLabel" ]
-                                { side = Left
-                                , onClick = Nothing
-                                , label = text "Password"
-                                , item =
-                                    div []
-                                        [ input [ type_ "password" ] [ text "" ] ]
-                                }
-                            ]
-                    , buttons = Default
-                    }
+        3 ->
+            step3 model state
 
-            4 ->
-                Just
-                    { title = "Account Signup"
-                    , contents =
-                        wizardContent []
-                    , buttons = Default
-                    }
+        4 ->
+            step4 model state
 
-            _ ->
-                Nothing
+        _ ->
+            Nothing
+
+
+step1 model state =
+    Just
+        { title = "Welcome to Syncrypt"
+        , contents =
+            wizardContent
+                [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
+                , text "Please pick a language:"
+                , button [ onClick <| Model.SetLanguage German ]
+                    [ text "GERMAN" ]
+                , button [ onClick <| Model.SetLanguage English ]
+                    [ text "ENGLISH" ]
+                ]
+        , buttons = Default
+        }
+
+
+step2 model state =
+    Just
+        { title = "Account setup"
+        , contents =
+            wizardContent
+                [ text "Do you already have a Syncrypt Account?"
+                , button [ onClick <| state.address (ToStep 3) ]
+                    [ text "Yes, login with account" ]
+                , button [ onClick <| state.address (ToStep 4) ]
+                    [ text "No, sign up with new account" ]
+                ]
+        , buttons = Default
+        }
+
+
+step3 model state =
+    Just
+        { title = "Account Login"
+        , contents =
+            wizardContent
+                [ labeledItem [ class "InputLabel" ]
+                    { side = Left
+                    , onClick = Nothing
+                    , label = text "Email"
+                    , item =
+                        div []
+                            [ input [ type_ "email" ] [ text "Your Email" ] ]
+                    }
+                , labeledItem [ class "InputLabel" ]
+                    { side = Left
+                    , onClick = Nothing
+                    , label = text "Password"
+                    , item =
+                        div []
+                            [ input [ type_ "password" ] [ text "" ] ]
+                    }
+                ]
+        , buttons = Default
+        }
+
+
+step4 model state =
+    Just
+        { title = "Account Signup"
+        , contents =
+            wizardContent []
+        , buttons = Default
+        }
