@@ -348,7 +348,7 @@ filesTab toRootMsg vaultId state model =
 logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
     ( t (VaultDialogText LogTab) model
-    , div [] <|
+    , div []
         [ div [ class "EventFilters" ] <|
             [ Dialog.labeledItem [ class "InputLabel" ]
                 { side = Left
