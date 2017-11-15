@@ -1,4 +1,10 @@
-module Dialog exposing (WithModalState, asModalIn, labeledItem)
+module Dialog
+    exposing
+        ( WithModalState
+        , LabeledItemSettings
+        , asModalIn
+        , labeledItem
+        )
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
@@ -16,48 +22,50 @@ asModalIn state modal =
     { state | modal = modal }
 
 
-labeledItem :
-    Position
-    -> List (Html.Attribute msg)
-    -> Maybe msg
-    -> Html msg
-    -> Html msg
-    -> Html msg
-labeledItem side attributes onClickMsg labelContent content =
+type alias LabeledItemSettings msg =
+    { side : Position
+    , onClick : Maybe msg
+    , label : Html msg
+    , item : Html msg
+    }
+
+
+labeledItem : List (Html.Attribute msg) -> LabeledItemSettings msg -> Html msg
+labeledItem attributes settings =
     let
         className =
-            "Dialog-Label-" ++ toString side
+            "Dialog-Label-" ++ toString settings.side
 
         attrs =
-            case onClickMsg of
+            case settings.onClick of
                 Nothing ->
                     (class "Default-Cursor") :: attributes
 
                 Just msg ->
                     (onClick msg) :: attributes
 
-        label =
+        labelContainer =
             div (class className :: attrs)
-                [ labelContent ]
+                [ settings.label ]
     in
-        orderedLabeling side label content
+        orderedLabeling { settings | label = labelContainer }
 
 
-orderedLabeling side label content =
+orderedLabeling { side, label, item } =
     let
         labelBody =
             case side of
                 Top ->
-                    [ label, content ]
+                    [ label, item ]
 
                 Bottom ->
-                    [ content, label ]
+                    [ item, label ]
 
                 Left ->
-                    [ label, content ]
+                    [ label, item ]
 
                 Right ->
-                    [ content, label ]
+                    [ item, label ]
     in
         span []
             labelBody

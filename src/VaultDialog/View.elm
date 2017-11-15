@@ -273,17 +273,18 @@ cryptoTab vaultId state model =
 
         cryptoInfoItem label tooltip value =
             div [ class "CryptoInfoItem" ]
-                [ labeledItem Left
-                    [ class "InputLabel CryptoInfoItem-Label" ]
-                    Nothing
-                    (text label)
-                    (tooltipItem
-                        { position = Bottom
-                        , length = Auto
-                        , text = tooltip
-                        }
-                        [ text value ]
-                    )
+                [ labeledItem [ class "InputLabel CryptoInfoItem-Label" ]
+                    { side = Left
+                    , onClick = Nothing
+                    , label = (text label)
+                    , item =
+                        tooltipItem
+                            { position = Bottom
+                            , length = Auto
+                            , text = tooltip
+                            }
+                            [ text value ]
+                    }
                 ]
 
         vt vaultDialogText =
@@ -349,13 +350,14 @@ logTab vaultId state model =
     ( t (VaultDialogText LogTab) model
     , div [] <|
         [ div [ class "EventFilters" ] <|
-            [ Dialog.labeledItem Left
-                [ class "InputLabel" ]
-                Nothing
-                (text "Filters")
-                (span []
-                    (eventFilterButtons vaultId state)
-                )
+            [ Dialog.labeledItem [ class "InputLabel" ]
+                { side = Left
+                , onClick = Nothing
+                , label = (text "Filters")
+                , item =
+                    span []
+                        (eventFilterButtons vaultId state)
+                }
             ]
         , div [ class "EventTableHeader" ]
             [ table [ class "EventTable" ] <|
@@ -698,38 +700,40 @@ openFolderButton vaultId state model =
                         )
     in
         span [ class "Button-Folder" ]
-            [ labeledItem Left
-                [ class "InputLabel" ]
-                Nothing
-                (text "Folder")
-                (tooltipItem
-                    { position = Bottom
-                    , length = Auto
-                    , text = tooltipMsg
-                    }
-                    [ Ui.Button.model folderPath "primary" "small"
-                        |> Ui.Button.view msg
-                    ]
-                )
+            [ labeledItem [ class "InputLabel" ]
+                { side = Left
+                , onClick = Nothing
+                , label = text "Folder"
+                , item =
+                    tooltipItem
+                        { position = Bottom
+                        , length = Auto
+                        , text = tooltipMsg
+                        }
+                        [ Ui.Button.model folderPath "primary" "small"
+                            |> Ui.Button.view msg
+                        ]
+                }
             ]
 
 
 nameInput : (Msg -> Model.Msg) -> State -> HasLanguage a -> Html Model.Msg
 nameInput msg state model =
     span [ onAnyKeyDown (msg NameChanged) ]
-        [ labeledItem Left
-            [ class "InputLabel" ]
-            (Just (Model.FocusOn state.nameInput.uid))
-            (text "Name")
-            (tooltipItem
-                { position = Bottom
-                , length = Auto
-                , text = t (VaultDialogText VaultNameTooltip) model
-                }
-                [ Ui.Input.view state.nameInput
-                    |> Html.map (msg << NameInputMsg)
-                ]
-            )
+        [ labeledItem [ class "InputLabel" ]
+            { side = Left
+            , onClick = Just (Model.FocusOn state.nameInput.uid)
+            , label = text "Name"
+            , item =
+                tooltipItem
+                    { position = Bottom
+                    , length = Auto
+                    , text = t (VaultDialogText VaultNameTooltip) model
+                    }
+                    [ Ui.Input.view state.nameInput
+                        |> Html.map (msg << NameInputMsg)
+                    ]
+            }
         ]
 
 
@@ -765,20 +769,21 @@ iconInput state model =
 
 userInput : VaultId -> State -> HasLanguage a -> Html Model.Msg
 userInput vaultId state model =
-    labeledItem Left
-        [ class "InputLabel" ]
-        (Just (Model.FocusOn state.userInput.uid))
-        (text <| t (VaultDialogText UserInputLabel) model)
-        (tooltipItem
-            { position = Bottom
-            , length = Auto
-            , text = t (VaultDialogText UserInputTooltip) model
-            }
-            [ Ui.Input.view
-                state.userInput
-                |> Html.map (Model.VaultDialogMsg vaultId << UserInputMsg)
-            ]
-        )
+    labeledItem [ class "InputLabel" ]
+        { side = Left
+        , onClick = Just (Model.FocusOn state.userInput.uid)
+        , label = text <| t (VaultDialogText UserInputLabel) model
+        , item =
+            tooltipItem
+                { position = Bottom
+                , length = Auto
+                , text = t (VaultDialogText UserInputTooltip) model
+                }
+                [ Ui.Input.view
+                    state.userInput
+                    |> Html.map (Model.VaultDialogMsg vaultId << UserInputMsg)
+                ]
+        }
 
 
 fileSelectionContainer : State -> HasLanguage a -> Html Msg
@@ -792,22 +797,24 @@ fileSelectionContainer state model =
 
         body =
             if hasFiles state then
-                [ labeledItem Left
-                    [ class "InputLabel" ]
-                    Nothing
-                    (text <| t (VaultDialogText FilesLabel) model)
-                    (Ui.Container.view settings
-                        []
-                        [ (tooltipItem
-                            { position = Top
-                            , length = XLarge
-                            , text =
-                                t (VaultDialogText FileSelectionTooltip) model
-                            }
-                            (renderFolders state)
-                          )
-                        ]
-                    )
+                [ labeledItem [ class "InputLabel" ]
+                    { side = Left
+                    , onClick = Nothing
+                    , label = (text <| t (VaultDialogText FilesLabel) model)
+                    , item =
+                        (Ui.Container.view settings
+                            []
+                            [ (tooltipItem
+                                { position = Top
+                                , length = XLarge
+                                , text =
+                                    t (VaultDialogText FileSelectionTooltip) model
+                                }
+                                (renderFolders state)
+                              )
+                            ]
+                        )
+                    }
                 ]
             else
                 []
@@ -930,11 +937,12 @@ fileCheckbox path state =
                 |> Html.map (FileCheckBoxMsg path)
 
         checkboxWithLabel =
-            labeledItem Right
-                []
-                (Just (ToggleIgnorePath path))
-                (text (Path.folderName path))
-                checkbox
+            labeledItem []
+                { side = Right
+                , onClick = Just (ToggleIgnorePath path)
+                , label = text (Path.folderName path)
+                , item = checkbox
+                }
     in
         span [ class "Checkbox" ]
             [ checkboxWithLabel ]
@@ -982,11 +990,12 @@ userKeyCheckbox email userKey state model =
                 |> Html.map (UserKeyCheckbox email userKey)
 
         checkboxWithLabel =
-            labeledItem Right
-                []
-                labelMsg
-                (text (userKey.fingerprint ++ " - " ++ userKey.description))
-                checkbox
+            labeledItem []
+                { side = Right
+                , onClick = labelMsg
+                , label = text (userKey.fingerprint ++ " - " ++ userKey.description)
+                , item = checkbox
+                }
     in
         div [ class "SelectKey", animation 0.5 Highlight ]
             [ span [ class "Checkbox" ] [ checkboxWithLabel ]

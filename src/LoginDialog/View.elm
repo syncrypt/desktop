@@ -66,21 +66,24 @@ loginButton =
 
 emailInput : State -> Html Model.Msg
 emailInput state =
-    labeledItem Left
-        []
-        (Just (Model.FocusOn state.emailInput.uid))
-        (text "E-Mail")
-        (Ui.Input.view state.emailInput
-            |> Html.map (Model.LoginDialogMsg << EmailInput)
-        )
+    labeledItem []
+        { side = Left
+        , onClick = Just (Model.FocusOn state.emailInput.uid)
+        , label = text "E-Mail"
+        , item =
+            Ui.Input.view state.emailInput
+                |> Html.map (Model.LoginDialogMsg << EmailInput)
+        }
 
 
 passwordInput : State -> Html Model.Msg
 passwordInput state =
-    labeledItem Left
-        []
-        (Just (Model.FocusOn state.passwordInput.uid))
-        (text "Password")
-        (Ui.Input.view state.passwordInput
-            |> Html.map (Model.LoginDialogMsg << PasswordInput)
-        )
+    labeledItem []
+        { side = Left
+        , onClick = Just (Model.FocusOn state.passwordInput.uid)
+        , label = text "Password"
+        , item =
+            (Ui.Input.view state.passwordInput
+                |> Html.map (Model.LoginDialogMsg << PasswordInput)
+            )
+        }
