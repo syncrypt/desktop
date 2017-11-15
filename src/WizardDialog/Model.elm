@@ -2,7 +2,7 @@ module WizardDialog.Model
     exposing
         ( State
         , Msg(..)
-        , StepSettings
+        , ViewSettings
         , Button(..)
         , ButtonSettings(..)
         , HasWizardDialog
@@ -41,7 +41,7 @@ type ButtonSettings msg
     | Visible (List (Button msg))
 
 
-type alias StepSettings msg =
+type alias ViewSettings msg =
     { title : String, contents : Html msg, buttons : ButtonSettings msg }
 
 

@@ -1,4 +1,4 @@
-module SetupWizard exposing (settings, stepSettings)
+module SetupWizard exposing (settings, viewSettings)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
@@ -15,8 +15,8 @@ settings model =
     }
 
 
-stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)
-stepSettings model state =
+viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
+viewSettings model state =
     let
         wizardContent body =
             div [ class "MainScreen-SetupWizard" ]

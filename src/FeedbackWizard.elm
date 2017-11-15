@@ -1,4 +1,4 @@
-module FeedbackWizard exposing (settings, stepSettings)
+module FeedbackWizard exposing (settings, viewSettings)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class, style, placeholder, rows, cols)
@@ -16,8 +16,8 @@ settings model =
     }
 
 
-stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)
-stepSettings model state =
+viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
+viewSettings model state =
     Just
         { title = "Send us feedback"
         , contents =

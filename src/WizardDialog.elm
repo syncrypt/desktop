@@ -136,7 +136,7 @@ view ({ wizardDialog } as model) =
             div [] []
 
         Just state ->
-            case stepSettings model state of
+            case viewSettings model state of
                 Nothing ->
                     div [] []
 
@@ -144,7 +144,7 @@ view ({ wizardDialog } as model) =
                     viewDialog state settings
 
 
-viewDialog : State Model.Msg -> StepSettings Model.Msg -> Html Model.Msg
+viewDialog : State Model.Msg -> ViewSettings Model.Msg -> Html Model.Msg
 viewDialog state step =
     let
         viewConfig =
@@ -280,22 +280,16 @@ moveToNextStep ({ wizardDialog } as model) =
         |> asWizardIn model
 
 
-asWizardIn :
-    HasWizardDialog a msg
-    -> Maybe (State msg)
-    -> HasWizardDialog a msg
+asWizardIn : HasWizardDialog a msg -> Maybe (State msg) -> HasWizardDialog a msg
 asWizardIn model maybeWizard =
     { model | wizardDialog = maybeWizard }
 
 
-stepSettings :
-    Model.Model
-    -> State Model.Msg
-    -> Maybe (StepSettings Model.Msg)
-stepSettings model state =
+viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
+viewSettings model state =
     case state.wizardType of
         SetupWizard ->
-            SetupWizard.stepSettings model state
+            SetupWizard.viewSettings model state
 
         FeedbackWizard ->
-            FeedbackWizard.stepSettings model state
+            FeedbackWizard.viewSettings model state
