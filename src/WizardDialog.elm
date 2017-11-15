@@ -132,12 +132,12 @@ view ({ wizardDialog } as model) =
     -- don't display anything unless we have messages to produce
     case wizardDialog of
         Nothing ->
-            div [] []
+            text ""
 
         Just state ->
             case viewSettings model state of
                 Nothing ->
-                    div [] []
+                    text ""
 
                 Just settings ->
                     viewDialog state settings

@@ -103,7 +103,7 @@ view { confirmationDialog } =
     -- don't display anything unless we have messages to produce
     case confirmationDialog.view of
         Nothing ->
-            div [] []
+            text ""
 
         Just view ->
             let
