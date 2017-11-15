@@ -108,7 +108,7 @@ update msg ({ wizardDialog } as model) =
                 ! []
 
         ToStep stepNum ->
-            model
+            (moveToStep stepNum model)
                 ! []
 
         FinishWizard ->
@@ -266,6 +266,14 @@ toPreviousStep state =
         state
 
 
+toStep : Int -> State msg -> State msg
+toStep step state =
+    if step > 0 && step <= state.steps then
+        { state | currentStep = step }
+    else
+        state
+
+
 moveToPreviousStep : HasWizardDialog a msg -> HasWizardDialog a msg
 moveToPreviousStep ({ wizardDialog } as model) =
     wizardDialog
@@ -277,6 +285,13 @@ moveToNextStep : HasWizardDialog a msg -> HasWizardDialog a msg
 moveToNextStep ({ wizardDialog } as model) =
     wizardDialog
         |> Maybe.map toNextStep
+        |> asWizardIn model
+
+
+moveToStep : Int -> HasWizardDialog a msg -> HasWizardDialog a msg
+moveToStep step ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map (toStep step)
         |> asWizardIn model
 
 
