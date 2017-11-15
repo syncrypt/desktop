@@ -42,7 +42,10 @@ type ButtonSettings msg
 
 
 type alias ViewSettings msg =
-    { title : String, contents : Html msg, buttons : ButtonSettings msg }
+    { title : String
+    , contents : Html msg
+    , buttons : ButtonSettings msg
+    }
 
 
 type alias State msg =
