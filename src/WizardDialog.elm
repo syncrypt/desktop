@@ -129,18 +129,19 @@ update msg ({ wizardDialog } as model) =
 
 view : Model.Model -> Html Model.Msg
 view ({ wizardDialog } as model) =
-    -- don't display anything unless we have messages to produce
-    case wizardDialog of
-        Nothing ->
+    let
+        empty =
             text ""
 
-        Just state ->
-            case viewSettings model state of
-                Nothing ->
-                    text ""
-
-                Just settings ->
-                    viewDialog state settings
+        maybeViewDialog state =
+            state
+                |> viewSettings model
+                |> Maybe.map (viewDialog state)
+                |> Maybe.withDefault empty
+    in
+        wizardDialog
+            |> Maybe.map maybeViewDialog
+            |> Maybe.withDefault empty
 
 
 viewDialog : State Model.Msg -> ViewSettings Model.Msg -> Html Model.Msg
