@@ -1,17 +1,19 @@
 @import "Common.scss";
 
+button,
 ui-button,
 ui-tabs-handle {
   @include defaultCursor;
 }
 
-
+button,
 ui-button {
   background-color: $color-highlight !important;
   color: black !important;
   font-size: $font-size-small !important;
 }
 
+input,
 ui-input input {
   background-color: $color-bg-light !important;
   border: 2px solid $color-highlight !important;

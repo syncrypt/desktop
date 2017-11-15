@@ -1,11 +1,12 @@
 module SetupWizard exposing (settings, viewSettings)
 
 import Dialog exposing (labeledItem)
-import Html exposing (Html, button, div, input, text)
+import Html exposing (Html, button, div, input, span, text)
 import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick)
 import Language exposing (Language(..))
 import Model
+import Ui.Button
 import Util exposing (Position(..))
 import WizardDialog.Model exposing (..)
 
@@ -51,10 +52,14 @@ step1 model state =
             wizardContent
                 [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
                 , text "Please pick a language:"
-                , button [ onClick <| Model.SetLanguage German ]
-                    [ text "GERMAN" ]
-                , button [ onClick <| Model.SetLanguage English ]
-                    [ text "ENGLISH" ]
+                , div [ class "Options" ]
+                    [ button []
+                        "GERMAN"
+                        (Model.SetLanguage German)
+                    , button []
+                        "ENGLISH"
+                        (Model.SetLanguage English)
+                    ]
                 ]
         , buttons = Default
         }
@@ -66,10 +71,14 @@ step2 model state =
         , contents =
             wizardContent
                 [ text "Do you already have a Syncrypt Account?"
-                , button [ onClick <| state.address (ToStep 3) ]
-                    [ text "Yes, login with account" ]
-                , button [ onClick <| state.address (ToStep 4) ]
-                    [ text "No, sign up with new account" ]
+                , div [ class "Options" ]
+                    [ button []
+                        "Yes, login with account"
+                        (state.address (ToStep 3))
+                    , button []
+                        "No, sign up with new account"
+                        (state.address (ToStep 4))
+                    ]
                 ]
         , buttons = Default
         }
@@ -80,22 +89,24 @@ step3 model state =
         { title = "Account Login"
         , contents =
             wizardContent
-                [ labeledItem [ class "InputLabel" ]
-                    { side = Left
-                    , onClick = Nothing
-                    , label = text "Email"
-                    , item =
-                        div []
-                            [ input [ type_ "email" ] [ text "Your Email" ] ]
-                    }
-                , labeledItem [ class "InputLabel" ]
-                    { side = Left
-                    , onClick = Nothing
-                    , label = text "Password"
-                    , item =
-                        div []
-                            [ input [ type_ "password" ] [ text "" ] ]
-                    }
+                [ div [ class "Options" ]
+                    [ labeledItem [ class "InputLabel" ]
+                        { side = Left
+                        , onClick = Nothing
+                        , label = text "Email"
+                        , item =
+                            div []
+                                [ input [ type_ "email" ] [ text "Your Email" ] ]
+                        }
+                    , labeledItem [ class "InputLabel" ]
+                        { side = Left
+                        , onClick = Nothing
+                        , label = text "Password"
+                        , item =
+                            div []
+                                [ input [ type_ "password" ] [ text "" ] ]
+                        }
+                    ]
                 ]
         , buttons = Default
         }
@@ -108,3 +119,11 @@ step4 model state =
             wizardContent []
         , buttons = Default
         }
+
+
+button : List (Html.Attribute Model.Msg) -> String -> Model.Msg -> Html Model.Msg
+button attrs label msg =
+    span attrs
+        [ Ui.Button.model label "secondary" "small"
+            |> Ui.Button.view msg
+        ]

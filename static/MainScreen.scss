@@ -165,6 +165,15 @@ li {
 .MainScreen-SetupWizard {
   width: 600px;
   min-height: 300px;
+
+  .Options {
+    display: block;
+    max-width: 50%;
+    ui-button {
+      margin-top: $padding-small !important;
+      margin-right: $padding-small !important;
+    }
+  }
 }
 
 .FeedbackWizard {
