@@ -7,7 +7,7 @@ module Animation
         , loadingSpinnerIf
         )
 
-import Html exposing (Html, span, div, text)
+import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (attribute, class, classList, style)
 import Util exposing (Direction)
 
@@ -23,17 +23,17 @@ animationClass : Animation -> String
 animationClass anim =
     case anim of
         SlideIn dir ->
-            "Anim-SlideIn" ++ (toString dir)
+            "Anim-SlideIn" ++ toString dir
 
         name ->
-            "Anim-" ++ (toString name)
+            "Anim-" ++ toString name
 
 
 animation : Float -> Animation -> Html.Attribute msg
 animation duration anim =
     style
         [ ( "animation-name", animationClass anim )
-        , ( "animation-duration", (toString duration) ++ "s" )
+        , ( "animation-duration", toString duration ++ "s" )
         ]
 
 
@@ -45,7 +45,7 @@ animations duration anims =
                 |> List.map animationClass
                 |> String.join ", "
           )
-        , ( "animation-duration", (toString duration) ++ "s" )
+        , ( "animation-duration", toString duration ++ "s" )
         ]
 
 

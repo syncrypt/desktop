@@ -37,7 +37,7 @@ type alias HasModificationDate a =
 
 vaultItemSyncStateClass : Vault -> String
 vaultItemSyncStateClass vault =
-    "VaultStatus-" ++ (toString vault.status)
+    "VaultStatus-" ++ toString vault.status
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
@@ -57,14 +57,14 @@ updatedAtInfo vault updatedAtHeader model =
                 ( Just date, Just now ) ->
                     text <| t (T.Updated date now) model
     in
-        div [ class "VaultUpdatedAt" ]
-            [ tooltipItem
-                { position = Top
-                , length = Auto
-                , text = t T.LastUpdateToVaultLabel model
-                }
-                [ header, updatedText ]
-            ]
+    div [ class "VaultUpdatedAt" ]
+        [ tooltipItem
+            { position = Top
+            , length = Auto
+            , text = t T.LastUpdateToVaultLabel model
+            }
+            [ header, updatedText ]
+        ]
 
 
 vaultUpdatedAtInfo : Vault -> Model -> Html msg
@@ -86,7 +86,7 @@ flyingVaultUpdatedAtInfo flyingVault model =
                 Just _ ->
                     text <| t T.LastUpdateToVault model
     in
-        updatedAtInfo flyingVault (Just updatedText) model
+    updatedAtInfo flyingVault (Just updatedText) model
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg
@@ -181,8 +181,8 @@ vaultInfo vault body footerNodes model =
                 footerNodes
             ]
     in
-        div [ class "VaultInfo" ]
-            (vaultHeader ++ vaultBody ++ vaultFooter)
+    div [ class "VaultInfo" ]
+        (vaultHeader ++ vaultBody ++ vaultFooter)
 
 
 vaultItemOnClick : Model -> Vault -> Msg
@@ -191,15 +191,15 @@ vaultItemOnClick model vault =
         openVault =
             OpenVaultDetails vault
     in
-        case model.state of
-            ShowingVaultDetails v ->
-                if vault == v then
-                    CloseVaultDetails v.id
-                else
-                    openVault
-
-            _ ->
+    case model.state of
+        ShowingVaultDetails v ->
+            if vault == v then
+                CloseVaultDetails v.id
+            else
                 openVault
+
+        _ ->
+            openVault
 
 
 flyingVaultItemOnClick : Model -> FlyingVault -> Msg
@@ -208,15 +208,15 @@ flyingVaultItemOnClick model flyingVault =
         openFlyingVault =
             OpenFlyingVaultDetails flyingVault
     in
-        case model.state of
-            ShowingFlyingVaultDetails v ->
-                if flyingVault == v then
-                    CloseVaultDetails v.id
-                else
-                    openFlyingVault
-
-            _ ->
+    case model.state of
+        ShowingFlyingVaultDetails v ->
+            if flyingVault == v then
+                CloseVaultDetails v.id
+            else
                 openFlyingVault
+
+        _ ->
+            openFlyingVault
 
 
 vaultItem : Model -> Vault -> Html Msg
@@ -241,18 +241,18 @@ flyingVaultItem model flyingVault =
         vault =
             flyingVault |> asVault
     in
-        div
-            [ class (flyingVaultItemClass model flyingVault)
-            , onClick (flyingVaultItemOnClick model flyingVault)
-            ]
-            [ model
-                |> vaultInfo flyingVault
-                    [ flyingVaultInfoItem flyingVault model ]
-                    [ vaultUserCount vault model
-                    , vaultActivity vault model
-                    , vaultRevisionCount vault model
-                    ]
-            ]
+    div
+        [ class (flyingVaultItemClass model flyingVault)
+        , onClick (flyingVaultItemOnClick model flyingVault)
+        ]
+        [ model
+            |> vaultInfo flyingVault
+                [ flyingVaultInfoItem flyingVault model ]
+                [ vaultUserCount vault model
+                , vaultActivity vault model
+                , vaultRevisionCount vault model
+                ]
+        ]
 
 
 newVaultItemButton : Html Msg
@@ -290,8 +290,8 @@ vaultList model =
             RemoteData.withDefault [] model.vaults
                 |> List.map (vaultItem model)
     in
-        div [ class "VaultList" ]
-            ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
+    div [ class "VaultList" ]
+        ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
 flyingVaultList : Model -> Html Msg
@@ -322,15 +322,15 @@ flyingVaultList model =
                 Success _ ->
                     text "Click on a vault to clone it to your computer"
     in
-        div [ class "VaultList" ] <|
-            [ div [ class "VaultListInfo" ]
-                [ span [ class "Title" ]
-                    [ text "Available Vaults" ]
-                , span [ class "Subtitle" ]
-                    [ subtitle ]
-                ]
+    div [ class "VaultList" ] <|
+        [ div [ class "VaultListInfo" ]
+            [ span [ class "Title" ]
+                [ text "Available Vaults" ]
+            , span [ class "Subtitle" ]
+                [ subtitle ]
             ]
-                ++ flyingVaultItems
+        ]
+            ++ flyingVaultItems
 
 
 unsyncedFlyingVaults : Model -> List FlyingVault
@@ -355,8 +355,8 @@ unsyncedFlyingVaults model =
         diff =
             Set.diff flyingVaultIds vaultIds
     in
-        flyingVaults
-            |> List.filter (\fv -> Set.member fv.id diff)
+    flyingVaults
+        |> List.filter (\fv -> Set.member fv.id diff)
 
 
 view : Model -> Html Msg
@@ -373,15 +373,15 @@ vaultItemClass model vault =
         defaultClass =
             "Card VaultCard"
     in
-        case model.state of
-            ShowingVaultDetails selectedVault ->
-                if vault == selectedVault then
-                    "Card VaultCardSelected"
-                else
-                    defaultClass
-
-            _ ->
+    case model.state of
+        ShowingVaultDetails selectedVault ->
+            if vault == selectedVault then
+                "Card VaultCardSelected"
+            else
                 defaultClass
+
+        _ ->
+            defaultClass
 
 
 flyingVaultItemClass : Model -> FlyingVault -> String
@@ -390,12 +390,12 @@ flyingVaultItemClass model flyingVault =
         defaultClass =
             "Card FlyingVaultCard"
     in
-        case model.state of
-            ShowingFlyingVaultDetails selectedVault ->
-                if flyingVault == selectedVault then
-                    "Card VaultCardSelected"
-                else
-                    defaultClass
-
-            _ ->
+    case model.state of
+        ShowingFlyingVaultDetails selectedVault ->
+            if flyingVault == selectedVault then
+                "Card VaultCardSelected"
+            else
                 defaultClass
+
+        _ ->
+            defaultClass

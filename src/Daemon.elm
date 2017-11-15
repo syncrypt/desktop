@@ -151,7 +151,7 @@ subscribeVaultLogStream vaultId toMsg config =
         url =
             apiWSUrl config (apiPath (Stream (VaultLogStream vaultId)))
     in
-        WebSocket.listen url parseMsg
+    WebSocket.listen url parseMsg
 
 
 getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
@@ -223,20 +223,19 @@ invalidateFirstLaunch { config } =
         json =
             Json.Encode.object
                 [ ( "gui"
-                  , (Json.Encode.object
-                        [ ( "is_first_launch", (Json.Encode.bool False) )
+                  , Json.Encode.object
+                        [ ( "is_first_launch", Json.Encode.bool False )
                         ]
-                    )
                   )
                 ]
     in
-        config
-            |> apiRequest
-                Patch
-                DaemonConfig
-                (Json json)
-                daemonConfigDecoder
-            |> Cmd.map UpdatedDaemonConfig
+    config
+        |> apiRequest
+            Patch
+            DaemonConfig
+            (Json json)
+            daemonConfigDecoder
+        |> Cmd.map UpdatedDaemonConfig
 
 
 updateGUIConfig :
@@ -248,21 +247,20 @@ updateGUIConfig { config } guiConfig =
         json =
             Json.Encode.object
                 [ ( "gui"
-                  , (Json.Encode.object
+                  , Json.Encode.object
                         [ ( "is_first_launch", Json.Encode.bool guiConfig.isFirstLaunch )
                         , ( "language", Json.Encode.string <| toString guiConfig.language )
                         ]
-                    )
                   )
                 ]
     in
-        config
-            |> apiRequest
-                Patch
-                DaemonConfig
-                (Json json)
-                daemonConfigDecoder
-            |> Cmd.map UpdatedDaemonConfig
+    config
+        |> apiRequest
+            Patch
+            DaemonConfig
+            (Json json)
+            daemonConfigDecoder
+        |> Cmd.map UpdatedDaemonConfig
 
 
 getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
@@ -292,13 +290,13 @@ removeVault vaultId { config } =
             Data.Vault.Remove vaultId
                 |> jsonOptions config
     in
-        config
-            |> apiRequest
-                Delete
-                (Vault vaultId)
-                (Json json)
-                (succeed vaultId)
-            |> Cmd.map RemovedVaultFromSync
+    config
+        |> apiRequest
+            Delete
+            (Vault vaultId)
+            (Json json)
+            (succeed vaultId)
+        |> Cmd.map RemovedVaultFromSync
 
 
 deleteVault : VaultId -> Config -> Cmd (WebData VaultId)
@@ -384,13 +382,13 @@ exportVault vaultId path { config } =
         json =
             Json.Encode.object [ ( "path", Json.Encode.string path ) ]
     in
-        config
-            |> apiRequest
-                Post
-                (ExportVault vaultId)
-                (Json json)
-                exportStatusResponseDecoder
-            |> Cmd.map (ExportedVault vaultId)
+    config
+        |> apiRequest
+            Post
+            (ExportVault vaultId)
+            (Json json)
+            exportStatusResponseDecoder
+        |> Cmd.map (ExportedVault vaultId)
 
 
 type alias Path =
@@ -600,12 +598,12 @@ apiUrl config path =
         hasQuery =
             String.contains "?"
     in
-        -- the daemon API expects requests URLs to end with "/"
-        -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
-        if String.endsWith "/" path || hasQuery path then
-            rootUrl config path ++ path
-        else
-            rootUrl config path ++ path ++ "/"
+    -- the daemon API expects requests URLs to end with "/"
+    -- e.g. /v1/vault/ or /v1/vault/id/ and not /v1/vault or /v1/vault/id
+    if String.endsWith "/" path || hasQuery path then
+        rootUrl config path ++ path
+    else
+        rootUrl config path ++ path ++ "/"
 
 
 apiWSUrl : Config -> Path -> Url
@@ -619,7 +617,7 @@ apiWSUrl config path =
                 _ ->
                     path
     in
-        "ws://" ++ url
+    "ws://" ++ url
 
 
 {-| Returns the required `Http.Header`s required by the daemon JSON API.

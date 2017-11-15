@@ -1,12 +1,12 @@
 module SetupWizard exposing (settings, viewSettings)
 
 import Dialog exposing (labeledItem)
-import Util exposing (Position(..))
-import Html exposing (Html, div, text, button, input)
+import Html exposing (Html, button, div, input, text)
 import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick)
-import Model
 import Language exposing (Language(..))
+import Model
+import Util exposing (Position(..))
 import WizardDialog.Model exposing (..)
 
 

@@ -1,4 +1,4 @@
-module Language exposing (Language(..), HasLanguage)
+module Language exposing (HasLanguage, Language(..))
 
 
 type Language

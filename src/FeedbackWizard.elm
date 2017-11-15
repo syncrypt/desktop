@@ -1,7 +1,7 @@
 module FeedbackWizard exposing (settings, viewSettings)
 
 import Html exposing (Html, div, text)
-import Html.Attributes exposing (class, style, placeholder, rows, cols)
+import Html.Attributes exposing (class, cols, placeholder, rows, style)
 import Html.Events exposing (onInput)
 import Model
 import WizardDialog.Model exposing (..)

@@ -20,8 +20,8 @@ view ({ settingsDialog } as model) =
             , title = "Program Settings"
             }
     in
-        div [ class "SettingsDialog" ]
-            [ Ui.Modal.view viewConfig settingsDialog.modal ]
+    div [ class "SettingsDialog" ]
+        [ Ui.Modal.view viewConfig settingsDialog.modal ]
 
 
 languageButton : Language -> HasSettingsDialog a -> Html Model.Msg
@@ -30,15 +30,15 @@ languageButton forLanguage { language, settingsDialog } =
         onClickMsg =
             Model.SettingsDialogMsg <| LanguageSelection forLanguage
     in
-        span
-            [ classList
-                [ ( "LanguageButton", True )
-                , ( "Active", language == forLanguage )
-                ]
+    span
+        [ classList
+            [ ( "LanguageButton", True )
+            , ( "Active", language == forLanguage )
             ]
-            [ Ui.Button.model (toString forLanguage) "secondary" "small"
-                |> Ui.Button.view onClickMsg
-            ]
+        ]
+        [ Ui.Button.model (toString forLanguage) "secondary" "small"
+            |> Ui.Button.view onClickMsg
+        ]
 
 
 contents : HasSettingsDialog a -> List (Html Model.Msg)

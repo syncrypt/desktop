@@ -2,11 +2,11 @@ module ConfirmationDialog
     exposing
         ( Model
         , Msg(..)
+        , close
         , init
         , open
-        , close
-        , view
         , update
+        , view
         )
 
 import Html exposing (Html, div, form, span, text)
@@ -108,13 +108,13 @@ view { confirmationDialog } =
         Just view ->
             let
                 viewConfig =
-                    { address = (confirmationDialog.address << Modal)
+                    { address = confirmationDialog.address << Modal
                     , contents = contents confirmationDialog.address view
                     , footer = []
                     , title = view.title
                     }
             in
-                Ui.Modal.view viewConfig confirmationDialog.modal
+            Ui.Modal.view viewConfig confirmationDialog.modal
 
 
 contents : (Msg -> msg) -> ViewSettings msg -> List (Html msg)

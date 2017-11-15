@@ -158,8 +158,8 @@ keyStateDecoder =
                     _ ->
                         Uninitialized
     in
-        Json.string
-            |> andThen parseKeyState
+    Json.string
+        |> andThen parseKeyState
 
 
 loginStateDecoder : Json.Decoder LoginState
@@ -178,9 +178,9 @@ statusResponseDecoder =
             Json.string
                 |> andThen (\s -> succeed (s == "ok"))
     in
-        decode StatusResponse
-            |> required "status" parseStatus
-            |> optional "text" (Json.maybe Json.string) Nothing
+    decode StatusResponse
+        |> required "status" parseStatus
+        |> optional "text" (Json.maybe Json.string) Nothing
 
 
 exportStatusResponseDecoder : Json.Decoder ExportStatusResponse
@@ -190,9 +190,9 @@ exportStatusResponseDecoder =
             Json.string
                 |> andThen (\s -> succeed (s == "ok"))
     in
-        decode ExportStatusResponse
-            |> required "status" parseStatus
-            |> required "filename" Json.string
+    decode ExportStatusResponse
+        |> required "status" parseStatus
+        |> required "filename" Json.string
 
 
 
@@ -230,17 +230,17 @@ vaultWithId vaultId { vaults, flyingVaults } =
         hasId =
             \v -> v.id == vaultId
     in
-        case findFirst hasId (RemoteData.withDefault [] vaults) of
-            Nothing ->
-                case findFirst hasId (RemoteData.withDefault [] flyingVaults) of
-                    Nothing ->
-                        Data.Vault.init vaultId
+    case findFirst hasId (RemoteData.withDefault [] vaults) of
+        Nothing ->
+            case findFirst hasId (RemoteData.withDefault [] flyingVaults) of
+                Nothing ->
+                    Data.Vault.init vaultId
 
-                    Just fv ->
-                        fv |> Data.Vault.asVault
+                Just fv ->
+                    fv |> Data.Vault.asVault
 
-            Just v ->
-                v
+        Just v ->
+            v
 
 
 vaultIds : Model -> List VaultId
@@ -252,7 +252,7 @@ vaultIds { vaults, flyingVaults } =
         orEmpty =
             RemoteData.withDefault []
     in
-        (idsOf (vaults |> orEmpty)) ++ (idsOf (flyingVaults |> orEmpty))
+    idsOf (vaults |> orEmpty) ++ idsOf (flyingVaults |> orEmpty)
 
 
 retryOnFailure : WebData a -> msg -> Model -> ( Model, Cmd msg )
@@ -263,7 +263,7 @@ retryOnFailure data msg model =
                 _ =
                     Debug.log "Retrying due to failure: " ( msg, reason )
             in
-                ( model, Util.delayMsg model.config.updateInterval msg )
+            ( model, Util.delayMsg model.config.updateInterval msg )
 
         _ ->
             ( model, Cmd.none )

@@ -71,5 +71,5 @@ languageDecoder =
                         "Invalid language configured in syncrypt config: "
                             ++ toString val
     in
-        Json.string
-            |> Json.andThen convert
+    Json.string
+        |> Json.andThen convert

@@ -1,20 +1,20 @@
 module WizardDialog
     exposing
-        ( open
-        , close
-        , view
+        ( close
+        , open
         , update
+        , view
         )
 
+import FeedbackWizard
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList, style)
+import Model
+import SetupWizard
 import Ui.Button
 import Ui.Modal
 import Util
-import Model
 import WizardDialog.Model exposing (..)
-import SetupWizard
-import FeedbackWizard
 
 
 open : WizardSettings msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
@@ -88,27 +88,27 @@ update msg ({ wizardDialog } as model) =
                         ! [ Util.delayMsg 150 (state.address Close) ]
 
         Show ->
-            (show model)
+            show model
                 ! []
 
         Hide ->
-            (hide model)
+            hide model
                 ! []
 
         Close ->
-            (close model)
+            close model
                 ! []
 
         ToNextStep ->
-            (moveToNextStep model)
+            moveToNextStep model
                 ! []
 
         ToPreviousStep ->
-            (moveToPreviousStep model)
+            moveToPreviousStep model
                 ! []
 
         ToStep stepNum ->
-            (moveToStep stepNum model)
+            moveToStep stepNum model
                 ! []
 
         FinishWizard ->
@@ -123,8 +123,8 @@ update msg ({ wizardDialog } as model) =
                             )
                         |> Maybe.withDefault []
             in
-                (close model)
-                    ! cmds
+            close model
+                ! cmds
 
 
 view : Model.Model -> Html Model.Msg
@@ -139,9 +139,9 @@ view ({ wizardDialog } as model) =
                 |> Maybe.map (viewDialog state)
                 |> Maybe.withDefault empty
     in
-        wizardDialog
-            |> Maybe.map maybeViewDialog
-            |> Maybe.withDefault empty
+    wizardDialog
+        |> Maybe.map maybeViewDialog
+        |> Maybe.withDefault empty
 
 
 viewDialog : State Model.Msg -> ViewSettings Model.Msg -> Html Model.Msg
@@ -157,8 +157,8 @@ viewDialog state step =
             , title = step.title
             }
     in
-        div [ class "WizardDialog" ]
-            [ Ui.Modal.view viewConfig state.modal ]
+    div [ class "WizardDialog" ]
+        [ Ui.Modal.view viewConfig state.modal ]
 
 
 button : List (Html.Attribute msg) -> String -> msg -> Html msg
@@ -232,12 +232,12 @@ wizardButtons state buttonSettings =
                 CustomButton attrs title msg ->
                     button (attrs ++ [ class "Custom-Button" ]) title msg
     in
-        case buttonSettings of
-            Default ->
-                cancelButton :: buttons
+    case buttonSettings of
+        Default ->
+            cancelButton :: buttons
 
-            Visible buttons ->
-                List.map toHtml buttons
+        Visible buttons ->
+            List.map toHtml buttons
 
 
 hasPreviousStep : State msg -> Bool

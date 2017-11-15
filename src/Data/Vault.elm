@@ -179,19 +179,19 @@ asVault fv =
         v =
             init fv.id
     in
-        { v
-            | id = fv.id
-            , name = fv.name
-            , size = Maybe.withDefault 0 fv.size
-            , status = Unsynced
-            , userCount = fv.userCount
-            , fileCount = fv.fileCount
-            , revisionCount = fv.revisionCount
-            , resourceUri = fv.resourceUri
-            , folderPath = ""
-            , modificationDate = fv.modificationDate
-            , icon = fv.icon
-        }
+    { v
+        | id = fv.id
+        , name = fv.name
+        , size = Maybe.withDefault 0 fv.size
+        , status = Unsynced
+        , userCount = fv.userCount
+        , fileCount = fv.fileCount
+        , revisionCount = fv.revisionCount
+        , resourceUri = fv.resourceUri
+        , folderPath = ""
+        , modificationDate = fv.modificationDate
+        , icon = fv.icon
+    }
 
 
 jsonOptions : Config -> VaultOptions -> Json.Encode.Value
@@ -201,29 +201,29 @@ jsonOptions config options =
         pathString path =
             String.join config.pathSeparator path
     in
-        case options of
-            Create { folder, ignorePaths } ->
-                Json.Encode.object
-                    [ ( "folder", Json.Encode.string (pathString folder) )
-                    , ( "ignorePaths"
-                      , Json.Encode.list <|
-                            List.map
-                                (Json.Encode.string << pathString)
-                                ignorePaths
-                      )
-                    ]
+    case options of
+        Create { folder, ignorePaths } ->
+            Json.Encode.object
+                [ ( "folder", Json.Encode.string (pathString folder) )
+                , ( "ignorePaths"
+                  , Json.Encode.list <|
+                        List.map
+                            (Json.Encode.string << pathString)
+                            ignorePaths
+                  )
+                ]
 
-            Clone { id, folder } ->
-                Json.Encode.object
-                    [ ( "id", Json.Encode.string id )
-                    , ( "folder", Json.Encode.string (pathString folder) )
-                    ]
+        Clone { id, folder } ->
+            Json.Encode.object
+                [ ( "id", Json.Encode.string id )
+                , ( "folder", Json.Encode.string (pathString folder) )
+                ]
 
-            Remove id ->
-                Json.Encode.null
+        Remove id ->
+            Json.Encode.null
 
-            Delete id ->
-                Json.Encode.null
+        Delete id ->
+            Json.Encode.null
 
 
 {-| Decodes a `Data.Vault.Vault`.
@@ -293,8 +293,8 @@ logLevelDecoder =
                 val ->
                     fail <| "Invalid log level: " ++ val
     in
-        Json.string
-            |> Json.andThen convert
+    Json.string
+        |> Json.andThen convert
 
 
 logItemDecoder : Json.Decoder LogItem
@@ -348,7 +348,7 @@ vaultStatusDecoder =
                 val ->
                     fail ("Invalid vault status: " ++ val)
     in
-        Json.string |> andThen convert
+    Json.string |> andThen convert
 
 
 metadataEncoder : Metadata -> Json.Encode.Value
@@ -366,7 +366,7 @@ metadataEncoder metadata =
                         , ( "icon", Json.Encode.string iconUrl )
                         ]
     in
-        Json.Encode.object [ ( "metadata", metadataJson ) ]
+    Json.Encode.object [ ( "metadata", metadataJson ) ]
 
 
 addVaultUserEncoder : Email -> List UserKey -> Json.Encode.Value
@@ -375,10 +375,10 @@ addVaultUserEncoder email keys =
         fingerprints =
             List.map .fingerprint keys
     in
-        Json.Encode.object
-            [ ( "email", Json.Encode.string email )
-            , ( "fingerprints"
-              , Json.Encode.list <|
-                    List.map Json.Encode.string fingerprints
-              )
-            ]
+    Json.Encode.object
+        [ ( "email", Json.Encode.string email )
+        , ( "fingerprints"
+          , Json.Encode.list <|
+                List.map Json.Encode.string fingerprints
+          )
+        ]

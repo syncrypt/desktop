@@ -7,6 +7,7 @@ import Data.Daemon exposing (GUIConfig)
 import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Date
+import FeedbackWizard
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -19,10 +20,11 @@ import Set
 import SettingsDialog.Model as SettingsDialog
 import SettingsDialog.Update
 import SettingsDialog.View
+import SetupWizard
 import Time
 import Translation exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing (Direction(..), IconButton(..), iconButton, (~>))
+import Util exposing ((~>), Direction(..), IconButton(..), iconButton)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
@@ -30,12 +32,10 @@ import VaultList
 import WizardDialog
 import WizardDialog.Model
     exposing
-        ( ButtonSettings(Default, Visible)
-        , Button(Cancel, CustomButton)
+        ( Button(Cancel, CustomButton)
+        , ButtonSettings(Default, Visible)
         , WizardType(..)
         )
-import SetupWizard
-import FeedbackWizard
 
 
 -- INIT
@@ -55,7 +55,7 @@ init config =
             , Daemon.getConfig model
             ]
     in
-        model ! initialActions
+    model ! initialActions
 
 
 
@@ -240,8 +240,8 @@ update msg model =
                 ( state, cmd ) =
                     Ui.NotificationCenter.update msg model.notificationCenter
             in
-                { model | notificationCenter = state }
-                    ! [ Cmd.map NotificationCenterMsg cmd ]
+            { model | notificationCenter = state }
+                ! [ Cmd.map NotificationCenterMsg cmd ]
 
         UpdatedStatsFromApi stats ->
             { model | stats = stats }
@@ -275,15 +275,15 @@ update msg model =
             ({ model | isFirstLaunch = False }
                 ! [ Daemon.invalidateFirstLaunch model ]
             )
-                ~> (notify (text "Syncrypt initialized"))
+                ~> notify (text "Syncrypt initialized")
 
         EmailCompletionList emails ->
             let
                 _ =
                     Debug.log "got email completion list: " emails
             in
-                { model | emailCompletionList = emails }
-                    ! []
+            { model | emailCompletionList = emails }
+                ! []
 
         UpdatedDaemonConfig (Success { gui }) ->
             model
@@ -419,13 +419,13 @@ updatedVaults vaults model =
                         _ =
                             Debug.log "Failed to get vaults, retrying" error
                     in
-                        [ Util.delayMsg 1000 UpdateVaults ]
+                    [ Util.delayMsg 1000 UpdateVaults ]
 
                 _ ->
                     []
     in
-        { model | vaults = vaults }
-            ! cmds
+    { model | vaults = vaults }
+        ! cmds
 
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
@@ -468,9 +468,9 @@ deletedVault data model =
                         _ ->
                             model
             in
-                newModel
-                    |> VaultDialog.Update.close vaultId
-                    ~> (notifyText <| VaultDeleted vaultId)
+            newModel
+                |> VaultDialog.Update.close vaultId
+                ~> (notifyText <| VaultDeleted vaultId)
 
         _ ->
             model
@@ -486,8 +486,8 @@ notify body model =
         ( state, cmd ) =
             Ui.NotificationCenter.notify content model.notificationCenter
     in
-        { model | notificationCenter = state }
-            ! [ Cmd.map NotificationCenterMsg cmd ]
+    { model | notificationCenter = state }
+        ! [ Cmd.map NotificationCenterMsg cmd ]
 
 
 notifyText : Translation.NotificationText -> Model -> ( Model, Cmd Msg )
@@ -505,15 +505,15 @@ saveVault vaultId model =
         state =
             dialogState vaultId model
     in
-        case state.cloneStatus of
-            New ->
-                model
-                    |> createVault state
+    case state.cloneStatus of
+        New ->
+            model
+                |> createVault state
 
-            _ ->
-                model
-                    |> VaultDialog.Update.saveVaultChanges vaultId state
-                    ~> (notifyText <| VaultUpdated vaultId)
+        _ ->
+            model
+                |> VaultDialog.Update.saveVaultChanges vaultId state
+                ~> (notifyText <| VaultUpdated vaultId)
 
 
 createVault : VaultDialog.Model.State -> Model -> ( Model, Cmd Msg )
@@ -545,23 +545,23 @@ cloneVault vaultId origModel =
         state =
             dialogState vaultId model
     in
-        case state.localFolderPath of
-            Nothing ->
-                model
-                    |> notifyText (CouldNotCloneVaultWithoutFolder vaultId)
+    case state.localFolderPath of
+        Nothing ->
+            model
+                |> notifyText (CouldNotCloneVaultWithoutFolder vaultId)
 
-            Just folderPath ->
-                model
-                    ! [ model.config
-                            |> Daemon.updateVault
-                                (Clone
-                                    { id = vaultId
-                                    , folder = folderPath
-                                    , ignorePaths = Set.toList state.ignoredFolderItems
-                                    }
-                                )
-                            |> Cmd.map (ClonedVault vaultId)
-                      ]
+        Just folderPath ->
+            model
+                ! [ model.config
+                        |> Daemon.updateVault
+                            (Clone
+                                { id = vaultId
+                                , folder = folderPath
+                                , ignorePaths = Set.toList state.ignoredFolderItems
+                                }
+                            )
+                        |> Cmd.map (ClonedVault vaultId)
+                  ]
 
 
 clonedVault : VaultId -> WebData Vault -> Model -> ( Model, Cmd Msg )
@@ -601,8 +601,8 @@ login model =
         password =
             model.loginDialog.passwordInput.value
     in
-        model
-            ! [ Daemon.login email password model ]
+    model
+        ! [ Daemon.login email password model ]
 
 
 logout : Model -> ( Model, Cmd Msg )
@@ -723,10 +723,10 @@ footer { stats, vaults, language } =
                 Failure reason ->
                     Translation.VaultsFailedToLoad (toString reason)
     in
-        div [ class "MainScreen-Footer" ]
-            [ span [ class "MainScreen-Stats" ]
-                [ text <|
-                    translate syncedVaultsText language
-                        ++ translate statsText language
-                ]
+    div [ class "MainScreen-Footer" ]
+        [ span [ class "MainScreen-Stats" ]
+            [ text <|
+                translate syncedVaultsText language
+                    ++ translate statsText language
             ]
+        ]

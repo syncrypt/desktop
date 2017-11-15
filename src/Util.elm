@@ -1,40 +1,40 @@
 module Util
     exposing
-        ( ByteUnit
+        ( (~>)
+        , ByteUnit
         , ByteUnitPrecision
-        , sendMsg
-        , delayMsg
-        , delay
+        , Direction(..)
+        , IconButton(..)
+        , Position(..)
+        , TooltipLength(..)
+        , allButLast
+        , andAlso
+        , animatedDots
         , attemptDelayed
+        , bytesReadable
+        , dateDecoder
+        , dateParts
+        , delay
+        , delayMsg
+        , findFirst
+        , fullDateString
+        , iconButton
+        , last
+        , monthNumber
+        , onAnyKeyDown
+        , onEnter
+        , onKeyDown
+        , padNumber
         , performDelayed
-        , skipCharsWhile
         , removeLeading
         , removeTrailing
         , removeTrailingZeroes
-        , bytesReadable
-        , surround
-        , last
-        , allButLast
-        , findFirst
-        , andAlso
-        , (~>)
-        , onEnter
-        , onKeyDown
-        , onAnyKeyDown
-        , tooltipItem
-        , Direction(..)
-        , Position(..)
-        , TooltipLength(..)
-        , dateDecoder
-        , IconButton(..)
-        , iconButton
-        , shortenString
-        , padNumber
-        , dateParts
-        , monthNumber
-        , fullDateString
+        , sendMsg
         , shortDateString
-        , animatedDots
+        , shortenString
+        , skipCharsWhile
+        , surround
+        , tooltipItem
         )
 
 import Date exposing (Date)
@@ -170,7 +170,7 @@ bytesReadable x =
         trimmedSizeStr =
             case String.split "." sizeStr of
                 [ a, b ] ->
-                    case (removeTrailingZeroes b) of
+                    case removeTrailingZeroes b of
                         "" ->
                             a
 
@@ -180,12 +180,12 @@ bytesReadable x =
                 _ ->
                     sizeStr
     in
-        case unit of
-            "" ->
-                trimmedSizeStr
+    case unit of
+        "" ->
+            trimmedSizeStr
 
-            _ ->
-                trimmedSizeStr ++ " " ++ unit
+        _ ->
+            trimmedSizeStr ++ " " ++ unit
 
 
 bytesReadable_ :
@@ -208,10 +208,10 @@ bytesReadable_ size units =
                 rem =
                     size / 1024
             in
-                if size < 1 || rem < 1 then
-                    ( Round.round precision size, unit )
-                else
-                    bytesReadable_ rem units
+            if size < 1 || rem < 1 then
+                ( Round.round precision size, unit )
+            else
+                bytesReadable_ rem units
 
 
 surround : (a -> b) -> (b -> a) -> a -> b
@@ -273,7 +273,7 @@ andAlso f ( m1, cmd1 ) =
         ( m2, cmd2 ) =
             f m1
     in
-        m2 ! [ cmd1, cmd2 ]
+    m2 ! [ cmd1, cmd2 ]
 
 
 onEnter : msg -> Html.Attribute msg
@@ -290,7 +290,7 @@ onKeyDown keyCode msg =
             else
                 Json.fail ""
     in
-        Html.Events.on "keydown" (Json.andThen isKey Html.Events.keyCode)
+    Html.Events.on "keydown" (Json.andThen isKey Html.Events.keyCode)
 
 
 onAnyKeyDown : msg -> Html.Attribute msg
@@ -343,12 +343,11 @@ tooltipItem { position, length, text } body =
                     baseAttrs
 
                 _ ->
-                    (attribute "data-balloon-length"
+                    attribute "data-balloon-length"
                         (tooltipLengthString length)
-                    )
                         :: baseAttrs
     in
-        span attributes body
+    span attributes body
 
 
 tooltipPositionString : Position -> String
@@ -403,8 +402,8 @@ dateDecoder =
                 Err error ->
                     Json.succeed Nothing
     in
-        Json.string
-            |> Json.andThen convert
+    Json.string
+        |> Json.andThen convert
 
 
 type IconButton
@@ -415,10 +414,10 @@ type IconButton
 
 iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
 iconButton buttonType attrs =
-    (tooltipItem
+    tooltipItem
         { position = Bottom
         , length = Auto
-        , text = (iconButtonTooltip buttonType)
+        , text = iconButtonTooltip buttonType
         }
         [ div
             (class "MainScreen-IconButton" :: attrs)
@@ -426,14 +425,13 @@ iconButton buttonType attrs =
                 [ class "Icon"
                 , style
                     [ ( "backgroundImage"
-                      , "url(assets/" ++ (iconName buttonType) ++ "_24px.svg)"
+                      , "url(assets/" ++ iconName buttonType ++ "_24px.svg)"
                       )
                     ]
                 ]
                 []
             ]
         ]
-    )
 
 
 iconName : IconButton -> String
@@ -531,17 +529,17 @@ fullDateString date =
         ( year, month, day, hour, minute, second ) =
             dateParts date
     in
-        (year |> toString)
-            ++ "/"
-            ++ (month |> monthNumber |> padNumber)
-            ++ "/"
-            ++ (day |> padNumber)
-            ++ " "
-            ++ (hour |> padNumber)
-            ++ ":"
-            ++ (minute |> padNumber)
-            ++ ":"
-            ++ (second |> padNumber)
+    (year |> toString)
+        ++ "/"
+        ++ (month |> monthNumber |> padNumber)
+        ++ "/"
+        ++ (day |> padNumber)
+        ++ " "
+        ++ (hour |> padNumber)
+        ++ ":"
+        ++ (minute |> padNumber)
+        ++ ":"
+        ++ (second |> padNumber)
 
 
 shortDateString date =
@@ -549,11 +547,11 @@ shortDateString date =
         ( _, _, _, hour, minute, second ) =
             dateParts date
     in
-        (hour |> padNumber)
-            ++ ":"
-            ++ (minute |> padNumber)
-            ++ ":"
-            ++ (second |> padNumber)
+    (hour |> padNumber)
+        ++ ":"
+        ++ (minute |> padNumber)
+        ++ ":"
+        ++ (second |> padNumber)
 
 
 animatedDots : Maybe Date -> String

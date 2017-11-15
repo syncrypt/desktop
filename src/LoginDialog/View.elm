@@ -29,14 +29,14 @@ view model =
             }
 
         viewConfig =
-            { address = (Model.LoginDialogMsg << Modal)
+            { address = Model.LoginDialogMsg << Modal
             , contents = contents state
             , footer = []
             , title = "Login"
             }
     in
-        div [ class "LoginDialog" ]
-            [ Ui.Modal.view viewConfig modalState ]
+    div [ class "LoginDialog" ]
+        [ Ui.Modal.view viewConfig modalState ]
 
 
 contents : State -> List (Html Model.Msg)
@@ -83,7 +83,6 @@ passwordInput state =
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
         , label = text "Password"
         , item =
-            (Ui.Input.view state.passwordInput
+            Ui.Input.view state.passwordInput
                 |> Html.map (Model.LoginDialogMsg << PasswordInput)
-            )
         }

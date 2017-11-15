@@ -1,8 +1,8 @@
 port module VaultDialog.Ports exposing (..)
 
-import VaultDialog.Model exposing (FolderItem)
-import Path exposing (Path)
 import Data.Vault exposing (VaultId)
+import Path exposing (Path)
+import VaultDialog.Model exposing (FolderItem)
 
 
 port openFolderDialog : VaultId -> Cmd msg

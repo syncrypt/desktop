@@ -1,7 +1,7 @@
 module Dialog
     exposing
-        ( WithModalState
-        , LabeledItemSettings
+        ( LabeledItemSettings
+        , WithModalState
         , asModalIn
         , labeledItem
         )
@@ -39,16 +39,16 @@ labeledItem attributes settings =
         attrs =
             case settings.onClick of
                 Nothing ->
-                    (class "Default-Cursor") :: attributes
+                    class "Default-Cursor" :: attributes
 
                 Just msg ->
-                    (onClick msg) :: attributes
+                    onClick msg :: attributes
 
         labelContainer =
             div (class className :: attrs)
                 [ settings.label ]
     in
-        orderedLabeling { settings | label = labelContainer }
+    orderedLabeling { settings | label = labelContainer }
 
 
 orderedLabeling { side, label, item } =
@@ -67,5 +67,5 @@ orderedLabeling { side, label, item } =
                 Right ->
                     [ item, label ]
     in
-        span []
-            labelBody
+    span []
+        labelBody

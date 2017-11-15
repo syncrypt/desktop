@@ -13,20 +13,20 @@ update dialogMsg ({ loginDialog } as model) =
                 ( emailInput, cmd ) =
                     Ui.Input.update msg loginDialog.emailInput
             in
-                ({ loginDialog | emailInput = emailInput }
-                    |> asStateIn model
-                )
-                    ! []
+            ({ loginDialog | emailInput = emailInput }
+                |> asStateIn model
+            )
+                ! []
 
         PasswordInput msg ->
             let
                 ( passwordInput, cmd ) =
                     Ui.Input.update msg loginDialog.passwordInput
             in
-                ({ loginDialog | passwordInput = passwordInput }
-                    |> asStateIn model
-                )
-                    ! []
+            ({ loginDialog | passwordInput = passwordInput }
+                |> asStateIn model
+            )
+                ! []
 
         Modal _ ->
             model

@@ -1,11 +1,11 @@
 module WizardDialog.Model
     exposing
-        ( State
-        , Msg(..)
-        , ViewSettings
-        , Button(..)
+        ( Button(..)
         , ButtonSettings(..)
         , HasWizardDialog
+        , Msg(..)
+        , State
+        , ViewSettings
         , WizardSettings
         , WizardType(..)
         , init

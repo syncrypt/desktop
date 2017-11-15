@@ -204,14 +204,14 @@ initForVault vault =
             else
                 Just (asPath vault.folderPath)
     in
-        { default
-            | id = vault.id
-            , icon = vault.icon
-            , cloneStatus = cloneStatus
-            , title = name
-            , nameInput = nameInput
-            , localFolderPath = folderPath
-        }
+    { default
+        | id = vault.id
+        , icon = vault.icon
+        , cloneStatus = cloneStatus
+        , title = name
+        , nameInput = nameInput
+        , localFolderPath = folderPath
+    }
 
 
 initForFlyingVault : FlyingVault -> State
@@ -228,14 +228,14 @@ initForFlyingVault flyingVault =
                 |> Ui.Input.placeholder name
                 |> Ui.Input.showClearIcon True
     in
-        { default
-            | id = flyingVault.id
-            , icon = flyingVault.icon
-            , cloneStatus = NotCloned
-            , title = name
-            , nameInput = nameInput
-            , localFolderPath = Nothing
-        }
+    { default
+        | id = flyingVault.id
+        , icon = flyingVault.icon
+        , cloneStatus = NotCloned
+        , title = name
+        , nameInput = nameInput
+        , localFolderPath = Nothing
+    }
 
 
 sortedFolders : State -> List FolderItem
@@ -247,9 +247,9 @@ sortedFolders { localFolderItems } =
 
 isIgnored : Path -> State -> Bool
 isIgnored path { ignoredFolderItems } =
-    (Set.member path ignoredFolderItems)
+    Set.member path ignoredFolderItems
         || (ignoredFolderItems
-                |> Set.filter (\p -> (List.take (List.length p) path) == p)
+                |> Set.filter (\p -> List.take (List.length p) path == p)
                 |> Set.isEmpty
                 |> not
            )
@@ -304,28 +304,28 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
                 isRoot =
                     path == []
             in
-                case ( Path.parent path, Dict.get path items ) of
-                    ( [], Nothing ) ->
-                        items
-                            |> Dict.insert path files
+            case ( Path.parent path, Dict.get path items ) of
+                ( [], Nothing ) ->
+                    items
+                        |> Dict.insert path files
 
-                    ( [], Just existingFiles ) ->
-                        items
-                            |> Dict.insert path (files ++ existingFiles)
+                ( [], Just existingFiles ) ->
+                    items
+                        |> Dict.insert path (files ++ existingFiles)
 
-                    ( pp, Nothing ) ->
-                        items
-                            |> Dict.insert path files
-                            |> addPathToLocalItems pp []
+                ( pp, Nothing ) ->
+                    items
+                        |> Dict.insert path files
+                        |> addPathToLocalItems pp []
 
-                    ( pp, Just existingFiles ) ->
-                        items
-                            |> Dict.insert path (files ++ existingFiles)
-                            |> addPathToLocalItems pp []
+                ( pp, Just existingFiles ) ->
+                    items
+                        |> Dict.insert path (files ++ existingFiles)
+                        |> addPathToLocalItems pp []
     in
-        { state
-            | localFolderItems = addPathToLocalItems path files localFolderItems
-        }
+    { state
+        | localFolderItems = addPathToLocalItems path files localFolderItems
+    }
 
 
 toggleIgnorePath : Path -> State -> State
@@ -366,10 +366,10 @@ toggleUserKey email key state =
                     else
                         keys ++ [ key ]
             in
-                { state
-                    | usersToAdd =
-                        Dict.insert email userKeysSelected state.usersToAdd
-                }
+            { state
+                | usersToAdd =
+                    Dict.insert email userKeysSelected state.usersToAdd
+            }
 
 
 userInputEmail : State -> User.Email
@@ -404,9 +404,9 @@ events state =
         logEvents =
             List.map Log state.logItems
     in
-        (historyEvents ++ logEvents)
-            |> filterEvents state
-            |> sortEvents state
+    (historyEvents ++ logEvents)
+        |> filterEvents state
+        |> sortEvents state
 
 
 toggleSortOrder : State -> State
@@ -420,7 +420,7 @@ toggleSortOrder state =
                 Descending ->
                     Ascending
     in
-        { state | eventSortOrder = newOrder }
+    { state | eventSortOrder = newOrder }
 
 
 sortBy : EventSortBy -> State -> State
@@ -525,19 +525,19 @@ sortEvents state events =
                 Descending ->
                     ( GT, LT )
     in
-        events
-            |> List.sortWith
-                (\a b ->
-                    case state.eventSortBy a b of
-                        LT ->
-                            lt
+    events
+        |> List.sortWith
+            (\a b ->
+                case state.eventSortBy a b of
+                    LT ->
+                        lt
 
-                        GT ->
-                            gt
+                    GT ->
+                        gt
 
-                        EQ ->
-                            EQ
-                )
+                    EQ ->
+                        EQ
+            )
 
 
 eventSortByCreatedAt : Data.Vault.Event -> Data.Vault.Event -> Order
@@ -549,12 +549,12 @@ eventSortByCreatedAt a b =
         distB =
             eventDistVal b
     in
-        if distA < distB then
-            LT
-        else if distA <= distB then
-            EQ
-        else
-            GT
+    if distA < distB then
+        LT
+    else if distA <= distB then
+        EQ
+    else
+        GT
 
 
 eventDistVal event =

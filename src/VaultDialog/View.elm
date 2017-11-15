@@ -78,8 +78,8 @@ import VaultDialog.Model
         , folderIsEmpty
         , hasFiles
         , isExpanded
-        , isIgnored
         , isFilterEnabled
+        , isIgnored
         , isUserKeyAlreadyAdded
         , isUserKeySelected
         , keysToAdd
@@ -113,18 +113,18 @@ subscriptions model =
                         logMsg =
                             msg vault.id << VaultLogStream
                     in
-                        model.config
-                            |> Daemon.subscribeVaultLogStream vault.id logMsg
+                    model.config
+                        |> Daemon.subscribeVaultLogStream vault.id logMsg
 
                 _ ->
                     Sub.none
     in
-        Sub.batch
-            [ VaultDialog.Ports.fileList fileListMsg
-            , VaultDialog.Ports.selectedFolder selectedFolderMsg
-            , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
-            , logStream
-            ]
+    Sub.batch
+        [ VaultDialog.Ports.fileList fileListMsg
+        , VaultDialog.Ports.selectedFolder selectedFolderMsg
+        , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
+        , logStream
+        ]
 
 
 viewAll : Model -> List (Html Model.Msg)
@@ -141,7 +141,7 @@ view vaultId model =
             dialogState vaultId model
 
         viewConfig =
-            { address = (Model.VaultDialogMsg vaultId << ModalMsg)
+            { address = Model.VaultDialogMsg vaultId << ModalMsg
             , contents = contents vaultId model
             , footer =
                 [ span [ class "Buttons" ]
@@ -161,8 +161,8 @@ view vaultId model =
                         t (VaultNotSynced vaultId) model
             }
     in
-        div [ class "VaultDialog" ]
-            [ Ui.Modal.view viewConfig state.modal ]
+    div [ class "VaultDialog" ]
+        [ Ui.Modal.view viewConfig state.modal ]
 
 
 contents : VaultId -> Model -> List (Html Model.Msg)
@@ -172,7 +172,7 @@ contents vaultId model =
             dialogState vaultId model
 
         tabsViewConfig =
-            { address = (Model.VaultDialogMsg vaultId << TabsMsg)
+            { address = Model.VaultDialogMsg vaultId << TabsMsg
             , contents = tabContents vaultId state model
             }
 
@@ -183,9 +183,9 @@ contents vaultId model =
             ConfirmationDialog.view state
                 |> Html.map (Model.VaultDialogMsg state.id)
     in
-        [ tabs
-        , confirmationDialog
-        ]
+    [ tabs
+    , confirmationDialog
+    ]
 
 
 tabContents : VaultId -> State -> Model -> List ( String, Html Model.Msg )
@@ -224,7 +224,7 @@ tabContents vaultId state model =
                 NotCloned ->
                     basicTabs ++ notClonedTabs
     in
-        tabs
+    tabs
 
 
 usersTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
@@ -244,25 +244,25 @@ usersTab toRootMsg vaultId state model =
         infoText =
             t (VaultDialogText (UsersTabInfoText ownsVault)) model
     in
-        ( t (VaultDialogText UsersTab) model
-        , div []
-            [ tabInfoText infoText
-            , div
-                [ classList [ ( "Hidden", not ownsVault ) ] ]
-                [ div
-                    [ class "Add-User", onEnter searchKeys ]
-                    [ dialogInput "User"
-                        [ userInput vaultId state model ]
-                    ]
-                , div [ class "UserKey-Selection" ]
-                    [ rootMsg <| userKeySelection state model
-                    , rootMsg <| confirmUserKeysButton state
-                    ]
+    ( t (VaultDialogText UsersTab) model
+    , div []
+        [ tabInfoText infoText
+        , div
+            [ classList [ ( "Hidden", not ownsVault ) ] ]
+            [ div
+                [ class "Add-User", onEnter searchKeys ]
+                [ dialogInput "User"
+                    [ userInput vaultId state model ]
                 ]
-            , rootMsg <| userList state model
-            , rootMsg <| pendingUserList state
+            , div [ class "UserKey-Selection" ]
+                [ rootMsg <| userKeySelection state model
+                , rootMsg <| confirmUserKeysButton state
+                ]
             ]
-        )
+        , rootMsg <| userList state model
+        , rootMsg <| pendingUserList state
+        ]
+    )
 
 
 cryptoTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
@@ -276,7 +276,7 @@ cryptoTab vaultId state model =
                 [ labeledItem [ class "InputLabel CryptoInfoItem-Label" ]
                     { side = Left
                     , onClick = Nothing
-                    , label = (text label)
+                    , label = text label
                     , item =
                         tooltipItem
                             { position = Bottom
@@ -290,45 +290,45 @@ cryptoTab vaultId state model =
         vt vaultDialogText =
             t (VaultDialogText vaultDialogText) model
     in
-        ( t (VaultDialogText CryptoTab) model
-        , div []
-            [ tabInfoText (vt CryptoTabInfoText)
-            , cryptoInfoItem (vt VaultIdLabel)
-                (vt VaultIdTooltip)
-                (String.toUpper vault.id)
-            , cryptoInfoItem (vt FileRevisionsLabel)
-                (vt TotalNumberOfFileRevisionsTooltip)
-                (toString vault.revisionCount)
-            , cryptoInfoItem (vt LastModifiedLabel)
-                (vt LastModifiedTooltip)
-                (vault.modificationDate
-                    |> Maybe.map (\date -> timeAgo date model)
-                    |> Maybe.withDefault (vt NoChangesSoFar)
-                )
-            , cryptoInfoItem (vt KeyAlgorithmLabel)
-                (vt KeyAlgorithmTooltip)
-                (String.toUpper vault.crypto.keyAlgorithm)
-            , cryptoInfoItem (vt KeyFingerprintLabel)
-                (vt KeyFingerprintTooltip)
-                (vault.crypto.fingerprint
-                    |> Maybe.map String.toUpper
-                    |> Maybe.withDefault "N/A"
-                )
-            , cryptoInfoItem (vt TransferAlgorithmLabel)
-                (vt TransferAlgorithmTooltip)
-                (String.toUpper vault.crypto.transferAlgorithm)
-            , cryptoInfoItem (vt HashAlgorithmLabel)
-                (vt HashAlgorithmTooltip)
-                (String.toUpper vault.crypto.hashAlgorithm)
-            , cryptoInfoItem (vt AESKeyLengthLabel)
-                (vt AESKeyLengthTooltip)
-                (toString vault.crypto.aesKeyLength)
-            , cryptoInfoItem (vt RSAKeyLengthLabel)
-                (vt RSAKeyLengthTooltip)
-                (toString vault.crypto.rsaKeyLength)
-            , separator
-            ]
-        )
+    ( t (VaultDialogText CryptoTab) model
+    , div []
+        [ tabInfoText (vt CryptoTabInfoText)
+        , cryptoInfoItem (vt VaultIdLabel)
+            (vt VaultIdTooltip)
+            (String.toUpper vault.id)
+        , cryptoInfoItem (vt FileRevisionsLabel)
+            (vt TotalNumberOfFileRevisionsTooltip)
+            (toString vault.revisionCount)
+        , cryptoInfoItem (vt LastModifiedLabel)
+            (vt LastModifiedTooltip)
+            (vault.modificationDate
+                |> Maybe.map (\date -> timeAgo date model)
+                |> Maybe.withDefault (vt NoChangesSoFar)
+            )
+        , cryptoInfoItem (vt KeyAlgorithmLabel)
+            (vt KeyAlgorithmTooltip)
+            (String.toUpper vault.crypto.keyAlgorithm)
+        , cryptoInfoItem (vt KeyFingerprintLabel)
+            (vt KeyFingerprintTooltip)
+            (vault.crypto.fingerprint
+                |> Maybe.map String.toUpper
+                |> Maybe.withDefault "N/A"
+            )
+        , cryptoInfoItem (vt TransferAlgorithmLabel)
+            (vt TransferAlgorithmTooltip)
+            (String.toUpper vault.crypto.transferAlgorithm)
+        , cryptoInfoItem (vt HashAlgorithmLabel)
+            (vt HashAlgorithmTooltip)
+            (String.toUpper vault.crypto.hashAlgorithm)
+        , cryptoInfoItem (vt AESKeyLengthLabel)
+            (vt AESKeyLengthTooltip)
+            (toString vault.crypto.aesKeyLength)
+        , cryptoInfoItem (vt RSAKeyLengthLabel)
+            (vt RSAKeyLengthTooltip)
+            (toString vault.crypto.rsaKeyLength)
+        , separator
+        ]
+    )
 
 
 filesTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
@@ -353,7 +353,7 @@ logTab vaultId state model =
             [ Dialog.labeledItem [ class "InputLabel" ]
                 { side = Left
                 , onClick = Nothing
-                , label = (text "Filters")
+                , label = text "Filters"
                 , item =
                     span []
                         (eventFilterButtons vaultId state)
@@ -377,13 +377,12 @@ logTab vaultId state model =
             ]
         , div [ class "EventTableContent" ]
             [ table [ class "EventTable" ] <|
-                (case VaultDialog.Model.events state of
+                case VaultDialog.Model.events state of
                     [] ->
                         [ loadingSpinner ]
 
                     events ->
-                        (List.map (viewEvent model.now) events)
-                )
+                        List.map (viewEvent model.now) events
             ]
         ]
     )
@@ -400,17 +399,17 @@ adminTab vaultId state model =
                 , deleteButton vaultId state model
                 ]
     in
-        ( t (VaultDialogText AdminTab) model
-        , div [ class "Admin-Buttons" ] <|
-            [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-            , removeButton vaultId state
-            , separator
-            , infoText (t (VaultDialogText VaultExportButtonInfo) model)
-            , exportButton <| Model.vaultWithId vaultId model
-            , separator
-            ]
-                ++ adminActions
-        )
+    ( t (VaultDialogText AdminTab) model
+    , div [ class "Admin-Buttons" ] <|
+        [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+        , removeButton vaultId state
+        , separator
+        , infoText (t (VaultDialogText VaultExportButtonInfo) model)
+        , exportButton <| Model.vaultWithId vaultId model
+        , separator
+        ]
+            ++ adminActions
+    )
 
 
 eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
@@ -460,14 +459,15 @@ eventFilterButtons vaultId state =
                 else
                     [ div [] <|
                         logLevelButton
-                            :: if state.viewLogLevelFilters then
-                                logLevelButtons
-                               else
-                                []
+                            :: (if state.viewLogLevelFilters then
+                                    logLevelButtons
+                                else
+                                    []
+                               )
                     ]
             ]
     in
-        buttons
+    buttons
 
 
 tabInfoText : String -> Html msg
@@ -506,10 +506,10 @@ eventDateString now { createdAt } =
                 ( y2, m2, d2, _, _, _ ) =
                     dateParts date
             in
-                if y1 == y2 && m1 == m2 && d1 == d2 then
-                    shortDateString date
-                else
-                    fullDateString date
+            if y1 == y2 && m1 == m2 && d1 == d2 then
+                shortDateString date
+            else
+                fullDateString date
 
         _ ->
             ""
@@ -617,8 +617,8 @@ saveButton vaultId state =
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
     in
-        Ui.Button.model label "primary" "small"
-            |> Ui.Button.view msg
+    Ui.Button.model label "primary" "small"
+        |> Ui.Button.view msg
 
 
 confirmUserKeysButton : State -> Html Msg
@@ -627,11 +627,11 @@ confirmUserKeysButton state =
         email =
             userInputEmail state
     in
-        if List.isEmpty (keysToAdd email state) then
-            span [] []
-        else
-            Ui.Button.model "Invite with selected keys" "primary" "small"
-                |> Ui.Button.view (Confirmed AddUser)
+    if List.isEmpty (keysToAdd email state) then
+        span [] []
+    else
+        Ui.Button.model "Invite with selected keys" "primary" "small"
+            |> Ui.Button.view (Confirmed AddUser)
 
 
 openFolderButton : VaultId -> State -> Model -> Html Msg
@@ -664,57 +664,57 @@ openFolderButton vaultId state model =
                         ps =
                             pathString path
                     in
-                        ( t
-                            (VaultDialogText <|
-                                FolderButtonLabel <|
-                                    FolderSelectedForSync ps
-                            )
-                            model
-                        , OpenFolderDialog
-                        , t
-                            (VaultDialogText <|
-                                FolderButtonTooltip <|
-                                    FolderSelectedForSync ps
-                            )
-                            model
+                    ( t
+                        (VaultDialogText <|
+                            FolderButtonLabel <|
+                                FolderSelectedForSync ps
                         )
+                        model
+                    , OpenFolderDialog
+                    , t
+                        (VaultDialogText <|
+                            FolderButtonTooltip <|
+                                FolderSelectedForSync ps
+                        )
+                        model
+                    )
 
                 ( _, Just path ) ->
                     let
                         ps =
                             pathString path
                     in
-                        ( t
-                            (VaultDialogText <|
-                                FolderButtonLabel <|
-                                    SyncedFolder ps
-                            )
-                            model
-                        , OpenFolder ps
-                        , t
-                            (VaultDialogText <|
-                                FolderButtonTooltip <|
-                                    SyncedFolder ps
-                            )
-                            model
+                    ( t
+                        (VaultDialogText <|
+                            FolderButtonLabel <|
+                                SyncedFolder ps
                         )
+                        model
+                    , OpenFolder ps
+                    , t
+                        (VaultDialogText <|
+                            FolderButtonTooltip <|
+                                SyncedFolder ps
+                        )
+                        model
+                    )
     in
-        span [ class "Button-Folder" ]
-            [ labeledItem [ class "InputLabel" ]
-                { side = Left
-                , onClick = Nothing
-                , label = text "Folder"
-                , item =
-                    tooltipItem
-                        { position = Bottom
-                        , length = Auto
-                        , text = tooltipMsg
-                        }
-                        [ Ui.Button.model folderPath "primary" "small"
-                            |> Ui.Button.view msg
-                        ]
-                }
-            ]
+    span [ class "Button-Folder" ]
+        [ labeledItem [ class "InputLabel" ]
+            { side = Left
+            , onClick = Nothing
+            , label = text "Folder"
+            , item =
+                tooltipItem
+                    { position = Bottom
+                    , length = Auto
+                    , text = tooltipMsg
+                    }
+                    [ Ui.Button.model folderPath "primary" "small"
+                        |> Ui.Button.view msg
+                    ]
+            }
+        ]
 
 
 nameInput : (Msg -> Model.Msg) -> State -> HasLanguage a -> Html Model.Msg
@@ -750,7 +750,7 @@ iconInput state model =
 
         icon =
             img
-                ((src iconPath)
+                (src iconPath
                     :: (if isOwner state.id model then
                             [ class "Icon", onClick OpenIconDialog ]
                         else
@@ -759,12 +759,12 @@ iconInput state model =
                 )
                 []
     in
-        tooltipItem
-            { position = Right
-            , length = Auto
-            , text = "Vault icon that can be seen by any invited user"
-            }
-            [ icon ]
+    tooltipItem
+        { position = Right
+        , length = Auto
+        , text = "Vault icon that can be seen by any invited user"
+        }
+        [ icon ]
 
 
 userInput : VaultId -> State -> HasLanguage a -> Html Model.Msg
@@ -800,27 +800,25 @@ fileSelectionContainer state model =
                 [ labeledItem [ class "InputLabel" ]
                     { side = Left
                     , onClick = Nothing
-                    , label = (text <| t (VaultDialogText FilesLabel) model)
+                    , label = text <| t (VaultDialogText FilesLabel) model
                     , item =
-                        (Ui.Container.view settings
+                        Ui.Container.view settings
                             []
-                            [ (tooltipItem
+                            [ tooltipItem
                                 { position = Top
                                 , length = XLarge
                                 , text =
                                     t (VaultDialogText FileSelectionTooltip) model
                                 }
                                 (renderFolders state)
-                              )
                             ]
-                        )
                     }
                 ]
             else
                 []
     in
-        div [ class "FileSelection" ]
-            body
+    div [ class "FileSelection" ]
+        body
 
 
 renderFolders : State -> List (Html Msg)
@@ -834,7 +832,7 @@ renderFolders state =
                 rootFolders =
                     List.map (renderFolder state) folders
             in
-                (rootFiles ++ rootFolders)
+            rootFiles ++ rootFolders
 
         [] ->
             []
@@ -844,7 +842,7 @@ renderFolder : State -> FolderItem -> Html Msg
 renderFolder state ( path, files ) =
     if isExpanded path state then
         div [ class "FolderItem" ] <|
-            (inFolderPath path
+            inFolderPath path
                 [ span []
                     [ fileCheckbox path state
                     , folderCollapseToggle path state
@@ -854,7 +852,6 @@ renderFolder state ( path, files ) =
                         (List.map (renderFile state path) files)
                     ]
                 ]
-            )
     else
         div [ class "FolderItem-Collapsed" ]
             (inFolderPath path
@@ -872,8 +869,8 @@ renderFile state folderPath path =
         filePath =
             folderPath ++ [ path ]
     in
-        div [ class "File" ]
-            [ fileCheckbox filePath state ]
+    div [ class "File" ]
+        [ fileCheckbox filePath state ]
 
 
 hiddenIfIgnored :
@@ -883,7 +880,7 @@ hiddenIfIgnored :
     -> List (Html.Attribute msg)
 hiddenIfIgnored path state attributes =
     if isIgnored path state then
-        (class "FolderItem-Hidden") :: attributes
+        class "FolderItem-Hidden" :: attributes
     else
         attributes
 
@@ -944,8 +941,8 @@ fileCheckbox path state =
                 , item = checkbox
                 }
     in
-        span [ class "Checkbox" ]
-            [ checkboxWithLabel ]
+    span [ class "Checkbox" ]
+        [ checkboxWithLabel ]
 
 
 userKeySelection : State -> Model -> Html Msg
@@ -960,10 +957,10 @@ userKeySelection state model =
         isHidden =
             keys == NotAsked
     in
-        div [ class "UserKeys" ] <|
-            (loadingSpinnerIf <| keys == Loading)
-                :: List.map (\key -> userKeyCheckbox email key state model)
-                    (RemoteData.withDefault [] keys)
+    div [ class "UserKeys" ] <|
+        (loadingSpinnerIf <| keys == Loading)
+            :: List.map (\key -> userKeyCheckbox email key state model)
+                (RemoteData.withDefault [] keys)
 
 
 userKeyCheckbox : String -> UserKey -> State -> Model -> Html Msg
@@ -997,25 +994,26 @@ userKeyCheckbox email userKey state model =
                 , item = checkbox
                 }
     in
-        div [ class "SelectKey", animation 0.5 Highlight ]
-            [ span [ class "Checkbox" ] [ checkboxWithLabel ]
-            , keyCreatedTimestamp userKey model
-            ]
+    div [ class "SelectKey", animation 0.5 Highlight ]
+        [ span [ class "Checkbox" ] [ checkboxWithLabel ]
+        , keyCreatedTimestamp userKey model
+        ]
 
 
 userList : State -> Model -> Html Msg
 userList state model =
     div [ class "UserList" ] <|
-        (h4 [] [ text <| t (VaultDialogText VaultUsersLabel) model ])
-            :: case state.users of
-                Success users ->
-                    List.map (\u -> userItem u state model) users
+        h4 [] [ text <| t (VaultDialogText VaultUsersLabel) model ]
+            :: (case state.users of
+                    Success users ->
+                        List.map (\u -> userItem u state model) users
 
-                Loading ->
-                    [ loadingSpinner ]
+                    Loading ->
+                        [ loadingSpinner ]
 
-                _ ->
-                    []
+                    _ ->
+                        []
+               )
 
 
 pendingUserList : State -> Html Msg
@@ -1035,11 +1033,11 @@ pendingUserList state =
             pendingUsers
                 |> List.map (\( email, keys ) -> pendingUserItem email keys)
     in
-        div [ class "PendingUserList" ] <|
-            if List.isEmpty pendingUsers then
-                []
-            else
-                (h4 [] [ text "Pending Users:" ]) :: pendingUserItems
+    div [ class "PendingUserList" ] <|
+        if List.isEmpty pendingUsers then
+            []
+        else
+            h4 [] [ text "Pending Users:" ] :: pendingUserItems
 
 
 userItem : User -> State -> Model -> Html Msg
@@ -1079,7 +1077,7 @@ userAddedTimestamp user model =
     span [ class "UserAddedTime" ]
         [ text
             (user.accessGrantedAt
-                |> Maybe.map (\date -> "Invited " ++ (timeAgo date model))
+                |> Maybe.map (\date -> "Invited " ++ timeAgo date model)
                 |> Maybe.withDefault "Vault Owner"
             )
         ]

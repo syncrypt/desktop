@@ -12,7 +12,7 @@ update : Msg -> Model.Model -> ( Model.Model, Cmd Model.Msg )
 update msg ({ settingsDialog } as model) =
     case msg of
         ConfirmationDialogMsg ConfirmationDialog.Close ->
-            (close model)
+            close model
                 ! []
 
         ConfirmationDialogMsg msg ->
@@ -23,7 +23,7 @@ update msg ({ settingsDialog } as model) =
                 ! []
 
         Close ->
-            (close model)
+            close model
                 ! []
 
         LanguageSelection lang ->

@@ -1,10 +1,10 @@
 module LoginDialog.Model
     exposing
-        ( Msg(..)
+        ( HasLoginDialog
+        , Msg(..)
         , State
-        , HasLoginDialog
-        , init
         , asStateIn
+        , init
         )
 
 import Ui.Input

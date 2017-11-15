@@ -1,13 +1,13 @@
 module Translation
     exposing
-        ( Text(..)
+        ( FolderButtonType(..)
         , NotificationText(..)
         , StatsText(..)
+        , Text(..)
         , VaultDialogText(..)
-        , FolderButtonType(..)
         , t
-        , translate
         , timeAgo
+        , translate
         )
 
 import Data.Daemon exposing (KeyState, Stats)
@@ -743,13 +743,13 @@ timeAgo date { now, language } =
         config =
             dateDistanceConfig language
     in
-        case now of
-            Just now ->
-                Date.Distance.inWordsWithConfig config date now
-                    ++ " ago"
+    case now of
+        Just now ->
+            Date.Distance.inWordsWithConfig config date now
+                ++ " ago"
 
-            Nothing ->
-                toString date
+        Nothing ->
+            toString date
 
 
 dateDistanceConfig : Language -> Date.Distance.Types.Config

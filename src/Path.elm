@@ -1,13 +1,13 @@
 module Path
     exposing
         ( Path
-        , folderName
-        , name
         , asPath
+        , folderName
+        , fromString
         , inRoot
+        , name
         , parent
         , toString
-        , fromString
         )
 
 import Util
@@ -46,7 +46,7 @@ name path =
 asPath : String -> Path
 asPath pathString =
     if String.startsWith "/" pathString then
-        String.split ("/") pathString
+        String.split "/" pathString
     else
         String.split "\\" pathString
 
