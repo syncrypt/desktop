@@ -123,6 +123,7 @@ type Msg
     | SentFeedback (WebData String)
     | FeedbackEntered String
     | SendFeedback
+    | SetLanguage Language
 
 
 

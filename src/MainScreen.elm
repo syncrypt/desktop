@@ -322,6 +322,10 @@ update msg model =
                 |> WizardDialog.close
                 |> sendFeedback
 
+        SetLanguage lang ->
+            { model | language = lang }
+                ! []
+
 
 sendFeedback : Model -> ( Model, Cmd Msg )
 sendFeedback model =
