@@ -9,33 +9,28 @@ import WizardDialog.Model exposing (..)
 
 stepSettings : Model.Model -> State Model.Msg -> Maybe (StepSettings Model.Msg)
 stepSettings model state =
-    let
-        wizardContent body =
+    Just
+        { title = "Send us feedback"
+        , contents =
             div [ class "FeedbackWizard" ]
-                body
-    in
-        Just
-            { title = "Send us feedback"
-            , contents =
-                wizardContent
-                    [ div [ class "Label" ]
-                        [ text "Your feedback, suggestions or bug report:" ]
-                    , div []
-                        [ Html.textarea
-                            [ class "FeedbackTextArea"
-                            , cols 40
-                            , rows 10
-                            , placeholder "Type your feedback here"
-                            , onInput Model.FeedbackEntered
-                            ]
-                            []
+                [ div [ class "Label" ]
+                    [ text "Your feedback, suggestions or bug report:" ]
+                , div []
+                    [ Html.textarea
+                        [ class "FeedbackTextArea"
+                        , cols 40
+                        , rows 10
+                        , placeholder "Type your feedback here"
+                        , onInput Model.FeedbackEntered
                         ]
+                        []
                     ]
-            , buttons =
-                Visible
-                    [ Cancel
-                    , CustomButton [ style [ ( "float", "right" ) ] ]
-                        "Send Feedback"
-                        Model.SendFeedback
-                    ]
-            }
+                ]
+        , buttons =
+            Visible
+                [ Cancel
+                , CustomButton [ style [ ( "float", "right" ) ] ]
+                    "Send Feedback"
+                    Model.SendFeedback
+                ]
+        }
