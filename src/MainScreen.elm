@@ -326,6 +326,28 @@ update msg model =
             { model | language = lang }
                 ! []
 
+        SendPasswordResetLink ->
+            sentPasswordReset model
+                -- TODO:
+                ! [-- Daemon.sendPasswordResetLink
+                  ]
+
+        SetupWizardEmail email ->
+            setSetupWizardEmail email model
+                ! []
+
+
+setSetupWizardEmail email ({ setupWizard } as model) =
+    { model
+        | setupWizard = { setupWizard | email = "" }
+    }
+
+
+sentPasswordReset ({ setupWizard } as model) =
+    { model
+        | setupWizard = { setupWizard | passwordResetSent = True }
+    }
+
 
 sendFeedback : Model -> ( Model, Cmd Msg )
 sendFeedback model =
@@ -359,7 +381,13 @@ openSetupWizardIfFirstLaunch model =
 
 openSetupWizard : Model -> ( Model, Cmd Msg )
 openSetupWizard model =
-    model
+    let
+        state =
+            { email = ""
+            , passwordResetSent = False
+            }
+    in
+    { model | setupWizard = state }
         |> WizardDialog.open (SetupWizard.settings model)
 
 

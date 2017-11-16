@@ -37,6 +37,7 @@ type alias WizardSettings msg =
     , wizardType : WizardType
     , onFinishMsg : Maybe msg
     , steps : Int
+    , closable : Bool
     }
 
 
@@ -51,6 +52,7 @@ type Button msg
 type CustomNavButton msg
     = Nav msg
     | Auto
+    | AutoWithTitle String
     | Hidden
 
 
@@ -80,6 +82,7 @@ type alias State msg =
     , steps : Int
     , currentStep : Int
     , onFinishMsg : Maybe msg
+    , closable : Bool
     }
 
 
@@ -100,16 +103,17 @@ type Msg
 
 
 init : WizardSettings msg -> State msg
-init { wizardType, address, steps, onFinishMsg } =
+init { wizardType, address, steps, onFinishMsg, closable } =
     { modal =
         Ui.Modal.init
-            |> Ui.Modal.closable True
+            |> Ui.Modal.closable closable
             |> Ui.Modal.backdrop True
     , address = address
     , wizardType = wizardType
     , steps = steps
     , currentStep = 1
     , onFinishMsg = onFinishMsg
+    , closable = closable
     }
 
 

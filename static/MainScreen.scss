@@ -167,12 +167,32 @@ li {
   min-height: 300px;
 
   .InfoText {
-    line-height: ($font-size-regular + $padding-tiny) !important;
+    line-height: ($font-size-regular + $padding-tiny);
+
     span {
-      line-height: ($font-size-regular + $padding-tiny) !important;
+      line-height: ($font-size-regular + $padding-tiny);
       display: block;
     }
+
+    .Header {
+      font-weight: bold;
+      font-size: $font-size-header;
+      margin-bottom: $padding-tiny;
+    }
+
+    .SubHeader {
+      font-weight: bold;
+      margin-bottom: $padding-tiny;
+    }
+
+    .TermsOfService {
+      span {
+        margin-top: $padding-tiny;
+        text-align: justify;
+      }
+    }
   }
+
 
   .Options {
     display: block;
@@ -201,9 +221,10 @@ li {
       border: $border-radius-input solid #3AE2E2 !important;
     }
 
-    .ForgotPassswordButton {
+    .ForgotPasswordButton {
       ui-button {
         margin-top: $padding-medium;
+        margin-bottom: $padding-small;
       }
     }
   }

@@ -13,6 +13,7 @@ settings model =
     , onFinishMsg = Just Model.SendFeedback
     , steps = 1
     , wizardType = FeedbackWizard
+    , closable = True
     }
 
 

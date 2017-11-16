@@ -193,14 +193,30 @@ button attributes title msg =
         ]
 
 
+type alias CustomButtonSettings msg =
+    { label : String, onClick : msg, disabled : Bool }
+
+
+customButton : List (Html.Attribute msg) -> CustomButtonSettings msg -> Html msg
+customButton attributes { label, onClick, disabled } =
+    let
+        model =
+            Ui.Button.model label "secondary" "small"
+    in
+    span attributes
+        [ { model | disabled = disabled }
+            |> Ui.Button.view onClick
+        ]
+
+
 wizardButtons :
     State msg
     -> ButtonSettings msg
     -> List (Html msg)
 wizardButtons state buttonSettings =
     let
-        buttons : Maybe (NavButtons msg) -> List (Html msg)
-        buttons navButtons =
+        commonButtons : Maybe (NavButtons msg) -> List (Html msg)
+        commonButtons navButtons =
             let
                 ( prevBtn, nextBtn ) =
                     case navButtons of
@@ -243,13 +259,13 @@ wizardButtons state buttonSettings =
     in
     case buttonSettings of
         Default ->
-            cancelButton state :: buttons Nothing
+            cancelButton state :: commonButtons Nothing
 
         Visible buttons ->
             List.map toHtml buttons
 
         CustomNav navButtons ->
-            cancelButton state :: buttons (Just navButtons)
+            cancelButton state :: commonButtons (Just navButtons)
 
 
 type NavButtonDirection
@@ -268,11 +284,17 @@ customNavigationButtons { prev, next } state =
                 ( Auto, NavNext ) ->
                     nextButton state
 
+                ( AutoWithTitle title, NavPrev ) ->
+                    customPrevButton (Label title) (state.address ToPreviousStep) state
+
+                ( AutoWithTitle title, NavNext ) ->
+                    customNextButton (Label title) (state.address ToNextStep) state
+
                 ( Nav msg, NavPrev ) ->
-                    customPrevButton msg state
+                    customPrevButton DefaultLabel msg state
 
                 ( Nav msg, NavNext ) ->
-                    customNextButton msg state
+                    customNextButton DefaultLabel msg state
 
                 ( Hidden, _ ) ->
                     text ""
@@ -294,25 +316,40 @@ viewSettings model state =
 
 prevButton : State msg -> Html msg
 prevButton state =
-    customPrevButton (state.address ToPreviousStep) state
+    customPrevButton DefaultLabel (state.address ToPreviousStep) state
 
 
 nextButton : State msg -> Html msg
 nextButton state =
-    customNextButton (state.address ToNextStep) state
+    customNextButton DefaultLabel (state.address ToNextStep) state
 
 
-customPrevButton : msg -> State msg -> Html msg
-customPrevButton msg state =
+type CustomButtonLabel
+    = DefaultLabel
+    | Label String
+
+
+customButtonLabel : CustomButtonLabel -> String -> String
+customButtonLabel label default =
+    case label of
+        DefaultLabel ->
+            default
+
+        Label l ->
+            l
+
+
+customPrevButton : CustomButtonLabel -> msg -> State msg -> Html msg
+customPrevButton label msg state =
     button [ class "Button-Previous" ]
-        "Previous"
+        (customButtonLabel label "Previous")
         msg
 
 
-customNextButton : msg -> State msg -> Html msg
-customNextButton msg state =
+customNextButton : CustomButtonLabel -> msg -> State msg -> Html msg
+customNextButton label msg state =
     button [ class "Button-Next" ]
-        "Next"
+        (customButtonLabel label "Next")
         msg
 
 
@@ -325,9 +362,11 @@ finishButton state =
 
 cancelButton : State msg -> Html msg
 cancelButton state =
-    button [ class "Button-Cancel" ]
-        "Cancel"
-        (state.address HideAndClose)
+    customButton [ class "Button-Cancel" ]
+        { disabled = False -- TODO: CHANGE TO: not state.closable
+        , label = "Cancel"
+        , onClick = state.address HideAndClose
+        }
 
 
 navigationButtons : List (Html msg) -> Html msg
