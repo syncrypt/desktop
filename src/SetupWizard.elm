@@ -15,7 +15,13 @@ settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
     , onFinishMsg = Just Model.SetupWizardFinished
-    , steps = 5
+    , steps =
+        [ "Welcome"
+        , "Account Setup"
+        , "Account Login"
+        , "Account Signup"
+        , "Key Creation"
+        ]
     , wizardType = SetupWizard
     , closable = False
     }
@@ -27,22 +33,30 @@ wizardContent body =
         body
 
 
+currentStep : State msg -> String
+currentStep { steps, currentStep } =
+    steps
+        |> List.drop (currentStep - 1)
+        |> List.head
+        |> Maybe.withDefault ""
+
+
 viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
 viewSettings model state =
-    case state.currentStep of
-        1 ->
+    case currentStep state of
+        "Welcome" ->
             step1 model state
 
-        2 ->
+        "Account Setup" ->
             step2 model state
 
-        3 ->
+        "Account Login" ->
             step3 model state
 
-        4 ->
+        "Account Signup" ->
             step4 model state
 
-        5 ->
+        "Key Creation" ->
             step5 model state
 
         _ ->

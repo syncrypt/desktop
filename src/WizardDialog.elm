@@ -24,9 +24,9 @@ import WizardDialog.Model exposing (..)
 
 open : WizardSettings msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 open settings ({ wizardDialog } as model) =
-    case ( wizardDialog, settings.steps ) of
+    case ( wizardDialog, List.isEmpty settings.steps ) of
         -- no steps, abort
-        ( _, 0 ) ->
+        ( _, True ) ->
             model
                 ! []
 

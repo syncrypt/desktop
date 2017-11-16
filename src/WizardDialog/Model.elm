@@ -36,7 +36,7 @@ type alias WizardSettings msg =
     { address : Msg -> msg
     , wizardType : WizardType
     , onFinishMsg : Maybe msg
-    , steps : Int
+    , steps : List String
     , closable : Bool
     }
 
@@ -79,7 +79,7 @@ type alias State msg =
     { modal : Ui.Modal.Model
     , address : Msg -> msg
     , wizardType : WizardType
-    , steps : Int
+    , steps : List String
     , currentStep : Int
     , onFinishMsg : Maybe msg
     , closable : Bool
@@ -117,14 +117,19 @@ init { wizardType, address, steps, onFinishMsg, closable } =
     }
 
 
+stepCount : State msg -> Int
+stepCount { steps } =
+    List.length steps
+
+
 hasPreviousStep : State msg -> Bool
 hasPreviousStep { currentStep } =
     currentStep > 1
 
 
 hasNextStep : State msg -> Bool
-hasNextStep { currentStep, steps } =
-    currentStep < steps
+hasNextStep state =
+    state.currentStep < stepCount state
 
 
 toNextStep : State msg -> State msg
@@ -145,7 +150,7 @@ toPreviousStep state =
 
 toStep : Int -> State msg -> State msg
 toStep step state =
-    if step > 0 && step <= state.steps then
+    if step > 0 && step <= stepCount state then
         { state | currentStep = step }
     else
         state

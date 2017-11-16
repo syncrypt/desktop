@@ -11,7 +11,7 @@ settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
     , onFinishMsg = Just Model.SendFeedback
-    , steps = 1
+    , steps = [ "Send Feedback" ]
     , wizardType = FeedbackWizard
     , closable = True
     }
