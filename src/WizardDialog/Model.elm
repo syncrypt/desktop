@@ -2,13 +2,16 @@ module WizardDialog.Model
     exposing
         ( Button(..)
         , ButtonSettings(..)
+        , CustomNavButton(..)
         , HasWizardDialog
         , Msg(..)
+        , NavButtons
         , State
         , ViewSettings
         , WizardSettings
         , WizardType(..)
         , asWizardIn
+        , buttonToStep
         , hasNextStep
         , hasPreviousStep
         , init
@@ -42,12 +45,25 @@ type Button msg
     | Next
     | Cancel
     | Finish
-    | CustomButton (List (Html.Attribute msg)) String msg
+    | CustomButton (List (Html.Attribute msg)) { label : String, onClick : msg }
+
+
+type CustomNavButton msg
+    = Nav msg
+    | Auto
+    | Hidden
+
+
+type alias NavButtons msg =
+    { prev : CustomNavButton msg
+    , next : CustomNavButton msg
+    }
 
 
 type ButtonSettings msg
     = Default
     | Visible (List (Button msg))
+    | CustomNav (NavButtons msg)
 
 
 type alias ViewSettings msg =
@@ -155,3 +171,11 @@ moveToStep step ({ wizardDialog } as model) =
 asWizardIn : HasWizardDialog a msg -> Maybe (State msg) -> HasWizardDialog a msg
 asWizardIn model maybeWizard =
     { model | wizardDialog = maybeWizard }
+
+
+buttonToStep : List (Html.Attribute msg) -> String -> Int -> State msg -> Button msg
+buttonToStep attrs label step state =
+    CustomButton attrs
+        { label = label
+        , onClick = state.address <| ToStep step
+        }

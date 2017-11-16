@@ -1,7 +1,6 @@
 module WizardDialog
     exposing
-        ( buttonToStep
-        , cancelButton
+        ( cancelButton
         , close
         , finishButton
         , navigationButtons
@@ -26,10 +25,12 @@ import WizardDialog.Model exposing (..)
 open : WizardSettings msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 open settings ({ wizardDialog } as model) =
     case ( wizardDialog, settings.steps ) of
+        -- no steps, abort
         ( _, 0 ) ->
             model
                 ! []
 
+        -- no wizard window open yet, create & open it
         ( Nothing, _ ) ->
             (settings
                 |> init
@@ -38,6 +39,7 @@ open settings ({ wizardDialog } as model) =
             )
                 ! [ Util.delayMsg 150 (settings.address Show) ]
 
+        -- wizard window already there (potentially hidden), open it
         ( Just state, _ ) ->
             ({ state | modal = Ui.Modal.open state.modal }
                 |> Just
@@ -197,17 +199,26 @@ wizardButtons :
     -> List (Html msg)
 wizardButtons state buttonSettings =
     let
-        buttons : List (Html msg)
-        buttons =
+        buttons : Maybe (NavButtons msg) -> List (Html msg)
+        buttons navButtons =
+            let
+                ( prevBtn, nextBtn ) =
+                    case navButtons of
+                        Just customNavButtons ->
+                            customNavigationButtons customNavButtons state
+
+                        Nothing ->
+                            ( prevButton state, nextButton state )
+            in
             case ( hasPreviousStep state, hasNextStep state ) of
                 ( True, True ) ->
-                    [ navigationButtons [ prevButton state, nextButton state ] ]
+                    [ navigationButtons [ prevBtn, nextBtn ] ]
 
                 ( True, False ) ->
-                    [ finishButton state, navigationButtons [ prevButton state ] ]
+                    [ finishButton state, navigationButtons [ prevBtn ] ]
 
                 ( False, True ) ->
-                    [ navigationButtons [ nextButton state ] ]
+                    [ navigationButtons [ nextBtn ] ]
 
                 ( False, False ) ->
                     [ finishButton state ]
@@ -227,15 +238,48 @@ wizardButtons state buttonSettings =
                 Finish ->
                     finishButton state
 
-                CustomButton attrs title msg ->
-                    button (attrs ++ [ class "Custom-Button" ]) title msg
+                CustomButton attrs { label, onClick } ->
+                    button (attrs ++ [ class "Custom-Button" ]) label onClick
     in
     case buttonSettings of
         Default ->
-            cancelButton state :: buttons
+            cancelButton state :: buttons Nothing
 
         Visible buttons ->
             List.map toHtml buttons
+
+        CustomNav navButtons ->
+            cancelButton state :: buttons (Just navButtons)
+
+
+type NavButtonDirection
+    = NavPrev
+    | NavNext
+
+
+customNavigationButtons : NavButtons msg -> State msg -> ( Html msg, Html msg )
+customNavigationButtons { prev, next } state =
+    let
+        toHtml navButton navButtonDirection =
+            case ( navButton, navButtonDirection ) of
+                ( Auto, NavPrev ) ->
+                    prevButton state
+
+                ( Auto, NavNext ) ->
+                    nextButton state
+
+                ( Nav msg, NavPrev ) ->
+                    customPrevButton msg state
+
+                ( Nav msg, NavNext ) ->
+                    customNextButton msg state
+
+                ( Hidden, _ ) ->
+                    text ""
+    in
+    ( toHtml prev NavPrev
+    , toHtml next NavNext
+    )
 
 
 viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
@@ -250,16 +294,26 @@ viewSettings model state =
 
 prevButton : State msg -> Html msg
 prevButton state =
-    button [ class "Button-Previous" ]
-        "Previous"
-        (state.address ToPreviousStep)
+    customPrevButton (state.address ToPreviousStep) state
 
 
 nextButton : State msg -> Html msg
 nextButton state =
+    customNextButton (state.address ToNextStep) state
+
+
+customPrevButton : msg -> State msg -> Html msg
+customPrevButton msg state =
+    button [ class "Button-Previous" ]
+        "Previous"
+        msg
+
+
+customNextButton : msg -> State msg -> Html msg
+customNextButton msg state =
     button [ class "Button-Next" ]
         "Next"
-        (state.address ToNextStep)
+        msg
 
 
 finishButton : State msg -> Html msg
@@ -274,11 +328,6 @@ cancelButton state =
     button [ class "Button-Cancel" ]
         "Cancel"
         (state.address HideAndClose)
-
-
-buttonToStep : State msg -> List (Html.Attribute msg) -> String -> Int -> Button msg
-buttonToStep state attrs label step =
-    CustomButton attrs label (state.address <| ToStep step)
 
 
 navigationButtons : List (Html msg) -> Html msg

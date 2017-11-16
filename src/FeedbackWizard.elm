@@ -39,7 +39,8 @@ viewSettings model state =
             Visible
                 [ Cancel
                 , CustomButton [ style [ ( "float", "right" ) ] ]
-                    "Send Feedback"
-                    Model.SendFeedback
+                    { label = "Send Feedback"
+                    , onClick = Model.SendFeedback
+                    }
                 ]
         }

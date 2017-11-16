@@ -15,7 +15,7 @@ settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
     , onFinishMsg = Just Model.SetupWizardFinished
-    , steps = 4
+    , steps = 5
     , wizardType = SetupWizard
     }
 
@@ -40,6 +40,9 @@ viewSettings model state =
 
         4 ->
             step4 model state
+
+        5 ->
+            step5 model state
 
         _ ->
             Nothing
@@ -108,7 +111,11 @@ step3 model state =
                         }
                     ]
                 ]
-        , buttons = Default
+        , buttons =
+            CustomNav
+                { prev = Auto
+                , next = Nav <| state.address (ToStep 5)
+                }
         }
 
 
@@ -116,8 +123,21 @@ step4 model state =
     Just
         { title = "Account Signup"
         , contents =
-            wizardContent []
+            wizardContent [ text "Here we'll have an account signup form with email address, user name, EULA acceptance checkbox etc." ]
         , buttons = Default
+        }
+
+
+step5 model state =
+    Just
+        { title = "Key Creation"
+        , contents =
+            wizardContent [ text "Coming soon with a nice animation next to this text." ]
+        , buttons =
+            CustomNav
+                { prev = Nav <| state.address (ToStep 3)
+                , next = Auto
+                }
         }
 
 
