@@ -248,7 +248,7 @@ step5 model state =
             wizardContent [ text "Coming soon with a nice animation next to this text." ]
         , buttons =
             CustomNav
-                { prev = Nav <| state.address (ToStep 3)
-                , next = Auto
+                { prev = Hidden
+                , next = Hidden
                 }
         }
