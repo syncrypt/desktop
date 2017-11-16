@@ -1,7 +1,13 @@
 module WizardDialog
     exposing
-        ( close
+        ( buttonToStep
+        , cancelButton
+        , close
+        , finishButton
+        , navigationButtons
+        , nextButton
         , open
+        , prevButton
         , update
         , view
         )
@@ -71,7 +77,8 @@ hide ({ wizardDialog } as model) =
         |> asWizardIn model
 
 
-hideAndClose model =
+hideAndClose : HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
+hideAndClose ({ wizardDialog } as model) =
     case model.wizardDialog of
         Nothing ->
             model
@@ -190,129 +197,45 @@ wizardButtons :
     -> List (Html msg)
 wizardButtons state buttonSettings =
     let
-        prevButton =
-            button [ class "Button-Previous" ]
-                "Previous"
-                (state.address ToPreviousStep)
-
-        nextButton =
-            button [ class "Button-Next" ]
-                "Next"
-                (state.address ToNextStep)
-
-        finishButton =
-            button [ class "Button-Finish" ]
-                "Finish"
-                (state.address FinishWizard)
-
-        cancelButton =
-            button [ class "Button-Cancel" ]
-                "Cancel"
-                (state.address HideAndClose)
-
-        navigationButtons buttons =
-            div [ class "NavigationButtons" ]
-                buttons
-
         buttons : List (Html msg)
         buttons =
             case ( hasPreviousStep state, hasNextStep state ) of
                 ( True, True ) ->
-                    [ navigationButtons [ prevButton, nextButton ] ]
+                    [ navigationButtons [ prevButton state, nextButton state ] ]
 
                 ( True, False ) ->
-                    [ finishButton, navigationButtons [ prevButton ] ]
+                    [ finishButton state, navigationButtons [ prevButton state ] ]
 
                 ( False, True ) ->
-                    [ navigationButtons [ nextButton ] ]
+                    [ navigationButtons [ nextButton state ] ]
 
                 ( False, False ) ->
-                    [ finishButton ]
+                    [ finishButton state ]
 
         toHtml : Button msg -> Html msg
         toHtml btn =
             case btn of
                 Previous ->
-                    prevButton
+                    prevButton state
 
                 Next ->
-                    nextButton
+                    nextButton state
 
                 Cancel ->
-                    cancelButton
+                    cancelButton state
 
                 Finish ->
-                    finishButton
+                    finishButton state
 
                 CustomButton attrs title msg ->
                     button (attrs ++ [ class "Custom-Button" ]) title msg
     in
     case buttonSettings of
         Default ->
-            cancelButton :: buttons
+            cancelButton state :: buttons
 
         Visible buttons ->
             List.map toHtml buttons
-
-
-hasPreviousStep : State msg -> Bool
-hasPreviousStep { currentStep } =
-    currentStep > 1
-
-
-hasNextStep : State msg -> Bool
-hasNextStep { currentStep, steps } =
-    currentStep < steps
-
-
-toNextStep : State msg -> State msg
-toNextStep state =
-    if hasNextStep state then
-        { state | currentStep = state.currentStep + 1 }
-    else
-        state
-
-
-toPreviousStep : State msg -> State msg
-toPreviousStep state =
-    if hasPreviousStep state then
-        { state | currentStep = state.currentStep - 1 }
-    else
-        state
-
-
-toStep : Int -> State msg -> State msg
-toStep step state =
-    if step > 0 && step <= state.steps then
-        { state | currentStep = step }
-    else
-        state
-
-
-moveToPreviousStep : HasWizardDialog a msg -> HasWizardDialog a msg
-moveToPreviousStep ({ wizardDialog } as model) =
-    wizardDialog
-        |> Maybe.map toPreviousStep
-        |> asWizardIn model
-
-
-moveToNextStep : HasWizardDialog a msg -> HasWizardDialog a msg
-moveToNextStep ({ wizardDialog } as model) =
-    wizardDialog
-        |> Maybe.map toNextStep
-        |> asWizardIn model
-
-
-moveToStep : Int -> HasWizardDialog a msg -> HasWizardDialog a msg
-moveToStep step ({ wizardDialog } as model) =
-    wizardDialog
-        |> Maybe.map (toStep step)
-        |> asWizardIn model
-
-
-asWizardIn : HasWizardDialog a msg -> Maybe (State msg) -> HasWizardDialog a msg
-asWizardIn model maybeWizard =
-    { model | wizardDialog = maybeWizard }
 
 
 viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
@@ -323,3 +246,37 @@ viewSettings model state =
 
         FeedbackWizard ->
             FeedbackWizard.viewSettings model state
+
+
+prevButton state =
+    button [ class "Button-Previous" ]
+        "Previous"
+        (state.address ToPreviousStep)
+
+
+nextButton state =
+    button [ class "Button-Next" ]
+        "Next"
+        (state.address ToNextStep)
+
+
+finishButton state =
+    button [ class "Button-Finish" ]
+        "Finish"
+        (state.address FinishWizard)
+
+
+cancelButton state =
+    button [ class "Button-Cancel" ]
+        "Cancel"
+        (state.address HideAndClose)
+
+
+buttonToStep : State msg -> List (Html.Attribute msg) -> String -> Int -> Button msg
+buttonToStep state attrs label step =
+    CustomButton attrs label (state.address <| ToStep step)
+
+
+navigationButtons buttons =
+    div [ class "NavigationButtons" ]
+        buttons

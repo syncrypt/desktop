@@ -8,7 +8,16 @@ module WizardDialog.Model
         , ViewSettings
         , WizardSettings
         , WizardType(..)
+        , asWizardIn
+        , hasNextStep
+        , hasPreviousStep
         , init
+        , moveToNextStep
+        , moveToPreviousStep
+        , moveToStep
+        , toNextStep
+        , toPreviousStep
+        , toStep
         )
 
 import Html exposing (Html)
@@ -86,3 +95,63 @@ init { wizardType, address, steps, onFinishMsg } =
     , currentStep = 1
     , onFinishMsg = onFinishMsg
     }
+
+
+hasPreviousStep : State msg -> Bool
+hasPreviousStep { currentStep } =
+    currentStep > 1
+
+
+hasNextStep : State msg -> Bool
+hasNextStep { currentStep, steps } =
+    currentStep < steps
+
+
+toNextStep : State msg -> State msg
+toNextStep state =
+    if hasNextStep state then
+        { state | currentStep = state.currentStep + 1 }
+    else
+        state
+
+
+toPreviousStep : State msg -> State msg
+toPreviousStep state =
+    if hasPreviousStep state then
+        { state | currentStep = state.currentStep - 1 }
+    else
+        state
+
+
+toStep : Int -> State msg -> State msg
+toStep step state =
+    if step > 0 && step <= state.steps then
+        { state | currentStep = step }
+    else
+        state
+
+
+moveToPreviousStep : HasWizardDialog a msg -> HasWizardDialog a msg
+moveToPreviousStep ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map toPreviousStep
+        |> asWizardIn model
+
+
+moveToNextStep : HasWizardDialog a msg -> HasWizardDialog a msg
+moveToNextStep ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map toNextStep
+        |> asWizardIn model
+
+
+moveToStep : Int -> HasWizardDialog a msg -> HasWizardDialog a msg
+moveToStep step ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map (toStep step)
+        |> asWizardIn model
+
+
+asWizardIn : HasWizardDialog a msg -> Maybe (State msg) -> HasWizardDialog a msg
+asWizardIn model maybeWizard =
+    { model | wizardDialog = maybeWizard }
