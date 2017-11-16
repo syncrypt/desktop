@@ -248,24 +248,28 @@ viewSettings model state =
             FeedbackWizard.viewSettings model state
 
 
+prevButton : State msg -> Html msg
 prevButton state =
     button [ class "Button-Previous" ]
         "Previous"
         (state.address ToPreviousStep)
 
 
+nextButton : State msg -> Html msg
 nextButton state =
     button [ class "Button-Next" ]
         "Next"
         (state.address ToNextStep)
 
 
+finishButton : State msg -> Html msg
 finishButton state =
     button [ class "Button-Finish" ]
         "Finish"
         (state.address FinishWizard)
 
 
+cancelButton : State msg -> Html msg
 cancelButton state =
     button [ class "Button-Cancel" ]
         "Cancel"
@@ -277,6 +281,7 @@ buttonToStep state attrs label step =
     CustomButton attrs label (state.address <| ToStep step)
 
 
+navigationButtons : List (Html msg) -> Html msg
 navigationButtons buttons =
     div [ class "NavigationButtons" ]
         buttons
