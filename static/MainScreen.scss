@@ -164,7 +164,8 @@ li {
 
 .MainScreen-SetupWizard {
   width: 600px;
-  min-height: 300px;
+  height: 300px;
+  overflow-y: scroll;
 
   .InfoText {
     line-height: ($font-size-regular + $padding-tiny);
