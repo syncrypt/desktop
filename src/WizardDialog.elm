@@ -284,17 +284,23 @@ customNavigationButtons { prev, next } state =
                 ( Auto, NavNext ) ->
                     nextButton state
 
-                ( AutoWithTitle title, NavPrev ) ->
-                    customPrevButton (Label title) (state.address ToPreviousStep) state
+                ( AutoWithLabel label, NavPrev ) ->
+                    customPrevButton (Label label) (state.address ToPreviousStep) state
 
-                ( AutoWithTitle title, NavNext ) ->
-                    customNextButton (Label title) (state.address ToNextStep) state
+                ( AutoWithLabel label, NavNext ) ->
+                    customNextButton (Label label) (state.address ToNextStep) state
 
                 ( Nav msg, NavPrev ) ->
                     customPrevButton DefaultLabel msg state
 
                 ( Nav msg, NavNext ) ->
                     customNextButton DefaultLabel msg state
+
+                ( NavWithLabel msg label, NavPrev ) ->
+                    customPrevButton (Label label) msg state
+
+                ( NavWithLabel msg label, NavNext ) ->
+                    customNextButton (Label label) msg state
 
                 ( Hidden, _ ) ->
                     text ""

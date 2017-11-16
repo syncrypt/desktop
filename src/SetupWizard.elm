@@ -70,17 +70,23 @@ infoTextLine line =
 
 infoText : List (Html.Attribute msg) -> List String -> Html msg
 infoText attrs lines =
-    div (class "InfoText" :: attrs)
-        (List.map infoTextLine lines)
+    div [ class "InfoText" ]
+        [ div attrs
+            (List.map infoTextLine lines)
+        ]
 
 
+infoTextWithHeader : List (Html.Attribute msg) -> String -> List String -> Html msg
 infoTextWithHeader attrs header lines =
-    div (class "InfoText" :: attrs) <|
-        span [ class "Header" ]
-            [ text header ]
-            :: List.map infoTextLine lines
+    div [ class "InfoText" ]
+        [ div attrs <|
+            span [ class "Header" ]
+                [ text header ]
+                :: List.map infoTextLine lines
+        ]
 
 
+infoTextWithHeaders : List (Html.Attribute msg) -> String -> String -> List String -> Html msg
 infoTextWithHeaders attrs header subHeader lines =
     div [ class "InfoText" ]
         [ div attrs <|
@@ -201,7 +207,7 @@ step3 model state =
         , buttons =
             CustomNav
                 { prev = Auto
-                , next = Nav <| state.address (ToStep 5)
+                , next = NavWithLabel (state.address (ToStep 5)) "Login"
                 }
         }
 
@@ -227,7 +233,11 @@ step4 model state =
                     , "This permission is in accordance with §§ 4a I, 28 BDSG."
                     ]
                 ]
-        , buttons = CustomNav { prev = Auto, next = AutoWithTitle "I agree" }
+        , buttons =
+            CustomNav
+                { prev = Nav <| state.address (ToStep 2)
+                , next = AutoWithLabel "I agree"
+                }
         }
 
 

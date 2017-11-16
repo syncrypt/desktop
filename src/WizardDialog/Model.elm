@@ -51,8 +51,9 @@ type Button msg
 
 type CustomNavButton msg
     = Nav msg
+    | NavWithLabel msg String
     | Auto
-    | AutoWithTitle String
+    | AutoWithLabel String
     | Hidden
 
 
