@@ -178,9 +178,33 @@ li {
     display: block;
     max-width: 50%;
     margin-top: $padding-medium;
+
     ui-button {
-      margin-top: $padding-small !important;
-      margin-right: $padding-small !important;
+      margin-top: $padding-small;
+      margin-right: $padding-small;
+    }
+
+    .InputLabel {
+      margin-top: $padding-small;
+      font-weight: bold;
+    }
+
+    input {
+      margin-top: $padding-tiny;
+      font-size: $font-size-regular;
+      height: $font-size-small;
+      width: 200px;
+      padding-top: $padding-tiny;
+      padding-bottom: $padding-tiny;
+      padding-left: $padding-small;
+      padding-right: $padding-small;
+      border: $border-radius-input solid #3AE2E2 !important;
+    }
+
+    .ForgotPassswordButton {
+      ui-button {
+        margin-top: $padding-medium;
+      }
     }
   }
 }

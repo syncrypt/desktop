@@ -48,24 +48,35 @@ viewSettings model state =
             Nothing
 
 
+infoText : List String -> Html msg
+infoText lines =
+    let
+        lineItem line =
+            span []
+                [ text line ]
+    in
+    div [ class "InfoText" ]
+        (List.map lineItem lines)
+
+
 step1 model state =
     Just
         { title = "Welcome to Syncrypt"
         , contents =
             wizardContent
-                [ div [ class "InfoText" ]
-                    [ span []
-                        [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
-                    , span []
-                        [ text "Please pick a language:" ]
+                [ infoText
+                    [ "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
+                    , "Please pick a language:"
                     ]
                 , div [ class "Options" ]
                     [ button []
-                        "GERMAN"
-                        (Model.SetLanguage German)
+                        { label = "GERMAN"
+                        , onClick = Model.SetLanguage German
+                        }
                     , button []
-                        "ENGLISH"
-                        (Model.SetLanguage English)
+                        { label = "ENGLISH"
+                        , onClick = Model.SetLanguage English
+                        }
                     ]
                 ]
         , buttons = Default
@@ -77,14 +88,16 @@ step2 model state =
         { title = "Account setup"
         , contents =
             wizardContent
-                [ text "Do you already have a Syncrypt Account?"
+                [ infoText [ "Do you already have a Syncrypt Account?" ]
                 , div [ class "Options" ]
                     [ button []
-                        "Yes, login with account"
-                        (state.address (ToStep 3))
+                        { label = "Yes, login with account"
+                        , onClick = state.address (ToStep 3)
+                        }
                     , button []
-                        "No, sign up with new account"
-                        (state.address (ToStep 4))
+                        { label = "No, sign up with new account"
+                        , onClick = state.address (ToStep 4)
+                        }
                     ]
                 ]
         , buttons = Default
@@ -96,7 +109,8 @@ step3 model state =
         { title = "Account Login"
         , contents =
             wizardContent
-                [ div [ class "Options" ]
+                [ infoText [ "Login with your existing Syncrypt Account." ]
+                , div [ class "Options" ]
                     [ labeledItem [ class "InputLabel" ]
                         { side = Left
                         , onClick = Nothing
@@ -112,6 +126,10 @@ step3 model state =
                         , item =
                             div []
                                 [ input [ type_ "password" ] [ text "" ] ]
+                        }
+                    , button [ class "ForgotPassswordButton" ]
+                        { label = "Forgot Password"
+                        , onClick = state.address <| ToStep 6
                         }
                     ]
                 ]
@@ -145,9 +163,15 @@ step5 model state =
         }
 
 
-button : List (Html.Attribute Model.Msg) -> String -> Model.Msg -> Html Model.Msg
-button attrs label msg =
+type alias ButtonSettings =
+    { label : String
+    , onClick : Model.Msg
+    }
+
+
+button : List (Html.Attribute Model.Msg) -> ButtonSettings -> Html Model.Msg
+button attrs { label, onClick } =
     span attrs
         [ Ui.Button.model label "secondary" "small"
-            |> Ui.Button.view msg
+            |> Ui.Button.view onClick
         ]
