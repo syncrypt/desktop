@@ -166,9 +166,18 @@ li {
   width: 600px;
   min-height: 300px;
 
+  .InfoText {
+    line-height: ($font-size-regular + $padding-tiny) !important;
+    span {
+      line-height: ($font-size-regular + $padding-tiny) !important;
+      display: block;
+    }
+  }
+
   .Options {
     display: block;
     max-width: 50%;
+    margin-top: $padding-medium;
     ui-button {
       margin-top: $padding-small !important;
       margin-right: $padding-small !important;

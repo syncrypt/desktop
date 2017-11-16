@@ -1,7 +1,7 @@
 module SetupWizard exposing (settings, viewSettings)
 
 import Dialog exposing (labeledItem)
-import Html exposing (Html, button, div, input, span, text)
+import Html exposing (Html, button, div, input, p, span, text)
 import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick)
 import Language exposing (Language(..))
@@ -53,8 +53,12 @@ step1 model state =
         { title = "Welcome to Syncrypt"
         , contents =
             wizardContent
-                [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
-                , text "Please pick a language:"
+                [ div [ class "InfoText" ]
+                    [ span []
+                        [ text "We'll guide you through a step-by-step setup process to initiate your Syncrypt account." ]
+                    , span []
+                        [ text "Please pick a language:" ]
+                    ]
                 , div [ class "Options" ]
                     [ button []
                         "GERMAN"
