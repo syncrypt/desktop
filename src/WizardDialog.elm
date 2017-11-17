@@ -16,9 +16,8 @@ import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList, style)
 import Model
 import SetupWizard
-import Ui.Button
 import Ui.Modal
-import Util
+import Util exposing (button, customButton)
 import WizardDialog.Model exposing (..)
 
 
@@ -189,30 +188,6 @@ viewDialog state step =
         [ Ui.Modal.view viewConfig state.modal ]
 
 
-button : List (Html.Attribute msg) -> String -> msg -> Html msg
-button attributes title msg =
-    span attributes
-        [ Ui.Button.model title "secondary" "small"
-            |> Ui.Button.view msg
-        ]
-
-
-type alias CustomButtonSettings msg =
-    { label : String, onClick : msg, disabled : Bool }
-
-
-customButton : List (Html.Attribute msg) -> CustomButtonSettings msg -> Html msg
-customButton attributes { label, onClick, disabled } =
-    let
-        model =
-            Ui.Button.model label "secondary" "small"
-    in
-    span attributes
-        [ { model | disabled = disabled }
-            |> Ui.Button.view onClick
-        ]
-
-
 wizardButtons :
     State msg
     -> ButtonSettings msg
@@ -259,7 +234,10 @@ wizardButtons state buttonSettings =
                     finishButton state
 
                 CustomButton attrs { label, onClick } ->
-                    button (attrs ++ [ class "Custom-Button" ]) label onClick
+                    button (attrs ++ [ class "Custom-Button" ])
+                        { label = label
+                        , onClick = onClick
+                        }
     in
     case buttonSettings of
         Default ->
@@ -352,22 +330,25 @@ customButtonLabel label default =
 customPrevButton : CustomButtonLabel -> msg -> State msg -> Html msg
 customPrevButton label msg state =
     button [ class "Button-Previous" ]
-        (customButtonLabel label "Previous")
-        msg
+        { label = customButtonLabel label "Previous"
+        , onClick = msg
+        }
 
 
 customNextButton : CustomButtonLabel -> msg -> State msg -> Html msg
 customNextButton label msg state =
     button [ class "Button-Next" ]
-        (customButtonLabel label "Next")
-        msg
+        { label = customButtonLabel label "Next"
+        , onClick = msg
+        }
 
 
 finishButton : State msg -> Html msg
 finishButton state =
     button [ class "Button-Finish" ]
-        "Finish"
-        (state.address FinishWizard)
+        { label = "Finish"
+        , onClick = state.address FinishWizard
+        }
 
 
 cancelButton : State msg -> Html msg

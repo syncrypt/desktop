@@ -1,12 +1,36 @@
 @import "Common.scss";
 
-button,
+button {
+  @include defaultCursor;
+
+  background-color: $color-highlight;
+  color: black;
+  font-size: $font-size-small;
+
+  border: 2px solid $color-highlight;
+  padding: 0 16px;
+  height: 26px;
+  font-weight: bold;
+  justify-content: center;
+  display: inline-flex;
+  text-align: center;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  // font-family: -apple-system, system-ui, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
+  outline: none;
+}
+
+button:active {
+  outline: none;
+  background-color: $color-highlight * 0.75;
+  border: 2px solid $color-highlight * 0.75;
+}
+
 ui-button,
 ui-tabs-handle {
   @include defaultCursor;
 }
 
-button,
 ui-button {
   background-color: $color-highlight !important;
   color: black !important;

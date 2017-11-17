@@ -6,8 +6,8 @@ import Html.Attributes exposing (class, classList)
 import Language exposing (Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
-import Ui.Button
 import Ui.Modal
+import Util exposing (button)
 
 
 view : HasSettingsDialog a -> Html Model.Msg
@@ -36,8 +36,10 @@ languageButton forLanguage { language, settingsDialog } =
             , ( "Active", language == forLanguage )
             ]
         ]
-        [ Ui.Button.model (toString forLanguage) "secondary" "small"
-            |> Ui.Button.view onClickMsg
+        [ button []
+            { label = toString forLanguage
+            , onClick = onClickMsg
+            }
         ]
 
 

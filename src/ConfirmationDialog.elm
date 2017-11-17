@@ -12,8 +12,8 @@ module ConfirmationDialog
 import Html exposing (Html, div, form, span, text)
 import Html.Attributes exposing (class)
 import Http
-import Ui.Button
 import Ui.Modal
+import Util exposing (button)
 
 
 type alias ViewSettings msg =
@@ -123,12 +123,12 @@ contents address { question, confirmMsg } =
         [ text question
         , div [ class "ConfirmationDialog-Buttons" ]
             [ span [ class "ConfirmationDialog-Button-Cancel" ]
-                [ Ui.Button.model "Cancel" "secondary" "small"
-                    |> Ui.Button.view (address Close)
+                [ button []
+                    { label = "Cancel", onClick = address Close }
                 ]
             , span [ class "ConfirmationDialog-Button-Confirm" ]
-                [ Ui.Button.model "Confirm" "danger" "small"
-                    |> Ui.Button.view confirmMsg
+                [ button []
+                    { label = "Confirm", onClick = confirmMsg }
                 ]
             ]
         ]

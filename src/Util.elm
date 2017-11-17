@@ -1,8 +1,10 @@
 module Util
     exposing
         ( (~>)
+        , ButtonSettings
         , ByteUnit
         , ByteUnitPrecision
+        , CustomButtonSettings
         , Direction(..)
         , IconButton(..)
         , Position(..)
@@ -11,7 +13,9 @@ module Util
         , andAlso
         , animatedDots
         , attemptDelayed
+        , button
         , bytesReadable
+        , customButton
         , dateDecoder
         , dateParts
         , delay
@@ -582,3 +586,36 @@ animatedDots maybeNow =
 
         Nothing ->
             "."
+
+
+type alias ButtonSettings msg =
+    { label : String
+    , onClick : msg
+    }
+
+
+button : List (Html.Attribute msg) -> ButtonSettings msg -> Html msg
+button attrs settings =
+    span attrs
+        [ Html.button [ Html.Events.onClick settings.onClick ]
+            [ text settings.label ]
+        ]
+
+
+type alias CustomButtonSettings msg =
+    { label : String, onClick : msg, disabled : Bool }
+
+
+customButton : List (Html.Attribute msg) -> CustomButtonSettings msg -> Html msg
+customButton attributes { label, onClick, disabled } =
+    let
+        attrs =
+            if disabled then
+                class "Disabled" :: attributes
+            else
+                attributes
+    in
+    button attrs
+        { label = label
+        , onClick = onClick
+        }

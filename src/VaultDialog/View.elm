@@ -19,7 +19,6 @@ import Dict
 import Html
     exposing
         ( Html
-        , button
         , div
         , form
         , h4
@@ -47,7 +46,6 @@ import Translation
         , t
         , timeAgo
         )
-import Ui.Button
 import Ui.Checkbox
 import Ui.Container
 import Ui.Input
@@ -57,6 +55,7 @@ import Util
     exposing
         ( Position(..)
         , TooltipLength(..)
+        , button
         , dateParts
         , fullDateString
         , monthNumber
@@ -415,12 +414,6 @@ adminTab vaultId state model =
 eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
 eventFilterButtons vaultId state =
     let
-        button attributes label msg =
-            span attributes
-                [ Ui.Button.model label "primary" "small"
-                    |> Ui.Button.view msg
-                ]
-
         rootMsg msg =
             Model.VaultDialogMsg vaultId msg
 
@@ -435,8 +428,9 @@ eventFilterButtons vaultId state =
                       )
                     ]
                 ]
-                title
-                (filterMsg <| filter)
+                { label = title
+                , onClick = filterMsg <| filter
+                }
 
         logLevelButtons =
             [ filterButton "Debug" <| Level Debug
@@ -447,8 +441,9 @@ eventFilterButtons vaultId state =
 
         logLevelButton =
             button [ class "LogLevelMenuButton" ]
-                "Log Levels"
-                (rootMsg ToggleViewLogLevelFilters)
+                { label = "Log Levels"
+                , onClick = rootMsg ToggleViewLogLevelFilters
+                }
 
         buttons =
             [ filterButton "History" <| IsHistoryItem
@@ -569,8 +564,10 @@ exportButton : Vault -> Html Model.Msg
 exportButton vault =
     span
         [ class "Button-Export" ]
-        [ Ui.Button.model "Export vault key bundle" "secondary" "small"
-            |> Ui.Button.view (Model.VaultDialogMsg vault.id OpenExportDialog)
+        [ button []
+            { label = "Export vault key bundle"
+            , onClick = Model.VaultDialogMsg vault.id OpenExportDialog
+            }
         ]
 
 
@@ -578,16 +575,20 @@ cancelButton : VaultId -> State -> Html Model.Msg
 cancelButton vaultId state =
     span
         [ classList [ ( "Hidden", not state.hasChangesPending ) ] ]
-        [ Ui.Button.model "Cancel Changes" "secondary" "small"
-            |> Ui.Button.view (Model.CloseVaultDetails vaultId)
+        [ button []
+            { label = "Hidden"
+            , onClick = Model.CloseVaultDetails vaultId
+            }
         ]
 
 
 deleteButton : VaultId -> State -> Model -> Html Model.Msg
 deleteButton vaultId state model =
     span []
-        [ Ui.Button.model "Delete from Server" "danger" "small"
-            |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm DeleteVault))
+        [ button []
+            { label = "Delete from Server"
+            , onClick = Model.VaultDialogMsg vaultId (Confirm DeleteVault)
+            }
         ]
 
 
@@ -595,8 +596,10 @@ removeButton : VaultId -> State -> Html Model.Msg
 removeButton vaultId state =
     span
         [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
-        [ Ui.Button.model "Stop syncing" "warning" "small"
-            |> Ui.Button.view (Model.VaultDialogMsg vaultId (Confirm RemoveVault))
+        [ button []
+            { label = "Stop syncing"
+            , onClick = Model.VaultDialogMsg vaultId (Confirm RemoveVault)
+            }
         ]
 
 
@@ -617,8 +620,10 @@ saveButton vaultId state =
                 _ ->
                     ( "Close", Model.CloseVaultDetails vaultId )
     in
-    Ui.Button.model label "primary" "small"
-        |> Ui.Button.view msg
+    button []
+        { label = label
+        , onClick = msg
+        }
 
 
 confirmUserKeysButton : State -> Html Msg
@@ -630,8 +635,10 @@ confirmUserKeysButton state =
     if List.isEmpty (keysToAdd email state) then
         span [] []
     else
-        Ui.Button.model "Invite with selected keys" "primary" "small"
-            |> Ui.Button.view (Confirmed AddUser)
+        button []
+            { label = "Invite with selected keys"
+            , onClick = Confirmed AddUser
+            }
 
 
 openFolderButton : VaultId -> State -> Model -> Html Msg
@@ -710,8 +717,10 @@ openFolderButton vaultId state model =
                     , length = Auto
                     , text = tooltipMsg
                     }
-                    [ Ui.Button.model folderPath "primary" "small"
-                        |> Ui.Button.view msg
+                    [ button []
+                        { label = folderPath
+                        , onClick = msg
+                        }
                     ]
             }
         ]
@@ -903,13 +912,13 @@ inFolderPath path contents =
 folderCollapseToggle : Path -> State -> Html Msg
 folderCollapseToggle path state =
     if isExpanded path state then
-        button
+        Html.button
             [ onClick (CollapseFolder path)
             , class "FolderItem-Collapse-Toggle"
             ]
             [ text "v" ]
     else
-        button
+        Html.button
             [ onClick (ExpandFolder path)
             , classList
                 [ ( "FolderItem-Collapse-Toggle", True )

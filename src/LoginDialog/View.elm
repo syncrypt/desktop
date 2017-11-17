@@ -1,14 +1,13 @@
 module LoginDialog.View exposing (..)
 
 import Dialog exposing (labeledItem)
-import Html exposing (Html, button, div, form, input, label, span, text)
+import Html exposing (Html, div, form, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
 import LoginDialog.Model exposing (Msg(..), State)
 import Model exposing (Model)
-import Ui.Button
 import Ui.Input
 import Ui.Modal
-import Util exposing (Position(..))
+import Util exposing (Position(..), button)
 
 
 view : Model -> Html Model.Msg
@@ -59,8 +58,10 @@ dialogInput body =
 loginButton : Html Model.Msg
 loginButton =
     span [ class "Button-Login" ]
-        [ Ui.Button.model "Login" "primary" "medium"
-            |> Ui.Button.view Model.Login
+        [ button []
+            { label = "Login"
+            , onClick = Model.Login
+            }
         ]
 
 

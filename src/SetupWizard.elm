@@ -1,13 +1,12 @@
 module SetupWizard exposing (settings, viewSettings)
 
 import Dialog exposing (labeledItem)
-import Html exposing (Html, button, div, input, p, span, text)
+import Html exposing (Html, div, input, p, span, text)
 import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick, onInput)
 import Language exposing (Language(..))
 import Model
-import Ui.Button
-import Util exposing (Position(..))
+import Util exposing (ButtonSettings, Position(..), button)
 import WizardDialog.Model exposing (..)
 
 
@@ -75,20 +74,6 @@ infoTextWithHeaders attrs header subHeader lines =
                 :: span [ class "SubHeader" ]
                     [ text subHeader ]
                 :: List.map infoTextLine lines
-        ]
-
-
-type alias ButtonSettings =
-    { label : String
-    , onClick : Model.Msg
-    }
-
-
-button : List (Html.Attribute Model.Msg) -> ButtonSettings -> Html Model.Msg
-button attrs { label, onClick } =
-    span attrs
-        [ Ui.Button.model label "secondary" "small"
-            |> Ui.Button.view onClick
         ]
 
 
