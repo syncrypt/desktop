@@ -17,6 +17,7 @@ module Util
         , delay
         , delayMsg
         , findFirst
+        , findIndex
         , fullDateString
         , iconButton
         , last
@@ -242,6 +243,14 @@ findFirst check list =
                 Just val
             else
                 findFirst check rest
+
+
+findIndex : (a -> Bool) -> List a -> Maybe Int
+findIndex check list =
+    list
+        |> List.indexedMap (,)
+        |> findFirst (\( idx, name ) -> check name)
+        |> Maybe.map Tuple.first
 
 
 {-| Composes multiple (model, Cmd msg) pairs with each other.

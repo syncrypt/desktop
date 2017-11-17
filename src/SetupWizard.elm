@@ -11,17 +11,25 @@ import Util exposing (Position(..))
 import WizardDialog.Model exposing (..)
 
 
+type alias StepConfig =
+    ( String, Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg) )
+
+
+steps : List StepConfig
+steps =
+    [ ( "Welcome", step1 )
+    , ( "Account Setup", step2 )
+    , ( "Account Login", step3 )
+    , ( "Account Signup", step4 )
+    , ( "Key Creation", step5 )
+    ]
+
+
 settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
     , onFinishMsg = Just Model.SetupWizardFinished
-    , steps =
-        [ "Welcome"
-        , "Account Setup"
-        , "Account Login"
-        , "Account Signup"
-        , "Key Creation"
-        ]
+    , steps = steps |> List.map Tuple.first
     , wizardType = SetupWizard
     , closable = False
     }
@@ -33,36 +41,22 @@ wizardContent body =
         body
 
 
-currentStep : State msg -> String
-currentStep { steps, currentStep } =
+currentStep : State msg -> Maybe StepConfig
+currentStep { currentStep } =
     steps
         |> List.drop (currentStep - 1)
         |> List.head
-        |> Maybe.withDefault ""
 
 
 viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
 viewSettings model state =
-    case currentStep state of
-        "Welcome" ->
-            step1 model state
-
-        "Account Setup" ->
-            step2 model state
-
-        "Account Login" ->
-            step3 model state
-
-        "Account Signup" ->
-            step4 model state
-
-        "Key Creation" ->
-            step5 model state
-
-        _ ->
-            Nothing
+    state
+        |> currentStep
+        |> Maybe.map (\( _, f ) -> f model state)
+        |> Maybe.withDefault Nothing
 
 
+infoTextLine : String -> Html msg
 infoTextLine line =
     span []
         [ text line ]
@@ -151,11 +145,11 @@ step2 model state =
                 , div [ class "Options" ]
                     [ button []
                         { label = "Yes, login with account"
-                        , onClick = state.address (ToStep 3)
+                        , onClick = state.address (ToStepWithName "Account Login")
                         }
                     , button []
                         { label = "No, sign up with new account"
-                        , onClick = state.address (ToStep 4)
+                        , onClick = state.address (ToStepWithName "Account Signup")
                         }
                     ]
                 ]
@@ -207,7 +201,7 @@ step3 model state =
         , buttons =
             CustomNav
                 { prev = Auto
-                , next = NavWithLabel (state.address (ToStep 5)) "Login"
+                , next = NavWithLabel (state.address (ToStepWithName "Key Creation")) "Login"
                 }
         }
 
@@ -235,7 +229,7 @@ step4 model state =
                 ]
         , buttons =
             CustomNav
-                { prev = Nav <| state.address (ToStep 2)
+                { prev = Nav <| state.address (ToStepWithName "Account Setup")
                 , next = AutoWithLabel "I agree"
                 }
         }

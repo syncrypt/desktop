@@ -18,13 +18,20 @@ module WizardDialog.Model
         , moveToNextStep
         , moveToPreviousStep
         , moveToStep
+        , moveToStepWithName
         , toNextStep
         , toPreviousStep
         , toStep
+        , toStepWithName
         )
 
 import Html exposing (Html)
 import Ui.Modal
+import Util
+
+
+type alias Step =
+    Int
 
 
 type WizardType
@@ -99,7 +106,8 @@ type Msg
     | HideAndClose
     | ToNextStep
     | ToPreviousStep
-    | ToStep Int
+    | ToStep Step
+    | ToStepWithName String
     | FinishWizard
 
 
@@ -157,6 +165,23 @@ toStep step state =
         state
 
 
+undefinedStep : Step
+undefinedStep =
+    -1
+
+
+toStepWithName : String -> State msg -> State msg
+toStepWithName name state =
+    let
+        step =
+            state.steps
+                |> Util.findIndex ((==) name)
+                |> Maybe.map ((+) 1)
+                |> Maybe.withDefault undefinedStep
+    in
+    toStep step state
+
+
 moveToPreviousStep : HasWizardDialog a msg -> HasWizardDialog a msg
 moveToPreviousStep ({ wizardDialog } as model) =
     wizardDialog
@@ -171,10 +196,17 @@ moveToNextStep ({ wizardDialog } as model) =
         |> asWizardIn model
 
 
-moveToStep : Int -> HasWizardDialog a msg -> HasWizardDialog a msg
+moveToStep : Step -> HasWizardDialog a msg -> HasWizardDialog a msg
 moveToStep step ({ wizardDialog } as model) =
     wizardDialog
         |> Maybe.map (toStep step)
+        |> asWizardIn model
+
+
+moveToStepWithName : String -> HasWizardDialog a msg -> HasWizardDialog a msg
+moveToStepWithName stepName ({ wizardDialog } as model) =
+    wizardDialog
+        |> Maybe.map (toStepWithName stepName)
         |> asWizardIn model
 
 
@@ -183,7 +215,7 @@ asWizardIn model maybeWizard =
     { model | wizardDialog = maybeWizard }
 
 
-buttonToStep : List (Html.Attribute msg) -> String -> Int -> State msg -> Button msg
+buttonToStep : List (Html.Attribute msg) -> String -> Step -> State msg -> Button msg
 buttonToStep attrs label step state =
     CustomButton attrs
         { label = label

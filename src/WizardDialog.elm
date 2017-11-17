@@ -135,6 +135,10 @@ update msg ({ wizardDialog } as model) =
             moveToStep stepNum model
                 ! []
 
+        ToStepWithName stepName ->
+            moveToStepWithName stepName model
+                ! []
+
         FinishWizard ->
             let
                 cmds =
