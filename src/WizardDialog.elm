@@ -162,8 +162,8 @@ view ({ wizardDialog } as model) =
             text ""
 
         maybeViewDialog state =
-            state
-                |> viewSettings model
+            model
+                |> viewSettings state
                 |> Maybe.map (viewDialog state)
                 |> Maybe.withDefault empty
     in
@@ -314,14 +314,14 @@ customNavigationButtons { prev, next } state =
     )
 
 
-viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
-viewSettings model state =
+viewSettings : State Model.Msg -> Model.Model -> Maybe (ViewSettings Model.Msg)
+viewSettings state model =
     case state.wizardType of
         SetupWizard ->
-            SetupWizard.viewSettings model state
+            SetupWizard.viewSettings state model
 
         FeedbackWizard ->
-            FeedbackWizard.viewSettings model state
+            FeedbackWizard.viewSettings state model
 
 
 prevButton : State msg -> Html msg

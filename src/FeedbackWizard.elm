@@ -17,8 +17,8 @@ settings model =
     }
 
 
-viewSettings : Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg)
-viewSettings model state =
+viewSettings : State Model.Msg -> Model.Model -> Maybe (ViewSettings Model.Msg)
+viewSettings state model =
     Just
         { title = "Send us feedback"
         , contents =

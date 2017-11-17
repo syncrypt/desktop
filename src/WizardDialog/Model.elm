@@ -13,6 +13,7 @@ module WizardDialog.Model
         , WizardType(..)
         , asWizardIn
         , buttonToStep
+        , currentStep
         , hasNextStep
         , hasPreviousStep
         , init
@@ -24,6 +25,7 @@ module WizardDialog.Model
         , toPreviousStep
         , toStep
         , toStepWithName
+        , viewSettings
         )
 
 import Html exposing (Html)
@@ -226,3 +228,18 @@ buttonToStep attrs label step state =
         { label = label
         , onClick = state.address <| ToStep step
         }
+
+
+currentStep : List (StepConfig model msg) -> State msg -> Maybe (StepConfig model msg)
+currentStep steps { currentStep } =
+    steps
+        |> List.drop (currentStep - 1)
+        |> List.head
+
+
+viewSettings : List (StepConfig model msg) -> State msg -> model -> Maybe (ViewSettings msg)
+viewSettings steps state model =
+    state
+        |> currentStep steps
+        |> Maybe.map (\( _, f ) -> f model state)
+        |> Maybe.withDefault Nothing
