@@ -7,6 +7,7 @@ module WizardDialog.Model
         , Msg(..)
         , NavButtons
         , State
+        , StepConfig
         , ViewSettings
         , WizardSettings
         , WizardType(..)
@@ -109,6 +110,10 @@ type Msg
     | ToStep Step
     | ToStepWithName String
     | FinishWizard
+
+
+type alias StepConfig model msg =
+    ( String, model -> State msg -> Maybe (ViewSettings msg) )
 
 
 init : WizardSettings msg -> State msg

@@ -11,11 +11,7 @@ import Util exposing (Position(..))
 import WizardDialog.Model exposing (..)
 
 
-type alias StepConfig =
-    ( String, Model.Model -> State Model.Msg -> Maybe (ViewSettings Model.Msg) )
-
-
-steps : List StepConfig
+steps : List (StepConfig Model.Model Model.Msg)
 steps =
     [ ( "Welcome", step1 )
     , ( "Account Setup", step2 )
@@ -41,7 +37,7 @@ wizardContent body =
         body
 
 
-currentStep : State msg -> Maybe StepConfig
+currentStep : State msg -> Maybe (StepConfig Model.Model Model.Msg)
 currentStep { currentStep } =
     steps
         |> List.drop (currentStep - 1)
