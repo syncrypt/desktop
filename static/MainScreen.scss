@@ -247,3 +247,19 @@ li {
     max-height: 450px;
   }
 }
+
+.LoginDialog {
+  .Input {
+    margin-top: $padding-small;
+    font-weight: bold;
+    ui-input {
+      margin-top: $padding-tiny;
+    }
+  }
+
+  .Button-Login {
+    button {
+      margin-top: $padding-medium;
+    }
+  }
+}
