@@ -8,17 +8,17 @@ $width-files-tab-input: 250px;
   }
 
   .EventFilters {
-    ui-button {
+    button {
       margin: $padding-small;
     }
 
-    ui-button:hover {
+    button:hover {
       background-color: $color-bg-dark !important;
       color: $color-highlight !important;
     }
 
     .Filter-Active {
-      ui-button {
+      button {
         background-color: $color-bg-dark !important;
         color: $color-highlight !important;
       }
@@ -37,7 +37,7 @@ $width-files-tab-input: 250px;
       margin-left: $padding-small;
       background-color: $color-bg-light;
 
-      ui-button {
+      button {
         position: relative;
         display: block;
         margin-bottom: -10px;
@@ -83,7 +83,7 @@ $width-files-tab-input: 250px;
   }
 
   .Admin-Buttons {
-    ui-button {
+    button {
       display: block;
     }
 
@@ -205,15 +205,15 @@ $width-files-tab-input: 250px;
     float: right;
   }
 
-  .Buttons ui-button {
+  .Buttons button {
     margin-left: $padding-large;
   }
 
-  .Button-Export ui-button {
+  .Button-Export button {
     margin-bottom: 10px;
   }
 
-  .Button-Folder ui-button {
+  .Button-Folder button {
     width: $width-files-tab-input;
     margin-top: 5px;
     margin-bottom: 5px;

@@ -576,7 +576,7 @@ cancelButton vaultId state =
     span
         [ classList [ ( "Hidden", not state.hasChangesPending ) ] ]
         [ button []
-            { label = "Hidden"
+            { label = "Cancel Changes"
             , onClick = Model.CloseVaultDetails vaultId
             }
         ]
@@ -718,7 +718,7 @@ openFolderButton vaultId state model =
                     , text = tooltipMsg
                     }
                     [ button []
-                        { label = folderPath
+                        { label = String.slice 0 30 folderPath ++ "..."
                         , onClick = msg
                         }
                     ]

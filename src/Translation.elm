@@ -345,11 +345,11 @@ translateEnglishVaultDialogText vt =
                 CloneIntoFolder ->
                     "By clicking here, you select a folder to use for this vault to download its files to."
 
-                FolderSelectedForSync _ ->
-                    "This new vault will synchronize files in this folder."
+                FolderSelectedForSync path ->
+                    "This new vault will synchronize files in this folder: " ++ path
 
-                SyncedFolder _ ->
-                    "This vault is synchronizing files from and to this folder."
+                SyncedFolder path ->
+                    "This vault is synchronizing files from and to this folder: " ++ path
 
         FilesLabel ->
             "Files"

@@ -1,8 +1,6 @@
 @import "Common.scss";
 
 button {
-  @include defaultCursor;
-
   background-color: $color-highlight;
   color: black;
   font-size: $font-size-small;
@@ -26,15 +24,9 @@ button:active {
   border: 2px solid $color-highlight * 0.75;
 }
 
-ui-button,
+button,
 ui-tabs-handle {
   @include defaultCursor;
-}
-
-ui-button {
-  background-color: $color-highlight !important;
-  color: black !important;
-  font-size: $font-size-small !important;
 }
 
 input,

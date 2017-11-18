@@ -136,9 +136,9 @@ li {
 .MainScreen-IconButton .Icon {
   display: inline-block;
   background-repeat:no-repeat;
-  background-size: 24px 24px;
-  width: 24px;
-  height: 24px;
+  background-size: 30px 30px;
+  width: 30px;
+  height: 30px;
   margin: $padding-tiny;
 }
 
@@ -199,8 +199,7 @@ li {
     max-width: 50%;
     margin-top: $padding-medium;
 
-    button,
-    ui-button {
+    button {
       margin-top: $padding-small;
       margin-right: $padding-small;
     }
@@ -223,7 +222,7 @@ li {
     }
 
     .ForgotPasswordButton {
-      ui-button {
+      button {
         margin-top: $padding-medium;
         margin-bottom: $padding-small;
       }
