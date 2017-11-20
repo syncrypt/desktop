@@ -27,6 +27,17 @@ import SettingsDialog.Model as SettingsDialog
 import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
+import Svg exposing (polygon, rect, svg)
+import Svg.Attributes as SvgA
+    exposing
+        ( fill
+        , points
+        , transform
+        , version
+        , viewBox
+        , x
+        , y
+        )
 import Time
 import Translation as T
     exposing
@@ -43,6 +54,7 @@ import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
 import VaultList
 import View.IconButton as IconButton exposing (IconButton(..))
+import Window
 import WizardDialog
 
 
@@ -76,28 +88,31 @@ init config =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+    let
+        commonSubs =
+            [ Time.every Time.second (Date.fromTime >> SetTime)
+            , Window.resizes WindowResized
+            , Ports.updateAvailable Model.UpdateAvailable
+            ]
+    in
     case model.login of
         LoggedIn _ ->
             Sub.batch
                 [ VaultDialog.View.subscriptions model
                 , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
-                , Time.every Time.second (Date.fromTime >> SetTime)
                 , Time.every model.config.updateInterval (\_ -> UpdateVaults)
                 , Time.every (10 * Time.minute) (\_ -> UpdateFlyingVaults)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
                 , DaemonLog.subscriptions model
-                , Ports.updateAvailable Model.UpdateAvailable
                 , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
                 , Ports.selectedVaultImportFolder SelectedVaultImportFolder
                 , Ports.autoStartChanged AutoStartChanged
                 ]
 
         _ ->
-            Sub.batch
-                [ Ports.updateAvailable Model.UpdateAvailable
-                ]
+            Sub.batch commonSubs
 
 
 
@@ -429,6 +444,10 @@ update msg model =
             ( model
             , Cmd.none
             )
+
+        WindowResized windowSize ->
+            { model | windowSize = windowSize }
+                ! []
 
         OpenDaemonLogDialog ->
             model
@@ -1036,7 +1055,7 @@ view model =
 loadingView : Model -> Html msg
 loadingView model =
     div [ class "Loading" ]
-        [ text "Loading ..." ]
+        [ loadingCircle Medium model ]
 
 
 loggedOutView : Model -> Html Msg
@@ -1065,6 +1084,95 @@ loggedInView model =
         , SettingsDialog.View.view model
         ]
             ++ VaultDialog.View.viewAll model
+
+
+type LoadingCircleSize
+    = Small
+    | Medium
+    | Large
+
+
+loadingCircle : LoadingCircleSize -> Model -> Html Msg
+loadingCircle circleSize model =
+    let
+        secs =
+            model.now
+                |> Maybe.map Date.second
+                |> Maybe.withDefault 0
+
+        ( color1, color2 ) =
+            case model.now of
+                Just now ->
+                    if secs % 10 < 5 then
+                        ( "#3AE2E2", "#4D4D4D" )
+                    else
+                        ( "#4D4D4D", "#3AE2E2" )
+
+                Nothing ->
+                    ( "#3AE2E2", "#4D4D4D" )
+
+        rBase =
+            sin (toFloat secs) + 9
+
+        sizeFactor =
+            case circleSize of
+                Small ->
+                    9.0
+
+                Medium ->
+                    11.0
+
+                Large ->
+                    19.0
+
+        r1 =
+            sizeFactor * rBase
+
+        r2 =
+            (sizeFactor - 1.0)
+                * rBase
+                + (10 * cos (toFloat secs))
+
+        ( cx, cy ) =
+            ( toFloat model.windowSize.width / 2.0
+            , toFloat model.windowSize.height / 2.0
+            )
+
+        ( widthStr, heightStr ) =
+            ( toString model.windowSize.width
+            , toString model.windowSize.height
+            )
+
+        circle bgColor radius =
+            Svg.circle
+                [ fill bgColor
+                , SvgA.class "LoadingCircle"
+                , SvgA.cx <| toString cx
+                , SvgA.cy <| toString cy
+                , SvgA.r <| toString radius
+                , SvgA.width widthStr
+                , SvgA.height heightStr
+                ]
+                []
+    in
+    svg
+        [ version "1.1"
+        , x "0"
+        , y "0"
+        , viewBox <| "0 0 " ++ widthStr ++ " " ++ heightStr
+        ]
+        [ circle color1 r1
+        , circle color2 r2
+        , Svg.text_
+            [ x <| toString <| cx - 35
+            , y <| toString <| cy + 5.0
+            , SvgA.fontSize "22px"
+            , SvgA.fontFamily "Hind"
+            , SvgA.fontWeight "500"
+            , fill color1
+            ]
+            [ Svg.text "Loading" ]
+        ]
 
 
 currentClass : Model -> String

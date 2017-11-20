@@ -237,7 +237,9 @@ const setupElmApp = (daemonApiToken) => {
     pathSeparator: Path.sep,
     updateInterval: 3000,
     version: Electron.remote.app.getVersion(),
-    locale: getEnvLocale()
+    locale: getEnvLocale(),
+    windowWidth: 865,
+    windowHeight: 750
   })
 
   elmApp.ports.openFolderDialog.subscribe(openFolderDialog)

@@ -10,4 +10,6 @@ type alias Config =
     , pathSeparator : String
     , version : String
     , locale : String
+    , windowHeight : Int
+    , windowWidth : Int
     }

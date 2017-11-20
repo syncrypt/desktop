@@ -23,6 +23,7 @@ import SettingsDialog.Model
 import Ui.NotificationCenter
 import Util exposing (LogLevel, andLog, findFirst)
 import VaultDialog.Model
+import Window
 import WizardDialog.Model
 
 
@@ -50,6 +51,7 @@ type alias Model =
     , daemonLogItems : List Data.Daemon.LogItem
     , newVaultWizard : NewVaultWizardState
     , autoStartEnabled : Bool
+    , windowSize : Window.Size
     }
 
 
@@ -177,6 +179,7 @@ type Msg
     | UpdateAutoStartEnabledState
     | OpenReleaseNotesWizard
     | CloseReleaseNotesWizard
+    | WindowResized Window.Size
 
 
 
@@ -284,6 +287,10 @@ init config =
     , daemonLogItems = []
     , newVaultWizard = NoVaultImportStarted
     , autoStartEnabled = False
+    , windowSize =
+        { height = config.windowHeight
+        , width = config.windowWidth
+        }
     }
 
 
