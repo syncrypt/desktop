@@ -1,5 +1,6 @@
 module VaultList exposing (..)
 
+import Animation
 import Data.Vault
     exposing
         ( FlyingVault
@@ -347,13 +348,22 @@ flyingVaultList model =
 
         subtitle =
             flyingVaultListSubtitle availableFlyingVaults model
+
+        loadingAnimation =
+            Animation.loadingCircle Animation.LargeCircle model
     in
     div [ class "VaultList" ] <|
         [ div [ class "VaultListInfo" ]
             [ span [ class "Title" ]
                 [ text <| t (T.VaultListTxt T.AvailableVaults) model ]
             , span [ class "Subtitle" ]
-                [ subtitle ]
+                [ subtitle
+                , if model.flyingVaults == Loading then
+                    div []
+                        [ loadingAnimation ]
+                  else
+                    text ""
+                ]
             ]
         ]
             ++ List.map (flyingVaultItem model) availableFlyingVaults
