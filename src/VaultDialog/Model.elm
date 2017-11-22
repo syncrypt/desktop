@@ -90,6 +90,7 @@ type alias State =
     , userKeys : Dict User.Email (WebData (List User.UserKey))
     , vaultFingerprints : WebData (Set User.Fingerprint)
     , viewLogLevelFilters : Bool
+    , openInfoBoxes : Set TabId
     }
 
 
@@ -97,6 +98,10 @@ type RequiresConfirmation
     = DeleteVault
     | RemoveVault
     | AddUser
+
+
+type alias TabId =
+    String
 
 
 type Msg
@@ -135,6 +140,8 @@ type Msg
     | SortEventsBy EventSortBy
     | FilterEventsBy EventFilter
     | ToggleViewLogLevelFilters
+    | ToggleInfoBox TabId
+    | CloseInfoBox TabId
 
 
 init : State
@@ -175,6 +182,7 @@ init =
     , userKeys = Dict.empty
     , vaultFingerprints = NotAsked
     , viewLogLevelFilters = False
+    , openInfoBoxes = Set.empty
     }
 
 
@@ -579,3 +587,31 @@ eventDistVal event =
 hasFiles : State -> Bool
 hasFiles state =
     not <| Dict.isEmpty state.localFolderItems
+
+
+openInfoBox : TabId -> State -> State
+openInfoBox tabId state =
+    { state | openInfoBoxes = Set.insert tabId state.openInfoBoxes }
+
+
+closeInfoBox : TabId -> State -> State
+closeInfoBox tabId state =
+    { state | openInfoBoxes = Set.remove tabId state.openInfoBoxes }
+
+
+toggleInfoBox : TabId -> State -> State
+toggleInfoBox tabId state =
+    if isInfoBoxOpen tabId state then
+        closeInfoBox tabId state
+    else
+        openInfoBox tabId state
+
+
+closeAllInfoBoxes : State -> State
+closeAllInfoBoxes state =
+    { state | openInfoBoxes = Set.empty }
+
+
+isInfoBoxOpen : TabId -> State -> Bool
+isInfoBoxOpen tabId { openInfoBoxes } =
+    Set.member tabId openInfoBoxes

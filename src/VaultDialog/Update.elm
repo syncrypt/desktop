@@ -24,11 +24,14 @@ import VaultDialog.Model
         , RequiresConfirmation(..)
         , State
         , addFolder
+        , closeInfoBox
         , collapseFolder
         , expandFolder
         , hasChanged
         , isIgnored
+        , openInfoBox
         , toggleIgnorePath
+        , toggleInfoBox
         , toggleUserKey
         )
 import VaultDialog.Ports
@@ -552,6 +555,18 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         ToggleViewLogLevelFilters ->
             ({ state | viewLogLevelFilters = not state.viewLogLevelFilters }
+                |> asStateIn vaultId model
+            )
+                ! []
+
+        ToggleInfoBox tabId ->
+            (toggleInfoBox tabId state
+                |> asStateIn vaultId model
+            )
+                ! []
+
+        CloseInfoBox tabId ->
+            (closeInfoBox tabId state
                 |> asStateIn vaultId model
             )
                 ! []

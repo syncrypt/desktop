@@ -74,11 +74,13 @@ import VaultDialog.Model
         , Msg(..)
         , RequiresConfirmation(..)
         , State
+        , TabId
         , folderIsEmpty
         , hasFiles
         , isExpanded
         , isFilterEnabled
         , isIgnored
+        , isInfoBoxOpen
         , isUserKeyAlreadyAdded
         , isUserKeySelected
         , keysToAdd
@@ -245,7 +247,7 @@ usersTab toRootMsg vaultId state model =
     in
     ( t (VaultDialogText UsersTab) model
     , div []
-        [ tabInfoText infoText
+        [ viewInfoBox (InfoBoxText "Users" infoText) vaultId state
         , div
             [ classList [ ( "Hidden", not ownsVault ) ] ]
             [ div
@@ -291,41 +293,43 @@ cryptoTab vaultId state model =
     in
     ( t (VaultDialogText CryptoTab) model
     , div []
-        [ tabInfoText (vt CryptoTabInfoText)
-        , cryptoInfoItem (vt VaultIdLabel)
-            (vt VaultIdTooltip)
-            (String.toUpper vault.id)
-        , cryptoInfoItem (vt FileRevisionsLabel)
-            (vt TotalNumberOfFileRevisionsTooltip)
-            (toString vault.revisionCount)
-        , cryptoInfoItem (vt LastModifiedLabel)
-            (vt LastModifiedTooltip)
-            (vault.modificationDate
-                |> Maybe.map (\date -> timeAgo date model)
-                |> Maybe.withDefault (vt NoChangesSoFar)
-            )
-        , cryptoInfoItem (vt KeyAlgorithmLabel)
-            (vt KeyAlgorithmTooltip)
-            (String.toUpper vault.crypto.keyAlgorithm)
-        , cryptoInfoItem (vt KeyFingerprintLabel)
-            (vt KeyFingerprintTooltip)
-            (vault.crypto.fingerprint
-                |> Maybe.map String.toUpper
-                |> Maybe.withDefault "N/A"
-            )
-        , cryptoInfoItem (vt TransferAlgorithmLabel)
-            (vt TransferAlgorithmTooltip)
-            (String.toUpper vault.crypto.transferAlgorithm)
-        , cryptoInfoItem (vt HashAlgorithmLabel)
-            (vt HashAlgorithmTooltip)
-            (String.toUpper vault.crypto.hashAlgorithm)
-        , cryptoInfoItem (vt AESKeyLengthLabel)
-            (vt AESKeyLengthTooltip)
-            (toString vault.crypto.aesKeyLength)
-        , cryptoInfoItem (vt RSAKeyLengthLabel)
-            (vt RSAKeyLengthTooltip)
-            (toString vault.crypto.rsaKeyLength)
-        , separator
+        [ viewInfoBox (InfoBoxText "Crypto" (vt CryptoTabInfoText)) vaultId state
+        , div [ class "VaultMetadata" ]
+            [ cryptoInfoItem (vt VaultIdLabel)
+                (vt VaultIdTooltip)
+                (String.toUpper vault.id)
+            , cryptoInfoItem (vt FileRevisionsLabel)
+                (vt TotalNumberOfFileRevisionsTooltip)
+                (toString vault.revisionCount)
+            , cryptoInfoItem (vt LastModifiedLabel)
+                (vt LastModifiedTooltip)
+                (vault.modificationDate
+                    |> Maybe.map (\date -> timeAgo date model)
+                    |> Maybe.withDefault (vt NoChangesSoFar)
+                )
+            , cryptoInfoItem (vt KeyAlgorithmLabel)
+                (vt KeyAlgorithmTooltip)
+                (String.toUpper vault.crypto.keyAlgorithm)
+            , cryptoInfoItem (vt KeyFingerprintLabel)
+                (vt KeyFingerprintTooltip)
+                (vault.crypto.fingerprint
+                    |> Maybe.map String.toUpper
+                    |> Maybe.withDefault "N/A"
+                )
+            , cryptoInfoItem (vt TransferAlgorithmLabel)
+                (vt TransferAlgorithmTooltip)
+                (String.toUpper vault.crypto.transferAlgorithm)
+            , cryptoInfoItem (vt HashAlgorithmLabel)
+                (vt HashAlgorithmTooltip)
+                (String.toUpper vault.crypto.hashAlgorithm)
+            , cryptoInfoItem (vt AESKeyLengthLabel)
+                (vt AESKeyLengthTooltip)
+                (toString vault.crypto.aesKeyLength)
+            , cryptoInfoItem (vt RSAKeyLengthLabel)
+                (vt RSAKeyLengthTooltip)
+                (toString vault.crypto.rsaKeyLength)
+            , separator
+            ]
         ]
     )
 
@@ -1108,3 +1112,37 @@ keyCreatedTimestamp key model =
                         ++ Date.Distance.inWords date now
                         ++ " ago"
                 ]
+
+
+type InfoBox
+    = InfoBoxText TabId String
+
+
+viewInfoBox : InfoBox -> VaultId -> State -> Html Model.Msg
+viewInfoBox ((InfoBoxText tabId tabInfoText) as infoBox) vaultId state =
+    span [ class "TabInfo" ]
+        [ helpButton vaultId tabId state
+        , div
+            [ classList
+                [ ( "InfoBox", True )
+                , ( "InfoBox-Hidden", not <| isInfoBoxOpen tabId state )
+                ]
+            , onClick (Model.VaultDialogMsg vaultId (CloseInfoBox tabId))
+            ]
+            [ span []
+                [ text tabInfoText ]
+            ]
+        ]
+
+
+helpButton : VaultId -> TabId -> State -> Html Model.Msg
+helpButton vaultId tabId state =
+    span
+        [ classList
+            [ ( "InfoBoxButton", True )
+            , ( "InfoBoxButton-Clicked", isInfoBoxOpen tabId state )
+            ]
+        , onClick <|
+            Model.VaultDialogMsg vaultId (ToggleInfoBox tabId)
+        ]
+        []

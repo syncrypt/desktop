@@ -3,6 +3,56 @@
 $width-files-tab-input: 250px;
 
 .VaultDialog {
+  ui-modal-header {
+    box-sizing: border-box !important;
+    height: 70px !important;
+  }
+
+  .TabInfo {
+    margin: 1px;
+
+    .InfoBoxButton {
+      position: fixed;
+      height: 24px;
+      width: 24px;
+      background-size: 24px;
+      background-image: url(assets/info_24px.svg);
+      background-repeat: no-repeat;
+      background-position: 0px 0px;
+      margin-bottom: $padding-medium;
+    }
+
+    .InfoBoxButton-Clicked,
+    .InfoBoxButton:hover {
+      background-color: $color-bg-dark;
+      border-radius: 20px;
+    }
+
+    .InfoBox {
+      box-sizing: border-box;
+      width: 200px;
+      max-width: 200px;
+      padding: $padding-small-medium;
+      margin: 15px;
+      border: 2px solid $color-highlight;
+      background-color: $color-bg-light;
+      color: black;
+      line-height: 14px;
+      font-size: 13px;
+      position: absolute;
+      display: table-cell;
+      z-index: 1;
+      box-shadow: 2px black;
+      top: -10px;
+      left: 20px;
+      visibility: visible;
+    }
+
+    .InfoBox-Hidden {
+      visibility: hidden;
+    }
+  }
+
   .InputLabel {
     font-weight: bold;
   }
@@ -320,21 +370,26 @@ $width-files-tab-input: 250px;
     text-align: justify;
   }
 
-  .Separator {
-    width: 375px;
-    margin: 1.5em;
-    margin-left: auto;
-    margin-right: auto;
-    height: 1px;
-    border: 0px;
-    background-color: #c17d6f;
-  }
 
-  .CryptoInfoItem {
-    cursor: default;
-  }
+  .VaultMetadata {
+    margin-top: 20px;
 
-  .CryptoInfoItem-Label {
-    min-width: 170px !important;
+    .CryptoInfoItem {
+      cursor: default;
+    }
+
+    .CryptoInfoItem-Label {
+      min-width: 170px !important;
+    }
+
+    .Separator {
+      width: 375px;
+      margin: 1.5em;
+      margin-left: auto;
+      margin-right: auto;
+      height: 1px;
+      border: 0px;
+      background-color: #c17d6f;
+    }
   }
 }
