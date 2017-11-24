@@ -180,15 +180,18 @@ update msg model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
+                ~> updateVaults
                 ~> (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
             model
-                |> notifyText (VaultRemoveFailed <| toString data)
+                |> updateVaults
+                ~> notifyText (VaultRemoveFailed <| toString data)
 
         DeletedVault data ->
             model
                 |> deletedVault data
+                ~> updateVaults
 
         VaultDialogMsg vaultId msg ->
             model
