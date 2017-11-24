@@ -133,10 +133,12 @@ update msg model =
             model
                 |> cloneVault vaultId
                 ~> VaultDialog.Update.close vaultId
+                ~> updateVaults
 
         ClonedVault vaultId data ->
             model
                 |> clonedVault vaultId data
+                ~> updateVaults
 
         CloseVaultDetails vaultId ->
             model
@@ -146,6 +148,7 @@ update msg model =
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
                 ~> saveVault vaultId
+                ~> updateVaults
 
         Model.CreateNewVault ->
             { model | state = CreatingNewVault }
