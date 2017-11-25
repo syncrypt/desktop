@@ -196,12 +196,9 @@ tabContents vaultId state model =
             Model.VaultDialogMsg vaultId
 
         basicTabs =
-            if isOwner vaultId model then
-                [ filesTab msg vaultId state model
-                , usersTab msg vaultId state model
-                ]
-            else
-                [ filesTab msg vaultId state model ]
+            [ filesTab msg vaultId state model
+            , usersTab msg vaultId state model
+            ]
 
         clonedTabs =
             [ cryptoTab vaultId state model
@@ -228,6 +225,24 @@ tabContents vaultId state model =
     tabs
 
 
+tabBody : Maybe InfoBox -> List (Html Model.Msg) -> VaultId -> State -> Html Model.Msg
+tabBody maybeInfoBox nodes vaultId state =
+    let
+        infoBox =
+            case maybeInfoBox of
+                Nothing ->
+                    text ""
+
+                Just infoBox ->
+                    viewInfoBox infoBox vaultId state
+    in
+    div []
+        [ infoBox
+        , div [ class "TabBody" ]
+            nodes
+        ]
+
+
 usersTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
 usersTab toRootMsg vaultId state model =
     let
@@ -244,25 +259,43 @@ usersTab toRootMsg vaultId state model =
 
         infoText =
             t (VaultDialogText (UsersTabInfoText ownsVault)) model
+
+        adminOnly maybeInfoText nodes =
+            if ownsVault then
+                div []
+                    nodes
+            else
+                div []
+                    [ text <|
+                        Maybe.withDefault "" maybeInfoText
+                    ]
+
+        body =
+            adminOnly Nothing
+                [ div
+                    [ classList [ ( "Hidden", not ownsVault ) ] ]
+                    [ div
+                        [ class "Add-User", onEnter searchKeys ]
+                        [ dialogInput "User"
+                            [ userInput vaultId state model ]
+                        ]
+                    , div [ class "UserKey-Selection" ]
+                        [ rootMsg <| userKeySelection state model
+                        , rootMsg <| confirmUserKeysButton state
+                        ]
+                    ]
+                ]
     in
     ( t (VaultDialogText UsersTab) model
-    , div []
-        [ viewInfoBox (InfoBoxText "Users" infoText) vaultId state
-        , div
-            [ classList [ ( "Hidden", not ownsVault ) ] ]
-            [ div
-                [ class "Add-User", onEnter searchKeys ]
-                [ dialogInput "User"
-                    [ userInput vaultId state model ]
-                ]
-            , div [ class "UserKey-Selection" ]
-                [ rootMsg <| userKeySelection state model
-                , rootMsg <| confirmUserKeysButton state
-                ]
+    , tabBody (Just (InfoBoxText "Users" infoText))
+        [ body
+        , adminOnly (Just "You don't have access to this vault's user list.")
+            [ rootMsg <| userList state model
+            , rootMsg <| pendingUserList state
             ]
-        , rootMsg <| userList state model
-        , rootMsg <| pendingUserList state
         ]
+        vaultId
+        state
     )
 
 
@@ -292,9 +325,8 @@ cryptoTab vaultId state model =
             t (VaultDialogText vaultDialogText) model
     in
     ( t (VaultDialogText CryptoTab) model
-    , div []
-        [ viewInfoBox (InfoBoxText "Crypto" (vt CryptoTabInfoText)) vaultId state
-        , div [ class "VaultMetadata" ]
+    , tabBody (Just (InfoBoxText "Crypto" (vt CryptoTabInfoText)))
+        [ div [ class "VaultMetadata" ]
             [ cryptoInfoItem (vt VaultIdLabel)
                 (vt VaultIdTooltip)
                 (String.toUpper vault.id)
@@ -331,13 +363,15 @@ cryptoTab vaultId state model =
             , separator
             ]
         ]
+        vaultId
+        state
     )
 
 
 filesTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
 filesTab toRootMsg vaultId state model =
     ( t (VaultDialogText NameAndFilesTab) model
-    , div []
+    , tabBody Nothing
         [ dialogInput "Name"
             [ nameInput toRootMsg state model ]
         , dialogInput "Folder"
@@ -345,13 +379,15 @@ filesTab toRootMsg vaultId state model =
         , dialogInput "FileSelection"
             [ Html.map toRootMsg <| fileSelectionContainer state model ]
         ]
+        vaultId
+        state
     )
 
 
 logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
     ( t (VaultDialogText LogTab) model
-    , div []
+    , tabBody Nothing
         [ div [ class "EventFilters" ] <|
             [ Dialog.labeledItem [ class "InputLabel" ]
                 { side = Left
@@ -388,6 +424,8 @@ logTab vaultId state model =
                         List.map (viewEvent model.now) events
             ]
         ]
+        vaultId
+        state
     )
 
 
@@ -398,20 +436,27 @@ adminTab vaultId state model =
             if state.cloneStatus == New || not (isOwner vaultId model) then
                 []
             else
-                [ infoText (t (VaultDialogText VaultDeleteButtonInfo) model)
+                [ infoText <| t (VaultDialogText VaultDeleteButtonInfo) model
                 , deleteButton vaultId state model
                 ]
+
+        infoBoxText =
+            InfoBoxText "Admin" "Administrative options for this vault"
     in
     ( t (VaultDialogText AdminTab) model
-    , div [ class "Admin-Buttons" ] <|
-        [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-        , removeButton vaultId state
-        , separator
-        , infoText (t (VaultDialogText VaultExportButtonInfo) model)
-        , exportButton <| Model.vaultWithId vaultId model
-        , separator
+    , tabBody (Just infoBoxText)
+        [ div [ class "Admin-Buttons" ] <|
+            [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+            , removeButton vaultId state
+            , separator
+            , infoText (t (VaultDialogText VaultExportButtonInfo) model)
+            , exportButton <| Model.vaultWithId vaultId model
+            , separator
+            ]
+                ++ adminActions
         ]
-            ++ adminActions
+        vaultId
+        state
     )
 
 
