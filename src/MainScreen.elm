@@ -150,6 +150,10 @@ update msg model =
                 ~> saveVault vaultId
                 ~> updateVaults
 
+        DeleteVaultDialog vaultId ->
+            model
+                |> VaultDialog.Update.cancel vaultId
+
         Model.CreateNewVault ->
             { model | state = CreatingNewVault }
                 |> VaultDialog.Update.openNew
@@ -477,7 +481,14 @@ openVaultDetails vault model =
 closeVaultDetails : VaultId -> Model -> ( Model, Cmd Msg )
 closeVaultDetails vaultId model =
     { model | state = ShowingAllVaults }
-        |> VaultDialog.Update.cancel vaultId
+        |> VaultDialog.Update.close vaultId
+        ~> initiateDeleteVaultDialog vaultId
+
+
+initiateDeleteVaultDialog : VaultId -> Model -> ( Model, Cmd Msg )
+initiateDeleteVaultDialog vaultId model =
+    model
+        ! [ Util.delayMsg 150 (DeleteVaultDialog vaultId) ]
 
 
 openFlyingVaultDetails : FlyingVault -> Model -> ( Model, Cmd Msg )

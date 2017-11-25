@@ -97,6 +97,7 @@ type Msg
     | ClonedVault VaultId (WebData Vault)
     | CloseVaultDetails VaultId
     | SaveVaultDetails VaultId
+    | DeleteVaultDialog VaultId
     | OpenSettingsDialog
     | CloseSettingsDialog
     | Logout
