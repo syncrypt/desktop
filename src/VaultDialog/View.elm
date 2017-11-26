@@ -225,21 +225,29 @@ tabContents vaultId state model =
     tabs
 
 
-tabBody : Maybe InfoBox -> List (Html Model.Msg) -> VaultId -> State -> Html Model.Msg
-tabBody maybeInfoBox nodes vaultId state =
+type alias TabBodySettings =
+    { infoBox : Maybe InfoBox
+    , vaultId : VaultId
+    , state : State
+    , body : List (Html Model.Msg)
+    }
+
+
+tabBody : TabBodySettings -> Html Model.Msg
+tabBody settings =
     let
         infoBox =
-            case maybeInfoBox of
+            case settings.infoBox of
                 Nothing ->
                     text ""
 
                 Just infoBox ->
-                    viewInfoBox infoBox vaultId state
+                    viewInfoBox infoBox settings.vaultId settings.state
     in
     div []
         [ infoBox
         , div [ class "TabBody" ]
-            nodes
+            settings.body
         ]
 
 
@@ -287,15 +295,18 @@ usersTab toRootMsg vaultId state model =
                 ]
     in
     ( t (VaultDialogText UsersTab) model
-    , tabBody (Just (InfoBoxText "Users" infoText))
-        [ body
-        , adminOnly (Just "You don't have access to this vault's user list.")
-            [ rootMsg <| userList state model
-            , rootMsg <| pendingUserList state
+    , tabBody
+        { infoBox = Just (InfoBoxText "Users" infoText)
+        , vaultId = vaultId
+        , state = state
+        , body =
+            [ body
+            , adminOnly (Just "You don't have access to this vault's user list.")
+                [ rootMsg <| userList state model
+                , rootMsg <| pendingUserList state
+                ]
             ]
-        ]
-        vaultId
-        state
+        }
     )
 
 
@@ -325,107 +336,116 @@ cryptoTab vaultId state model =
             t (VaultDialogText vaultDialogText) model
     in
     ( t (VaultDialogText CryptoTab) model
-    , tabBody (Just (InfoBoxText "Crypto" (vt CryptoTabInfoText)))
-        [ div [ class "VaultMetadata" ]
-            [ cryptoInfoItem (vt VaultIdLabel)
-                (vt VaultIdTooltip)
-                (String.toUpper vault.id)
-            , cryptoInfoItem (vt FileRevisionsLabel)
-                (vt TotalNumberOfFileRevisionsTooltip)
-                (toString vault.revisionCount)
-            , cryptoInfoItem (vt LastModifiedLabel)
-                (vt LastModifiedTooltip)
-                (vault.modificationDate
-                    |> Maybe.map (\date -> timeAgo date model)
-                    |> Maybe.withDefault (vt NoChangesSoFar)
-                )
-            , cryptoInfoItem (vt KeyAlgorithmLabel)
-                (vt KeyAlgorithmTooltip)
-                (String.toUpper vault.crypto.keyAlgorithm)
-            , cryptoInfoItem (vt KeyFingerprintLabel)
-                (vt KeyFingerprintTooltip)
-                (vault.crypto.fingerprint
-                    |> Maybe.map String.toUpper
-                    |> Maybe.withDefault "N/A"
-                )
-            , cryptoInfoItem (vt TransferAlgorithmLabel)
-                (vt TransferAlgorithmTooltip)
-                (String.toUpper vault.crypto.transferAlgorithm)
-            , cryptoInfoItem (vt HashAlgorithmLabel)
-                (vt HashAlgorithmTooltip)
-                (String.toUpper vault.crypto.hashAlgorithm)
-            , cryptoInfoItem (vt AESKeyLengthLabel)
-                (vt AESKeyLengthTooltip)
-                (toString vault.crypto.aesKeyLength)
-            , cryptoInfoItem (vt RSAKeyLengthLabel)
-                (vt RSAKeyLengthTooltip)
-                (toString vault.crypto.rsaKeyLength)
-            , separator
+    , tabBody
+        { infoBox = Just (InfoBoxText "Crypto" (vt CryptoTabInfoText))
+        , vaultId = vaultId
+        , state = state
+        , body =
+            [ div [ class "VaultMetadata" ]
+                [ cryptoInfoItem (vt VaultIdLabel)
+                    (vt VaultIdTooltip)
+                    (String.toUpper vault.id)
+                , cryptoInfoItem (vt FileRevisionsLabel)
+                    (vt TotalNumberOfFileRevisionsTooltip)
+                    (toString vault.revisionCount)
+                , cryptoInfoItem (vt LastModifiedLabel)
+                    (vt LastModifiedTooltip)
+                    (vault.modificationDate
+                        |> Maybe.map (\date -> timeAgo date model)
+                        |> Maybe.withDefault (vt NoChangesSoFar)
+                    )
+                , cryptoInfoItem (vt KeyAlgorithmLabel)
+                    (vt KeyAlgorithmTooltip)
+                    (String.toUpper vault.crypto.keyAlgorithm)
+                , cryptoInfoItem (vt KeyFingerprintLabel)
+                    (vt KeyFingerprintTooltip)
+                    (vault.crypto.fingerprint
+                        |> Maybe.map String.toUpper
+                        |> Maybe.withDefault "N/A"
+                    )
+                , cryptoInfoItem (vt TransferAlgorithmLabel)
+                    (vt TransferAlgorithmTooltip)
+                    (String.toUpper vault.crypto.transferAlgorithm)
+                , cryptoInfoItem (vt HashAlgorithmLabel)
+                    (vt HashAlgorithmTooltip)
+                    (String.toUpper vault.crypto.hashAlgorithm)
+                , cryptoInfoItem (vt AESKeyLengthLabel)
+                    (vt AESKeyLengthTooltip)
+                    (toString vault.crypto.aesKeyLength)
+                , cryptoInfoItem (vt RSAKeyLengthLabel)
+                    (vt RSAKeyLengthTooltip)
+                    (toString vault.crypto.rsaKeyLength)
+                , separator
+                ]
             ]
-        ]
-        vaultId
-        state
+        }
     )
 
 
 filesTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
 filesTab toRootMsg vaultId state model =
     ( t (VaultDialogText NameAndFilesTab) model
-    , tabBody Nothing
-        [ dialogInput "Name"
-            [ nameInput toRootMsg state model ]
-        , dialogInput "Folder"
-            [ Html.map toRootMsg <| openFolderButton vaultId state model ]
-        , dialogInput "FileSelection"
-            [ Html.map toRootMsg <| fileSelectionContainer state model ]
-        ]
-        vaultId
-        state
+    , tabBody
+        { infoBox = Nothing
+        , vaultId = vaultId
+        , state = state
+        , body =
+            [ dialogInput "Name"
+                [ nameInput toRootMsg state model ]
+            , dialogInput "Folder"
+                [ Html.map toRootMsg <| openFolderButton vaultId state model ]
+            , dialogInput "FileSelection"
+                [ Html.map toRootMsg <| fileSelectionContainer state model ]
+            ]
+        }
     )
 
 
 logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
     ( t (VaultDialogText LogTab) model
-    , tabBody Nothing
-        [ div [ class "EventFilters" ] <|
-            [ Dialog.labeledItem [ class "InputLabel" ]
-                { side = Left
-                , onClick = Nothing
-                , label = text "Filters"
-                , item =
-                    span []
-                        (eventFilterButtons vaultId state)
-                }
-            ]
-        , div [ class "EventTableHeader" ]
-            [ table [ class "EventTable" ] <|
-                [ th
-                    [ class "Default-Cursor"
-                    , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
-                    ]
-                    [ text "Time" ]
+    , tabBody
+        { infoBox = Nothing
+        , vaultId = vaultId
+        , state = state
+        , body =
+            [ div [ class "EventFilters" ] <|
+                [ Dialog.labeledItem [ class "InputLabel" ]
+                    { side = Left
+                    , onClick = Nothing
+                    , label = text "Filters"
+                    , item =
+                        span []
+                            (eventFilterButtons vaultId state)
+                    }
+                ]
+            , div [ class "EventTableHeader" ]
+                [ table [ class "EventTable" ] <|
+                    [ th
+                        [ class "Default-Cursor"
+                        , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
+                        ]
+                        [ text "Time" ]
 
-                -- , th []
-                --     [ text "User" ]
-                , th []
-                    [ text "Operation" ]
-                , th []
-                    [ text "Path / Message" ]
+                    -- , th []
+                    --     [ text "User" ]
+                    , th []
+                        [ text "Operation" ]
+                    , th []
+                        [ text "Path / Message" ]
+                    ]
+                ]
+            , div [ class "EventTableContent" ]
+                [ table [ class "EventTable" ] <|
+                    case VaultDialog.Model.events state of
+                        [] ->
+                            [ loadingSpinner ]
+
+                        events ->
+                            List.map (viewEvent model.now) events
                 ]
             ]
-        , div [ class "EventTableContent" ]
-            [ table [ class "EventTable" ] <|
-                case VaultDialog.Model.events state of
-                    [] ->
-                        [ loadingSpinner ]
-
-                    events ->
-                        List.map (viewEvent model.now) events
-            ]
-        ]
-        vaultId
-        state
+        }
     )
 
 
@@ -444,19 +464,22 @@ adminTab vaultId state model =
             InfoBoxText "Admin" "Administrative options for this vault"
     in
     ( t (VaultDialogText AdminTab) model
-    , tabBody (Just infoBoxText)
-        [ div [ class "Admin-Buttons" ] <|
-            [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-            , removeButton vaultId state
-            , separator
-            , infoText (t (VaultDialogText VaultExportButtonInfo) model)
-            , exportButton <| Model.vaultWithId vaultId model
-            , separator
+    , tabBody
+        { infoBox = Just infoBoxText
+        , vaultId = vaultId
+        , state = state
+        , body =
+            [ div [ class "Admin-Buttons" ] <|
+                [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+                , removeButton vaultId state
+                , separator
+                , infoText (t (VaultDialogText VaultExportButtonInfo) model)
+                , exportButton <| Model.vaultWithId vaultId model
+                , separator
+                ]
+                    ++ adminActions
             ]
-                ++ adminActions
-        ]
-        vaultId
-        state
+        }
     )
 
 
