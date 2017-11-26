@@ -12,7 +12,7 @@ CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
 
 SASS_CMD=./node_modules/node-sass/bin/node-sass
 
-all: $(BUILD_DIR) static $(JS_FILE)
+all: $(BUILD_DIR) static $(JS_FILE) package-setup
 
 run: all
 	NODE_ENV=development electron $(MAIN_FILE)
@@ -32,6 +32,11 @@ run-watch: all
 
 watch-css: all
 	$(SASS_CMD) --watch --recursive --output build/ --source-map true --source-map-contents static/
+
+package-setup:
+	cp icon.* $(BUILD_DIR)
+	cp package.json $(BUILD_DIR)
+	sed -i -e "s/build\/main/main/g" $(BUILD_DIR)/package.json
 
 release-setup: all
 	rm -rf $(RELEASE_DIR)/tmp/*
