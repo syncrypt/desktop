@@ -8,6 +8,32 @@ $width-files-tab-input: 250px;
     height: 70px !important;
   }
 
+  .Checkbox {
+    .FileCheckbox {
+      position: absolute;
+      background-image: url(assets/check_circle_24px.svg);
+      background-size: 20px;
+      background-repeat: no-repeat;
+      background-position: 0px 0px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .FileCheckbox-Unchecked {
+      position: absolute;
+      background-image: url(assets/circle_24px.svg);
+      background-size: 20px;
+      background-repeat: no-repeat;
+      background-position: 0px 0px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .Dialog-Label-Right {
+      margin-left: $padding-large;
+    }
+  }
+
   .TabInfo {
     margin: 1px;
 
@@ -206,20 +232,16 @@ $width-files-tab-input: 250px;
     }
   }
 
+  .File,
   .FolderItem,
   .FolderItem-Collapsed {
     padding-top: 5px;
     position: relative;
   }
 
-  .File {
-    padding-top: 5px;
-    position: relative;
-  }
-
-  .FolderItem-Hidden {
-    display: none;
-  }
+  // .FolderItem-Hidden {
+  //   display: none;
+  // }
 
   .Tab-Content ui-container {
     border: 1px solid #ddd;
@@ -238,17 +260,15 @@ $width-files-tab-input: 250px;
     /*display: none;*/
   }
 
-  .File span .FolderItem-Collapse-Toggle {
-    display: none;
-  }
-
   .FolderItem-Collapse-Toggle {
-    font-size: $font-size-regular;
+    font-size: $font-size-small;
     font-weight: bold;
     margin-left: $padding-small / 2;
     background-color: $color-bg-light;
     border: 0px;
-    padding: 4px 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 16px;
   }
 
   .FolderItem-Collapse-Toggle:hover {

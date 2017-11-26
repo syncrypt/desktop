@@ -911,7 +911,7 @@ renderFolder state ( path, files ) =
                     ]
                 ]
     else
-        div [ class "FolderItem-Collapsed" ]
+        div [ class "File FolderItem-Collapsed" ]
             (inFolderPath path
                 [ span []
                     [ fileCheckbox path state
@@ -969,10 +969,7 @@ folderCollapseToggle path state =
     else
         Html.button
             [ onClick (ExpandFolder path)
-            , classList
-                [ ( "FolderItem-Collapse-Toggle", True )
-                , ( "Hidden", isIgnored path state || folderIsEmpty path state )
-                ]
+            , class "FolderItem-Collapse-Toggle"
             ]
             [ text ">" ]
 
@@ -987,9 +984,18 @@ fileCheckbox path state =
             , uid = Path.name path
             }
 
+        isActive =
+            not <| isIgnored path state
+
         checkbox =
-            Ui.Checkbox.view fileCheckboxSettings
-                |> Html.map (FileCheckBoxMsg path)
+            span
+                [ classList
+                    [ ( "FileCheckbox", isActive )
+                    , ( "FileCheckbox-Unchecked", not isActive )
+                    ]
+                , onClick (ToggleIgnorePath path)
+                ]
+                [ text "" ]
 
         checkboxWithLabel =
             labeledItem []
