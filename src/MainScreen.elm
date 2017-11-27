@@ -3,6 +3,7 @@ module MainScreen exposing (..)
 import Animation exposing (Animation(..), animation)
 import Config exposing (Config)
 import Daemon
+import DaemonLog
 import Data.Daemon exposing (GUIConfig)
 import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
@@ -30,7 +31,7 @@ import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
 import VaultList
-import View.IconButton exposing (IconButton(..))
+import View.IconButton as IconButton exposing (IconButton(..))
 import WizardDialog
 
 
@@ -386,6 +387,14 @@ update msg model =
             , Cmd.none
             )
 
+        OpenDaemonLogDialog ->
+            model
+                |> openDaemonLogDialog
+
+        CloseDaemonLogDialog ->
+            model
+                |> closeDaemonLogDialog
+
 
 setSetupWizardEmail : String -> Model -> Model
 setSetupWizardEmail email ({ setupWizard, loginDialog } as model) =
@@ -460,6 +469,18 @@ openFeedbackWizard : Model -> ( Model, Cmd Msg )
 openFeedbackWizard model =
     model
         |> WizardDialog.open (FeedbackWizard.settings model)
+
+
+openDaemonLogDialog : Model -> ( Model, Cmd Msg )
+openDaemonLogDialog model =
+    model
+        |> WizardDialog.open (DaemonLog.dialogSettings model)
+
+
+closeDaemonLogDialog : Model -> ( Model, Cmd Msg )
+closeDaemonLogDialog model =
+    model
+        |> WizardDialog.hideAndClose
 
 
 updateLoginState : Model -> ( Model, Cmd Msg )
@@ -843,10 +864,11 @@ header { language, login } =
         , div [ class "MainScreen-Buttons" ] <|
             case login of
                 LoggedIn _ ->
-                    [ View.IconButton.view language RefreshVaultsButton [ onClick UpdateVaults ]
-                    , View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
-                    , View.IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
-                    , View.IconButton.view language LogoutButton [ onClick Model.Logout ]
+                    [ IconButton.view language RefreshVaultsButton [ onClick UpdateVaults ]
+                    , IconButton.view language DaemonLogButton [ onClick OpenDaemonLogDialog ]
+                    , IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
+                    , IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
+                    , IconButton.view language LogoutButton [ onClick Model.Logout ]
                     ]
 
                 _ ->

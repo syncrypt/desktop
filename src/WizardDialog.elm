@@ -3,6 +3,7 @@ module WizardDialog
         ( cancelButton
         , close
         , finishButton
+        , hideAndClose
         , navigationButtons
         , nextButton
         , open
@@ -11,6 +12,7 @@ module WizardDialog
         , view
         )
 
+import DaemonLog
 import FeedbackWizard
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
@@ -338,6 +340,9 @@ viewSettings state model =
 
         FeedbackWizard ->
             FeedbackWizard.viewSettings state model
+
+        DaemonLogDialog ->
+            DaemonLog.dialogViewSettings state model
 
 
 prevButton : Language -> State msg -> Html msg

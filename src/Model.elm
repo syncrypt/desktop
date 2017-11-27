@@ -139,6 +139,8 @@ type Msg
     | OpenUserKeyExportDialog
     | SelectedUserKeyExportFile String
     | ExportedUserKey (WebData ExportStatusResponse)
+    | OpenDaemonLogDialog
+    | CloseDaemonLogDialog
 
 
 

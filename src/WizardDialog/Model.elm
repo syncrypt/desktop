@@ -41,6 +41,7 @@ type alias Step =
 type WizardType
     = SetupWizard
     | FeedbackWizard
+    | DaemonLogDialog
 
 
 type alias WizardSettings msg =

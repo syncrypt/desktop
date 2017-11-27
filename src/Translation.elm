@@ -65,6 +65,7 @@ type Text
     | Logout
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
+    | ViewDaemonLog
     | ProgramSettings
     | RefreshVaults
     | SettingsDialogText SettingsDialogText
@@ -325,6 +326,9 @@ translateEnglish text =
 
         SendUsFeedbackAndBugReports ->
             "Send us feedback & bug reports"
+
+        ViewDaemonLog ->
+            "View the Syncrypt background process log"
 
         ProgramSettings ->
             "Program Settings"
@@ -768,6 +772,9 @@ translateGerman text =
 
         SendUsFeedbackAndBugReports ->
             "Sende uns Feedback, Vorschläge und Bugreports"
+
+        ViewDaemonLog ->
+            "Syncrypt Logbuch öffnen"
 
         ProgramSettings ->
             "Einstellungen"

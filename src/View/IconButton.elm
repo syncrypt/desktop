@@ -12,6 +12,7 @@ type IconButton
     | LogoutButton
     | FeedbackButton
     | RefreshVaultsButton
+    | DaemonLogButton
 
 
 view : Language -> IconButton -> List (Html.Attribute msg) -> Html msg
@@ -51,6 +52,9 @@ iconName buttonType =
         RefreshVaultsButton ->
             "sync_white"
 
+        DaemonLogButton ->
+            "event"
+
 
 tooltip : Language -> IconButton -> String
 tooltip language buttonType =
@@ -66,3 +70,6 @@ tooltip language buttonType =
 
         RefreshVaultsButton ->
             T.translate T.RefreshVaults language
+
+        DaemonLogButton ->
+            T.translate T.ViewDaemonLog language

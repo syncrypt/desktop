@@ -42,8 +42,8 @@ module Util
         )
 
 import Date exposing (Date)
-import Html exposing (Html, span, text)
-import Html.Attributes exposing (attribute, class)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (attribute, class, style)
 import Html.Events
 import Json.Decode as Json
 import Process
