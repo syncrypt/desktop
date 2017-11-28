@@ -31,21 +31,26 @@ function launchDaemon() {
     })
 
     daemon.on('close', (code) => {
-      const msg  = `child process exited with code ${code}`
+      const msg = `child process exited with code ${code}`
       console.log(msg);
     });
   }
   else {
     console.warn('Did not start the daemon, because the following path does not ' +
-                 `exist: ${daemonPath}`)
+      `exist: ${daemonPath}`)
   }
 }
 
 // This will create our app window, no surprise there
-function createWindow () {
+function createWindow() {
+  var width = 832
+  if (process.platform == 'win32') {
+    width = 866
+  }
+
   mainWindow = new BrowserWindow({
-    width: 832,
-    minWidth: 832,
+    width: width,
+    minWidth: width,
     height: 750,
     minHeight: 750,
     title: "Syncrypt",
