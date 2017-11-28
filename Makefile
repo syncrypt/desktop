@@ -12,7 +12,7 @@ CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
 
 SASS_CMD=./node_modules/node-sass/bin/node-sass
 
-all: $(BUILD_DIR) static $(JS_FILE) package-setup
+all: $(BUILD_DIR) static $(JS_FILE)
 
 run: all
 	NODE_ENV=development electron $(MAIN_FILE)
@@ -37,6 +37,7 @@ package-setup:
 	cp icon.* $(BUILD_DIR)
 	cp package.json $(BUILD_DIR)
 	sed -i -e "s/build\/main/main/g" $(BUILD_DIR)/package.json
+	cd $(BUILD_DIR) && npm install --production
 
 release-setup: all
 	rm -rf $(RELEASE_DIR)/tmp/*
