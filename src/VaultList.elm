@@ -267,13 +267,19 @@ vaultList model =
         vaultListInfoSubtitle =
             case model.vaults of
                 Success _ ->
-                    [ text <| t T.VaultListHeaderDescription model ]
+                    [ text <| t (T.VaultListText T.HeaderDescription) model ]
 
                 Failure reason ->
-                    [ text <| "Failed to load vaults: " ++ toString reason ]
+                    [ text <|
+                        t
+                            (T.VaultListText <|
+                                T.LoadVaultsFailed (toString reason)
+                            )
+                            model
+                    ]
 
                 Loading ->
-                    [ text "Loading vaults" ]
+                    [ text <| t (T.VaultListText T.LoadingVaults) model ]
 
                 NotAsked ->
                     []
@@ -309,23 +315,24 @@ flyingVaultList model =
                         [ class "UpdateFlyingVaultsButton"
                         , onClick UpdateFlyingVaults
                         ]
-                        [ text "Load remote vaults" ]
+                        [ text <| t (T.VaultListText T.LoadRemoteVaults) model ]
 
                 Loading ->
                     text <|
-                        "Fetching remote vault info "
+                        t (T.VaultListText T.FetchingRemoteVaultInfo) model
                             ++ Util.animatedDots model.now
 
                 Failure reason ->
                     text <| "Error fetching remote vaults: " ++ toString reason
 
                 Success _ ->
-                    text "Click on a vault to clone it to your computer"
+                    text <|
+                        t (T.VaultListText T.ClickOnVaultToClone) model
     in
     div [ class "VaultList" ] <|
         [ div [ class "VaultListInfo" ]
             [ span [ class "Title" ]
-                [ text "Available Vaults" ]
+                [ text <| t (T.VaultListText T.AvailableVaults) model ]
             , span [ class "Subtitle" ]
                 [ subtitle ]
             ]

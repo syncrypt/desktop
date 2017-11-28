@@ -5,6 +5,7 @@ module Translation
         , StatsText(..)
         , Text(..)
         , VaultDialogText(..)
+        , VaultListText(..)
         , t
         , timeAgo
         , translate
@@ -43,8 +44,8 @@ type Text
     | UsersWithAccessTooltip
     | TotalVaultSizeTooltip
     | TotalVaultRevisionsTooltip
-    | VaultListHeaderDescription
     | VaultDialogText VaultDialogText
+    | VaultListText VaultListText
 
 
 type NotificationText
@@ -122,6 +123,16 @@ type VaultDialogText
     | VaultExportButtonInfo
     | AskDeleteVault
     | AskDeleteVaultExtended
+
+
+type VaultListText
+    = HeaderDescription
+    | LoadVaultsFailed Reason
+    | LoadingVaults
+    | LoadRemoteVaults
+    | AvailableVaults
+    | FetchingRemoteVaultInfo
+    | ClickOnVaultToClone
 
 
 type FolderButtonType
@@ -209,11 +220,11 @@ translateEnglish text =
         TotalVaultRevisionsTooltip ->
             "Total number of file revisions in the vault"
 
-        VaultListHeaderDescription ->
-            "These vaults are cloned and synchronized on this computer"
-
         VaultDialogText vt ->
             translateEnglishVaultDialogText vt
+
+        VaultListText vlt ->
+            translateEnglishVaultListText vlt
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -442,6 +453,30 @@ translateEnglishVaultDialogText vt =
             "Do you really want to delete this vault from the server?"
 
 
+translateEnglishVaultListText vlt =
+    case vlt of
+        HeaderDescription ->
+            "These vaults are cloned and synchronized on this computer"
+
+        LoadVaultsFailed reason ->
+            "Failed to load vaults: " ++ reason
+
+        LoadingVaults ->
+            "Loading vaults"
+
+        LoadRemoteVaults ->
+            "Load remote vaults"
+
+        AvailableVaults ->
+            "Available Vaults"
+
+        FetchingRemoteVaultInfo ->
+            "Fetching remote vault info "
+
+        ClickOnVaultToClone ->
+            "Click on a vault to clone it to your computer"
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -493,11 +528,11 @@ translateGerman text =
         TotalVaultRevisionsTooltip ->
             "Anzahl aller Dateirevisionen in diesem Vault"
 
-        VaultListHeaderDescription ->
-            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert"
-
         VaultDialogText vt ->
             translateGermanVaultDialogText vt
+
+        VaultListText vlt ->
+            translateGermanVaultListText vlt
 
 
 translateGermanNotificationText t =
@@ -727,6 +762,30 @@ translateGermanVaultDialogText vt =
 
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
+
+
+translateGermanVaultListText vlt =
+    case vlt of
+        HeaderDescription ->
+            "Diese Vaults sind auf diesem Computer gespiegelt und werden synchronisiert"
+
+        LoadVaultsFailed reason ->
+            "Fehler beim Laden der Vaults: " ++ reason
+
+        LoadingVaults ->
+            "Vaults werden geladen"
+
+        LoadRemoteVaults ->
+            "Aktualisiere Cloud Vaults"
+
+        AvailableVaults ->
+            "Verfügbare Cloud Vaults"
+
+        FetchingRemoteVaultInfo ->
+            "Lade Cloud Vault Metadaten"
+
+        ClickOnVaultToClone ->
+            "Klick auf einen Vault um ihn auf diesen Computer herunterzuladen"
 
 
 germanDistance =
