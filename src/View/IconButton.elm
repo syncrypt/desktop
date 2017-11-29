@@ -55,7 +55,7 @@ tooltip language buttonType =
             T.translate T.Logout language
 
         SettingsButton ->
-            T.translate T.AccountSettings language
+            T.translate T.SoftwareAndAccountSettings language
 
         FeedbackButton ->
             T.translate T.SendUsFeedbackAndBugReports language

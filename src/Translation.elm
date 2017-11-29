@@ -59,8 +59,10 @@ type Text
     | SendFeedback
     | ConfirmationDialogText ConfirmationDialogText
     | Logout
-    | AccountSettings
+    | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
+    | ProgramSettings
+    | ChooseYourLanguage
 
 
 type NotificationText
@@ -293,11 +295,17 @@ translateEnglish text =
         Logout ->
             "Logout"
 
-        AccountSettings ->
-            "Account & Software Settings"
+        SoftwareAndAccountSettings ->
+            "Software & Account Settings"
 
         SendUsFeedbackAndBugReports ->
             "Send us feedback & bug reports"
+
+        ProgramSettings ->
+            "Program Settings"
+
+        ChooseYourLanguage ->
+            "Choose your language:"
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -634,7 +642,7 @@ translateGerman text =
             "Letzte Änderung am Vault "
 
         NoFilesUploadedYet ->
-            "Bisher wurden keine Dateien hochgeladen"
+            "Noch keine Dateien vorhanden"
 
         UsersWithAccessTooltip ->
             "Benutzer mit Zugriff"
@@ -687,11 +695,17 @@ translateGerman text =
         Logout ->
             "Abmelden"
 
-        AccountSettings ->
-            "Account & Software Einstellungen"
+        SoftwareAndAccountSettings ->
+            "Software- & Accounteinstellungen"
 
         SendUsFeedbackAndBugReports ->
             "Sende uns Feedback, Vorschläge und Bugreports"
+
+        ProgramSettings ->
+            "Einstellungen"
+
+        ChooseYourLanguage ->
+            "Wähle deine Sprache:"
 
 
 translateGermanNotificationText : NotificationText -> String

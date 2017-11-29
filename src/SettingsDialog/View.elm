@@ -6,6 +6,7 @@ import Html.Attributes exposing (class, classList)
 import Language exposing (Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
+import Translation as T
 import Ui.Modal
 import Util exposing (button)
 
@@ -17,7 +18,7 @@ view ({ settingsDialog } as model) =
             { address = Model.SettingsDialogMsg << ModalMsg
             , contents = contents model
             , footer = []
-            , title = "Program Settings"
+            , title = T.t T.ProgramSettings model
             }
     in
     div [ class "SettingsDialog" ]
@@ -46,7 +47,9 @@ languageButton forLanguage { language, settingsDialog } =
 contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "LanguageInfoLabel" ]
-        [ text "Choose your language:" ]
+        [ text <|
+            T.t T.ChooseYourLanguage model
+        ]
     , languageButton German model
     , languageButton English model
     ]
