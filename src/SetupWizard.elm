@@ -156,7 +156,9 @@ step3 model state =
                         , label = text "Password"
                         , item =
                             div []
-                                [ input [ type_ "password" ] [ text "" ] ]
+                                [ input [ type_ "password" ]
+                                    [ text "" ]
+                                ]
                         }
                     , button [ class "ForgotPasswordButton" ]
                         { label = "Forgot Password"
@@ -210,7 +212,8 @@ step5 model state =
     Just
         { title = "Key Creation"
         , contents =
-            wizardContent [ text "Coming soon with a nice animation next to this text." ]
+            wizardContent
+                [ text "Coming soon with a nice animation next to this text." ]
         , buttons =
             CustomNav
                 { prev = Hidden
