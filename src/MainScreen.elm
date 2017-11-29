@@ -24,11 +24,12 @@ import SetupWizard
 import Time
 import Translation exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing ((~>), Direction(..), IconButton(..), iconButton)
+import Util exposing ((~>), Direction(..))
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
 import VaultList
+import View.IconButton exposing (IconButton(..))
 import WizardDialog
 import WizardDialog.Model
     exposing
@@ -225,7 +226,7 @@ update msg model =
             model
                 |> login
 
-        Logout ->
+        Model.Logout ->
             model
                 |> logout
 
@@ -698,7 +699,7 @@ view model =
 
             LoggedIn _ ->
                 [ div [ class (currentClass model) ] <|
-                    [ header
+                    [ header model
                     , div
                         [ class "MainScreen-Container"
                         , animation 1.0 FadeInFast
@@ -726,15 +727,15 @@ viewNotificationCenter { notificationCenter } =
     Ui.NotificationCenter.view NotificationCenterMsg notificationCenter
 
 
-header : Html Msg
-header =
+header : Model -> Html Msg
+header { language } =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-HeaderLogo" ]
             []
         , div [ class "MainScreen-Buttons" ]
-            [ iconButton FeedbackButton [ onClick OpenFeedbackWizard ]
-            , iconButton SettingsButton [ onClick OpenSettingsDialog ]
-            , iconButton LogoutButton [ onClick Logout ]
+            [ View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
+            , View.IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
+            , View.IconButton.view language LogoutButton [ onClick Model.Logout ]
             ]
         ]
 

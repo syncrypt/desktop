@@ -6,7 +6,6 @@ module Util
         , ByteUnitPrecision
         , CustomButtonSettings
         , Direction(..)
-        , IconButton(..)
         , Position(..)
         , TooltipLength(..)
         , allButLast
@@ -23,7 +22,6 @@ module Util
         , findFirst
         , findIndex
         , fullDateString
-        , iconButton
         , last
         , monthNumber
         , onAnyKeyDown
@@ -47,6 +45,7 @@ import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (attribute, class, classList, style)
 import Html.Events
 import Json.Decode as Json
+import Language exposing (Language)
 import Process
 import Round
 import Task exposing (Task, andThen, attempt, perform)
@@ -417,59 +416,6 @@ dateDecoder =
     in
     Json.string
         |> Json.andThen convert
-
-
-type IconButton
-    = SettingsButton
-    | LogoutButton
-    | FeedbackButton
-
-
-iconButton : IconButton -> List (Html.Attribute msg) -> Html msg
-iconButton buttonType attrs =
-    tooltipItem
-        { position = Bottom
-        , length = Auto
-        , text = iconButtonTooltip buttonType
-        }
-        [ div
-            (class "MainScreen-IconButton" :: attrs)
-            [ div
-                [ class "Icon"
-                , style
-                    [ ( "backgroundImage"
-                      , "url(assets/" ++ iconName buttonType ++ "_24px.svg)"
-                      )
-                    ]
-                ]
-                []
-            ]
-        ]
-
-
-iconName : IconButton -> String
-iconName buttonType =
-    case buttonType of
-        LogoutButton ->
-            "exit"
-
-        SettingsButton ->
-            "settings"
-
-        FeedbackButton ->
-            "feedback"
-
-
-iconButtonTooltip buttonType =
-    case buttonType of
-        LogoutButton ->
-            "Logout"
-
-        SettingsButton ->
-            "Account & Software Settings"
-
-        FeedbackButton ->
-            "Send us feedback & bug reports"
 
 
 shortenString maxSize string =

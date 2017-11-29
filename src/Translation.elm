@@ -58,6 +58,9 @@ type Text
     | TypeYourFeedbackHere
     | SendFeedback
     | ConfirmationDialogText ConfirmationDialogText
+    | Logout
+    | AccountSettings
+    | SendUsFeedbackAndBugReports
 
 
 type NotificationText
@@ -286,6 +289,15 @@ translateEnglish text =
 
         ConfirmationDialogText cdt ->
             translateEnglishConfirmationDialogText cdt
+
+        Logout ->
+            "Logout"
+
+        AccountSettings ->
+            "Account & Software Settings"
+
+        SendUsFeedbackAndBugReports ->
+            "Send us feedback & bug reports"
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -671,6 +683,15 @@ translateGerman text =
 
         ConfirmationDialogText cdt ->
             translateGermanConfirmationDialogText cdt
+
+        Logout ->
+            "Abmelden"
+
+        AccountSettings ->
+            "Account & Software Einstellungen"
+
+        SendUsFeedbackAndBugReports ->
+            "Sende uns Feedback, Vorschläge und Bugreports"
 
 
 translateGermanNotificationText : NotificationText -> String
