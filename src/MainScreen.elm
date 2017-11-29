@@ -31,12 +31,6 @@ import VaultDialog.View
 import VaultList
 import View.IconButton exposing (IconButton(..))
 import WizardDialog
-import WizardDialog.Model
-    exposing
-        ( Button(Cancel, CustomButton)
-        , ButtonSettings(Default, Visible)
-        , WizardType(..)
-        )
 
 
 -- INIT
