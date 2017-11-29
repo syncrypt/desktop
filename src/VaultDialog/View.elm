@@ -251,7 +251,12 @@ tabBody settings =
         ]
 
 
-usersTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
+usersTab :
+    (Msg -> Model.Msg)
+    -> VaultId
+    -> State
+    -> Model
+    -> ( String, Html Model.Msg )
 usersTab toRootMsg vaultId state model =
     let
         -- converter from Html Msg -> Html Model.Msg
@@ -382,7 +387,12 @@ cryptoTab vaultId state model =
     )
 
 
-filesTab : (Msg -> Model.Msg) -> VaultId -> State -> Model -> ( String, Html Model.Msg )
+filesTab :
+    (Msg -> Model.Msg)
+    -> VaultId
+    -> State
+    -> Model
+    -> ( String, Html Model.Msg )
 filesTab toRootMsg vaultId state model =
     ( t (VaultDialogText NameAndFilesTab) model
     , tabBody
@@ -461,7 +471,7 @@ adminTab vaultId state model =
                 ]
 
         infoBoxText =
-            InfoBoxText "Admin" "Administrative options for this vault"
+            InfoBoxText "Admin" (t (VaultDialogText AdminTabInfoText) model)
     in
     ( t (VaultDialogText AdminTab) model
     , tabBody
@@ -659,7 +669,9 @@ deleteButton vaultId state model =
     span []
         [ button []
             { label = t (VaultDialogText DeleteFromServer) model
-            , onClick = Model.VaultDialogMsg vaultId (VaultDialog.Model.Confirm DeleteVault)
+            , onClick =
+                Model.VaultDialogMsg vaultId
+                    (VaultDialog.Model.Confirm DeleteVault)
             }
         ]
 
@@ -670,7 +682,9 @@ removeButton vaultId state model =
         [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
         [ button []
             { label = t (VaultDialogText StopSyncing) model
-            , onClick = Model.VaultDialogMsg vaultId (VaultDialog.Model.Confirm RemoveVault)
+            , onClick =
+                Model.VaultDialogMsg vaultId
+                    (VaultDialog.Model.Confirm RemoveVault)
             }
         ]
 
@@ -681,16 +695,24 @@ saveButton vaultId state model =
         ( label, msg ) =
             case ( state.cloneStatus, state.hasChangesPending ) of
                 ( New, True ) ->
-                    ( "Create", Model.SaveVaultDetails vaultId )
+                    ( t (VaultDialogText CreateVault) model
+                    , Model.SaveVaultDetails vaultId
+                    )
 
                 ( Cloned, True ) ->
-                    ( "Save", Model.SaveVaultDetails vaultId )
+                    ( t (VaultDialogText SaveVault) model
+                    , Model.SaveVaultDetails vaultId
+                    )
 
                 ( NotCloned, True ) ->
-                    ( "Sync vault to folder", Model.CloneVault vaultId )
+                    ( t (VaultDialogText SyncVaultToFolder) model
+                    , Model.CloneVault vaultId
+                    )
 
                 _ ->
-                    ( "Close", Model.CloseVaultDetails vaultId )
+                    ( t (VaultDialogText Close) model
+                    , Model.CloseVaultDetails vaultId
+                    )
     in
     button []
         { label = label

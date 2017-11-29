@@ -96,6 +96,7 @@ type VaultDialogText
     | CryptoTab
     | LogTab
     | AdminTab
+    | AdminTabInfoText
     | VaultNameLabel
     | VaultNameTooltip
     | FolderLabel
@@ -135,6 +136,10 @@ type VaultDialogText
     | CancelChanges
     | DeleteFromServer
     | StopSyncing
+    | CreateVault
+    | SaveVault
+    | SyncVaultToFolder
+    | Close
 
 
 type VaultListText
@@ -364,6 +369,9 @@ translateEnglishVaultDialogText vt =
         AdminTab ->
             "Administration"
 
+        AdminTabInfoText ->
+            "Administrative options for this vault"
+
         VaultNameLabel ->
             "Name"
 
@@ -489,7 +497,7 @@ translateEnglishVaultDialogText vt =
             "Delete vault?"
 
         AskDeleteVaultExtended ->
-            "Do you really want to delete this vault from the server?"
+            "Do you really want to delete this vault from the server? Deleting the vault on the server won't delete any of your local files inside this vault."
 
         ExportToFile ->
             "Export to file"
@@ -502,6 +510,18 @@ translateEnglishVaultDialogText vt =
 
         StopSyncing ->
             "Stop syncing"
+
+        CreateVault ->
+            "Create Vault"
+
+        SaveVault ->
+            "Save Vault"
+
+        SyncVaultToFolder ->
+            "Sync vault to folder"
+
+        Close ->
+            "Close"
 
 
 translateEnglishVaultListText : VaultListText -> String
@@ -723,6 +743,9 @@ translateGermanVaultDialogText vt =
         AdminTab ->
             "Administration"
 
+        AdminTabInfoText ->
+            "Administrative Aktionen für diesen Vault"
+
         VaultNameLabel ->
             "Name"
 
@@ -848,7 +871,7 @@ translateGermanVaultDialogText vt =
             "Vault löschen?"
 
         AskDeleteVaultExtended ->
-            "Soll der Vault wirklich vom Server gelöscht werden?"
+            "Soll der Vault wirklich vom Server gelöscht werden? Beim Löschen auf dem Server werden deine lokalen Dateien im Vaultordner nicht gelöscht oder anderweitig verändert."
 
         ExportToFile ->
             "In Datei exportieren"
@@ -861,6 +884,18 @@ translateGermanVaultDialogText vt =
 
         StopSyncing ->
             "Synchronisation stoppen"
+
+        CreateVault ->
+            "Vault Erstellen"
+
+        SaveVault ->
+            "Vault Speichern"
+
+        SyncVaultToFolder ->
+            "Vault in Ordner synchronisieren"
+
+        Close ->
+            "Schließen"
 
 
 translateGermanVaultListText : VaultListText -> String
