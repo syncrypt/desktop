@@ -1,5 +1,6 @@
 BUILD_DIR=build
 RELEASE_DIR=release
+PACKAGE_DIR=out
 HTML_FILE=$(BUILD_DIR)/index.html
 JS_FILE=$(BUILD_DIR)/elm.js
 ASSETS_PATH = $(BUILD_DIR)/assets
@@ -9,6 +10,8 @@ ASSET_FILES = $(shell find assets -type f)
 MAIN_FILE = $(BUILD_DIR)/main.js
 CSS_FILES = $(wildcard static/*.scss)
 CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
+
+ELECTRON_PACKAGER=./node_modules/electron-packager/cli.js
 
 SASS_CMD=./node_modules/node-sass/bin/node-sass
 
@@ -33,7 +36,7 @@ run-watch: all
 watch-css: all
 	$(SASS_CMD) --watch --recursive --output build/ --source-map true --source-map-contents static/
 
-package-setup:
+package-setup: all
 	cp icon.* $(BUILD_DIR)
 	cp package.json $(BUILD_DIR)
 	sed -i -e "s/build\/main/main/g" $(BUILD_DIR)/package.json
@@ -56,6 +59,11 @@ release: release-setup
 	cd $(RELEASE_DIR)/tmp && \
 		npm run make-installer
 	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
+
+Syncrypt-Desktop-%.zip:
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform $* --out $(PACKAGE_DIR)
+	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -92,7 +100,9 @@ clean-deps:
 
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf $(PACKAGE_DIR)
 	rm -rf $(RELEASE_DIR)/tmp/
+	rm -rf Syncrypt-Desktop-linux.zip Syncrypt-Desktop-darwin.zip Syncrypt-Desktop-win32.zip
 
 distclean: clean clean-deps
 	rm -rf $(RELEASE_DIR)
