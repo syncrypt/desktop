@@ -348,12 +348,14 @@ update msg model =
                 ! []
 
 
+setSetupWizardEmail : String -> Model -> Model
 setSetupWizardEmail email ({ setupWizard } as model) =
     { model
         | setupWizard = { setupWizard | email = "" }
     }
 
 
+sentPasswordReset : Model -> Model
 sentPasswordReset ({ setupWizard } as model) =
     { model
         | setupWizard = { setupWizard | passwordResetSent = True }
