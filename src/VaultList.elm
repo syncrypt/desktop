@@ -323,7 +323,13 @@ flyingVaultList model =
                             ++ Util.animatedDots model.now
 
                 Failure reason ->
-                    text <| "Error fetching remote vaults: " ++ toString reason
+                    text <|
+                        t
+                            (T.VaultListText <|
+                                T.FetchingRemoteVaultsFailed <|
+                                    toString reason
+                            )
+                            model
 
                 Success _ ->
                     text <|

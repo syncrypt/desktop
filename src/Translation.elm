@@ -133,6 +133,7 @@ type VaultListText
     | AvailableVaults
     | FetchingRemoteVaultInfo
     | ClickOnVaultToClone
+    | FetchingRemoteVaultsFailed Reason
 
 
 type FolderButtonType
@@ -476,6 +477,9 @@ translateEnglishVaultListText vlt =
         ClickOnVaultToClone ->
             "Click on a vault to clone it to your computer"
 
+        FetchingRemoteVaultsFailed reason ->
+            "Error fetching remote vaults: " ++ reason
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -786,6 +790,9 @@ translateGermanVaultListText vlt =
 
         ClickOnVaultToClone ->
             "Klick auf einen Vault um ihn auf diesen Computer herunterzuladen"
+
+        FetchingRemoteVaultsFailed reason ->
+            "Fehler beim Laden der Cloud Vaults: " ++ reason
 
 
 germanDistance =
