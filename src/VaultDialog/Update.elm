@@ -306,7 +306,11 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         OpenExportDialog ->
             model
-                ! [ VaultDialog.Ports.openExportFileDialog state.id ]
+                ! [ VaultDialog.Ports.openExportFileDialog
+                        ( state.id
+                        , T.t (T.VaultDialogText T.ExportToFile) model
+                        )
+                  ]
 
         SelectedExportFile filePath ->
             model
@@ -372,10 +376,12 @@ update msg vaultId ({ vaultDialogs } as model) =
         Confirm RemoveVault ->
             let
                 title =
-                    "Remove vault from sync?"
+                    T.translate (T.ConfirmationDialogText T.RemoveVaultFromSyncQuestion)
+                        model.language
 
                 question =
-                    "This vault will stop being synchronized to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
+                    T.translate (T.ConfirmationDialogText T.RemoveVaultFromSyncExplanation)
+                        model.language
 
                 confirmMsg =
                     Confirmed RemoveVault

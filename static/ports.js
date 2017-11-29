@@ -7,7 +7,7 @@ const DaemonConfig = expandHomeDir('~/.config/syncrypt/config');
 const Electron = require('electron');
 const File = require('file');
 
-var readAuthToken = function(resolve, reject) {
+var readAuthToken = function (resolve, reject) {
   Fs.readFile(DaemonConfig, 'utf-8', function (err, data) {
     if (err) {
       reject();
@@ -27,22 +27,22 @@ var readAuthToken = function(resolve, reject) {
 var mainContainer = window.document.getElementById("Root");
 var elmApp = null;
 
-var openFolderDialog = function(vaultId) {
-  var folders = Electron.remote.dialog.showOpenDialog({properties: ["openDirectory", "createDirectory"]});
-  if(folders && folders.length == 1) {
+var openFolderDialog = function (vaultId) {
+  var folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  if (folders && folders.length == 1) {
     var folderPath = folders[0].split(Path.sep);
     elmApp.ports.selectedFolder.send([vaultId, folderPath]);
   }
 }
 
-var openIconFileDialog = function(tag) {
+var openIconFileDialog = function (tag) {
   Electron.remote.dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Select icon for vault",
     buttonLabel: "Select Icon",
-    filters: [{name: "Images", extensions: ["jpg", "jpeg", "png"]}]
+    filters: [{ name: "Images", extensions: ["jpg", "jpeg", "png"] }]
   }, (files) => {
-    if(files && files.length == 1) {
+    if (files && files.length == 1) {
       var iconUrl = Electron.nativeImage.createFromPath(files[0]).resize({
         width: 100,
         height: 100,
@@ -53,11 +53,11 @@ var openIconFileDialog = function(tag) {
   });
 }
 
-var openExportFileDialog = function(tag) {
+var openExportFileDialog = function ([tag, buttonLabel]) {
   Electron.remote.dialog.showSaveDialog({
     title: "Select file to export Vault key bundle to",
-    buttonLabel: "Export to file",
-    filters: [{name: "Vault Export Archives", extensions: ["zip"]}]
+    buttonLabel: buttonLabel,
+    filters: [{ name: "Vault Export Archives", extensions: ["zip"] }]
   }, (file) => {
     elmApp.ports.selectedExportFile.send([tag, file]);
   });
@@ -65,12 +65,12 @@ var openExportFileDialog = function(tag) {
 
 const IGNORE_FILES = [".DS_Store", ".vault"];
 
-var getFileList = function([vaultId, rootPathList]) {
+var getFileList = function ([vaultId, rootPathList]) {
   var rootPath = rootPathList.join(Path.sep)
-  File.walk(rootPath, function(_, dirPath, dirs, files) {
+  File.walk(rootPath, function (_, dirPath, dirs, files) {
     var path = Path.relative(rootPath, dirPath).split(Path.sep);
 
-    if(isVaultPath(path)) {
+    if (isVaultPath(path)) {
       return;
     }
 
@@ -87,23 +87,23 @@ var getFileList = function([vaultId, rootPathList]) {
   })
 }
 
-var isVaultPath = function(path) {
-  for(var i = 0; i < path.length; i++) {
-    if(path[i] == ".vault") {
+var isVaultPath = function (path) {
+  for (var i = 0; i < path.length; i++) {
+    if (path[i] == ".vault") {
       return true;
     }
   }
   return false;
 }
 
-var focusOn = function(id) {
+var focusOn = function (id) {
   var elem = document.getElementById(id);
-  if(elem) {
+  if (elem) {
     elem.focus();
   }
 }
 
-var openVaultFolder = function(path) {
+var openVaultFolder = function (path) {
   console.log("open folder:", path);
   if (process.platform === 'darwin') {
     Electron.shell.openExternal("file://" + path);
@@ -112,10 +112,10 @@ var openVaultFolder = function(path) {
   }
 }
 
-var addEmailToCompletionList = function(email) {
+var addEmailToCompletionList = function (email) {
   var emails = Array(localStorage["EmailCompletionList"])
 
-  if(emails.includes(email)) {
+  if (emails.includes(email)) {
     return;
   }
 
@@ -123,14 +123,14 @@ var addEmailToCompletionList = function(email) {
   localStorage["EmailCompletionList"] = emails
 }
 
-var updateEmailCompletionList = function() {
+var updateEmailCompletionList = function () {
   var emails = localStorage["EmailCompletionList"]
-  if(emails) {
+  if (emails) {
     elmApp.ports.getEmailCompletionList.send(Array(emails))
   }
 }
 
-var setupElmApp = function(daemonApiToken) {
+var setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",

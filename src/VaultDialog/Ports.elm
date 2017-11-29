@@ -23,7 +23,7 @@ port openIconFileDialog : String -> Cmd msg
 port selectedIconFile : (( String, String ) -> msg) -> Sub msg
 
 
-port openExportFileDialog : String -> Cmd msg
+port openExportFileDialog : ( String, String ) -> Cmd msg
 
 
 port selectedExportFile : (( String, String ) -> msg) -> Sub msg

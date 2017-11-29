@@ -12,6 +12,8 @@ module ConfirmationDialog
 import Html exposing (Html, div, form, span, text)
 import Html.Attributes exposing (class)
 import Http
+import Language exposing (Language)
+import Translation as T
 import Ui.Modal
 import Util exposing (button)
 
@@ -98,8 +100,8 @@ update msg ({ confirmationDialog } as model) =
                 |> close
 
 
-view : HasConfirmationDialog a msg -> Html msg
-view { confirmationDialog } =
+view : Language -> HasConfirmationDialog a msg -> Html msg
+view language { confirmationDialog } =
     -- don't display anything unless we have messages to produce
     case confirmationDialog.view of
         Nothing ->
@@ -109,7 +111,7 @@ view { confirmationDialog } =
             let
                 viewConfig =
                     { address = confirmationDialog.address << Modal
-                    , contents = contents confirmationDialog.address view
+                    , contents = contents confirmationDialog.address language view
                     , footer = []
                     , title = view.title
                     }
@@ -117,18 +119,22 @@ view { confirmationDialog } =
             Ui.Modal.view viewConfig confirmationDialog.modal
 
 
-contents : (Msg -> msg) -> ViewSettings msg -> List (Html msg)
-contents address { question, confirmMsg } =
+contents : (Msg -> msg) -> Language -> ViewSettings msg -> List (Html msg)
+contents address language { question, confirmMsg } =
     [ div [ class "ConfirmationDialog-Content" ]
         [ text question
         , div [ class "ConfirmationDialog-Buttons" ]
             [ span [ class "ConfirmationDialog-Button-Cancel" ]
                 [ button []
-                    { label = "Cancel", onClick = address Close }
+                    { label = T.translate T.Cancel language
+                    , onClick = address Close
+                    }
                 ]
             , span [ class "ConfirmationDialog-Button-Confirm" ]
                 [ button []
-                    { label = "Confirm", onClick = confirmMsg }
+                    { label = T.translate T.Confirm language
+                    , onClick = confirmMsg
+                    }
                 ]
             ]
         ]

@@ -34,7 +34,7 @@ import Html
         )
 import Html.Attributes exposing (class, classList, for, id, src, style)
 import Html.Events exposing (onClick)
-import Language exposing (HasLanguage)
+import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
@@ -146,8 +146,8 @@ view vaultId model =
             , contents = contents vaultId model
             , footer =
                 [ span [ class "Buttons" ]
-                    [ saveButton vaultId state
-                    , cancelButton vaultId state
+                    [ saveButton vaultId state model
+                    , cancelButton vaultId state model
                     ]
                 ]
             , title =
@@ -181,7 +181,7 @@ contents vaultId model =
             Ui.Tabs.view tabsViewConfig state.tabs
 
         confirmationDialog =
-            ConfirmationDialog.view state
+            ConfirmationDialog.view model.language state
                 |> Html.map (Model.VaultDialogMsg state.id)
     in
     [ tabs
@@ -471,7 +471,7 @@ adminTab vaultId state model =
         , body =
             [ div [ class "Admin-Buttons" ] <|
                 [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-                , removeButton vaultId state
+                , removeButton vaultId state model
                 , separator
                 , infoText (t (VaultDialogText VaultExportButtonInfo) model)
                 , exportButton <| Model.vaultWithId vaultId model
@@ -643,12 +643,12 @@ exportButton vault =
         ]
 
 
-cancelButton : VaultId -> State -> Html Model.Msg
-cancelButton vaultId state =
+cancelButton : VaultId -> State -> Model -> Html Model.Msg
+cancelButton vaultId state model =
     span
         [ classList [ ( "Hidden", not state.hasChangesPending ) ] ]
         [ button []
-            { label = "Cancel Changes"
+            { label = t (VaultDialogText CancelChanges) model
             , onClick = Model.CloseVaultDetails vaultId
             }
         ]
@@ -658,25 +658,25 @@ deleteButton : VaultId -> State -> Model -> Html Model.Msg
 deleteButton vaultId state model =
     span []
         [ button []
-            { label = "Delete from Server"
-            , onClick = Model.VaultDialogMsg vaultId (Confirm DeleteVault)
+            { label = t (VaultDialogText DeleteFromServer) model
+            , onClick = Model.VaultDialogMsg vaultId (VaultDialog.Model.Confirm DeleteVault)
             }
         ]
 
 
-removeButton : VaultId -> State -> Html Model.Msg
-removeButton vaultId state =
+removeButton : VaultId -> State -> Model -> Html Model.Msg
+removeButton vaultId state model =
     span
         [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
         [ button []
-            { label = "Stop syncing"
-            , onClick = Model.VaultDialogMsg vaultId (Confirm RemoveVault)
+            { label = t (VaultDialogText StopSyncing) model
+            , onClick = Model.VaultDialogMsg vaultId (VaultDialog.Model.Confirm RemoveVault)
             }
         ]
 
 
-saveButton : VaultId -> State -> Html Model.Msg
-saveButton vaultId state =
+saveButton : VaultId -> State -> Model -> Html Model.Msg
+saveButton vaultId state model =
     let
         ( label, msg ) =
             case ( state.cloneStatus, state.hasChangesPending ) of

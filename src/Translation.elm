@@ -1,6 +1,7 @@
 module Translation
     exposing
-        ( FolderButtonType(..)
+        ( ConfirmationDialogText(..)
+        , FolderButtonType(..)
         , NotificationText(..)
         , StatsText(..)
         , Text(..)
@@ -51,6 +52,8 @@ type Text
     | Cancel
     | OK
     | Finish
+    | Confirm
+    | ConfirmationDialogText ConfirmationDialogText
 
 
 type NotificationText
@@ -128,6 +131,10 @@ type VaultDialogText
     | VaultExportButtonInfo
     | AskDeleteVault
     | AskDeleteVaultExtended
+    | ExportToFile
+    | CancelChanges
+    | DeleteFromServer
+    | StopSyncing
 
 
 type VaultListText
@@ -139,6 +146,11 @@ type VaultListText
     | FetchingRemoteVaultInfo
     | ClickOnVaultToClone
     | FetchingRemoteVaultsFailed Reason
+
+
+type ConfirmationDialogText
+    = RemoveVaultFromSyncQuestion
+    | RemoveVaultFromSyncExplanation
 
 
 type FolderButtonType
@@ -246,6 +258,12 @@ translateEnglish text =
 
         Finish ->
             "Finish"
+
+        Confirm ->
+            "Confirm"
+
+        ConfirmationDialogText cdt ->
+            translateEnglishConfirmationDialogText cdt
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -473,7 +491,20 @@ translateEnglishVaultDialogText vt =
         AskDeleteVaultExtended ->
             "Do you really want to delete this vault from the server?"
 
+        ExportToFile ->
+            "Export to file"
 
+        CancelChanges ->
+            "Cancel Changes"
+
+        DeleteFromServer ->
+            "Delete from Server"
+
+        StopSyncing ->
+            "Stop syncing"
+
+
+translateEnglishVaultListText : VaultListText -> String
 translateEnglishVaultListText vlt =
     case vlt of
         HeaderDescription ->
@@ -499,6 +530,16 @@ translateEnglishVaultListText vlt =
 
         FetchingRemoteVaultsFailed reason ->
             "Error fetching remote vaults: " ++ reason
+
+
+translateEnglishConfirmationDialogText : ConfirmationDialogText -> String
+translateEnglishConfirmationDialogText cdt =
+    case cdt of
+        RemoveVaultFromSyncQuestion ->
+            "Remove vault from sync?"
+
+        RemoveVaultFromSyncExplanation ->
+            "This vault will stop being synchronized to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
 
 
 translateGerman : Text -> String
@@ -573,7 +614,14 @@ translateGerman text =
         Finish ->
             "Beenden"
 
+        Confirm ->
+            "Bestätigen"
 
+        ConfirmationDialogText cdt ->
+            translateGermanConfirmationDialogText cdt
+
+
+translateGermanNotificationText : NotificationText -> String
 translateGermanNotificationText t =
     case t of
         VaultCreated vaultId ->
@@ -802,7 +850,20 @@ translateGermanVaultDialogText vt =
         AskDeleteVaultExtended ->
             "Soll der Vault wirklich vom Server gelöscht werden?"
 
+        ExportToFile ->
+            "In Datei exportieren"
 
+        CancelChanges ->
+            "Änderungen verwerfen"
+
+        DeleteFromServer ->
+            "Vault auf dem Server löschen"
+
+        StopSyncing ->
+            "Synchronisation stoppen"
+
+
+translateGermanVaultListText : VaultListText -> String
 translateGermanVaultListText vlt =
     case vlt of
         HeaderDescription ->
@@ -830,6 +891,17 @@ translateGermanVaultListText vlt =
             "Fehler beim Laden der Cloud Vaults: " ++ reason
 
 
+translateGermanConfirmationDialogText : ConfirmationDialogText -> String
+translateGermanConfirmationDialogText cdt =
+    case cdt of
+        RemoveVaultFromSyncQuestion ->
+            "Vault deaktivieren und automatische Synchronisation deaktivieren?"
+
+        RemoveVaultFromSyncExplanation ->
+            "Dieser Vault wird nicht mehr mit der Cloud synchronisiert. Lokale Änderungen werden nicht mehr hochgeladen und Dateien, die von anderen Benutzern hochgeladen wurden, werden nicht mehr auf diesen Computer runtergeladen."
+
+
+germanDistance : Date -> Date -> String
 germanDistance =
     Date.Distance.inWordsWithConfig Date.Distance.germanConfig
 
