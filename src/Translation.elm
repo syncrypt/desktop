@@ -53,6 +53,10 @@ type Text
     | OK
     | Finish
     | Confirm
+    | SendUsFeedback
+    | YourFeedbackSuggestionsOrBugReports
+    | TypeYourFeedbackHere
+    | SendFeedback
     | ConfirmationDialogText ConfirmationDialogText
 
 
@@ -266,6 +270,18 @@ translateEnglish text =
 
         Confirm ->
             "Confirm"
+
+        SendUsFeedback ->
+            "Send us your feedback"
+
+        YourFeedbackSuggestionsOrBugReports ->
+            "Your feedback, suggestions or bug report:"
+
+        TypeYourFeedbackHere ->
+            "Type your feedback here"
+
+        SendFeedback ->
+            "Send feedback"
 
         ConfirmationDialogText cdt ->
             translateEnglishConfirmationDialogText cdt
@@ -636,6 +652,18 @@ translateGerman text =
 
         Confirm ->
             "Bestätigen"
+
+        SendUsFeedback ->
+            "Dein Feedback an uns"
+
+        YourFeedbackSuggestionsOrBugReports ->
+            "Sende uns dein Feedback und Verbesserungsvorschläge:"
+
+        TypeYourFeedbackHere ->
+            "Dein Feedback"
+
+        SendFeedback ->
+            "Feedback absenden"
 
         ConfirmationDialogText cdt ->
             translateGermanConfirmationDialogText cdt

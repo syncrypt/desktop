@@ -4,6 +4,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (class, cols, placeholder, rows, style)
 import Html.Events exposing (onInput)
 import Model
+import Translation as T
 import WizardDialog.Model exposing (..)
 
 
@@ -20,17 +21,17 @@ settings model =
 viewSettings : State Model.Msg -> Model.Model -> Maybe (ViewSettings Model.Msg)
 viewSettings state model =
     Just
-        { title = "Send us feedback"
+        { title = T.t T.SendUsFeedback model
         , contents =
             div [ class "FeedbackWizard" ]
                 [ div [ class "Label" ]
-                    [ text "Your feedback, suggestions or bug report:" ]
+                    [ text <| T.t T.YourFeedbackSuggestionsOrBugReports model ]
                 , div []
                     [ Html.textarea
                         [ class "FeedbackTextArea"
                         , cols 40
                         , rows 10
-                        , placeholder "Type your feedback here"
+                        , placeholder <| T.t T.TypeYourFeedbackHere model
                         , onInput Model.FeedbackEntered
                         ]
                         []
@@ -40,7 +41,7 @@ viewSettings state model =
             Visible
                 [ Cancel
                 , CustomButton [ style [ ( "float", "right" ) ] ]
-                    { label = "Send Feedback"
+                    { label = T.t T.SendFeedback model
                     , onClick = Model.SendFeedback
                     }
                 ]

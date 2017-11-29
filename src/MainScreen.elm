@@ -327,7 +327,7 @@ update msg model =
                     { model | feedback = Just trimmedText }
                         ! []
 
-        SendFeedback ->
+        Model.SendFeedback ->
             model
                 |> WizardDialog.close
                 |> sendFeedback
