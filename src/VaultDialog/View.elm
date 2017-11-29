@@ -306,7 +306,10 @@ usersTab toRootMsg vaultId state model =
         , state = state
         , body =
             [ body
-            , adminOnly (Just "You don't have access to this vault's user list.")
+            , adminOnly
+                (Just <|
+                    t (VaultDialogText YouDontHaveAccessToVaultUsers) model
+                )
                 [ rootMsg <| userList state model
                 , rootMsg <| pendingUserList state
                 ]

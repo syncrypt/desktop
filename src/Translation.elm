@@ -144,6 +144,7 @@ type VaultDialogText
     | SaveVault
     | SyncVaultToFolder
     | Close
+    | YouDontHaveAccessToVaultUsers
 
 
 type VaultListText
@@ -539,6 +540,9 @@ translateEnglishVaultDialogText vt =
         Close ->
             "Close"
 
+        YouDontHaveAccessToVaultUsers ->
+            "You don't have access to this vault's user list."
+
 
 translateEnglishVaultListText : VaultListText -> String
 translateEnglishVaultListText vlt =
@@ -924,6 +928,9 @@ translateGermanVaultDialogText vt =
 
         Close ->
             "Schließen"
+
+        YouDontHaveAccessToVaultUsers ->
+            "Du hast keinen Zugriff auf die Benutzerliste dieses Vaults"
 
 
 translateGermanVaultListText : VaultListText -> String
