@@ -60,9 +60,19 @@ release: release-setup
 		npm run make-installer
 	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
 
-Syncrypt-Desktop-%.zip:
+Syncrypt-Desktop-linux.zip:
 	rm -rf $(PACKAGE_DIR) $@
-	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform $* --out $(PACKAGE_DIR)
+	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform linux --out $(PACKAGE_DIR)
+	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
+
+Syncrypt-Desktop-darwin.zip:
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform darwin --icon=icon.icns --out $(PACKAGE_DIR)
+	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
+
+Syncrypt-Desktop-win32.zip:
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform win32 --icon=icon.ico --out $(PACKAGE_DIR)
 	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
 
 $(BUILD_DIR):
