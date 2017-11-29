@@ -404,7 +404,7 @@ translateEnglishVaultDialogText vt =
                     "Select Folder"
 
                 CloneIntoFolder ->
-                    "Select Folder to clone vault to"
+                    "Select clone destination path"
 
                 FolderSelectedForSync path ->
                     path
@@ -793,7 +793,7 @@ translateGermanVaultDialogText vt =
                     "Ordner auswählen"
 
                 CloneIntoFolder ->
-                    "Ordner für Synchronisation auswählen"
+                    "Ordner für Sync auswählen"
 
                 FolderSelectedForSync path ->
                     path

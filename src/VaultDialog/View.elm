@@ -473,6 +473,15 @@ adminTab vaultId state model =
                 , deleteButton vaultId state model
                 ]
 
+        syncedActions =
+            if state.cloneStatus /= Cloned then
+                []
+            else
+                [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+                , removeButton vaultId state model
+                , separator
+                ]
+
         infoBoxText =
             InfoBoxText "Admin" (t (VaultDialogText AdminTabInfoText) model)
     in
@@ -483,13 +492,11 @@ adminTab vaultId state model =
         , state = state
         , body =
             [ div [ class "Admin-Buttons" ] <|
-                [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
-                , removeButton vaultId state model
-                , separator
-                , infoText (t (VaultDialogText VaultExportButtonInfo) model)
-                , exportButton <| Model.vaultWithId vaultId model
-                , separator
-                ]
+                syncedActions
+                    ++ [ infoText (t (VaultDialogText VaultExportButtonInfo) model)
+                       , exportButton <| Model.vaultWithId vaultId model
+                       , separator
+                       ]
                     ++ adminActions
             ]
         }
