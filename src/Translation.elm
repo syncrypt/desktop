@@ -46,6 +46,11 @@ type Text
     | TotalVaultRevisionsTooltip
     | VaultDialogText VaultDialogText
     | VaultListText VaultListText
+    | Previous
+    | Next
+    | Cancel
+    | OK
+    | Finish
 
 
 type NotificationText
@@ -226,6 +231,21 @@ translateEnglish text =
 
         VaultListText vlt ->
             translateEnglishVaultListText vlt
+
+        Previous ->
+            "Previous"
+
+        Next ->
+            "Next"
+
+        Cancel ->
+            "Cancel"
+
+        OK ->
+            "OK"
+
+        Finish ->
+            "Finish"
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -537,6 +557,21 @@ translateGerman text =
 
         VaultListText vlt ->
             translateGermanVaultListText vlt
+
+        Previous ->
+            "Zurück"
+
+        Next ->
+            "Weiter"
+
+        Cancel ->
+            "Abbrechen"
+
+        OK ->
+            "OK"
+
+        Finish ->
+            "Beenden"
 
 
 translateGermanNotificationText t =

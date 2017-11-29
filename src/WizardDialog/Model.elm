@@ -29,6 +29,7 @@ module WizardDialog.Model
         )
 
 import Html exposing (Html)
+import Language exposing (Language)
 import Ui.Modal
 import Util
 
@@ -98,7 +99,10 @@ type alias State msg =
 
 
 type alias HasWizardDialog a m =
-    { a | wizardDialog : Maybe (State m) }
+    { a
+        | wizardDialog : Maybe (State m)
+        , language : Language
+    }
 
 
 type Msg
