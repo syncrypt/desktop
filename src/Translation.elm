@@ -63,6 +63,7 @@ type Text
     | SendUsFeedbackAndBugReports
     | ProgramSettings
     | DaemonManagement
+    | DaemonStatus Bool
     | ChooseYourLanguage
 
 
@@ -309,6 +310,12 @@ translateEnglish text =
 
         DaemonManagement ->
             "Daemon management"
+
+        DaemonStatus True ->
+            "Daemon is currently running."
+
+        DaemonStatus False ->
+            "Daemon is currently not running."
 
         ChooseYourLanguage ->
             "Choose your language:"
@@ -717,7 +724,13 @@ translateGerman text =
             "Einstellungen"
 
         DaemonManagement ->
-            "Daemon-Verwaltung"
+            "Hintergrunddienst-Verwaltung"
+
+        DaemonStatus True ->
+            "Der Hintergrunddienst läuft."
+
+        DaemonStatus False ->
+            "Der Hintergrunddienst läuft nicht."
 
         ChooseYourLanguage ->
             "Wähle deine Sprache:"

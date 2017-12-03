@@ -10,8 +10,10 @@ module SettingsDialog.Model
         )
 
 import ConfirmationDialog
+import Data.Daemon exposing (Stats)
 import Dialog exposing (asModalIn)
 import Language exposing (Language(..))
+import RemoteData exposing (RemoteData(..), WebData)
 import Ui.Modal
 
 
@@ -36,6 +38,7 @@ type alias HasSettingsDialog a =
         | settingsDialog : State
         , language : Language
         , isFirstLaunch : Bool
+        , stats : WebData Stats
     }
 
 

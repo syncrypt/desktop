@@ -1,7 +1,8 @@
 @import "Common.scss";
 
 .SettingsDialog {
-  .LanguageInfoLabel {
+  .LanguageInfoLabel,
+  .DaemonManagementTitle {
     margin: $padding-small;
     font-weight: bold;
     font-size: $font-size-header;
