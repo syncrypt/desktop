@@ -743,7 +743,7 @@ translateGermanNotificationText t =
             "Vault wurde erstellt: " ++ vaultId
 
         VaultDeleted vaultId ->
-            "Vault wurde in der cloud gelöscht: " ++ vaultId
+            "Vault wurde in der Cloud gelöscht: " ++ vaultId
 
         VaultUpdated vaultId ->
             "Vault wurde aktualisiert: " ++ vaultId
