@@ -26,6 +26,8 @@ type Msg
     = ConfirmationDialogMsg ConfirmationDialog.Msg
     | Close
     | LanguageSelection Language
+    | RestartDaemon
+    | ShutdownDaemon
     | ModalMsg Ui.Modal.Msg
 
 

@@ -126,6 +126,8 @@ type Msg
     | FeedbackEntered String
     | SendFeedback
     | SetLanguage Language
+    | DaemonRestartResult (WebData StatusResponse)
+    | DaemonShutdownResult (WebData StatusResponse)
     | SendPasswordResetLink
     | SetupWizardEmail String
 

@@ -62,6 +62,7 @@ type Text
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
     | ProgramSettings
+    | DaemonManagement
     | ChooseYourLanguage
 
 
@@ -80,6 +81,8 @@ type NotificationText
     | VaultExportFailed Reason
     | CouldNotCloneVaultWithoutFolder VaultId
     | NoPathSelected
+    | DaemonWillRestart
+    | DaemonWillShutDown
 
 
 type StatsText
@@ -304,6 +307,9 @@ translateEnglish text =
         ProgramSettings ->
             "Program Settings"
 
+        DaemonManagement ->
+            "Daemon management"
+
         ChooseYourLanguage ->
             "Choose your language:"
 
@@ -355,6 +361,12 @@ translateEnglishNotificationText t =
 
         NoPathSelected ->
             "No path selected - vault not created"
+
+        DaemonWillRestart ->
+            "Daemon is restarting..."
+
+        DaemonWillShutDown ->
+            "Daemon is shutting down..."
 
 
 translateEnglishStatsText : StatsText -> String
@@ -704,6 +716,9 @@ translateGerman text =
         ProgramSettings ->
             "Einstellungen"
 
+        DaemonManagement ->
+            "Daemon-Verwaltung"
+
         ChooseYourLanguage ->
             "Wähle deine Sprache:"
 
@@ -759,6 +774,12 @@ translateGermanNotificationText t =
 
         NoPathSelected ->
             "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
+
+        DaemonWillRestart ->
+            "Daemon startet neu..."
+
+        DaemonWillShutDown ->
+            "Daemon fährt herunter..."
 
 
 translateGermanStatsText : StatsText -> String

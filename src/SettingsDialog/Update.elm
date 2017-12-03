@@ -26,6 +26,12 @@ update msg ({ settingsDialog } as model) =
             close model
                 ! []
 
+        RestartDaemon ->
+            model ! [ Daemon.restart model ]
+
+        ShutdownDaemon ->
+            model ! [ Daemon.shutdown model ]
+
         LanguageSelection lang ->
             { model | language = lang }
                 ! [ Daemon.updateGUIConfig

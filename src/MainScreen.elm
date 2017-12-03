@@ -331,6 +331,24 @@ update msg model =
             { model | language = lang }
                 ! []
 
+        DaemonShutdownResult (Success a) ->
+            model
+                |> notifyText DaemonWillShutDown
+
+        DaemonShutdownResult _ ->
+            model
+                -- TODO: Is there a general daemon error msg?
+                ! []
+
+        DaemonRestartResult (Success a) ->
+            model
+                |> notifyText DaemonWillRestart
+
+        DaemonRestartResult _ ->
+            model
+                -- TODO: Is there a general daemon error msg?
+                ! []
+
         SendPasswordResetLink ->
             sentPasswordReset model
                 -- TODO:

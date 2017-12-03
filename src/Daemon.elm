@@ -44,6 +44,8 @@ type ApiPath
     | DaemonConfig
     | Feedback
     | Version
+    | Restart
+    | Shutdown
     | Login
     | LoginCheck
     | Logout
@@ -365,6 +367,28 @@ loginCheck config =
             Json.string
 
 
+restart : Model -> Cmd Msg
+restart { config } =
+    config
+        |> apiRequest
+            Get
+            Restart
+            EmptyBody
+            statusResponseDecoder
+        |> Cmd.map DaemonRestartResult
+
+
+shutdown : Model -> Cmd Msg
+shutdown { config } =
+    config
+        |> apiRequest
+            Get
+            Shutdown
+            EmptyBody
+            statusResponseDecoder
+        |> Cmd.map DaemonShutdownResult
+
+
 logout : Model -> Cmd Msg
 logout { config } =
     config
@@ -466,6 +490,12 @@ apiPath apiPath =
 
         Version ->
             "version"
+
+        Shutdown ->
+            "shutdown"
+
+        Restart ->
+            "restart"
 
         Login ->
             "auth/login"

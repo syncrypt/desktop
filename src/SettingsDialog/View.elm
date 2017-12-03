@@ -44,6 +44,19 @@ languageButton forLanguage { language, settingsDialog } =
         ]
 
 
+daemonButton : String -> Model.Msg -> Html Model.Msg
+daemonButton title msg =
+    span
+        [ classList
+            [ ( "LanguageButton", True ) ]
+        ]
+        [ button []
+            { label = title
+            , onClick = msg
+            }
+        ]
+
+
 contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "LanguageInfoLabel" ]
@@ -52,4 +65,10 @@ contents model =
         ]
     , languageButton German model
     , languageButton English model
+    , div [ class "LanguageInfoLabel" ]
+        [ text <|
+            T.t T.DaemonManagement model
+        ]
+    , daemonButton "Restart daemon" (Model.SettingsDialogMsg <| RestartDaemon)
+    , daemonButton "Shutdown daemon" (Model.SettingsDialogMsg <| ShutdownDaemon)
     ]
