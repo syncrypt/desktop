@@ -3,8 +3,7 @@
     "development": {
       "application/javascript": {
         "presets": [
-          ["env", { "targets": { "electron": 1.4 } }],
-          "react"
+          ["env", { "targets": { "electron": 1.4 } }]
         ],
         "plugins": ["transform-async-to-generator"],
         "sourceMaps": "inline"
@@ -13,8 +12,7 @@
     "production": {
       "application/javascript": {
         "presets": [
-          ["env", { "targets": { "electron": 1.4 } }],
-          "react"
+          ["env", { "targets": { "electron": 1.4 } }]
         ],
         "plugins": ["transform-async-to-generator"],
         "sourceMaps": "none"
