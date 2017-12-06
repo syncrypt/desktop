@@ -130,6 +130,34 @@ var updateEmailCompletionList = function () {
   }
 }
 
+var startDaemon = function () {
+  const appPath = Path.dirname(app.getAppPath());
+  var daemonPath = Path.join(appPath, "app", "syncrypt", "syncrypt_daemon");
+
+  if (process.env.NODE_ENV === "development") {
+    daemonPath = "client/syncrypt_daemon"
+  }
+
+  if (process.platform == 'win32') daemonPath += '.exe';
+
+  if (FileSystem.existsSync(daemonPath)) {
+    const daemon = ChildProcess.spawn(daemonPath);
+
+    daemon.on('data', (data) => {
+      console.log("daemon: ", data)
+    })
+
+    daemon.on('close', (code) => {
+      const msg = `child process exited with code ${code}`
+      console.log(msg);
+    });
+  }
+  else {
+    console.warn('Did not start the daemon, because the following path does not ' +
+      `exist: ${daemonPath}`)
+  }
+}
+
 var setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,

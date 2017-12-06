@@ -30,6 +30,7 @@ type Msg
     | LanguageSelection Language
     | RestartDaemon
     | ShutdownDaemon
+    | StartDaemon
     | ModalMsg Ui.Modal.Msg
 
 

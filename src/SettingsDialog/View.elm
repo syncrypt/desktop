@@ -92,8 +92,7 @@ daemonContents model =
     , daemonActionButton
         "Start"
         (not daemonIsRunning)
-        -- TODO: We want to implement a StartDaemon signal as well
-        (Model.SettingsDialogMsg <| RestartDaemon)
+        (Model.SettingsDialogMsg <| StartDaemon)
     ]
 
 

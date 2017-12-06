@@ -5,6 +5,7 @@ import Daemon
 import Dialog exposing (asModalIn)
 import Model
 import SettingsDialog.Model exposing (..)
+import SettingsDialog.Ports
 import Ui.Modal
 
 
@@ -31,6 +32,9 @@ update msg ({ settingsDialog } as model) =
 
         ShutdownDaemon ->
             model ! [ Daemon.shutdown model ]
+
+        StartDaemon ->
+            model ! [ SettingsDialog.Ports.startDaemon () ]
 
         LanguageSelection lang ->
             { model | language = lang }
