@@ -13,7 +13,6 @@ import Date exposing (Date)
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
-import Language exposing (Language)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
