@@ -1,5 +1,3 @@
-import { create } from 'domain';
-
 'use strict'
 const electron = require('electron')
 
