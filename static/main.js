@@ -119,7 +119,11 @@ function quitAll() {
 }
 
 function createTray() {
-  systemTray = new Tray(Path.join(__dirname, "assets", "vault_tray_icon.png"))
+  let trayIconPath = Path.join(appPath, "app", "assets", "vault_tray_icon.png")
+  if (process.env.NODE_ENV === "development") {
+    trayIconPath = Path.join("assets", "vault_tray_icon.png")
+  }
+  systemTray = new Tray(trayIconPath)
   const contextMenu = Menu.buildFromTemplate([
     { label: "Open Syncrypt Desktop", type: "normal", click: createWindow },
     { label: "Restart Daemon", type: "normal", click: restartDaemon },
