@@ -106,6 +106,9 @@ function createWindow() {
 
   mainWindow.on('closed', function () {
     mainWindow = null
+    if (process.platform === "darwin") {
+      app.dock.hide()
+    }
   })
 }
 
@@ -119,9 +122,9 @@ function quitAll() {
 }
 
 function createTray() {
-  let trayIconPath = Path.join(appPath, "app", "assets", "vault_tray_icon.png")
-  if (process.env.NODE_ENV === "development") {
-    trayIconPath = Path.join("assets", "vault_tray_icon.png")
+  let trayIconPath = Path.join("assets", "vault_tray_icon_16px.png")
+  if (process.env.NODE_ENV !== "development") {
+    trayIconPath = Path.join(appPath, "app", "assets", "vault_tray_icon_16px.png")
   }
   systemTray = new Tray(trayIconPath)
   const contextMenu = Menu.buildFromTemplate([
@@ -132,6 +135,7 @@ function createTray() {
   ])
   systemTray.setToolTip("Syncrypt Desktop")
   systemTray.setContextMenu(contextMenu)
+  systemTray.setPressedImage(Path.join(Path.dirname(trayIconPath), "vault_tray_icon_bw_16px.png"))
 }
 
 // called when electron has initialized
