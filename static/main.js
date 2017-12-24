@@ -121,10 +121,13 @@ function quitAll() {
   app.quit()
 }
 
+const TRAY_ICON = "vault_tray_icon_16px.png"
+const TRAY_ICON_CLICKED = "vault_tray_icon_bw_16px.png"
+
 function createTray() {
-  let trayIconPath = Path.join("assets", "vault_tray_icon_16px.png")
+  let trayIconPath = Path.join("assets", TRAY_ICON)
   if (process.env.NODE_ENV !== "development") {
-    trayIconPath = Path.join(appPath, "app", "assets", "vault_tray_icon_16px.png")
+    trayIconPath = Path.join(appPath, "app", "assets", TRAY_ICON)
   }
   systemTray = new Tray(trayIconPath)
   const contextMenu = Menu.buildFromTemplate([
@@ -135,7 +138,7 @@ function createTray() {
   ])
   systemTray.setToolTip("Syncrypt Desktop")
   systemTray.setContextMenu(contextMenu)
-  systemTray.setPressedImage(Path.join(Path.dirname(trayIconPath), "vault_tray_icon_bw_16px.png"))
+  systemTray.setPressedImage(Path.join(Path.dirname(trayIconPath), TRAY_ICON_CLICKED))
 }
 
 // called when electron has initialized
