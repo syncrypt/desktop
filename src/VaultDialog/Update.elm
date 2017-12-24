@@ -3,10 +3,9 @@ module VaultDialog.Update exposing (..)
 import ConfirmationDialog
 import Daemon
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
+import Data.Vault exposing (FlyingVault, LogItem, Vault, VaultId, nameOrId)
 import Dialog exposing (asModalIn)
 import Dict
-import Json.Decode
 import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
@@ -509,19 +508,10 @@ update msg vaultId ({ vaultDialogs } as model) =
                 ~> searchFingerprints email vaultId
 
         VaultLogStream logItem ->
-            case logItem of
-                Err reason ->
-                    let
-                        _ =
-                            Debug.log "Failed decoding Vault log stream message: " reason
-                    in
-                    model ! []
-
-                Ok item ->
-                    ({ state | logItems = item :: state.logItems }
-                        |> asStateIn vaultId model
-                    )
-                        ! []
+            (model
+                |> addLogStreamItem logItem vaultId state
+            )
+                ! []
 
         ToggleEventSortOrder ->
             (state
@@ -575,6 +565,21 @@ getVaultEventLog vaultId model =
     model.config
         |> Daemon.getVaultHistory vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultHistory)
+
+
+addLogStreamItem : Result String LogItem -> VaultId -> State -> Model -> Model
+addLogStreamItem logItem vaultId state model =
+    case logItem of
+        Err reason ->
+            let
+                _ =
+                    Debug.log "Failed decoding Vault log stream message: " reason
+            in
+            model
+
+        Ok item ->
+            { state | logItems = item :: state.logItems }
+                |> asStateIn vaultId model
 
 
 setUserInput : Email -> State -> Model -> ( Model, Cmd Model.Msg )
