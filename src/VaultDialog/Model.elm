@@ -79,6 +79,7 @@ type alias State =
     , localFolderPath : Maybe Path
     , localFolderItems : Dict Path (List String)
     , ignoredFolderItems : Set Path
+    , alwaysSyncedFolderItems : Set Path
     , expandedFolders : Set Path
     , users : WebData (List User.User)
     , logItems : List Data.Vault.LogItem
@@ -152,6 +153,7 @@ init =
     , title = "Untitled Vault"
     , icon = Nothing
     , ignoredFolderItems = Set.fromList [ [ ".DS_Store" ], [ ".vault" ] ]
+    , alwaysSyncedFolderItems = Set.empty
     , localFolderPath = Nothing
     , localFolderItems = Dict.empty
     , expandedFolders = Set.fromList [ [] ]
@@ -254,13 +256,20 @@ sortedFolders { localFolderItems } =
 
 
 isIgnored : Path -> State -> Bool
-isIgnored path { ignoredFolderItems } =
-    Set.member path ignoredFolderItems
-        || (ignoredFolderItems
-                |> Set.filter (\p -> List.take (List.length p) path == p)
-                |> Set.isEmpty
-                |> not
-           )
+isIgnored path model =
+    if Set.member path model.alwaysSyncedFolderItems then
+        False
+    else
+        Set.member path model.ignoredFolderItems
+            || isAnyParentIgnored path model
+
+
+isAnyParentIgnored : Path -> State -> Bool
+isAnyParentIgnored path { ignoredFolderItems } =
+    ignoredFolderItems
+        |> Set.filter (\p -> List.take (List.length p) path == p)
+        |> Set.isEmpty
+        |> not
 
 
 isUserKeyPending : User.Email -> User.UserKey -> State -> Bool
@@ -337,16 +346,46 @@ addFolder (( path, files ) as f) ({ localFolderItems } as state) =
 
 
 toggleIgnorePath : Path -> State -> State
-toggleIgnorePath path ({ ignoredFolderItems } as model) =
-    case Set.member path model.ignoredFolderItems of
-        True ->
+toggleIgnorePath path ({ ignoredFolderItems, alwaysSyncedFolderItems } as model) =
+    case
+        ( Set.member path ignoredFolderItems
+        , Set.member path alwaysSyncedFolderItems
+        )
+    of
+        ( False, False ) ->
+            if isIgnored path model then
+                { model
+                    | alwaysSyncedFolderItems =
+                        Set.insert path alwaysSyncedFolderItems
+                }
+            else
+                { model
+                    | ignoredFolderItems =
+                        Set.insert path ignoredFolderItems
+                }
+
+        ( True, False ) ->
             { model
-                | ignoredFolderItems = Set.remove path ignoredFolderItems
+                | ignoredFolderItems =
+                    Set.remove path ignoredFolderItems
+                , alwaysSyncedFolderItems =
+                    Set.insert path alwaysSyncedFolderItems
             }
 
-        False ->
+        ( False, True ) ->
             { model
-                | ignoredFolderItems = Set.insert path ignoredFolderItems
+                | ignoredFolderItems =
+                    Set.insert path ignoredFolderItems
+                , alwaysSyncedFolderItems =
+                    Set.remove path alwaysSyncedFolderItems
+            }
+
+        ( True, True ) ->
+            { model
+                | ignoredFolderItems =
+                    Set.remove path ignoredFolderItems
+                , alwaysSyncedFolderItems =
+                    Set.remove path alwaysSyncedFolderItems
             }
 
 
