@@ -17,7 +17,6 @@ import Dict exposing (Dict)
 import Path exposing (Path, asPath)
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
-import Ui
 import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
