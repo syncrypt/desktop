@@ -2,6 +2,7 @@ module VaultDialog.Update exposing (..)
 
 import ConfirmationDialog
 import Daemon
+import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId, nameOrId)
 import Dialog exposing (asModalIn)
 import Dict
@@ -16,6 +17,7 @@ import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
+import Util exposing ((~>))
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
@@ -472,12 +474,9 @@ update msg vaultId ({ vaultDialogs } as model) =
                                         |> Dict.insert email Loading
                             }
             in
-            (newState
+            newState
                 |> asStateIn vaultId model
-            )
-                ! [ model
-                        |> searchFingerprints email vaultId
-                  ]
+                |> searchFingerprints email vaultId
 
         FoundUserKeys email keys ->
             let
@@ -505,23 +504,9 @@ update msg vaultId ({ vaultDialogs } as model) =
                 |> Model.retryOnFailure data (Model.VaultDialogMsg vaultId GetVaultFingerprints)
 
         SetUserInput email ->
-            let
-                ( userInput, cmd ) =
-                    Ui.Input.setValue email state.userInput
-                        |> dialogCmd UserInputMsg
-            in
-            ({ state
-                | userInput = userInput
-                , userKeys =
-                    Dict.update email
-                        (Just << Maybe.withDefault Loading)
-                        state.userKeys
-             }
-                |> asStateIn vaultId model
-            )
-                ! [ cmd
-                  , searchFingerprints email vaultId model
-                  ]
+            model
+                |> setUserInput email state
+                ~> searchFingerprints email vaultId
 
         VaultLogStream logItem ->
             case logItem of
@@ -578,24 +563,51 @@ update msg vaultId ({ vaultDialogs } as model) =
                 ! []
 
 
+getVaultFingerprints : VaultId -> Model -> Cmd Model.Msg
 getVaultFingerprints vaultId model =
     model.config
         |> Daemon.getVaultFingerprints vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FoundVaultFingerprints)
 
 
+getVaultEventLog : VaultId -> Model -> Cmd Model.Msg
 getVaultEventLog vaultId model =
     model.config
         |> Daemon.getVaultHistory vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultHistory)
 
 
+setUserInput : Email -> State -> Model -> ( Model, Cmd Model.Msg )
+setUserInput email state model =
+    let
+        ( userInput, inputCmd ) =
+            Ui.Input.setValue email state.userInput
+
+        cmd =
+            Cmd.map (Model.VaultDialogMsg state.id << UserInputMsg) inputCmd
+    in
+    ({ state
+        | userInput = userInput
+        , userKeys =
+            Dict.update email
+                (Just << Maybe.withDefault Loading)
+                state.userKeys
+     }
+        |> asStateIn state.id model
+    )
+        ! [ cmd ]
+
+
+searchFingerprints : Email -> VaultId -> Model -> ( Model, Cmd Model.Msg )
 searchFingerprints email vaultId model =
-    model.config
-        |> Daemon.getUserKeys email
-        |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
+    model
+        ! [ model.config
+                |> Daemon.getUserKeys email
+                |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
+          ]
 
 
+fetchUsers : VaultId -> Model -> Cmd Model.Msg
 fetchUsers vaultId model =
     model.config
         |> Daemon.getVaultUsers vaultId
