@@ -509,9 +509,6 @@ eventFilterButtons vaultId state =
         rootMsg msg =
             Model.VaultDialogMsg vaultId msg
 
-        filterMsg filter =
-            rootMsg <| FilterEventsBy filter
-
         filterButton title filter =
             button
                 [ classList
@@ -521,14 +518,14 @@ eventFilterButtons vaultId state =
                     ]
                 ]
                 { label = title
-                , onClick = filterMsg <| filter
+                , onClick = rootMsg <| FilterEventsBy filter
                 }
 
         logLevelButtons =
-            [ filterButton "Debug" <| Level Debug
-            , filterButton "Info" <| Level Info
-            , filterButton "Warning" <| Level Warning
-            , filterButton "Error" <| Level Error
+            [ filterButton "Debug" (Level Debug)
+            , filterButton "Info" (Level Info)
+            , filterButton "Warning" (Level Warning)
+            , filterButton "Error" (Level Error)
             ]
 
         logLevelButton =
@@ -538,8 +535,8 @@ eventFilterButtons vaultId state =
                 }
 
         buttons =
-            [ filterButton "History" <| IsHistoryItem
-            , filterButton "Log" <| IsLogItem
+            [ filterButton "History" IsHistoryItem
+            , filterButton "Log" IsLogItem
             , span [ class "LogLevelButtons" ] <|
                 if isFilterEnabled IsLogItem state then
                     []
