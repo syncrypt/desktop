@@ -5,8 +5,8 @@ HTML_FILE=$(BUILD_DIR)/index.html
 JS_FILE=$(BUILD_DIR)/elm.js
 ASSETS_PATH = $(BUILD_DIR)/assets
 
-JS_SOURCES = $(wildcard src/*.elm)
-ASSET_FILES = $(shell find assets -type f)
+JS_SOURCES = $(wildcard src/*.elm) $(wildcard src/**/*.elm)
+ASSET_FILES = $(wildcard assets/*)
 MAIN_FILE = $(BUILD_DIR)/main.js
 CSS_FILES = $(wildcard static/*.scss)
 CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
