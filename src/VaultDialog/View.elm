@@ -557,7 +557,8 @@ eventFilterButtons vaultId state =
 tabInfoText : String -> Html msg
 tabInfoText infoText =
     div []
-        [ div [ class "TabInfoText" ] [ text infoText ]
+        [ div [ class "TabInfoText" ]
+            [ text infoText ]
         , separator
         ]
 
@@ -637,7 +638,8 @@ infoText infoText =
 
 separator : Html msg
 separator =
-    Html.hr [ class "Separator" ] []
+    Html.hr [ class "Separator" ]
+        []
 
 
 dialogInput : String -> List (Html msg) -> Html msg
@@ -734,7 +736,8 @@ confirmUserKeysButton state =
             userInputEmail state
     in
     if List.isEmpty (keysToAdd email state) then
-        span [] []
+        span []
+            []
     else
         button []
             { label = "Invite with selected keys"
