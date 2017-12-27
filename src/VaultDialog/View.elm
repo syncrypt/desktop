@@ -861,15 +861,19 @@ iconInput state model =
                 Just path ->
                     path
 
+        iconBaseAttrs =
+            [ src (Maybe.withDefault "" state.icon)
+            , class "Icon"
+            ]
+
+        iconAttrs =
+            if isOwner state.id model then
+                onClick OpenIconDialog :: iconBaseAttrs
+            else
+                iconBaseAttrs
+
         icon =
-            img
-                (src iconPath
-                    :: (if isOwner state.id model then
-                            [ class "Icon", onClick OpenIconDialog ]
-                        else
-                            [ class "Icon" ]
-                       )
-                )
+            img iconAttrs
                 []
     in
     tooltipItem
