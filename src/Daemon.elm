@@ -242,14 +242,18 @@ updateGUIConfig :
     Model
     -> GUIConfig
     -> Cmd Msg
-updateGUIConfig { config } guiConfig =
+updateGUIConfig { config } { isFirstLaunch, language } =
     let
         json =
             Json.Encode.object
                 [ ( "gui"
                   , Json.Encode.object
-                        [ ( "is_first_launch", Json.Encode.bool guiConfig.isFirstLaunch )
-                        , ( "language", Json.Encode.string <| toString guiConfig.language )
+                        [ ( "is_first_launch"
+                          , Json.Encode.bool isFirstLaunch
+                          )
+                        , ( "language"
+                          , Json.Encode.string <| toString language
+                          )
                         ]
                   )
                 ]
