@@ -353,7 +353,7 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    [ text (String.toUpper vault.id) ]
+                    [ text (String.toUpper vault.remoteId) ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
                     [ text (toString vault.revisionCount) ]
