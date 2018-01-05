@@ -109,6 +109,7 @@ type Event
 -}
 type alias Vault =
     { id : VaultId
+    , remoteId : VaultId
     , name : Maybe String
     , size : Int
     , status : Status
@@ -127,6 +128,7 @@ type alias Vault =
 -}
 type alias FlyingVault =
     { id : VaultId
+    , remoteId : VaultId
     , name : Maybe String
     , size : Maybe Int
     , userCount : Int
@@ -141,6 +143,7 @@ type alias FlyingVault =
 init : VaultId -> Vault
 init vaultId =
     { id = vaultId
+    , remoteId = vaultId
     , name = Nothing
     , size = 0
     , status = Initializing
@@ -181,6 +184,7 @@ asVault fv =
     in
     { v
         | id = fv.id
+        , remoteId = fv.remoteId
         , name = fv.name
         , size = Maybe.withDefault 0 fv.size
         , status = Unsynced
@@ -232,6 +236,7 @@ decoder : Json.Decoder Vault
 decoder =
     decode Vault
         |> required "id" Json.string
+        |> required "remote_id" Json.string
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> required "size" Json.int
         |> required "state" vaultStatusDecoder
@@ -312,6 +317,7 @@ flyingVaultDecoder : Json.Decoder FlyingVault
 flyingVaultDecoder =
     decode FlyingVault
         |> required "id" Json.string
+        |> required "remote_id" Json.string
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> optional "size" (Json.maybe Json.int) Nothing
         |> required "user_count" Json.int
