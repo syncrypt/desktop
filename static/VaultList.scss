@@ -88,6 +88,7 @@ $border-radius-vault-card: 5px;
     position: relative;
     transition: all 0.25s;
     background-color: $color-bg-extra-light;
+    box-sizing: border-box;
   }
 
   .Card:hover {
@@ -212,13 +213,15 @@ $border-radius-vault-card: 5px;
     text-transform: uppercase;
     width: 100%;
     text-overflow: ellipsis;
+    white-space: nowrap;
     overflow: hidden;
     padding-bottom: $padding-small;
     border-bottom: 1px solid $color-bg-dark;
   }
 
   .Body {
-    padding-top: 36px;
+    margin-top: 30px;
+    margin-bottom: 30px;
   }
 
   .Footer {
@@ -255,7 +258,7 @@ $border-radius-vault-card: 5px;
     background-size: $bgSize;
     background-position-y: $bgYOffset;
     white-space: nowrap;
-    width: 60px;
+    width: 36px;
     min-height: $bgSize;
     vertical-align: middle;
     margin-top: 8px;
@@ -268,11 +271,11 @@ $border-radius-vault-card: 5px;
   }
 
   .VaultActivity {
-    @include vault-info-item(url(assets/data_usage_24px.svg), 24px, -2px, 30px);
+    @include vault-info-item(url(assets/data_usage_24px.svg), 20px, 0px, 30px);
   }
 
   .VaultRevisions {
-    @include vault-info-item(url(assets/folder_open_24px.svg), 24px, -2px, 30px);
+    @include vault-info-item(url(assets/folder_open_24px.svg), 20px, 0px, 30px);
     margin-left: 40px;
     width: 100%;
   }
