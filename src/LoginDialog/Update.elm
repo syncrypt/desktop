@@ -9,25 +9,36 @@ update : Msg -> HasLoginDialog a -> ( HasLoginDialog a, Cmd Model.Msg )
 update dialogMsg ({ loginDialog } as model) =
     case dialogMsg of
         EmailInput msg ->
-            let
-                ( emailInput, cmd ) =
-                    Ui.Input.update msg loginDialog.emailInput
-            in
-            ({ loginDialog | emailInput = emailInput }
-                |> asStateIn model
+            ( updateEmailInput msg model
+            , Cmd.none
             )
-                ! []
 
         PasswordInput msg ->
-            let
-                ( passwordInput, cmd ) =
-                    Ui.Input.update msg loginDialog.passwordInput
-            in
-            ({ loginDialog | passwordInput = passwordInput }
-                |> asStateIn model
+            ( updatePasswordInput msg model
+            , Cmd.none
             )
-                ! []
 
         Modal _ ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
+
+
+updateEmailInput : Ui.Input.Msg -> HasLoginDialog a -> HasLoginDialog a
+updateEmailInput msg ({ loginDialog } as model) =
+    let
+        ( emailInput, cmd ) =
+            Ui.Input.update msg loginDialog.emailInput
+    in
+    { loginDialog | emailInput = emailInput }
+        |> asStateIn model
+
+
+updatePasswordInput : Ui.Input.Msg -> HasLoginDialog a -> HasLoginDialog a
+updatePasswordInput msg ({ loginDialog } as model) =
+    let
+        ( passwordInput, cmd ) =
+            Ui.Input.update msg loginDialog.passwordInput
+    in
+    { loginDialog | passwordInput = passwordInput }
+        |> asStateIn model
