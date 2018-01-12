@@ -261,7 +261,7 @@ This is somewhat similar to Haskell's >>=
 
     doStuff : Model -> ( Model, Cmd Msg )
     doStuff model =
-        ( model, fetchData )
+        ( model, fetchData model )
             ~> doSomething
             ~> doAnotherThing
 
