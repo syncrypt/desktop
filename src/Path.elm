@@ -5,6 +5,7 @@ module Path
         , folderName
         , fromString
         , inRoot
+        , isNestedUnder
         , name
         , parent
         , toString
@@ -70,3 +71,8 @@ toString pathSeparator path =
 fromString : String -> String -> Path
 fromString pathSep pathStr =
     String.split pathSep pathStr
+
+
+isNestedUnder : Path -> Path -> Bool
+isNestedUnder parentPath path =
+    List.take (List.length parentPath) path == parentPath
