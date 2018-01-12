@@ -50,7 +50,9 @@ init config =
             , Daemon.getConfig model
             ]
     in
-    model ! initialActions
+    ( model
+    , Cmd.batch initialActions
+    )
 
 
 
@@ -81,8 +83,9 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SetTime time ->
-            { model | now = Just time }
-                ! []
+            ( { model | now = Just time }
+            , Cmd.none
+            )
 
         UpdateLoginState ->
             model
@@ -93,8 +96,9 @@ update msg model =
                 |> updateVaults
 
         UpdateDaemonConfig ->
-            model
-                ! [ Daemon.getConfig model ]
+            ( model
+            , Daemon.getConfig model
+            )
 
         UpdateFlyingVaults ->
             model
@@ -164,8 +168,9 @@ update msg model =
                 |> notifyText (VaultCreateFailed <| toString reason)
 
         CreatedVault _ _ ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         ExportedVault vaultId (Success { success, filename }) ->
             model
@@ -200,21 +205,22 @@ update msg model =
                 |> VaultDialog.Update.update msg vaultId
 
         OpenVaultFolder vault ->
-            model
-                ! [ Ports.openVaultFolder vault.folderPath ]
+            ( model
+            , Ports.openVaultFolder vault.folderPath
+            )
 
         OpenSettingsDialog ->
             -- TODO
-            (model
+            ( model
                 |> SettingsDialog.open
+            , Cmd.none
             )
-                ! []
 
         CloseSettingsDialog ->
-            (model
+            ( model
                 |> SettingsDialog.close
+            , Cmd.none
             )
-                ! []
 
         Login ->
             model
@@ -233,24 +239,28 @@ update msg model =
                 |> handleLoginResult email data
 
         LogoutResult _ ->
-            { model | login = LoggedOut }
-                ! []
+            ( { model | login = LoggedOut }
+            , Cmd.none
+            )
 
         FocusOn id ->
-            model
-                ! [ Ports.focusOn id ]
+            ( model
+            , Ports.focusOn id
+            )
 
         NotificationCenterMsg msg ->
             let
                 ( state, cmd ) =
                     Ui.NotificationCenter.update msg model.notificationCenter
             in
-            { model | notificationCenter = state }
-                ! [ Cmd.map NotificationCenterMsg cmd ]
+            ( { model | notificationCenter = state }
+            , Cmd.map NotificationCenterMsg cmd
+            )
 
         UpdatedStatsFromApi stats ->
-            { model | stats = stats }
-                ! []
+            ( { model | stats = stats }
+            , Cmd.none
+            )
 
         VaultUserAdded vaultId email data ->
             model
@@ -277,8 +287,8 @@ update msg model =
                 |> openSetupWizard
 
         SetupWizardFinished ->
-            ({ model | isFirstLaunch = False }
-                ! [ Daemon.invalidateFirstLaunch model ]
+            ( { model | isFirstLaunch = False }
+            , Daemon.invalidateFirstLaunch model
             )
                 ~> notify (text "Syncrypt initialized")
 
@@ -287,8 +297,9 @@ update msg model =
                 _ =
                     Debug.log "got email completion list: " emails
             in
-            { model | emailCompletionList = emails }
-                ! []
+            ( { model | emailCompletionList = emails }
+            , Cmd.none
+            )
 
         UpdatedDaemonConfig (Success { gui }) ->
             model
@@ -315,12 +326,14 @@ update msg model =
         FeedbackEntered text ->
             case String.trim text of
                 "" ->
-                    { model | feedback = Nothing }
-                        ! []
+                    ( { model | feedback = Nothing }
+                    , Cmd.none
+                    )
 
                 trimmedText ->
-                    { model | feedback = Just trimmedText }
-                        ! []
+                    ( { model | feedback = Just trimmedText }
+                    , Cmd.none
+                    )
 
         Model.SendFeedback ->
             model
@@ -328,18 +341,21 @@ update msg model =
                 |> sendFeedback
 
         SetLanguage lang ->
-            { model | language = lang }
-                ! []
+            ( { model | language = lang }
+            , Cmd.none
+            )
 
         SendPasswordResetLink ->
-            sentPasswordReset model
-                -- TODO:
-                ! [-- Daemon.sendPasswordResetLink
-                  ]
+            ( sentPasswordReset model
+            , -- TODO:
+              -- Daemon.sendPasswordResetLink
+              Cmd.none
+            )
 
         SetupWizardEmail email ->
-            setSetupWizardEmail email model
-                ! []
+            ( setSetupWizardEmail email model
+            , Cmd.none
+            )
 
 
 setSetupWizardEmail : String -> Model -> Model
@@ -360,12 +376,14 @@ sendFeedback : Model -> ( Model, Cmd Msg )
 sendFeedback model =
     case model.feedback of
         Nothing ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         Just feedback ->
-            model
-                ! [ Daemon.sendFeedback feedback model.config ]
+            ( model
+            , Daemon.sendFeedback feedback model.config
+            )
 
 
 updateGUIConfig : GUIConfig -> Model -> Model
@@ -382,8 +400,9 @@ openSetupWizardIfFirstLaunch model =
         model
             |> openSetupWizard
     else
-        model
-            ! []
+        ( model
+        , Cmd.none
+        )
 
 
 openSetupWizard : Model -> ( Model, Cmd Msg )
@@ -406,61 +425,68 @@ openFeedbackWizard model =
 
 updateLoginState : Model -> ( Model, Cmd Msg )
 updateLoginState model =
-    model
-        ! [ Daemon.getLoginState model ]
+    ( model
+    , Daemon.getLoginState model
+    )
 
 
 updateVaults : Model -> ( Model, Cmd Msg )
 updateVaults model =
-    { model | state = UpdatingVaults }
-        ! [ Daemon.getVaults model ]
+    ( { model | state = UpdatingVaults }
+    , Daemon.getVaults model
+    )
 
 
 updateFlyingVaults : Model -> ( Model, Cmd Msg )
 updateFlyingVaults model =
-    { model | flyingVaults = Loading }
-        ! [ Daemon.getFlyingVaults model ]
+    ( { model | flyingVaults = Loading }
+    , Daemon.getFlyingVaults model
+    )
 
 
 updateStats : Model -> ( Model, Cmd Msg )
 updateStats model =
-    model
-        ! [ Daemon.getStats model ]
+    ( model
+    , Daemon.getStats model
+    )
 
 
 updatedLoginState : WebData LoginState -> Model -> ( Model, Cmd Msg )
 updatedLoginState data model =
     case data of
         Success loginState ->
-            { model | login = loginState }
-                ! []
+            ( { model | login = loginState }
+            , Cmd.none
+            )
 
         Failure _ ->
             { model | login = LoggedOut }
                 |> Model.retryOnFailure data UpdateLoginState
 
         _ ->
-            { model | login = Unknown }
-                ! []
+            ( { model | login = Unknown }
+            , Cmd.none
+            )
 
 
 updatedVaults : WebData (List Vault) -> Model -> ( Model, Cmd Msg )
 updatedVaults vaults model =
     let
-        cmds =
+        cmd =
             case vaults of
                 RemoteData.Failure error ->
                     let
                         _ =
                             Debug.log "Failed to get vaults, retrying" error
                     in
-                    [ Util.delayMsg 1000 UpdateVaults ]
+                    Util.delayMsg 1000 UpdateVaults
 
                 _ ->
-                    []
+                    Cmd.none
     in
-    { model | vaults = vaults }
-        ! cmds
+    ( { model | vaults = vaults }
+    , cmd
+    )
 
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
@@ -484,8 +510,9 @@ closeVaultDetails vaultId model =
 
 initiateDeleteVaultDialog : VaultId -> Model -> ( Model, Cmd Msg )
 initiateDeleteVaultDialog vaultId model =
-    model
-        ! [ Util.delayMsg 150 (DeleteVaultDialog vaultId) ]
+    ( model
+    , Util.delayMsg 150 (DeleteVaultDialog vaultId)
+    )
 
 
 openFlyingVaultDetails : FlyingVault -> Model -> ( Model, Cmd Msg )
@@ -528,8 +555,9 @@ notify body model =
         ( state, cmd ) =
             Ui.NotificationCenter.notify content model.notificationCenter
     in
-    { model | notificationCenter = state }
-        ! [ Cmd.map NotificationCenterMsg cmd ]
+    ( { model | notificationCenter = state }
+    , Cmd.map NotificationCenterMsg cmd
+    )
 
 
 notifyText : Translation.NotificationText -> Model -> ( Model, Cmd Msg )
@@ -562,16 +590,16 @@ createVault : VaultDialog.Model.State -> Model -> ( Model, Cmd Msg )
 createVault state model =
     case state.localFolderPath of
         Just folderPath ->
-            model
-                ! [ model.config
-                        |> Daemon.updateVault
-                            (Create
-                                { folder = folderPath
-                                , ignorePaths = Set.toList state.ignoredFolderItems
-                                }
-                            )
-                        |> Cmd.map (CreatedVault state)
-                  ]
+            ( model
+            , model.config
+                |> Daemon.updateVault
+                    (Create
+                        { folder = folderPath
+                        , ignorePaths = Set.toList state.ignoredFolderItems
+                        }
+                    )
+                |> Cmd.map (CreatedVault state)
+            )
 
         Nothing ->
             model
@@ -593,25 +621,26 @@ cloneVault vaultId origModel =
                 |> notifyText (CouldNotCloneVaultWithoutFolder vaultId)
 
         Just folderPath ->
-            model
-                ! [ model.config
-                        |> Daemon.updateVault
-                            (Clone
-                                { id = vaultId
-                                , folder = folderPath
-                                , ignorePaths = Set.toList state.ignoredFolderItems
-                                }
-                            )
-                        |> Cmd.map (ClonedVault vaultId)
-                  ]
+            ( model
+            , model.config
+                |> Daemon.updateVault
+                    (Clone
+                        { id = vaultId
+                        , folder = folderPath
+                        , ignorePaths = Set.toList state.ignoredFolderItems
+                        }
+                    )
+                |> Cmd.map (ClonedVault vaultId)
+            )
 
 
 clonedVault : VaultId -> WebData Vault -> Model -> ( Model, Cmd Msg )
 clonedVault vaultId data model =
     case data of
         Success vault ->
-            { model | state = ShowingAllVaults }
-                ! [ Daemon.getVaults model ]
+            ( { model | state = ShowingAllVaults }
+            , Daemon.getVaults model
+            )
 
         Failure reason ->
             model
@@ -626,8 +655,9 @@ vaultUserAdded : VaultId -> Email -> WebData Email -> Model -> ( Model, Cmd Msg 
 vaultUserAdded vaultId email data model =
     case data of
         Success _ ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         _ ->
             model
@@ -643,14 +673,16 @@ login model =
         password =
             model.loginDialog.passwordInput.value
     in
-    model
-        ! [ Daemon.login email password model ]
+    ( model
+    , Daemon.login email password model
+    )
 
 
 logout : Model -> ( Model, Cmd Msg )
 logout model =
-    model
-        ! [ Daemon.logout model ]
+    ( model
+    , Daemon.logout model
+    )
 
 
 handleLoginResult :
@@ -661,22 +693,29 @@ handleLoginResult :
 handleLoginResult email data model =
     case data of
         Success _ ->
-            { model | login = LoggedIn { firstName = "", lastName = "", email = email } }
-                ! []
+            ( { model
+                | login =
+                    LoggedIn { firstName = "", lastName = "", email = email }
+              }
+            , Cmd.none
+            )
 
         Failure reason ->
-            { model | login = LoggedOut }
-                ! []
+            ( { model | login = LoggedOut }
+            , Cmd.none
+            )
 
         _ ->
-            { model | login = Unknown }
-                ! []
+            ( { model | login = Unknown }
+            , Cmd.none
+            )
 
 
 removeVaultFromSync : VaultId -> Model -> ( Model, Cmd Msg )
 removeVaultFromSync vaultId model =
-    model
-        ! [ Daemon.removeVault vaultId model ]
+    ( model
+    , Daemon.removeVault vaultId model
+    )
 
 
 

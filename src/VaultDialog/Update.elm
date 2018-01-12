@@ -55,8 +55,9 @@ open model =
                 _ =
                     Debug.log "Invalid state for VaultDialog.open: " model.state
             in
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
 
 openNew : Model -> ( Model, Cmd Model.Msg )
@@ -65,12 +66,12 @@ openNew model =
         state =
             dialogState "" model
     in
-    (state.modal
+    ( state.modal
         |> Ui.Modal.open
         |> asModalIn state
         |> asStateIn "" model
+    , Cmd.none
     )
-        ! []
 
 
 openForFlyingVault : FlyingVault -> Model -> ( Model, Cmd Model.Msg )
@@ -83,12 +84,12 @@ openForFlyingVault flyingVault model =
             VaultDialog.Model.initForFlyingVault flyingVault
                 |> setNameInputValue (nameOrId flyingVault)
     in
-    (state.modal
+    ( state.modal
         |> Ui.Modal.open
         |> asModalIn state
         |> asStateIn flyingVault.id model
+    , Cmd.map (Model.VaultDialogMsg flyingVault.id) cmd
     )
-        ! [ Cmd.map (Model.VaultDialogMsg flyingVault.id) cmd ]
 
 
 openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
@@ -128,12 +129,12 @@ openForVault vault model =
             else
                 [ cmd ]
     in
-    (state.modal
+    ( state.modal
         |> Ui.Modal.open
         |> asModalIn state
         |> asStateIn vault.id model
+    , Cmd.batch commands
     )
-        ! commands
 
 
 cancel : VaultId -> Model -> ( Model, Cmd Model.Msg )
@@ -142,8 +143,9 @@ cancel vaultId model =
         state =
             dialogState vaultId model
     in
-    { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
-        ! []
+    ( { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
+    , Cmd.none
+    )
 
 
 close : VaultId -> Model -> ( Model, Cmd Model.Msg )
@@ -152,12 +154,12 @@ close vaultId model =
         state =
             dialogState vaultId model
     in
-    (state.modal
+    ( state.modal
         |> Ui.Modal.close
         |> asModalIn state
         |> asStateIn vaultId model
+    , Cmd.none
     )
-        ! []
 
 
 dialogState : VaultId -> Model -> State
@@ -193,9 +195,13 @@ saveVaultChanges vaultId state model =
 
         updateCmd =
             Daemon.getVaults model
+
+        commands =
+            updateCmd :: modalCmd :: updateMetadataCmd :: addUserCmds
     in
-    newModel
-        ! (updateCmd :: modalCmd :: updateMetadataCmd :: addUserCmds)
+    ( newModel
+    , Cmd.batch commands
+    )
 
 
 update : VaultDialog.Model.Msg -> VaultId -> Model -> ( Model, Cmd Model.Msg )
@@ -221,18 +227,18 @@ update msg vaultId ({ vaultDialogs } as model) =
                 |> close vaultId
 
         NameChanged ->
-            (state
+            ( state
                 |> hasChanged
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         ConfirmationDialogMsg msg ->
-            (state
+            ( state
                 |> ConfirmationDialog.update msg
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         NameInputMsg msg ->
             let
@@ -240,10 +246,10 @@ update msg vaultId ({ vaultDialogs } as model) =
                     Ui.Input.update msg state.nameInput
                         |> dialogCmd NameInputMsg
             in
-            ({ state | nameInput = nameInput }
+            ( { state | nameInput = nameInput }
                 |> asStateIn vaultId model
+            , cmd
             )
-                ! [ cmd ]
 
         UserInputMsg msg ->
             let
@@ -251,10 +257,10 @@ update msg vaultId ({ vaultDialogs } as model) =
                     Ui.Input.update msg state.userInput
                         |> dialogCmd UserInputMsg
             in
-            ({ state | userInput = userInput }
+            ( { state | userInput = userInput }
                 |> asStateIn vaultId model
+            , cmd
             )
-                ! [ cmd ]
 
         TabsMsg msg ->
             let
@@ -262,68 +268,73 @@ update msg vaultId ({ vaultDialogs } as model) =
                     Ui.Tabs.update msg state.tabs
                         |> dialogCmd TabsMsg
             in
-            ({ state | tabs = tabs }
+            ( { state | tabs = tabs }
                 |> asStateIn vaultId model
+            , cmd
             )
-                ! [ cmd ]
 
         FileCheckBoxMsg path _ ->
-            (state
+            ( state
                 |> hasChanged
                 |> toggleIgnorePath path
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         NestedFileList rootPath f ->
             if Just rootPath /= state.localFolderPath then
-                model
-                    ! []
+                ( model
+                , Cmd.none
+                )
             else
-                (state
+                ( state
                     |> addFolder f
                     |> asStateIn vaultId model
+                , Cmd.none
                 )
-                    ! []
 
         ToggleIgnorePath path ->
-            (state
+            ( state
                 |> hasChanged
                 |> toggleIgnorePath path
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         OpenIconDialog ->
-            model
-                ! [ VaultDialog.Ports.openIconFileDialog state.id ]
+            ( model
+            , VaultDialog.Ports.openIconFileDialog state.id
+            )
 
         SelectedIcon iconUrl ->
-            ({ state | icon = Just iconUrl }
+            ( { state | icon = Just iconUrl }
                 |> hasChanged
                 |> asStateIn state.id model
+            , Cmd.none
             )
-                ! []
 
         OpenExportDialog ->
-            model
-                ! [ VaultDialog.Ports.openExportFileDialog
-                        ( state.id
-                        , T.t (T.VaultDialogText T.ExportToFile) model
-                        )
-                  ]
+            ( model
+            , VaultDialog.Ports.openExportFileDialog
+                ( state.id
+                , T.t (T.VaultDialogText T.ExportToFile) model
+                )
+            )
 
         SelectedExportFile filePath ->
-            model
-                ! [ Daemon.exportVault state.id filePath model ]
+            ( model
+            , Daemon.exportVault state.id filePath model
+            )
 
         OpenFolderDialog ->
-            model
-                ! [ VaultDialog.Ports.openFolderDialog state.id ]
+            ( model
+            , VaultDialog.Ports.openFolderDialog state.id
+            )
 
         OpenFolder folderPath ->
-            model
-                ! [ Ports.openVaultFolder folderPath ]
+            ( model
+            , Ports.openVaultFolder folderPath
+            )
 
         SelectedFolder path ->
             let
@@ -331,31 +342,32 @@ update msg vaultId ({ vaultDialogs } as model) =
                     Ui.Input.setValue (folderName path) state.nameInput
                         |> dialogCmd NameInputMsg
             in
-            ({ state
+            ( { state
                 | localFolderPath = Just path
                 , localFolderItems = Dict.empty
                 , nameInput = nameInput
-             }
+              }
                 |> hasChanged
                 |> asStateIn vaultId model
+            , Cmd.batch
+                [ VaultDialog.Ports.getFileList ( vaultId, path )
+                , nameInputCmd
+                ]
             )
-                ! [ VaultDialog.Ports.getFileList ( vaultId, path )
-                  , nameInputCmd
-                  ]
 
         CollapseFolder path ->
-            (state
+            ( state
                 |> collapseFolder path
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         ExpandFolder path ->
-            (state
+            ( state
                 |> expandFolder path
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         Confirm DeleteVault ->
             let
@@ -368,11 +380,11 @@ update msg vaultId ({ vaultDialogs } as model) =
                 confirmMsg =
                     Confirmed DeleteVault
             in
-            (state
+            ( state
                 |> ConfirmationDialog.open title question confirmMsg
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         Confirm RemoveVault ->
             let
@@ -387,27 +399,29 @@ update msg vaultId ({ vaultDialogs } as model) =
                 confirmMsg =
                     Confirmed RemoveVault
             in
-            (state
+            ( state
                 |> ConfirmationDialog.open title question confirmMsg
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         Confirm AddUser ->
             -- no dialog shown for this, just a button
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         Confirmed DeleteVault ->
-            model
-                ! [ model.config
-                        |> Daemon.deleteVault vaultId
-                        |> Cmd.map Model.DeletedVault
-                  ]
+            ( model
+            , model.config
+                |> Daemon.deleteVault vaultId
+                |> Cmd.map Model.DeletedVault
+            )
 
         Confirmed RemoveVault ->
-            model
-                ! [ Daemon.removeVault vaultId model ]
+            ( model
+            , Daemon.removeVault vaultId model
+            )
 
         Confirmed AddUser ->
             let
@@ -415,49 +429,49 @@ update msg vaultId ({ vaultDialogs } as model) =
                     Ui.Input.setValue "" state.userInput
                         |> dialogCmd UserInputMsg
             in
-            ({ state | userInput = input }
+            ( { state | userInput = input }
                 |> hasChanged
                 |> asStateIn vaultId model
+            , cmd
             )
-                ! [ cmd ]
 
         FetchedUsers users ->
-            ({ state | users = users }
+            ( { state | users = users }
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         FetchedVaultHistory items ->
-            ({ state | historyItems = items }
+            ( { state | historyItems = items }
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         UserKeyCheckbox email userKey _ ->
-            (state
+            ( state
                 |> toggleUserKey email userKey
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         ToggleUserKey email key ->
-            (state
+            ( state
                 |> hasChanged
                 |> toggleUserKey email key
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         AddUserWithKeys email keys ->
             let
                 usersToAdd =
                     Dict.insert email keys state.usersToAdd
             in
-            ({ state | usersToAdd = usersToAdd }
+            ( { state | usersToAdd = usersToAdd }
                 |> hasChanged
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         SearchUserKeys email ->
             let
@@ -479,22 +493,23 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         FoundUserKeys email keys ->
             let
-                cmds =
+                cmd =
                     case keys of
                         Success _ ->
-                            [ Ports.addEmailToCompletionList email ]
+                            Ports.addEmailToCompletionList email
 
                         _ ->
-                            []
+                            Cmd.none
             in
-            ({ state | userKeys = Dict.insert email keys state.userKeys }
+            ( { state | userKeys = Dict.insert email keys state.userKeys }
                 |> asStateIn vaultId model
+            , cmd
             )
-                ! cmds
 
         GetVaultFingerprints ->
-            model
-                ! [ getVaultFingerprints state.id model ]
+            ( model
+            , getVaultFingerprints state.id model
+            )
 
         FoundVaultFingerprints data ->
             ({ state | vaultFingerprints = RemoteData.map Set.fromList data }
@@ -508,49 +523,49 @@ update msg vaultId ({ vaultDialogs } as model) =
                 ~> searchFingerprints email vaultId
 
         VaultLogStream logItem ->
-            (model
+            ( model
                 |> addLogStreamItem logItem vaultId state
+            , Cmd.none
             )
-                ! []
 
         ToggleEventSortOrder ->
-            (state
+            ( state
                 |> VaultDialog.Model.toggleSortOrder
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         SortEventsBy sortFn ->
-            (state
+            ( state
                 |> VaultDialog.Model.sortBy sortFn
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         FilterEventsBy eventFilter ->
-            (state
+            ( state
                 |> VaultDialog.Model.filterEventsBy eventFilter
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         ToggleViewLogLevelFilters ->
-            ({ state | viewLogLevelFilters = not state.viewLogLevelFilters }
+            ( { state | viewLogLevelFilters = not state.viewLogLevelFilters }
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         ToggleInfoBox tabId ->
-            (toggleInfoBox tabId state
+            ( toggleInfoBox tabId state
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
         CloseInfoBox tabId ->
-            (closeInfoBox tabId state
+            ( closeInfoBox tabId state
                 |> asStateIn vaultId model
+            , Cmd.none
             )
-                ! []
 
 
 getVaultFingerprints : VaultId -> Model -> Cmd Model.Msg
@@ -591,25 +606,25 @@ setUserInput email state model =
         cmd =
             Cmd.map (Model.VaultDialogMsg state.id << UserInputMsg) inputCmd
     in
-    ({ state
+    ( { state
         | userInput = userInput
         , userKeys =
             Dict.update email
                 (Just << Maybe.withDefault Loading)
                 state.userKeys
-     }
+      }
         |> asStateIn state.id model
+    , cmd
     )
-        ! [ cmd ]
 
 
 searchFingerprints : Email -> VaultId -> Model -> ( Model, Cmd Model.Msg )
 searchFingerprints email vaultId model =
-    model
-        ! [ model.config
-                |> Daemon.getUserKeys email
-                |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
-          ]
+    ( model
+    , model.config
+        |> Daemon.getUserKeys email
+        |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
+    )
 
 
 fetchUsers : VaultId -> Model -> Cmd Model.Msg

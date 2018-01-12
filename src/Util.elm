@@ -285,7 +285,9 @@ andAlso f ( m1, cmd1 ) =
         ( m2, cmd2 ) =
             f m1
     in
-    m2 ! [ cmd1, cmd2 ]
+    ( m2
+    , Cmd.batch [ cmd1, cmd2 ]
+    )
 
 
 onEnter : msg -> Html.Attribute msg

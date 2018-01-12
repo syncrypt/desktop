@@ -28,25 +28,26 @@ open settings ({ wizardDialog } as model) =
     case ( wizardDialog, List.isEmpty settings.steps ) of
         -- no steps, abort
         ( _, True ) ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         -- no wizard window open yet, create & open it
         ( Nothing, _ ) ->
-            (settings
+            ( settings
                 |> init
                 |> Just
                 |> asWizardIn model
+            , Util.delayMsg 150 (settings.address Show)
             )
-                ! [ Util.delayMsg 150 (settings.address Show) ]
 
         -- wizard window already there (potentially hidden), open it
         ( Just state, _ ) ->
-            ({ state | modal = Ui.Modal.open state.modal }
+            ( { state | modal = Ui.Modal.open state.modal }
                 |> Just
                 |> asWizardIn model
+            , Cmd.none
             )
-                ! []
 
 
 close : HasWizardDialog a msg -> HasWizardDialog a msg
@@ -84,12 +85,14 @@ hideAndClose : HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 hideAndClose ({ wizardDialog } as model) =
     case model.wizardDialog of
         Nothing ->
-            model
-                ! []
+            ( model
+            , Cmd.none
+            )
 
         Just state ->
-            hide model
-                ! [ Util.delayMsg 250 (state.address Close) ]
+            ( hide model
+            , Util.delayMsg 250 (state.address Close)
+            )
 
 
 update : Msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
@@ -98,62 +101,71 @@ update msg ({ wizardDialog } as model) =
         Modal msg ->
             case wizardDialog of
                 Nothing ->
-                    model
-                        ! []
+                    ( model
+                    , Cmd.none
+                    )
 
                 Just state ->
-                    ({ state | modal = Ui.Modal.update msg state.modal }
+                    ( { state | modal = Ui.Modal.update msg state.modal }
                         |> Just
                         |> asWizardIn model
+                    , Util.delayMsg 150 (state.address HideAndClose)
                     )
-                        ! [ Util.delayMsg 150 (state.address HideAndClose) ]
 
         Show ->
-            show model
-                ! []
+            ( show model
+            , Cmd.none
+            )
 
         Hide ->
-            hide model
-                ! []
+            ( hide model
+            , Cmd.none
+            )
 
         Close ->
-            close model
-                ! []
+            ( close model
+            , Cmd.none
+            )
 
         HideAndClose ->
             model
                 |> hideAndClose
 
         ToNextStep ->
-            moveToNextStep model
-                ! []
+            ( moveToNextStep model
+            , Cmd.none
+            )
 
         ToPreviousStep ->
-            moveToPreviousStep model
-                ! []
+            ( moveToPreviousStep model
+            , Cmd.none
+            )
 
         ToStep stepNum ->
-            moveToStep stepNum model
-                ! []
+            ( moveToStep stepNum model
+            , Cmd.none
+            )
 
         ToStepWithName stepName ->
-            moveToStepWithName stepName model
-                ! []
+            ( moveToStepWithName stepName model
+            , Cmd.none
+            )
 
         FinishWizard ->
             let
-                cmds =
+                cmd =
                     wizardDialog
                         |> Maybe.map
                             (\{ onFinishMsg } ->
                                 onFinishMsg
-                                    |> Maybe.map (\msg -> [ Util.sendMsg msg ])
-                                    |> Maybe.withDefault []
+                                    |> Maybe.map (\msg -> Util.sendMsg msg)
+                                    |> Maybe.withDefault Cmd.none
                             )
-                        |> Maybe.withDefault []
+                        |> Maybe.withDefault Cmd.none
             in
-            close model
-                ! cmds
+            ( close model
+            , cmd
+            )
 
 
 view : Model.Model -> Html Model.Msg
