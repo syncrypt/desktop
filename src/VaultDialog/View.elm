@@ -114,7 +114,7 @@ subscriptions model =
                         logMsg =
                             msg vault.id << VaultLogStream
                     in
-                    model.config
+                    model
                         |> Daemon.subscribeVaultLogStream vault.id logMsg
 
                 _ ->

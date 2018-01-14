@@ -180,7 +180,7 @@ saveVaultChanges vaultId state model =
                 |> Dict.toList
                 |> List.map
                     (\( email, keys ) ->
-                        model.config
+                        model
                             |> Daemon.addVaultUser vaultId email keys
                     )
 
@@ -413,7 +413,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         Confirmed DeleteVault ->
             ( model
-            , model.config
+            , model
                 |> Daemon.deleteVault vaultId
                 |> Cmd.map Model.DeletedVault
             )
@@ -570,14 +570,14 @@ update msg vaultId ({ vaultDialogs } as model) =
 
 getVaultFingerprints : VaultId -> Model -> Cmd Model.Msg
 getVaultFingerprints vaultId model =
-    model.config
+    model
         |> Daemon.getVaultFingerprints vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FoundVaultFingerprints)
 
 
 getVaultEventLog : VaultId -> Model -> Cmd Model.Msg
 getVaultEventLog vaultId model =
-    model.config
+    model
         |> Daemon.getVaultHistory vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultHistory)
 
@@ -621,7 +621,7 @@ setUserInput email state model =
 searchFingerprints : Email -> VaultId -> Model -> ( Model, Cmd Model.Msg )
 searchFingerprints email vaultId model =
     ( model
-    , model.config
+    , model
         |> Daemon.getUserKeys email
         |> Cmd.map (Model.VaultDialogMsg vaultId << FoundUserKeys email)
     )
@@ -629,7 +629,7 @@ searchFingerprints email vaultId model =
 
 fetchUsers : VaultId -> Model -> Cmd Model.Msg
 fetchUsers vaultId model =
-    model.config
+    model
         |> Daemon.getVaultUsers vaultId
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedUsers)
 

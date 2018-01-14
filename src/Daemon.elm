@@ -86,8 +86,8 @@ getFlyingVaults { config } =
         |> Cmd.map UpdatedFlyingVaultsFromApi
 
 
-getVault : VaultId -> Config -> Cmd (WebData Vault)
-getVault vaultId config =
+getVault : VaultId -> Model -> Cmd (WebData Vault)
+getVault vaultId { config } =
     config
         |> apiRequest
             Get
@@ -96,8 +96,8 @@ getVault vaultId config =
             Data.Vault.decoder
 
 
-getFlyingVault : VaultId -> Config -> Cmd (WebData FlyingVault)
-getFlyingVault vaultId config =
+getFlyingVault : VaultId -> Model -> Cmd (WebData FlyingVault)
+getFlyingVault vaultId { config } =
     config
         |> apiRequest
             Get
@@ -117,8 +117,8 @@ updateVaultMetadata vaultId metadata { config } =
         |> Cmd.map (Model.VaultMetadataUpdated vaultId)
 
 
-getVaultUsers : VaultId -> Config -> Cmd (WebData (List User))
-getVaultUsers vaultId config =
+getVaultUsers : VaultId -> Model -> Cmd (WebData (List User))
+getVaultUsers vaultId { config } =
     config
         |> apiRequest
             Get
@@ -127,8 +127,8 @@ getVaultUsers vaultId config =
             (Json.list Data.User.decoder)
 
 
-getVaultHistory : VaultId -> Config -> Cmd (WebData (List HistoryItem))
-getVaultHistory vaultId config =
+getVaultHistory : VaultId -> Model -> Cmd (WebData (List HistoryItem))
+getVaultHistory vaultId { config } =
     config
         |> apiRequest
             Get
@@ -140,9 +140,9 @@ getVaultHistory vaultId config =
 subscribeVaultLogStream :
     VaultId
     -> (Result String Data.Vault.LogItem -> msg)
-    -> Config
+    -> Model
     -> Sub msg
-subscribeVaultLogStream vaultId toMsg config =
+subscribeVaultLogStream vaultId toMsg { config } =
     let
         parseMsg : String -> msg
         parseMsg json =
@@ -154,8 +154,8 @@ subscribeVaultLogStream vaultId toMsg config =
     WebSocket.listen url parseMsg
 
 
-getVaultUser : VaultId -> Email -> Config -> Cmd (WebData User)
-getVaultUser vaultId email config =
+getVaultUser : VaultId -> Email -> Model -> Cmd (WebData User)
+getVaultUser vaultId email { config } =
     config
         |> apiRequest
             Get
@@ -164,8 +164,8 @@ getVaultUser vaultId email config =
             Data.User.decoder
 
 
-addVaultUser : VaultId -> Email -> List UserKey -> Config -> Cmd Msg
-addVaultUser vaultId email keys config =
+addVaultUser : VaultId -> Email -> List UserKey -> Model -> Cmd Msg
+addVaultUser vaultId email keys { config } =
     config
         |> apiRequest
             Post
@@ -175,8 +175,8 @@ addVaultUser vaultId email keys config =
         |> Cmd.map (Model.VaultUserAdded vaultId email)
 
 
-removeVaultUser : VaultId -> Email -> Config -> Cmd (WebData Email)
-removeVaultUser vaultId email config =
+removeVaultUser : VaultId -> Email -> Model -> Cmd (WebData Email)
+removeVaultUser vaultId email { config } =
     -- TODO: check response data type
     config
         |> apiRequest
@@ -186,8 +186,8 @@ removeVaultUser vaultId email config =
             Json.string
 
 
-getUserKeys : Email -> Config -> Cmd (WebData (List UserKey))
-getUserKeys email config =
+getUserKeys : Email -> Model -> Cmd (WebData (List UserKey))
+getUserKeys email { config } =
     config
         |> apiRequest
             Get
@@ -196,8 +196,8 @@ getUserKeys email config =
             (Json.list Data.User.keyDecoder)
 
 
-getUser : Email -> Config -> Cmd (WebData User)
-getUser email config =
+getUser : Email -> Model -> Cmd (WebData User)
+getUser email { config } =
     config
         |> apiRequest
             Get
@@ -267,8 +267,8 @@ updateGUIConfig { config } { isFirstLaunch, language } =
         |> Cmd.map UpdatedDaemonConfig
 
 
-getVaultFingerprints : VaultId -> Config -> Cmd (WebData (List Fingerprint))
-getVaultFingerprints vaultId config =
+getVaultFingerprints : VaultId -> Model -> Cmd (WebData (List Fingerprint))
+getVaultFingerprints vaultId { config } =
     config
         |> apiRequest
             Get
@@ -277,8 +277,8 @@ getVaultFingerprints vaultId config =
             (Json.list Json.string)
 
 
-updateVault : VaultOptions -> Config -> Cmd (WebData Vault)
-updateVault options config =
+updateVault : VaultOptions -> Model -> Cmd (WebData Vault)
+updateVault options { config } =
     config
         |> apiRequest
             Post
@@ -303,8 +303,8 @@ removeVault vaultId { config } =
         |> Cmd.map RemovedVaultFromSync
 
 
-deleteVault : VaultId -> Config -> Cmd (WebData VaultId)
-deleteVault vaultId config =
+deleteVault : VaultId -> Model -> Cmd (WebData VaultId)
+deleteVault vaultId { config } =
     config
         |> apiRequest
             Delete
@@ -313,8 +313,8 @@ deleteVault vaultId config =
             (succeed vaultId)
 
 
-sendFeedback : String -> Config -> Cmd Msg
-sendFeedback text config =
+sendFeedback : String -> Model -> Cmd Msg
+sendFeedback text { config } =
     config
         |> apiRequest
             Post
@@ -327,8 +327,8 @@ sendFeedback text config =
         |> Cmd.map SentFeedback
 
 
-getVersion : Config -> Cmd (WebData String)
-getVersion config =
+getVersion : Model -> Cmd (WebData String)
+getVersion { config } =
     config
         |> apiRequest
             Get
@@ -359,8 +359,8 @@ login email password { config } =
         |> Cmd.map (LoginResult email)
 
 
-loginCheck : Config -> Cmd (WebData String)
-loginCheck config =
+loginCheck : Model -> Cmd (WebData String)
+loginCheck { config } =
     config
         |> apiRequest
             Get

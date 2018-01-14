@@ -78,7 +78,7 @@ delay time task =
 {-| Attempts to perform a `Task` after a given delay.
 
     let
-        request = Daemon.getVaults model.config
+        request = Daemon.getVaults model
     in
         attemptDelayed 1000 UpdatedVaultsFromApi request
 

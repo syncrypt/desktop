@@ -382,7 +382,7 @@ sendFeedback model =
 
         Just feedback ->
             ( model
-            , Daemon.sendFeedback feedback model.config
+            , Daemon.sendFeedback feedback model
             )
 
 
@@ -591,7 +591,7 @@ createVault state model =
     case state.localFolderPath of
         Just folderPath ->
             ( model
-            , model.config
+            , model
                 |> Daemon.updateVault
                     (Create
                         { folder = folderPath
@@ -622,7 +622,7 @@ cloneVault vaultId origModel =
 
         Just folderPath ->
             ( model
-            , model.config
+            , model
                 |> Daemon.updateVault
                     (Clone
                         { id = vaultId
