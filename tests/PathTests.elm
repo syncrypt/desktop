@@ -5,6 +5,20 @@ import Path
 import Test exposing (..)
 
 
+fromString : Test
+fromString =
+    describe "Path.fromString"
+        [ test "constructs a Path from a unix-style path String " <|
+            \_ ->
+                Path.fromString "/" "foo/bar/baz"
+                    |> Expect.equal [ "foo", "bar", "baz" ]
+        , test "constructs a Path from a windows-style path String" <|
+            \_ ->
+                Path.fromString "\\" "foo\\bar\\baz"
+                    |> Expect.equal [ "foo", "bar", "baz" ]
+        ]
+
+
 isNestedUnder : Test
 isNestedUnder =
     describe "Path.isNestedUnder"
