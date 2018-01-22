@@ -66,9 +66,9 @@ function createWindow() {
     return
   }
 
-  var width = 832
+  var width = 742
   if (process.platform == 'win32') {
-    width = 866
+    width += 34
   }
 
   mainWindow = new BrowserWindow({
