@@ -893,7 +893,7 @@ translateGermanVaultDialogText vt =
             "Schlüssel Algorithmus"
 
         KeyAlgorithmTooltip ->
-            "Asymmetrischer Verschlüsselungsalgorithmus der für den Vault Schlüssel genutzt wird"
+            "Asymmetrischer Verschlüsselungsalgorithmus des Vault Schlüssels"
 
         KeyFingerprintLabel ->
             "Schlüssel Fingerabdruck"
