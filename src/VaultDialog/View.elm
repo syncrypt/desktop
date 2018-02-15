@@ -324,7 +324,7 @@ cryptoTab vaultId state model =
         vault =
             Model.vaultWithId vaultId model
 
-        cryptoInfoItem label tooltip value =
+        cryptoInfoItem label tooltip body =
             div [ class "CryptoInfoItem" ]
                 [ labeledItem [ class "InputLabel CryptoInfoItem-Label" ]
                     { side = Left
@@ -332,11 +332,11 @@ cryptoTab vaultId state model =
                     , label = text label
                     , item =
                         tooltipItem
-                            { position = Bottom
-                            , length = Auto
+                            { position = Top
+                            , length = Medium
                             , text = tooltip
                             }
-                            [ text value ]
+                            body
                     }
                 ]
 
@@ -352,37 +352,41 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    (String.toUpper vault.id)
+                    [ text (String.toUpper vault.id) ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
-                    (toString vault.revisionCount)
+                    [ text (toString vault.revisionCount) ]
                 , cryptoInfoItem (vt LastModifiedLabel)
                     (vt LastModifiedTooltip)
-                    (vault.modificationDate
-                        |> Maybe.map (\date -> timeAgo date model)
-                        |> Maybe.withDefault (vt NoChangesSoFar)
-                    )
+                    [ text
+                        (vault.modificationDate
+                            |> Maybe.map (\date -> timeAgo date model)
+                            |> Maybe.withDefault (vt NoChangesSoFar)
+                        )
+                    ]
                 , cryptoInfoItem (vt KeyAlgorithmLabel)
                     (vt KeyAlgorithmTooltip)
-                    (String.toUpper vault.crypto.keyAlgorithm)
+                    [ text (String.toUpper vault.crypto.keyAlgorithm) ]
                 , cryptoInfoItem (vt KeyFingerprintLabel)
                     (vt KeyFingerprintTooltip)
-                    (vault.crypto.fingerprint
-                        |> Maybe.map String.toUpper
-                        |> Maybe.withDefault "N/A"
-                    )
+                    [ text
+                        (vault.crypto.fingerprint
+                            |> Maybe.map String.toUpper
+                            |> Maybe.withDefault "N/A"
+                        )
+                    ]
                 , cryptoInfoItem (vt TransferAlgorithmLabel)
                     (vt TransferAlgorithmTooltip)
-                    (String.toUpper vault.crypto.transferAlgorithm)
+                    [ text (String.toUpper vault.crypto.transferAlgorithm) ]
                 , cryptoInfoItem (vt HashAlgorithmLabel)
                     (vt HashAlgorithmTooltip)
-                    (String.toUpper vault.crypto.hashAlgorithm)
+                    [ text (String.toUpper vault.crypto.hashAlgorithm) ]
                 , cryptoInfoItem (vt AESKeyLengthLabel)
                     (vt AESKeyLengthTooltip)
-                    (toString vault.crypto.aesKeyLength)
+                    [ text (toString vault.crypto.aesKeyLength) ]
                 , cryptoInfoItem (vt RSAKeyLengthLabel)
                     (vt RSAKeyLengthTooltip)
-                    (toString vault.crypto.rsaKeyLength)
+                    [ text (toString vault.crypto.rsaKeyLength) ]
                 , separator
                 ]
             ]
