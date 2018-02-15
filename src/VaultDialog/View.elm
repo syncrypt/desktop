@@ -817,8 +817,8 @@ openFolderButton vaultId state model =
             , label = text "Folder"
             , item =
                 tooltipItem
-                    { position = Bottom
-                    , length = Auto
+                    { position = Right
+                    , length = Medium
                     , text = tooltipMsg
                     }
                     [ button []
@@ -839,8 +839,8 @@ nameInput msg state model =
             , label = text "Name"
             , item =
                 tooltipItem
-                    { position = Bottom
-                    , length = Auto
+                    { position = Right
+                    , length = Medium
                     , text = t (VaultDialogText VaultNameTooltip) model
                     }
                     [ Ui.Input.view state.nameInput
@@ -892,8 +892,8 @@ userInput vaultId state model =
         , label = text <| t (VaultDialogText UserInputLabel) model
         , item =
             tooltipItem
-                { position = Bottom
-                , length = Auto
+                { position = Right
+                , length = Medium
                 , text = t (VaultDialogText UserInputTooltip) model
                 }
                 [ Ui.Input.view
