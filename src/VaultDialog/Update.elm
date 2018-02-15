@@ -64,7 +64,7 @@ openNew : Model -> ( Model, Cmd Model.Msg )
 openNew model =
     let
         state =
-            dialogState "" model
+            VaultDialog.Model.init
     in
     ( state.modal
         |> Ui.Modal.open
