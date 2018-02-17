@@ -148,6 +148,10 @@ const openUserKeyExportFileDialog = (buttonLabel) => {
   });
 }
 
+const quitAndInstall = () => {
+  Electron.ipcRenderer.send('quitAndInstall');
+}
+
 const setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -166,6 +170,11 @@ const setupElmApp = function (daemonApiToken) {
   elmApp.ports.updateEmailCompletionList.subscribe(updateEmailCompletionList)
   elmApp.ports.openPasswordResetInBrowser.subscribe(openPasswordResetInBrowser)
   elmApp.ports.openUserKeyExportFileDialog.subscribe(openUserKeyExportFileDialog)
+  elmApp.ports.quitAndInstall.subscribe(quitAndInstall)
+
+  Electron.ipcRenderer.on('update-downloaded', () => {
+    elmApp.ports.updateAvailable.send("dummy version")
+  })
 }
 
 readAuthToken(setupElmApp)

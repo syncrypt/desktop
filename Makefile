@@ -1,6 +1,6 @@
 BUILD_DIR=build
 RELEASE_DIR=release
-PACKAGE_DIR=out
+PACKAGE_DIR=dist
 HTML_FILE=$(BUILD_DIR)/index.html
 JS_FILE=$(BUILD_DIR)/elm.js
 ASSETS_PATH = $(BUILD_DIR)/assets
@@ -11,7 +11,7 @@ MAIN_FILE = $(BUILD_DIR)/main.js
 CSS_FILES = $(wildcard static/*.scss)
 CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
 
-ELECTRON_PACKAGER=./node_modules/electron-packager/cli.js
+ELECTRON_BUILD=./node_modules/.bin/build
 
 SASS_CMD=./node_modules/node-sass/bin/node-sass
 
@@ -62,18 +62,18 @@ release: release-setup
 
 Syncrypt-Desktop-linux.zip: all
 	rm -rf $(PACKAGE_DIR) $@
-	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform linux --out $(PACKAGE_DIR)
-	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
+	$(ELECTRON_BUILD) --linux zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-linux.zip Syncrypt-Desktop-linux.zip
 
 Syncrypt-Desktop-darwin.zip: all
 	rm -rf $(PACKAGE_DIR) $@
-	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform darwin --icon=icon.icns --out $(PACKAGE_DIR)
-	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
+	$(ELECTRON_BUILD) --mac zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-mac.zip Syncrypt-Desktop-darwin.zip
 
 Syncrypt-Desktop-win32.zip: all
 	rm -rf $(PACKAGE_DIR) $@
-	$(ELECTRON_PACKAGER) $(BUILD_DIR) --platform win32 --icon=icon.ico --out $(PACKAGE_DIR)
-	(cd $(PACKAGE_DIR); zip --symlinks -r ../$@ .)
+	$(ELECTRON_BUILD) --win zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-win.zip Syncrypt-Desktop-win32.zip
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)

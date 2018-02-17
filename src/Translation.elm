@@ -69,6 +69,7 @@ type Text
     | ProgramSettings
     | RefreshVaults
     | SettingsDialogText SettingsDialogText
+    | UpdateAvailable String
 
 
 type NotificationText
@@ -338,6 +339,9 @@ translateEnglish text =
 
         SettingsDialogText text ->
             translateEnglishSettingsDialogText text
+
+        UpdateAvailable version ->
+            "Update available, click here to install version " ++ version
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -784,6 +788,9 @@ translateGerman text =
 
         SettingsDialogText text ->
             translateGermanSettingsDialogText text
+
+        UpdateAvailable version ->
+            "Update verfügbar, klicken zum Installieren"
 
 
 translateGermanNotificationText : NotificationText -> String

@@ -7,14 +7,34 @@ const BrowserWindow = electron.BrowserWindow // This is a Module that creates wi
 const Path = require('path')
 const ChildProcess = require('child_process')
 const FileSystem = require('fs')
+const { autoUpdater, appUpdater } = require("electron-updater");
 const Tray = electron.Tray
+
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info"
+autoUpdater.autoDownload = true
+autoUpdater.channel = 'updater'
+// https://www.electron.build/auto-update#UpdateInfo
+autoUpdater.setFeedURL({
+  provider: 'generic',
+  url: 'https://builds.syncrypt.space/updater/'
+})
+
+// latest-linux.yml example:
+//
+// version: 2.7.0
+// files:
+//   - url: https://alpha.syncrypt.space/releases/syncrypt-desktop-0.4.0.linux-x64.zip
+//     sha2: fae0f2d71c6ea1e954bdad5035bb332f4b13fe68bc0530f1fcd6f879d18a5c34
+// stagingPercentage: 100
+
 
 var mainWindow = null // saves a global reference to mainWindow so it doesn't get garbage collected
 var systemTray = null
 var daemon = null
 
 const appPath = Path.dirname(app.getAppPath());
-let daemonPath = Path.join(appPath, "app", "syncrypt", "syncrypt_daemon");
+let daemonPath = Path.join(appPath, "app", "build", "syncrypt", "syncrypt_daemon");
 
 if (process.env.NODE_ENV === "development") {
   daemonPath = Path.join("client", "syncrypt_daemon")
@@ -111,6 +131,12 @@ function createWindow() {
       app.dock.hide()
     }
   })
+
+  // when receiving a quitAndInstall signal, quit and install the new version
+  electron.ipcMain.on("quitAndInstall", (event, arg) => {
+    console.info("ipcMain received quitAndInstall");
+    autoUpdater.quitAndInstall();
+  })
 }
 
 function quitAll() {
@@ -122,13 +148,30 @@ function quitAll() {
   app.quit()
 }
 
+function initAutoUpdater() {
+  setTimeout(() => {
+    console.info("Checking for updates...")
+    autoUpdater.checkForUpdates();
+  }, 5000);
+  autoUpdater.on('update-available', (info) => {
+    autoUpdater.logger.info("Update available: "+ JSON.stringify(info))
+    // Forward signal to webContents
+    mainWindow.webContents.send('update-downloaded', info)
+  });
+  autoUpdater.on('update-downloaded', (info) => {
+    console.info("Update downloaded: "+ JSON.stringify(info))
+    // Forward signal to webContents
+    mainWindow.webContents.send('update-downloaded', info)
+  });
+}
+
 const TRAY_ICON = "vault_tray_icon_16px.png"
 const TRAY_ICON_CLICKED = "vault_tray_icon_bw_16px.png"
 
 function createTray() {
   let trayIconPath = Path.join("assets", TRAY_ICON)
   if (process.env.NODE_ENV !== "development") {
-    trayIconPath = Path.join(appPath, "app", "assets", TRAY_ICON)
+    trayIconPath = Path.join(appPath, "app", "build", "assets", TRAY_ICON)
   }
   systemTray = new Tray(trayIconPath)
   const contextMenu = Menu.buildFromTemplate([
@@ -147,6 +190,7 @@ app.on('ready', () => {
   launchDaemon()
   createWindow()
   createTray()
+  initAutoUpdater()
 })
 
 /* Mac Specific things */

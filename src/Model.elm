@@ -43,6 +43,7 @@ type alias Model =
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
     , feedback : Maybe String
+    , updateAvailable : Maybe String
     , setupWizard : SetupWizardState
     , daemonLogItems : List Data.Daemon.LogItem
     }
@@ -144,6 +145,8 @@ type Msg
     | OpenDaemonLogDialog
     | CloseDaemonLogDialog
     | DaemonLogStream (Result String Data.Daemon.LogItem)
+    | UpdateAvailable String
+    | InstallUpdate
 
 
 
@@ -242,6 +245,7 @@ init config =
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
     , feedback = Nothing
+    , updateAvailable = Nothing
     , setupWizard =
         { email = Nothing
         , password = Nothing

@@ -73,10 +73,13 @@ subscriptions model =
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
                 , DaemonLog.subscriptions model
+                , Ports.updateAvailable Model.UpdateAvailable
                 ]
 
         _ ->
-            Sub.none
+            Sub.batch
+                [ Ports.updateAvailable Model.UpdateAvailable
+                ]
 
 
 
@@ -306,6 +309,20 @@ update msg model =
             in
             ( { model | emailCompletionList = emails }
             , Cmd.none
+            )
+
+        Model.UpdateAvailable version ->
+            let
+                _ =
+                    Debug.log "update available: " version
+            in
+            ( { model | updateAvailable = Just version }
+            , Cmd.none
+            )
+
+        InstallUpdate ->
+            ( model
+            , Ports.quitAndInstall ()
             )
 
         UpdatedDaemonConfig (Success { gui }) ->
@@ -908,7 +925,7 @@ headerButtons { language, login } =
 
 
 footer : Model -> Html Msg
-footer { stats, vaults, language } =
+footer { stats, vaults, language, updateAvailable } =
     let
         statsText =
             Translation.StatsText <|
@@ -938,11 +955,20 @@ footer { stats, vaults, language } =
 
                 Failure reason ->
                     Translation.VaultsFailedToLoad (toString reason)
+
+        updateAvailableDiv =
+            case updateAvailable of
+                Just version ->
+                    [ span [ class "MainScreen-UpdateAvailable", onClick Model.InstallUpdate ] [ text <| translate (Translation.UpdateAvailable version) language ] ]
+
+                Nothing ->
+                    []
     in
-    div [ class "MainScreen-Footer" ]
+    div [ class "MainScreen-Footer" ] <|
         [ span [ class "MainScreen-Stats" ]
             [ text <|
                 translate syncedVaultsText language
                     ++ translate statsText language
             ]
         ]
+            ++ updateAvailableDiv

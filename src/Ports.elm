@@ -6,7 +6,9 @@ port module Ports
         , openPasswordResetInBrowser
         , openUserKeyExportFileDialog
         , openVaultFolder
+        , quitAndInstall
         , selectedUserKeyExportFile
+        , updateAvailable
         , updateEmailCompletionList
         )
 
@@ -33,3 +35,9 @@ port openUserKeyExportFileDialog : String -> Cmd msg
 
 
 port selectedUserKeyExportFile : (String -> msg) -> Sub msg
+
+
+port quitAndInstall : () -> Cmd msg
+
+
+port updateAvailable : (String -> msg) -> Sub msg
