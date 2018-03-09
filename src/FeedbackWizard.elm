@@ -1,6 +1,6 @@
 module FeedbackWizard exposing (settings, viewSettings)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, br, div, span, text)
 import Html.Attributes exposing (class, cols, placeholder, rows, style)
 import Html.Events exposing (onInput)
 import Model
@@ -21,11 +21,13 @@ settings model =
 viewSettings : State Model.Msg -> Model.Model -> Maybe (ViewSettings Model.Msg)
 viewSettings state model =
     Just
-        { title = T.t T.SendUsFeedback model
+        { title = T.t T.YourFeedback model
         , contents =
             div [ class "FeedbackWizard" ]
                 [ div [ class "Label" ]
-                    [ text <| T.t T.YourFeedbackSuggestionsOrBugReports model ]
+                    [ text <| T.t T.SendUsYourFeedbackSuggestionsOrBugReports model ]
+                , div [ class "SubLabel" ]
+                    [ text <| T.t T.WeWillReplyToYouViaEmail model ]
                 , div []
                     [ Html.textarea
                         [ class "FeedbackTextArea"

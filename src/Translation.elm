@@ -53,8 +53,9 @@ type Text
     | OK
     | Finish
     | Confirm
-    | SendUsFeedback
-    | YourFeedbackSuggestionsOrBugReports
+    | YourFeedback
+    | SendUsYourFeedbackSuggestionsOrBugReports
+    | WeWillReplyToYouViaEmail
     | TypeYourFeedbackHere
     | SendFeedback
     | ConfirmationDialogText ConfirmationDialogText
@@ -277,11 +278,14 @@ translateEnglish text =
         Confirm ->
             "Confirm"
 
-        SendUsFeedback ->
-            "Send us your feedback"
+        YourFeedback ->
+            "Your Feedback"
 
-        YourFeedbackSuggestionsOrBugReports ->
-            "Your feedback, suggestions or bug report:"
+        SendUsYourFeedbackSuggestionsOrBugReports ->
+            "Send us your feedback, suggestions or bug report"
+
+        WeWillReplyToYouViaEmail ->
+            "We will reply to you via email"
 
         TypeYourFeedbackHere ->
             "Type your feedback here"
@@ -677,11 +681,14 @@ translateGerman text =
         Confirm ->
             "Bestätigen"
 
-        SendUsFeedback ->
+        YourFeedback ->
             "Dein Feedback an uns"
 
-        YourFeedbackSuggestionsOrBugReports ->
-            "Sende uns dein Feedback und Verbesserungsvorschläge:"
+        SendUsYourFeedbackSuggestionsOrBugReports ->
+            "Sende uns dein Feedback und Verbesserungsvorschläge"
+
+        WeWillReplyToYouViaEmail ->
+            "Wir werden Dir via Email antworten"
 
         TypeYourFeedbackHere ->
             "Dein Feedback"

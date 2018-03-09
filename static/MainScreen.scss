@@ -236,7 +236,13 @@ li {
   .Label {
     font-weight: bold;
     font-size: $font-size-header;
-    margin-bottom: $padding-large;
+  }
+
+  .SubLabel {
+    font-weight: bold;
+    font-size: $font-size-small;
+    margin-bottom: $padding-medium;
+    margin-top: $padding-tiny;
   }
 
   .FeedbackTextArea {
