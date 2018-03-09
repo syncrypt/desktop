@@ -85,38 +85,49 @@ changePasswordForm ({ settingsDialog } as model) =
             , ( "ChangePasswordForm", True )
             ]
         ]
-        [ labeledItem [ class "InputLabel" ]
-            { side = Top
-            , onClick = Just (Model.FocusOn settingsDialog.oldPasswordInput.uid)
-            , label = text <| dialogText T.OldPasswordLabel model
-            , item =
-                Util.tooltipItem
-                    { position = Right
-                    , length = Util.Medium
-                    , text = dialogText T.OldPasswordTooltip model
-                    }
-                    [ Ui.Input.view
-                        settingsDialog.oldPasswordInput
-                        |> Html.map (Model.SettingsDialogMsg << OldPasswordInputMsg)
-                    ]
-            }
-        , labeledItem [ class "InputLabel" ]
-            { side = Top
-            , onClick = Just (Model.FocusOn settingsDialog.newPasswordInput.uid)
-            , label = text <| dialogText T.NewPasswordLabel model
-            , item =
-                Util.tooltipItem
-                    { position = Right
-                    , length = Util.Medium
-                    , text = dialogText T.NewPasswordTooltip model
-                    }
-                    [ Ui.Input.view
-                        settingsDialog.newPasswordInput
-                        |> Html.map (Model.SettingsDialogMsg << NewPasswordInputMsg)
-                    ]
-            }
+        [ passwordInput Old model
+        , passwordInput New model
         , buttons model
         ]
+
+
+type PasswordInputType
+    = Old
+    | New
+
+
+passwordInput : PasswordInputType -> HasSettingsDialog a -> Html Model.Msg
+passwordInput inputType model =
+    let
+        ( input, labelText, tooltipText ) =
+            case inputType of
+                Old ->
+                    ( model.settingsDialog.oldPasswordInput
+                    , T.OldPasswordLabel
+                    , T.OldPasswordTooltip
+                    )
+
+                New ->
+                    ( model.settingsDialog.newPasswordInput
+                    , T.NewPasswordLabel
+                    , T.NewPasswordTooltip
+                    )
+    in
+    labeledItem [ class "InputLabel" ]
+        { side = Top
+        , onClick = Just (Model.FocusOn input.uid)
+        , label = text <| dialogText labelText model
+        , item =
+            Util.tooltipItem
+                { position = Right
+                , length = Util.Medium
+                , text = dialogText tooltipText model
+                }
+                [ Ui.Input.view
+                    input
+                    |> Html.map (Model.SettingsDialogMsg << OldPasswordInputMsg)
+                ]
+        }
 
 
 buttons : HasSettingsDialog a -> Html Model.Msg
