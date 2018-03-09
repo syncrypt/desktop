@@ -1,13 +1,46 @@
 @import "Common.scss";
 
 .SettingsDialog {
-  .LanguageInfoLabel {
+  ui-modal-content {
+    min-width: 385px;
+  }
+
+  .InfoLabel {
     margin: $padding-small;
     font-weight: bold;
     font-size: $font-size-header;
   }
 
-  .LanguageButton {
+  .Button {
     margin: $padding-small;
+  }
+
+  .ChangePasswordForm {
+    margin: $padding-small;
+  }
+
+  .InputLabel {
+    font-weight: bold;
+    margin-bottom: $padding-tiny;
+  }
+
+  .ChangePasswordForm {
+    ui-input {
+      margin-bottom: $padding-small;
+    }
+
+    .Buttons {
+      margin-top: $padding-small;
+      margin-left: $padding-small * -1;
+      display: block;
+    }
+  }
+
+  .Separator {
+    margin: $padding-small;
+    margin-top: $padding-medium;
+    margin-bottom: $padding-medium;
+    color: black;
+    border-style: dashed 20px;
   }
 }

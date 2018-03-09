@@ -5,6 +5,8 @@ module SettingsDialog.Model
         , State
         , asStateIn
         , close
+        , hasChanged
+        , hasNotChanged
         , init
         , open
         )
@@ -12,6 +14,7 @@ module SettingsDialog.Model
 import ConfirmationDialog
 import Dialog exposing (asModalIn)
 import Language exposing (Language(..))
+import Ui.Input
 import Ui.Modal
 
 
@@ -19,6 +22,9 @@ type alias State =
     { hasChangesPending : Bool
     , confirmationDialog : ConfirmationDialog.Model Msg
     , modal : Ui.Modal.Model
+    , showChangePasswordForm : Bool
+    , oldPasswordInput : Ui.Input.Model
+    , newPasswordInput : Ui.Input.Model
     }
 
 
@@ -27,6 +33,11 @@ type Msg
     | Close
     | LanguageSelection Language
     | ModalMsg Ui.Modal.Msg
+    | ToggleChangePasswordForm
+    | OpenPasswordResetPage
+    | OldPasswordInputMsg Ui.Input.Msg
+    | NewPasswordInputMsg Ui.Input.Msg
+    | ConfirmChangePassword
 
 
 type alias HasSettingsDialog a =
@@ -45,6 +56,15 @@ init =
         Ui.Modal.init
             |> Ui.Modal.closable True
             |> Ui.Modal.backdrop True
+    , showChangePasswordForm = False
+    , oldPasswordInput =
+        Ui.Input.init ()
+            |> Ui.Input.kind "password"
+            |> Ui.Input.showClearIcon True
+    , newPasswordInput =
+        Ui.Input.init ()
+            |> Ui.Input.kind "password"
+            |> Ui.Input.showClearIcon True
     }
 
 
@@ -61,6 +81,18 @@ close ({ settingsDialog } as model) =
     settingsDialog.modal
         |> Ui.Modal.close
         |> asModalIn settingsDialog
+        |> asStateIn model
+
+
+hasChanged : HasSettingsDialog a -> HasSettingsDialog a
+hasChanged ({ settingsDialog } as model) =
+    { settingsDialog | hasChangesPending = True }
+        |> asStateIn model
+
+
+hasNotChanged : HasSettingsDialog a -> HasSettingsDialog a
+hasNotChanged ({ settingsDialog } as model) =
+    { settingsDialog | hasChangesPending = False }
         |> asStateIn model
 
 

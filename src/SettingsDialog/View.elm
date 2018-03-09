@@ -1,14 +1,15 @@
 module SettingsDialog.View exposing (view)
 
-import ConfirmationDialog
+import Dialog exposing (labeledItem)
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList)
-import Language exposing (Language(..))
+import Language exposing (HasLanguage, Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
 import Translation as T
+import Ui.Input
 import Ui.Modal
-import Util exposing (button)
+import Util exposing (Position(..), button)
 
 
 view : HasSettingsDialog a -> Html Model.Msg
@@ -33,7 +34,7 @@ languageButton forLanguage { language, settingsDialog } =
     in
     span
         [ classList
-            [ ( "LanguageButton", True )
+            [ ( "Button", True )
             , ( "Active", language == forLanguage )
             ]
         ]
@@ -46,10 +47,103 @@ languageButton forLanguage { language, settingsDialog } =
 
 contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
-    [ div [ class "LanguageInfoLabel" ]
-        [ text <|
-            T.t T.ChooseYourLanguage model
-        ]
+    [ div [ class "InfoLabel" ]
+        [ text <| dialogText T.ChooseYourLanguage model ]
     , languageButton German model
     , languageButton English model
+    , separator
+    , div [ class "InfoLabel" ]
+        [ text <| dialogText T.AccountOptions model ]
+    , changePasswordButton model
+    , resetPasswordButton model
+    , separator
+    , changePasswordForm model
     ]
+
+
+changePasswordButton : HasSettingsDialog a -> Html Model.Msg
+changePasswordButton model =
+    button [ class "Button" ]
+        { label = dialogText T.ChangePassword model
+        , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
+        }
+
+
+resetPasswordButton : HasSettingsDialog a -> Html Model.Msg
+resetPasswordButton model =
+    button [ class "Button" ]
+        { label = dialogText T.ResetPassword model
+        , onClick = Model.SettingsDialogMsg OpenPasswordResetPage
+        }
+
+
+changePasswordForm : HasSettingsDialog a -> Html Model.Msg
+changePasswordForm ({ settingsDialog } as model) =
+    div
+        [ classList
+            [ ( "Hidden", not model.settingsDialog.showChangePasswordForm )
+            , ( "ChangePasswordForm", True )
+            ]
+        ]
+        [ labeledItem [ class "InputLabel" ]
+            { side = Top
+            , onClick = Just (Model.FocusOn settingsDialog.oldPasswordInput.uid)
+            , label = text <| dialogText T.OldPasswordLabel model
+            , item =
+                Util.tooltipItem
+                    { position = Right
+                    , length = Util.Medium
+                    , text = dialogText T.OldPasswordTooltip model
+                    }
+                    [ Ui.Input.view
+                        settingsDialog.oldPasswordInput
+                        |> Html.map (Model.SettingsDialogMsg << OldPasswordInputMsg)
+                    ]
+            }
+        , labeledItem [ class "InputLabel" ]
+            { side = Top
+            , onClick = Just (Model.FocusOn settingsDialog.newPasswordInput.uid)
+            , label = text <| dialogText T.NewPasswordLabel model
+            , item =
+                Util.tooltipItem
+                    { position = Right
+                    , length = Util.Medium
+                    , text = dialogText T.NewPasswordTooltip model
+                    }
+                    [ Ui.Input.view
+                        settingsDialog.newPasswordInput
+                        |> Html.map (Model.SettingsDialogMsg << NewPasswordInputMsg)
+                    ]
+            }
+        , buttons model
+        ]
+
+
+buttons : HasSettingsDialog a -> Html Model.Msg
+buttons model =
+    div
+        [ classList
+            [ ( "Buttons", True )
+            , ( "Hidden", not model.settingsDialog.hasChangesPending )
+            ]
+        ]
+        [ button [ class "Button" ]
+            { label = dialogText T.ChangePassword model
+            , onClick = Model.SettingsDialogMsg ConfirmChangePassword
+            }
+        , button [ class "Button" ]
+            { label = T.t T.Cancel model
+            , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
+            }
+        ]
+
+
+dialogText : T.SettingsDialogText -> HasLanguage a -> String
+dialogText dialogText model =
+    T.t (T.SettingsDialogText dialogText) model
+
+
+separator : Html msg
+separator =
+    Html.hr [ class "Separator" ]
+        []

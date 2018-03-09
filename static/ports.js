@@ -130,6 +130,14 @@ var updateEmailCompletionList = function () {
   }
 }
 
+const openPasswordResetInBrowser = () => {
+  if (process.platform === 'darwin') {
+    Electron.shell.openExternal("https://alpha.syncrypt.space/password_reset");
+  } else {
+    Electron.shell.openItem("https://alpha.syncrypt.space/password_reset");
+  }
+}
+
 var setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -146,6 +154,7 @@ var setupElmApp = function (daemonApiToken) {
   elmApp.ports.openExportFileDialog.subscribe(openExportFileDialog)
   elmApp.ports.addEmailToCompletionList.subscribe(addEmailToCompletionList)
   elmApp.ports.updateEmailCompletionList.subscribe(updateEmailCompletionList)
+  elmApp.ports.openPasswordResetInBrowser.subscribe(openPasswordResetInBrowser)
 }
 
 readAuthToken(setupElmApp)

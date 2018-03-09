@@ -3,6 +3,7 @@ module Translation
         ( ConfirmationDialogText(..)
         , FolderButtonType(..)
         , NotificationText(..)
+        , SettingsDialogText(..)
         , StatsText(..)
         , Text(..)
         , VaultDialogText(..)
@@ -63,7 +64,7 @@ type Text
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
     | ProgramSettings
-    | ChooseYourLanguage
+    | SettingsDialogText SettingsDialogText
 
 
 type NotificationText
@@ -167,6 +168,18 @@ type VaultListText
 type ConfirmationDialogText
     = RemoveVaultFromSyncQuestion
     | RemoveVaultFromSyncExplanation
+
+
+type SettingsDialogText
+    = ChooseYourLanguage
+    | AccountOptions
+    | ChangePassword
+    | ConfirmChangePassword
+    | ResetPassword
+    | OldPasswordLabel
+    | OldPasswordTooltip
+    | NewPasswordLabel
+    | NewPasswordTooltip
 
 
 type FolderButtonType
@@ -308,8 +321,8 @@ translateEnglish text =
         ProgramSettings ->
             "Program Settings"
 
-        ChooseYourLanguage ->
-            "Choose your language:"
+        SettingsDialogText text ->
+            translateEnglishSettingsDialogText text
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -606,6 +619,37 @@ translateEnglishConfirmationDialogText cdt =
             "This vault will stop being synchronized to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
 
 
+translateEnglishSettingsDialogText : SettingsDialogText -> String
+translateEnglishSettingsDialogText text =
+    case text of
+        ChooseYourLanguage ->
+            "Choose your language"
+
+        AccountOptions ->
+            "Account Options"
+
+        ChangePassword ->
+            "Change Password"
+
+        ConfirmChangePassword ->
+            "Confirm password change"
+
+        ResetPassword ->
+            "Reset Password"
+
+        OldPasswordLabel ->
+            "Current Password"
+
+        OldPasswordTooltip ->
+            "Your current password that you want to expire and update to a new one"
+
+        NewPasswordLabel ->
+            "New Password"
+
+        NewPasswordTooltip ->
+            "This will be your new password once you hit save"
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -711,8 +755,8 @@ translateGerman text =
         ProgramSettings ->
             "Einstellungen"
 
-        ChooseYourLanguage ->
-            "Wähle deine Sprache:"
+        SettingsDialogText text ->
+            translateGermanSettingsDialogText text
 
 
 translateGermanNotificationText : NotificationText -> String
@@ -1011,6 +1055,36 @@ translateGermanConfirmationDialogText cdt =
 
         RemoveVaultFromSyncExplanation ->
             "Dieser Vault wird nicht mehr mit der Cloud synchronisiert. Lokale Änderungen werden nicht mehr hochgeladen und Dateien, die von anderen Benutzern hochgeladen wurden, werden nicht mehr auf diesen Computer runtergeladen."
+
+
+translateGermanSettingsDialogText text =
+    case text of
+        ChooseYourLanguage ->
+            "Wähle deine Sprache"
+
+        AccountOptions ->
+            "Kontoeinstellungen"
+
+        ChangePassword ->
+            "Passwort ändern"
+
+        ConfirmChangePassword ->
+            "Passwortänderung bestätigen"
+
+        ResetPassword ->
+            "Passwort zurücksetzen"
+
+        OldPasswordLabel ->
+            "Aktuelles Passwort"
+
+        OldPasswordTooltip ->
+            "Dein aktuelles Passwort, welches du durch ein neues ersetzen willst"
+
+        NewPasswordLabel ->
+            "Neues Passwort"
+
+        NewPasswordTooltip ->
+            "Dies wird Dein neues Passwort sein, sobald du die Änderung bestätigst"
 
 
 germanDistance : Date -> Date -> String
