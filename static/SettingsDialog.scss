@@ -34,6 +34,12 @@
       margin-left: $padding-small * -1;
       display: block;
     }
+
+    .ErrorMsg {
+      margin: $padding-small;
+      display: block;
+      color: darkred;
+    }
   }
 
   .Separator {

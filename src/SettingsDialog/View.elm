@@ -161,6 +161,9 @@ buttons ({ settingsDialog } as model) =
         isValidNewPassword =
             (not <| String.isEmpty newPassword)
                 && (newPassword == passwordConfirmation)
+
+        errorMsg msg =
+            span [ class "ErrorMsg" ] [ text msg ]
     in
     div
         [ classList
@@ -170,10 +173,10 @@ buttons ({ settingsDialog } as model) =
         ]
         [ case ( oldPassword, newPassword, passwordConfirmation ) of
             ( "", _, _ ) ->
-                text "You need to enter your current password"
+                errorMsg "You need to enter your current password"
 
             ( _, "", _ ) ->
-                text "You need to enter a new password"
+                errorMsg "You need to enter a new password"
 
             _ ->
                 if newPassword == passwordConfirmation then
@@ -182,7 +185,7 @@ buttons ({ settingsDialog } as model) =
                         , onClick = Model.SettingsDialogMsg ConfirmChangePassword
                         }
                 else
-                    text "Password confirmation doesn't match"
+                    errorMsg "Password confirmation doesn't match"
         , button [ class "Button" ]
             { label = T.t T.Cancel model
             , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
