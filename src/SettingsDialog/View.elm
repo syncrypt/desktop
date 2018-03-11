@@ -87,6 +87,7 @@ changePasswordForm ({ settingsDialog } as model) =
         ]
         [ passwordInput Old model
         , passwordInput New model
+        , passwordInput NewConfirmation model
         , buttons model
         ]
 
@@ -94,6 +95,7 @@ changePasswordForm ({ settingsDialog } as model) =
 type PasswordInputType
     = Old
     | New
+    | NewConfirmation
 
 
 passwordInput : PasswordInputType -> HasSettingsDialog a -> Html Model.Msg
@@ -113,6 +115,13 @@ passwordInput inputType model =
                     , NewPasswordInputMsg
                     , T.NewPasswordLabel
                     , T.NewPasswordTooltip
+                    )
+
+                NewConfirmation ->
+                    ( model.settingsDialog.newPasswordConfirmationInput
+                    , NewPasswordConfirmationInputMsg
+                    , T.NewPasswordConfirmationLabel
+                    , T.NewPasswordConfirmationTooltip
                     )
     in
     labeledItem [ class "InputLabel" ]

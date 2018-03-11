@@ -25,6 +25,7 @@ type alias State =
     , showChangePasswordForm : Bool
     , oldPasswordInput : Ui.Input.Model
     , newPasswordInput : Ui.Input.Model
+    , newPasswordConfirmationInput : Ui.Input.Model
     }
 
 
@@ -37,6 +38,7 @@ type Msg
     | OpenPasswordResetPage
     | OldPasswordInputMsg Ui.Input.Msg
     | NewPasswordInputMsg Ui.Input.Msg
+    | NewPasswordConfirmationInputMsg Ui.Input.Msg
     | ConfirmChangePassword
 
 
@@ -61,6 +63,9 @@ init =
         Ui.Input.init ()
             |> Ui.Input.kind "password"
     , newPasswordInput =
+        Ui.Input.init ()
+            |> Ui.Input.kind "password"
+    , newPasswordConfirmationInput =
         Ui.Input.init ()
             |> Ui.Input.kind "password"
     }

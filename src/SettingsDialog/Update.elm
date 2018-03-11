@@ -12,15 +12,6 @@ import Ui.Modal
 
 update : Msg -> Model.Model -> ( Model.Model, Cmd Model.Msg )
 update msg ({ settingsDialog } as model) =
-    let
-        dialogMsg msg =
-            Model.SettingsDialogMsg << msg
-
-        dialogCmd msg ( model, cmd ) =
-            ( model
-            , cmd |> Cmd.map (dialogMsg msg)
-            )
-    in
     case msg of
         ConfirmationDialogMsg ConfirmationDialog.Close ->
             ( close model
@@ -70,33 +61,76 @@ update msg ({ settingsDialog } as model) =
             )
 
         OldPasswordInputMsg msg ->
-            let
-                ( pwInput, cmd ) =
-                    Ui.Input.update msg settingsDialog.oldPasswordInput
-                        |> dialogCmd SModel.OldPasswordInputMsg
-            in
-            ( { settingsDialog | oldPasswordInput = pwInput }
-                |> asStateIn model
-                |> hasChanged
-            , cmd
-            )
+            model
+                |> updateInput msg
+                    { input = settingsDialog.oldPasswordInput
+                    , cmdMsg = SModel.OldPasswordInputMsg
+                    , setInput =
+                        \input state -> { state | oldPasswordInput = input }
+                    }
 
         NewPasswordInputMsg msg ->
-            let
-                ( pwInput, cmd ) =
-                    Ui.Input.update msg settingsDialog.newPasswordInput
-                        |> dialogCmd SModel.NewPasswordInputMsg
-            in
-            ( { settingsDialog | newPasswordInput = pwInput }
-                |> asStateIn model
-                |> hasChanged
-            , cmd
-            )
+            model
+                |> updateInput msg
+                    { input = settingsDialog.newPasswordInput
+                    , cmdMsg = SModel.NewPasswordInputMsg
+                    , setInput =
+                        \input state -> { state | newPasswordInput = input }
+                    }
+
+        NewPasswordConfirmationInputMsg msg ->
+            model
+                |> updateInput msg
+                    { input = settingsDialog.newPasswordConfirmationInput
+                    , cmdMsg = SModel.NewPasswordConfirmationInputMsg
+                    , setInput =
+                        \input state -> { state | newPasswordConfirmationInput = input }
+                    }
 
         ConfirmChangePassword ->
             ( model
             , Cmd.none
             )
+
+
+dialogMsg : (a -> Msg) -> a -> Model.Msg
+dialogMsg msg =
+    Model.SettingsDialogMsg << msg
+
+
+dialogCmd : (a -> Msg) -> ( b, Cmd a ) -> ( b, Cmd Model.Msg )
+dialogCmd msg ( model, cmd ) =
+    ( model
+    , cmd
+        |> Cmd.map (dialogMsg msg)
+    )
+
+
+type alias InputUpdateParams =
+    { input : Ui.Input.Model
+    , cmdMsg : Ui.Input.Msg -> Msg
+    , setInput : Ui.Input.Model -> State -> State
+    }
+
+
+updateInput :
+    Ui.Input.Msg
+    -> InputUpdateParams
+    -> HasSettingsDialog a
+    -> ( HasSettingsDialog a, Cmd Model.Msg )
+updateInput msg { input, cmdMsg, setInput } model =
+    let
+        ( newInput, cmd ) =
+            input
+                |> Ui.Input.update msg
+                |> dialogCmd cmdMsg
+    in
+    ( model.settingsDialog
+        |> setInput newInput
+        |> asStateIn model
+        |> hasChanged
+    , cmd
+    )
 
 
 toggleChangePasswordForm : HasSettingsDialog a -> ( HasSettingsDialog a, Cmd SModel.Msg )
@@ -133,13 +167,19 @@ resetChangePasswordForm state =
         ( newPasswordInput, cmd2 ) =
             state.newPasswordInput
                 |> Ui.Input.setValue ""
+
+        ( newPasswordConfirmationInput, cmd3 ) =
+            state.newPasswordConfirmationInput
+                |> Ui.Input.setValue ""
     in
     ( { state
         | oldPasswordInput = oldPasswordInput
         , newPasswordInput = newPasswordInput
+        , newPasswordConfirmationInput = newPasswordConfirmationInput
       }
     , Cmd.batch
-        [ cmd2 |> Cmd.map NewPasswordInputMsg
-        , cmd1 |> Cmd.map OldPasswordInputMsg
+        [ cmd1 |> Cmd.map OldPasswordInputMsg
+        , cmd2 |> Cmd.map NewPasswordInputMsg
+        , cmd3 |> Cmd.map NewPasswordConfirmationInputMsg
         ]
     )

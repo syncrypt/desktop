@@ -180,6 +180,8 @@ type SettingsDialogText
     | OldPasswordTooltip
     | NewPasswordLabel
     | NewPasswordTooltip
+    | NewPasswordConfirmationLabel
+    | NewPasswordConfirmationTooltip
 
 
 type FolderButtonType
@@ -649,6 +651,12 @@ translateEnglishSettingsDialogText text =
         NewPasswordTooltip ->
             "This will be your new password once you hit save"
 
+        NewPasswordConfirmationLabel ->
+            "Confirm New Password"
+
+        NewPasswordConfirmationTooltip ->
+            "This is to make sure you're not mispelling your new password"
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -1085,6 +1093,12 @@ translateGermanSettingsDialogText text =
 
         NewPasswordTooltip ->
             "Dies wird Dein neues Passwort sein, sobald du die Änderung bestätigst"
+
+        NewPasswordConfirmationLabel ->
+            "Bestätige Dein neues Passwort"
+
+        NewPasswordConfirmationTooltip ->
+            "Hiermit stellen wir sicher, dass Du dich nicht vertippst"
 
 
 germanDistance : Date -> Date -> String
