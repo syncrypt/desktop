@@ -10,7 +10,7 @@ import String
 import Translation as T
 import Ui.Input
 import Ui.Modal
-import Util exposing (Position(..), button)
+import Util exposing (Position(..), button, onEnter)
 
 
 view : HasSettingsDialog a -> Html Model.Msg
@@ -102,13 +102,14 @@ type PasswordInputType
 passwordInput : PasswordInputType -> HasSettingsDialog a -> Html Model.Msg
 passwordInput inputType model =
     let
-        ( input, inputMsg, labelText, tooltipText ) =
+        ( input, inputMsg, labelText, tooltipText, onEnterMsg ) =
             case inputType of
                 Old ->
                     ( model.settingsDialog.oldPasswordInput
                     , OldPasswordInputMsg
                     , T.OldPasswordLabel
                     , T.OldPasswordTooltip
+                    , Model.FocusOn model.settingsDialog.newPasswordInput.uid
                     )
 
                 New ->
@@ -116,6 +117,7 @@ passwordInput inputType model =
                     , NewPasswordInputMsg
                     , T.NewPasswordLabel
                     , T.NewPasswordTooltip
+                    , Model.FocusOn model.settingsDialog.newPasswordConfirmationInput.uid
                     )
 
                 NewConfirmation ->
@@ -123,6 +125,7 @@ passwordInput inputType model =
                     , NewPasswordConfirmationInputMsg
                     , T.NewPasswordConfirmationLabel
                     , T.NewPasswordConfirmationTooltip
+                    , Model.SettingsDialogMsg ConfirmChangePassword
                     )
     in
     labeledItem [ class "InputLabel" ]
@@ -130,14 +133,16 @@ passwordInput inputType model =
         , onClick = Just (Model.FocusOn input.uid)
         , label = text <| dialogText labelText model
         , item =
-            Util.tooltipItem
-                { position = Right
-                , length = Util.Medium
-                , text = dialogText tooltipText model
-                }
-                [ Ui.Input.view
-                    input
-                    |> Html.map (Model.SettingsDialogMsg << inputMsg)
+            span [ onEnter onEnterMsg ]
+                [ Util.tooltipItem
+                    { position = Right
+                    , length = Util.Medium
+                    , text = dialogText tooltipText model
+                    }
+                    [ Ui.Input.view
+                        input
+                        |> Html.map (Model.SettingsDialogMsg << inputMsg)
+                    ]
                 ]
         }
 

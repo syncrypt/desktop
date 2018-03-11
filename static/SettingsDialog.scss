@@ -2,21 +2,25 @@
 
 .SettingsDialog {
   ui-modal-content {
-    min-width: 385px;
+    // min-width: 385px;
   }
 
   .InfoLabel {
-    margin: $padding-small;
+    margin-bottom: $padding-small;
     font-weight: bold;
     font-size: $font-size-header;
   }
 
   .Button {
-    margin: $padding-small;
+    margin-top: $padding-small;
+    margin-bottom: $padding-small;
+    margin-right: $padding-small;
   }
 
   .ChangePasswordForm {
-    margin: $padding-small;
+    margin-top: $padding-small;
+    margin-bottom: $padding-small;
+    margin-right: $padding-small;
   }
 
   .InputLabel {
@@ -36,14 +40,15 @@
     }
 
     .ErrorMsg {
-      margin: $padding-small;
+      margin-top: $padding-small;
+      margin-bottom: $padding-small;
+      margin-right: $padding-small;
       display: block;
       color: darkred;
     }
   }
 
   .Separator {
-    margin: $padding-small;
     margin-top: $padding-medium;
     margin-bottom: $padding-medium;
     color: black;
