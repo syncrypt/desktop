@@ -2,6 +2,7 @@ module LoginDialog.Update exposing (update)
 
 import LoginDialog.Model exposing (HasLoginDialog, Msg(..), State, asStateIn)
 import Model exposing (Model)
+import Ports
 import Ui.Input
 
 
@@ -21,6 +22,11 @@ update dialogMsg ({ loginDialog } as model) =
         Modal _ ->
             ( model
             , Cmd.none
+            )
+
+        OpenPasswordResetPage ->
+            ( model
+            , Ports.openPasswordResetInBrowser ()
             )
 
 

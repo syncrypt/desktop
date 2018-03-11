@@ -4,8 +4,8 @@ import ConfirmationDialog
 import Daemon
 import Dialog exposing (asModalIn)
 import Model
+import Ports
 import SettingsDialog.Model as SModel exposing (..)
-import SettingsDialog.Ports as Ports
 import Ui.Input
 import Ui.Modal
 

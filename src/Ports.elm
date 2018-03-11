@@ -14,3 +14,6 @@ port updateEmailCompletionList : () -> Cmd msg
 
 
 port getEmailCompletionList : (List String -> msg) -> Sub msg
+
+
+port openPasswordResetInBrowser : () -> Cmd msg

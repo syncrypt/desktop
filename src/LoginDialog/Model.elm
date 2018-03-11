@@ -7,6 +7,7 @@ module LoginDialog.Model
         , init
         )
 
+import Language exposing (Language)
 import Ui.Input
 import Ui.Modal
 
@@ -21,10 +22,11 @@ type Msg
     = Modal Ui.Modal.Msg
     | EmailInput Ui.Input.Msg
     | PasswordInput Ui.Input.Msg
+    | OpenPasswordResetPage
 
 
 type alias HasLoginDialog a =
-    { a | loginDialog : State }
+    { a | loginDialog : State, language : Language }
 
 
 init : State

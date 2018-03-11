@@ -3,8 +3,9 @@ module LoginDialog.View exposing (..)
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, form, input, label, span, text)
 import Html.Attributes exposing (class, classList, for, id, style)
-import LoginDialog.Model exposing (Msg(..), State)
+import LoginDialog.Model exposing (HasLoginDialog, Msg(..), State)
 import Model exposing (Model)
+import Translation as T
 import Ui.Input
 import Ui.Modal
 import Util exposing (Position(..), button)
@@ -29,7 +30,7 @@ view model =
 
         viewConfig =
             { address = Model.LoginDialogMsg << Modal
-            , contents = contents state
+            , contents = contents model
             , footer = []
             , title = "Login"
             }
@@ -38,14 +39,14 @@ view model =
         [ Ui.Modal.view viewConfig modalState ]
 
 
-contents : State -> List (Html Model.Msg)
-contents state =
+contents : HasLoginDialog a -> List (Html Model.Msg)
+contents model =
     [ div [ class "Tab-Content" ]
-        [ dialogInput <| emailInput state
-        , dialogInput <| passwordInput state
+        [ dialogInput <| emailInput model.loginDialog
+        , dialogInput <| passwordInput model.loginDialog
         ]
     , div [ class "Buttons" ]
-        [ loginButton ]
+        [ loginButton, resetPasswordButton model ]
     ]
 
 
@@ -86,4 +87,12 @@ passwordInput state =
         , item =
             Ui.Input.view state.passwordInput
                 |> Html.map (Model.LoginDialogMsg << PasswordInput)
+        }
+
+
+resetPasswordButton : HasLoginDialog a -> Html Model.Msg
+resetPasswordButton model =
+    button []
+        { label = T.t (T.SettingsDialogText T.ResetPassword) model
+        , onClick = Model.LoginDialogMsg OpenPasswordResetPage
         }

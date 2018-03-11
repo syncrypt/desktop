@@ -1,0 +1,16 @@
+@import "Common.scss";
+
+.LoginDialog {
+  .ErrorMsg {
+    margin: $padding-small;
+    display: block;
+    color: darkred;
+  }
+
+  .Buttons {
+    button {
+      display: block;
+      margin-bottom: $padding-small;
+    }
+  }
+}
