@@ -38,11 +38,13 @@ type alias NameOrId vault =
 {-| Vault status as returned from Daemon API.
 -}
 type Status
-    = Unsynced
+    = Uninitialized
+    | Unsynced
     | Syncing
     | Initializing
     | Synced
     | Ready
+    | Failed
 
 
 type VaultOptions
@@ -331,7 +333,7 @@ vaultStatusDecoder =
         convert raw =
             case raw of
                 "uninitialized" ->
-                    succeed Syncing
+                    succeed Uninitialized
 
                 "unsynced" ->
                     succeed Unsynced
@@ -347,6 +349,9 @@ vaultStatusDecoder =
 
                 "ready" ->
                     succeed Ready
+
+                "failure" ->
+                    succeed Failed
 
                 val ->
                     fail ("Invalid vault status: " ++ val)
