@@ -330,6 +330,9 @@ vaultStatusDecoder =
         convert : String -> Json.Decoder Status
         convert raw =
             case raw of
+                "uninitialized" ->
+                    succeed Syncing
+
                 "unsynced" ->
                     succeed Unsynced
 
