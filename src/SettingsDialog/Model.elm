@@ -60,11 +60,9 @@ init =
     , oldPasswordInput =
         Ui.Input.init ()
             |> Ui.Input.kind "password"
-            |> Ui.Input.showClearIcon True
     , newPasswordInput =
         Ui.Input.init ()
             |> Ui.Input.kind "password"
-            |> Ui.Input.showClearIcon True
     }
 
 

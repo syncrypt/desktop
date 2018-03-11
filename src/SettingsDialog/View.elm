@@ -99,16 +99,18 @@ type PasswordInputType
 passwordInput : PasswordInputType -> HasSettingsDialog a -> Html Model.Msg
 passwordInput inputType model =
     let
-        ( input, labelText, tooltipText ) =
+        ( input, inputMsg, labelText, tooltipText ) =
             case inputType of
                 Old ->
                     ( model.settingsDialog.oldPasswordInput
+                    , OldPasswordInputMsg
                     , T.OldPasswordLabel
                     , T.OldPasswordTooltip
                     )
 
                 New ->
                     ( model.settingsDialog.newPasswordInput
+                    , NewPasswordInputMsg
                     , T.NewPasswordLabel
                     , T.NewPasswordTooltip
                     )
@@ -125,7 +127,7 @@ passwordInput inputType model =
                 }
                 [ Ui.Input.view
                     input
-                    |> Html.map (Model.SettingsDialogMsg << OldPasswordInputMsg)
+                    |> Html.map (Model.SettingsDialogMsg << inputMsg)
                 ]
         }
 

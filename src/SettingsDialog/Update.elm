@@ -139,7 +139,7 @@ resetChangePasswordForm state =
         , newPasswordInput = newPasswordInput
       }
     , Cmd.batch
-        [ cmd1 |> Cmd.map OldPasswordInputMsg
-        , cmd2 |> Cmd.map NewPasswordInputMsg
+        [ cmd2 |> Cmd.map NewPasswordInputMsg
+        , cmd1 |> Cmd.map OldPasswordInputMsg
         ]
     )
