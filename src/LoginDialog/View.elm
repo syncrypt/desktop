@@ -8,7 +8,7 @@ import Model exposing (Model)
 import Translation as T
 import Ui.Input
 import Ui.Modal
-import Util exposing (Position(..), button)
+import Util exposing (Position(..), button, onEnter)
 
 
 view : Model -> Html Model.Msg
@@ -92,9 +92,11 @@ passwordInput state =
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
         , label = text "Password"
         , item =
-            state.passwordInput
-                |> Ui.Input.view
-                |> Html.map (Model.LoginDialogMsg << PasswordInput)
+            span [ onEnter Model.Login ]
+                [ state.passwordInput
+                    |> Ui.Input.view
+                    |> Html.map (Model.LoginDialogMsg << PasswordInput)
+                ]
         }
 
 
