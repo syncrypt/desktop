@@ -92,7 +92,7 @@ passwordInput state =
     labeledItem []
         { side = Left
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
-        , label = text "Password"
+        , label = text "Secret"
         , item =
             span [ onEnter Model.Login ]
                 [ state.passwordInput
