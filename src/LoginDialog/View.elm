@@ -79,9 +79,11 @@ emailInput state =
         , onClick = Just <| Model.FocusOn state.emailInput.uid
         , label = text "E-Mail"
         , item =
-            state.emailInput
-                |> Ui.Input.view
-                |> Html.map (Model.LoginDialogMsg << EmailInput)
+            span [ onEnter <| Model.FocusOn state.passwordInput.uid ]
+                [ state.emailInput
+                    |> Ui.Input.view
+                    |> Html.map (Model.LoginDialogMsg << EmailInput)
+                ]
         }
 
 
