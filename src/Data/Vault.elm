@@ -265,7 +265,7 @@ decoder : Json.Decoder Vault
 decoder =
     decode Vault
         |> required "id" Json.string
-        |> required "remote_id" Json.string
+        |> optional "remote_id" Json.string "N/A"
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> required "size" Json.int
         |> required "state" vaultStatusDecoder
