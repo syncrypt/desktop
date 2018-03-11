@@ -42,20 +42,14 @@ view model =
 contents : HasLoginDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "Tab-Content" ]
-        [ dialogInput <| emailInput model.loginDialog
-        , dialogInput <| passwordInput model.loginDialog
+        [ Dialog.input <| emailInput model.loginDialog
+        , Dialog.input <| passwordInput model.loginDialog
         ]
     , div [ class "Buttons" ]
         [ loginButton
         , resetPasswordButton model
         ]
     ]
-
-
-dialogInput : Html msg -> Html msg
-dialogInput body =
-    div [ class "Input" ]
-        [ body ]
 
 
 loginButton : Html Model.Msg

@@ -1,6 +1,5 @@
 module SettingsDialog.View exposing (view)
 
-import Debug
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class, classList, disabled)
@@ -161,9 +160,6 @@ buttons ({ settingsDialog } as model) =
         isValidNewPassword =
             (not <| String.isEmpty newPassword)
                 && (newPassword == passwordConfirmation)
-
-        errorMsg msg =
-            span [ class "ErrorMsg" ] [ text msg ]
     in
     div
         [ classList
@@ -173,10 +169,10 @@ buttons ({ settingsDialog } as model) =
         ]
         [ case ( oldPassword, newPassword, passwordConfirmation ) of
             ( "", _, _ ) ->
-                errorMsg "You need to enter your current password"
+                Dialog.errorMsg "You need to enter your current password"
 
             ( _, "", _ ) ->
-                errorMsg "You need to enter a new password"
+                Dialog.errorMsg "You need to enter a new password"
 
             _ ->
                 if newPassword == passwordConfirmation then
@@ -185,7 +181,7 @@ buttons ({ settingsDialog } as model) =
                         , onClick = Model.SettingsDialogMsg ConfirmChangePassword
                         }
                 else
-                    errorMsg "Password confirmation doesn't match"
+                    Dialog.errorMsg "Password confirmation doesn't match"
         , button [ class "Button" ]
             { label = T.t T.Cancel model
             , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm

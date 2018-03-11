@@ -289,7 +289,7 @@ usersTab toRootMsg vaultId state model =
                     [ classList [ ( "Hidden", not ownsVault ) ] ]
                     [ div
                         [ class "Add-User", onEnter searchKeys ]
-                        [ dialogInput "User"
+                        [ Dialog.inputFor "User"
                             [ userInput vaultId state model ]
                         ]
                     , div [ class "UserKey-Selection" ]
@@ -407,11 +407,11 @@ filesTab toRootMsg vaultId state model =
         , vaultId = vaultId
         , state = state
         , body =
-            [ dialogInput "Name"
+            [ Dialog.inputFor "Name"
                 [ nameInput toRootMsg state model ]
-            , dialogInput "Folder"
+            , Dialog.inputFor "Folder"
                 [ Html.map toRootMsg <| openFolderButton vaultId state model ]
-            , dialogInput "FileSelection"
+            , Dialog.inputFor "FileSelection"
                 [ Html.map toRootMsg <| fileSelectionContainer state model ]
             ]
         }
@@ -644,15 +644,6 @@ separator : Html msg
 separator =
     Html.hr [ class "Separator" ]
         []
-
-
-dialogInput : String -> List (Html msg) -> Html msg
-dialogInput inputClassSuffix body =
-    div
-        [ class "Input"
-        , class ("Input-" ++ inputClassSuffix)
-        ]
-        body
 
 
 exportButton : Vault -> Html Model.Msg

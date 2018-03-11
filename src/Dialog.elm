@@ -3,6 +3,9 @@ module Dialog
         ( LabeledItemSettings
         , WithModalState
         , asModalIn
+        , errorMsg
+        , input
+        , inputFor
         , labeledItem
         )
 
@@ -69,3 +72,23 @@ orderedLabeling { side, label, item } =
     in
     span []
         labelBody
+
+
+errorMsg : String -> Html msg
+errorMsg msg =
+    span [ class "ErrorMsg" ] [ text msg ]
+
+
+inputFor : String -> List (Html msg) -> Html msg
+inputFor inputClassSuffix body =
+    div
+        [ class "Input"
+        , class ("Input-" ++ inputClassSuffix)
+        ]
+        body
+
+
+input : Html msg -> Html msg
+input body =
+    div [ class "Input" ]
+        [ body ]
