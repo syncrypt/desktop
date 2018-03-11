@@ -45,11 +45,21 @@ contents model =
         [ Dialog.input <| emailInput model.loginDialog
         , Dialog.input <| passwordInput model.loginDialog
         ]
+    , div [ class "Errors" ] <|
+        loginError model.loginDialog
     , div [ class "Buttons" ]
         [ loginButton
         , resetPasswordButton model
         ]
     ]
+
+
+loginError : State -> List (Html msg)
+loginError { loginError } =
+    loginError
+        |> Maybe.map Dialog.errorMsg
+        |> Maybe.map List.singleton
+        |> Maybe.withDefault []
 
 
 loginButton : Html Model.Msg

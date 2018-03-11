@@ -1,13 +1,32 @@
 @import "Common.scss";
 
 .LoginDialog {
+  ui-modal-content {
+    max-width: 190px;
+    height: 250px;
+  }
+
+  .Input {
+    margin-top: $padding-small;
+    font-weight: bold;
+    ui-input {
+      margin-top: $padding-tiny;
+    }
+  }
+
   .ErrorMsg {
-    margin: $padding-small;
+    margin-top: $padding-small;
     display: block;
     color: darkred;
   }
 
   .Buttons {
+    .Button-Login {
+      button {
+        margin-top: $padding-medium;
+      }
+    }
+
     button {
       display: block;
       margin-bottom: $padding-small;

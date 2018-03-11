@@ -11,6 +11,7 @@ import FeedbackWizard
 import Html exposing (Html, div, node, span, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import LoginDialog.Model
 import LoginDialog.Update
 import LoginDialog.View
 import Model exposing (..)
@@ -697,11 +698,13 @@ handleLoginResult email data model =
                 | login =
                     LoggedIn { firstName = "", lastName = "", email = email }
               }
+                |> LoginDialog.Model.loginSucceeded
             , Cmd.none
             )
 
         Failure reason ->
             ( { model | login = LoggedOut }
+                |> LoginDialog.Model.loginFailed reason
             , Cmd.none
             )
 
