@@ -46,7 +46,9 @@ contents model =
         , dialogInput <| passwordInput model.loginDialog
         ]
     , div [ class "Buttons" ]
-        [ loginButton, resetPasswordButton model ]
+        [ loginButton
+        , resetPasswordButton model
+        ]
     ]
 
 
@@ -70,10 +72,11 @@ emailInput : State -> Html Model.Msg
 emailInput state =
     labeledItem []
         { side = Left
-        , onClick = Just (Model.FocusOn state.emailInput.uid)
+        , onClick = Just <| Model.FocusOn state.emailInput.uid
         , label = text "E-Mail"
         , item =
-            Ui.Input.view state.emailInput
+            state.emailInput
+                |> Ui.Input.view
                 |> Html.map (Model.LoginDialogMsg << EmailInput)
         }
 
@@ -85,7 +88,8 @@ passwordInput state =
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
         , label = text "Password"
         , item =
-            Ui.Input.view state.passwordInput
+            state.passwordInput
+                |> Ui.Input.view
                 |> Html.map (Model.LoginDialogMsg << PasswordInput)
         }
 

@@ -32,7 +32,9 @@ type alias HasLoginDialog a =
 init : State
 init =
     { emailInput = Ui.Input.init ()
-    , passwordInput = Ui.Input.init ()
+    , passwordInput =
+        Ui.Input.init ()
+            |> Ui.Input.kind "password"
     }
 
 
