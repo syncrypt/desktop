@@ -1,11 +1,13 @@
 module SettingsDialog.View exposing (view)
 
+import Debug
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class, classList)
+import Html.Attributes exposing (class, classList, disabled)
 import Language exposing (HasLanguage, Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
+import String
 import Translation as T
 import Ui.Input
 import Ui.Modal
@@ -142,17 +144,45 @@ passwordInput inputType model =
 
 
 buttons : HasSettingsDialog a -> Html Model.Msg
-buttons model =
+buttons ({ settingsDialog } as model) =
+    let
+        oldPassword =
+            settingsDialog.oldPasswordInput.value
+
+        newPassword =
+            settingsDialog.newPasswordInput.value
+
+        passwordConfirmation =
+            settingsDialog.newPasswordConfirmationInput.value
+
+        isValidOldPassword =
+            not <| String.isEmpty oldPassword
+
+        isValidNewPassword =
+            (not <| String.isEmpty newPassword)
+                && (newPassword == passwordConfirmation)
+    in
     div
         [ classList
             [ ( "Buttons", True )
             , ( "Hidden", not model.settingsDialog.hasChangesPending )
             ]
         ]
-        [ button [ class "Button" ]
-            { label = dialogText T.ChangePassword model
-            , onClick = Model.SettingsDialogMsg ConfirmChangePassword
-            }
+        [ case ( oldPassword, newPassword, passwordConfirmation ) of
+            ( "", _, _ ) ->
+                text "You need to enter your current password"
+
+            ( _, "", _ ) ->
+                text "You need to enter a new password"
+
+            _ ->
+                if newPassword == passwordConfirmation then
+                    button [ class "Button", disabled isValidNewPassword ]
+                        { label = dialogText T.ChangePassword model
+                        , onClick = Model.SettingsDialogMsg ConfirmChangePassword
+                        }
+                else
+                    text "Password confirmation doesn't match"
         , button [ class "Button" ]
             { label = T.t T.Cancel model
             , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm

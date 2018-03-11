@@ -88,6 +88,7 @@ update msg ({ settingsDialog } as model) =
                     }
 
         ConfirmChangePassword ->
+            -- TODO
             ( model
             , Cmd.none
             )
