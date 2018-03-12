@@ -190,7 +190,9 @@ update msg model =
             model
                 |> VaultDialog.Update.cancel vaultId
                 ~> updateVaults
+                ~> updateStats
                 ~> (notifyText <| VaultRemoved vaultId)
+                ~> updateFlyingVaults
 
         RemovedVaultFromSync data ->
             model
