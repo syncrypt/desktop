@@ -649,6 +649,7 @@ clonedVault vaultId data model =
             ( { model | state = ShowingAllVaults }
             , Daemon.getVaults model
             )
+                ~> VaultDialog.Update.cancel vaultId
 
         Failure reason ->
             model
