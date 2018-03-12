@@ -95,6 +95,7 @@ update msg model =
         UpdateVaults ->
             model
                 |> updateVaults
+                ~> updateStats
 
         UpdateDaemonConfig ->
             ( model
