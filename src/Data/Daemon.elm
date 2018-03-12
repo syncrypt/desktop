@@ -1,5 +1,7 @@
 module Data.Daemon exposing (..)
 
+import Data.Vault
+import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline
     exposing
@@ -27,6 +29,7 @@ type alias Stats =
     , busySlots : Int
     , idleSlots : Int
     , closedSlots : Int
+    , states : Dict String Data.Vault.Status
     }
 
 

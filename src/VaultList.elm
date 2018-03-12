@@ -10,6 +10,7 @@ import Data.Vault
         , nameOrId
         )
 import Date exposing (Date)
+import Dict
 import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
@@ -34,9 +35,9 @@ type alias HasModificationDate a =
     { a | modificationDate : Maybe Date }
 
 
-vaultItemSyncStateClass : Vault -> String
-vaultItemSyncStateClass vault =
-    "VaultStatus-" ++ toString vault.status
+vaultItemSyncStateClass : Vault -> Model -> String
+vaultItemSyncStateClass vault model =
+    "VaultStatus-" ++ toString (Model.vaultStatus vault model)
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
@@ -67,11 +68,13 @@ updatedAtInfo vault updatedAtHeader model =
 
 
 vaultUpdatedAtInfo : Vault -> Model -> Html msg
-vaultUpdatedAtInfo vault =
-    updatedAtInfo vault <|
-        Just <|
-            div [ class (vaultItemSyncStateClass vault) ]
+vaultUpdatedAtInfo vault model =
+    updatedAtInfo vault
+        (Just <|
+            div [ class (vaultItemSyncStateClass vault model) ]
                 []
+        )
+        model
 
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg

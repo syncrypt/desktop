@@ -492,7 +492,11 @@ updatedVaults vaults model =
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 updatedFlyingVaults flyingVaults model =
-    { model | flyingVaults = flyingVaults }
+    { model
+        | flyingVaults =
+            flyingVaults
+                |> RemoteData.map (\fv -> Model.unclonedFlyingVaults fv model)
+    }
         |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
 
 

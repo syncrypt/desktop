@@ -145,6 +145,7 @@ statsDecoder =
         |> optionalAt [ "slots", "busy" ] Json.int 0
         |> optionalAt [ "slots", "idle" ] Json.int 0
         |> optionalAt [ "slots", "closed" ] Json.int 0
+        |> required "states" (Json.dict Data.Vault.vaultStatusDecoder)
 
 
 keyStateDecoder : Json.Decoder KeyState
@@ -275,3 +276,48 @@ retryOnFailure data msg model =
 
         _ ->
             ( model, Cmd.none )
+
+
+hasVaultWithId : VaultId -> Model -> Bool
+hasVaultWithId id model =
+    model.vaults
+        |> RemoteData.withDefault []
+        |> List.any (\v -> v.id == id)
+
+
+type alias HasVaultId a =
+    { a | id : VaultId }
+
+
+unclonedFlyingVaults : List (HasVaultId a) -> Model -> List (HasVaultId a)
+unclonedFlyingVaults flyingVaults model =
+    flyingVaults
+        |> List.filter (\fv -> isClonedVault fv model)
+
+
+isClonedVault : HasVaultId a -> Model -> Bool
+isClonedVault { id } model =
+    not <| hasVaultWithId id model
+
+
+vaultStatus : Vault -> Model -> Data.Vault.Status
+vaultStatus vault { stats } =
+    let
+        default =
+            vault.status
+    in
+    case stats of
+        Success stats ->
+            case Dict.get ("/v1/vault/" ++ vault.id ++ "/") stats.states of
+                Just status ->
+                    status
+
+                Nothing ->
+                    let
+                        _ =
+                            Debug.log "Failed to get vault status: " ( vault.id, stats )
+                    in
+                    default
+
+        _ ->
+            default

@@ -19,6 +19,7 @@ import Data.Vault exposing (VaultId)
 import Date exposing (Date)
 import Date.Distance
 import Date.Distance.Types
+import Dict exposing (Dict)
 import Language exposing (HasLanguage, Language(..))
 
 
@@ -94,6 +95,7 @@ type StatsText
         , busySlots : Int
         , idleSlots : Int
         , closedSlots : Int
+        , states : Dict String Data.Vault.Status
         }
     | StatsLoading
     | StatsNotAvailable
