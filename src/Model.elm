@@ -291,11 +291,11 @@ hasVaultWithId : VaultId -> Model -> Bool
 hasVaultWithId id model =
     model.vaults
         |> RemoteData.withDefault []
-        |> List.any (\v -> v.id == id)
+        |> List.any (\v -> v.remoteId == id)
 
 
 type alias HasVaultId a =
-    { a | id : VaultId }
+    { a | id : VaultId, remoteId : VaultId }
 
 
 unclonedFlyingVaults : List (HasVaultId a) -> Model -> List (HasVaultId a)
@@ -305,12 +305,12 @@ unclonedFlyingVaults flyingVaults model =
 
 
 isClonedVault : HasVaultId a -> Model -> Bool
-isClonedVault { id } model =
-    not <| hasVaultWithId id model
+isClonedVault { remoteId } model =
+    not <| hasVaultWithId remoteId model
 
 
 vaultStatus : Status -> HasVaultId a -> Model -> Status
-vaultStatus default { id } model =
+vaultStatus default { id, remoteId } model =
     case model.stats of
         Success stats ->
             case Dict.get ("/v1/vault/" ++ id ++ "/") stats.states of
@@ -320,7 +320,7 @@ vaultStatus default { id } model =
                 Nothing ->
                     let
                         _ =
-                            Debug.log "Failed to get vault status: " ( id, stats )
+                            Debug.log "Failed to get vault status: " ( id, remoteId, stats )
                     in
                     default
 
