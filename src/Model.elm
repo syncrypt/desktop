@@ -3,7 +3,7 @@ module Model exposing (..)
 import Config exposing (Config)
 import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Vault, VaultId)
+import Data.Vault exposing (FlyingVault, Status, Vault, VaultId)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
@@ -309,9 +309,9 @@ isClonedVault { id } model =
     not <| hasVaultWithId id model
 
 
-vaultStatus : Data.Vault.Status -> HasVaultId a -> Model -> Data.Vault.Status
-vaultStatus default { id } { stats } =
-    case stats of
+vaultStatus : Status -> HasVaultId a -> Model -> Status
+vaultStatus default { id } model =
+    case model.stats of
         Success stats ->
             case Dict.get ("/v1/vault/" ++ id ++ "/") stats.states of
                 Just foundStatus ->
