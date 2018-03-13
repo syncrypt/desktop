@@ -32,7 +32,10 @@ type Msg
 
 
 type alias HasLoginDialog a =
-    { a | loginDialog : State, language : Language }
+    { a
+        | loginDialog : State
+        , language : Language
+    }
 
 
 init : State

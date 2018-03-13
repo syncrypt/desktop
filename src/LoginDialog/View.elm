@@ -1,8 +1,8 @@
-module LoginDialog.View exposing (..)
+module LoginDialog.View exposing (view)
 
 import Dialog exposing (labeledItem)
-import Html exposing (Html, div, form, input, label, span, text)
-import Html.Attributes exposing (class, classList, for, id, style)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (class)
 import LoginDialog.Model exposing (HasLoginDialog, Msg(..), State)
 import Model exposing (Model)
 import Translation as T
@@ -14,14 +14,6 @@ import Util exposing (Position(..), button, onEnter)
 view : Model -> Html Model.Msg
 view model =
     let
-        state =
-            { emailInput =
-                Ui.Input.init ()
-            , passwordInput =
-                Ui.Input.init ()
-                    |> Ui.Input.kind "password"
-            }
-
         modalState =
             { closable = False
             , backdrop = True

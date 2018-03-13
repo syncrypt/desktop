@@ -9,9 +9,8 @@ module ConfirmationDialog
         , view
         )
 
-import Html exposing (Html, div, form, span, text)
+import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
-import Http
 import Language exposing (Language)
 import Translation as T
 import Ui.Modal
@@ -87,11 +86,11 @@ close ({ confirmationDialog } as model) =
 update : Msg -> HasConfirmationDialog a msg -> HasConfirmationDialog a msg
 update msg ({ confirmationDialog } as model) =
     case msg of
-        Modal msg ->
+        Modal modelMsg ->
             { model
                 | confirmationDialog =
                     { confirmationDialog
-                        | modal = Ui.Modal.update msg confirmationDialog.modal
+                        | modal = Ui.Modal.update modelMsg confirmationDialog.modal
                     }
             }
 
@@ -107,13 +106,13 @@ view language { confirmationDialog } =
         Nothing ->
             text ""
 
-        Just view ->
+        Just dialogView ->
             let
                 viewConfig =
                     { address = confirmationDialog.address << Modal
-                    , contents = contents confirmationDialog.address language view
+                    , contents = contents confirmationDialog.address language dialogView
                     , footer = []
-                    , title = view.title
+                    , title = dialogView.title
                     }
             in
             Ui.Modal.view viewConfig confirmationDialog.modal

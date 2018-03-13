@@ -1,7 +1,18 @@
-module Data.User exposing (..)
+module Data.User
+    exposing
+        ( Email
+        , Fingerprint
+        , Password
+        , User
+        , UserKey
+        , decoder
+        , fullName
+        , keyDecoder
+        , loginEncoder
+        )
 
 import Date exposing (Date)
-import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode as Json
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Json.Encode
 import Util exposing (dateDecoder)

@@ -1,15 +1,23 @@
 module FeedbackWizard exposing (settings, viewSettings)
 
-import Html exposing (Html, br, div, span, text)
+import Html exposing (div, text)
 import Html.Attributes exposing (class, cols, placeholder, rows, style)
 import Html.Events exposing (onInput)
 import Model
 import Translation as T
-import WizardDialog.Model exposing (..)
+import WizardDialog.Model
+    exposing
+        ( Button(..)
+        , ButtonSettings(..)
+        , State
+        , ViewSettings
+        , WizardSettings
+        , WizardType(..)
+        )
 
 
 settings : Model.Model -> WizardSettings Model.Msg
-settings model =
+settings _ =
     { address = Model.WizardDialogMsg
     , onFinishMsg = Just Model.SendFeedback
     , steps = [ "Send Feedback" ]
@@ -19,7 +27,7 @@ settings model =
 
 
 viewSettings : State Model.Msg -> Model.Model -> Maybe (ViewSettings Model.Msg)
-viewSettings state model =
+viewSettings _ model =
     Just
         { title = T.t T.YourFeedback model
         , contents =

@@ -10,8 +10,7 @@ import Data.Vault
         , nameOrId
         )
 import Date exposing (Date)
-import Dict
-import Html exposing (Html, button, canvas, div, h1, hr, img, node, span, text)
+import Html exposing (Html, canvas, div, h1, hr, img, span, text)
 import Html.Attributes exposing (attribute, class, height, id, src, width)
 import Html.Events exposing (onClick)
 import Model exposing (..)

@@ -1,24 +1,46 @@
-module Data.Vault exposing (..)
+module Data.Vault
+    exposing
+        ( CryptoInfo
+        , Event(..)
+        , FlyingVault
+        , HistoryItem
+        , HistoryItems
+        , LogItem
+        , LogLevel(..)
+        , Metadata
+        , NameOrId
+        , Status(..)
+        , Vault
+        , VaultId
+        , VaultOptions(..)
+        , addVaultUserEncoder
+        , asVault
+        , decoder
+        , flyingVaultDecoder
+        , historyItemDecoder
+        , historyItemsDecoder
+        , init
+        , jsonOptions
+        , logItemDecoder
+        , metadataEncoder
+        , nameOrId
+        , vaultStatusDecoder
+        )
 
 import Config exposing (Config)
 import Data.User
     exposing
         ( Email
-        , Fingerprint
-        , User
         , UserKey
         )
 import Date exposing (Date)
 import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline
     exposing
-        ( custom
-        , decode
-        , hardcoded
+        ( decode
         , optional
         , optionalAt
         , required
-        , requiredAt
         )
 import Json.Encode
 import Path exposing (Path)
@@ -32,7 +54,10 @@ type alias VaultId =
 {-| Record type with an id and optional name field.
 -}
 type alias NameOrId vault =
-    { vault | name : Maybe String, id : VaultId }
+    { vault
+        | name : Maybe String
+        , id : VaultId
+    }
 
 
 {-| Vault status as returned from Daemon API.
@@ -62,7 +87,9 @@ type VaultOptions
 
 
 type alias Metadata =
-    { name : String, icon : Maybe String }
+    { name : String
+    , icon : Maybe String
+    }
 
 
 type alias CryptoInfo =
@@ -221,10 +248,10 @@ jsonOptions config options =
                 , ( "folder", Json.Encode.string (pathString folder) )
                 ]
 
-        Remove id ->
+        Remove _ ->
             Json.Encode.null
 
-        Delete id ->
+        Delete _ ->
             Json.Encode.null
 
 

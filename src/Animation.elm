@@ -7,8 +7,8 @@ module Animation
         , loadingSpinnerIf
         )
 
-import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (attribute, class, classList, style)
+import Html exposing (Html, div, text)
+import Html.Attributes exposing (class, classList, style)
 import Util exposing (Direction)
 
 

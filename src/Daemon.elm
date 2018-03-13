@@ -3,6 +3,7 @@ module Daemon
         ( ApiPath(..)
         , ApiStreamPath(..)
         , addVaultUser
+        , attemptDelayed
         , deleteVault
         , exportVault
         , getConfig
@@ -32,29 +33,23 @@ module Daemon
         , updateVaultMetadata
         )
 
-import Config exposing (..)
+import Config exposing (Config)
 import Data.Daemon exposing (GUIConfig, daemonConfigDecoder)
 import Data.User exposing (Email, Fingerprint, Password, User, UserKey)
 import Data.Vault exposing (..)
 import Http
-import Json.Decode as Json exposing (andThen, fail, succeed)
+import Json.Decode as Json exposing (succeed)
 import Json.Decode.Pipeline
     exposing
-        ( custom
-        , decode
-        , hardcoded
-        , optional
-        , optionalAt
+        ( decode
         , required
-        , requiredAt
         )
 import Json.Encode
-import Language exposing (Language(..))
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..), WebData)
 import Task exposing (Task)
 import Time exposing (Time)
-import Util exposing (dateDecoder)
+import Util
 import WebSocket
 
 
@@ -573,8 +568,8 @@ apiRequest method path body decoder config =
 
 
 apiRequestBody : ApiRequestBody -> Http.Body
-apiRequestBody body =
-    case body of
+apiRequestBody requestBody =
+    case requestBody of
         Json json ->
             Http.jsonBody json
 
@@ -592,11 +587,7 @@ task =
     Http.toTask
 
 
-attemptDelayed :
-    Time
-    -> (Result Http.Error a -> Msg)
-    -> Http.Request a
-    -> Cmd Msg
+attemptDelayed : Time -> (Result Http.Error a -> Msg) -> Http.Request a -> Cmd Msg
 attemptDelayed time msg request =
     request
         |> task
@@ -645,7 +636,7 @@ apiUrl config path =
 apiWSUrl : Config -> Path -> Url
 apiWSUrl config path =
     let
-        url =
+        wsUrl =
             case String.split "://" (apiUrl config path) of
                 [ _, url ] ->
                     url
@@ -653,7 +644,7 @@ apiWSUrl config path =
                 _ ->
                     path
     in
-    "ws://" ++ url
+    "ws://" ++ wsUrl
 
 
 {-| Returns the required `Http.Header`s required by the daemon JSON API.

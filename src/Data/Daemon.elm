@@ -1,16 +1,18 @@
-module Data.Daemon exposing (..)
+module Data.Daemon
+    exposing
+        ( DaemonConfig
+        , GUIConfig
+        , KeyState(..)
+        , Stats
+        , daemonConfigDecoder
+        , guiConfigDecoder
+        , languageDecoder
+        )
 
 import Data.Vault
 import Dict exposing (Dict)
-import Json.Decode as Json exposing (andThen, fail, succeed)
-import Json.Decode.Pipeline
-    exposing
-        ( decode
-        , optional
-        , optionalAt
-        , required
-        , requiredAt
-        )
+import Json.Decode as Json exposing (fail, succeed)
+import Json.Decode.Pipeline exposing (decode, required)
 import Language exposing (Language(..))
 
 

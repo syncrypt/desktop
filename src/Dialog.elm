@@ -54,6 +54,7 @@ labeledItem attributes settings =
     orderedLabeling { settings | label = labelContainer }
 
 
+orderedLabeling : LabeledItemSettings msg -> Html msg
 orderedLabeling { side, label, item } =
     let
         labelBody =

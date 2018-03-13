@@ -1067,6 +1067,7 @@ translateGermanConfirmationDialogText cdt =
             "Dieser Vault wird nicht mehr mit der Cloud synchronisiert. Lokale Änderungen werden nicht mehr hochgeladen und Dateien, die von anderen Benutzern hochgeladen wurden, werden nicht mehr auf diesen Computer runtergeladen."
 
 
+translateGermanSettingsDialogText : SettingsDialogText -> String
 translateGermanSettingsDialogText text =
     case text of
         ChooseYourLanguage ->

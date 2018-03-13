@@ -1,6 +1,6 @@
 module MainScreen exposing (..)
 
-import Animation exposing (..)
+import Animation exposing (Animation(..), animation)
 import Config exposing (Config)
 import Daemon
 import Data.Daemon exposing (GUIConfig)
@@ -8,9 +8,9 @@ import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
 import Date
 import FeedbackWizard
-import Html exposing (Html, div, node, span, text)
-import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (class)
+import Html.Events exposing (onClick)
 import LoginDialog.Model
 import LoginDialog.Update
 import LoginDialog.View
