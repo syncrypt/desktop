@@ -156,7 +156,7 @@ step3 model state =
                         , label = text "Password"
                         , item =
                             div []
-                                [ input [ type_ "password" ]
+                                [ input [ type_ "password", onInput Model.SetupWizardPassword ]
                                     [ text "" ]
                                 ]
                         }

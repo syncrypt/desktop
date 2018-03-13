@@ -361,12 +361,26 @@ update msg model =
             , Cmd.none
             )
 
+        SetupWizardPassword password ->
+            ( setSetupWizardPassword password model
+            , Cmd.none
+            )
+
 
 setSetupWizardEmail : String -> Model -> Model
-setSetupWizardEmail email ({ setupWizard } as model) =
+setSetupWizardEmail email ({ setupWizard, loginDialog } as model) =
     { model
-        | setupWizard = { setupWizard | email = "" }
+        | setupWizard = { setupWizard | email = Just email }
     }
+        |> LoginDialog.Model.setEmailInput email
+
+
+setSetupWizardPassword : String -> Model -> Model
+setSetupWizardPassword password ({ setupWizard } as model) =
+    { model
+        | setupWizard = { setupWizard | password = Just password }
+    }
+        |> LoginDialog.Model.setPasswordInput password
 
 
 sentPasswordReset : Model -> Model
@@ -409,15 +423,21 @@ openSetupWizardIfFirstLaunch model =
         )
 
 
+initSetupWizard :
+    { email : Maybe String
+    , password : Maybe String
+    , passwordResetSent : Bool
+    }
+initSetupWizard =
+    { email = Nothing
+    , password = Nothing
+    , passwordResetSent = False
+    }
+
+
 openSetupWizard : Model -> ( Model, Cmd Msg )
 openSetupWizard model =
-    let
-        state =
-            { email = ""
-            , passwordResetSent = False
-            }
-    in
-    { model | setupWizard = state }
+    { model | setupWizard = initSetupWizard }
         |> WizardDialog.open (SetupWizard.settings model)
 
 

@@ -7,6 +7,8 @@ module LoginDialog.Model
         , init
         , loginFailed
         , loginSucceeded
+        , setEmailInput
+        , setPasswordInput
         )
 
 import Http
@@ -35,12 +37,28 @@ type alias HasLoginDialog a =
 
 init : State
 init =
-    { emailInput = Ui.Input.init ()
+    { emailInput =
+        inputWithValue ""
     , passwordInput =
-        Ui.Input.init ()
-            |> Ui.Input.kind "password"
+        passwordInputWithValue ""
     , loginError = Nothing
     }
+
+
+inputWithValue : String -> Ui.Input.Model
+inputWithValue value =
+    let
+        input =
+            Ui.Input.init ()
+    in
+    { input | value = value }
+
+
+passwordInputWithValue : String -> Ui.Input.Model
+passwordInputWithValue value =
+    value
+        |> inputWithValue
+        |> Ui.Input.kind "password"
 
 
 asStateIn : HasLoginDialog a -> State -> HasLoginDialog a
@@ -82,3 +100,15 @@ errorMsg err =
                     Debug.log "Unexpected login error: " e
             in
             "Unknown error while talking to Syncrypt background process."
+
+
+setEmailInput : String -> HasLoginDialog a -> HasLoginDialog a
+setEmailInput email ({ loginDialog } as model) =
+    { loginDialog | emailInput = inputWithValue email }
+        |> asStateIn model
+
+
+setPasswordInput : String -> HasLoginDialog a -> HasLoginDialog a
+setPasswordInput password ({ loginDialog } as model) =
+    { loginDialog | passwordInput = passwordInputWithValue password }
+        |> asStateIn model

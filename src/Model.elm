@@ -43,7 +43,14 @@ type alias Model =
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
     , feedback : Maybe String
-    , setupWizard : { email : String, passwordResetSent : Bool }
+    , setupWizard : SetupWizardState
+    }
+
+
+type alias SetupWizardState =
+    { email : Maybe String
+    , password : Maybe String
+    , passwordResetSent : Bool
     }
 
 
@@ -128,6 +135,7 @@ type Msg
     | SetLanguage Language
     | SendPasswordResetLink
     | SetupWizardEmail String
+    | SetupWizardPassword String
 
 
 
@@ -227,7 +235,8 @@ init config =
     , emailCompletionList = []
     , feedback = Nothing
     , setupWizard =
-        { email = ""
+        { email = Nothing
+        , password = Nothing
         , passwordResetSent = False
         }
     }
