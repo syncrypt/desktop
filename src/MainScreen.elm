@@ -762,8 +762,7 @@ view model =
             LoggedOut ->
                 if model.isFirstLaunch then
                     [ div [ class (currentClass model) ] <|
-                        [ header model
-                        , viewNotificationCenter model
+                        [ viewNotificationCenter model
                         , WizardDialog.view model
                         ]
                     ]
