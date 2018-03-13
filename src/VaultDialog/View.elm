@@ -813,7 +813,7 @@ openFolderButton vaultId state model =
             , item =
                 tooltipItem
                     { position = Right
-                    , length = Medium
+                    , length = Small
                     , text = tooltipMsg
                     }
                     [ button []
@@ -835,7 +835,7 @@ nameInput msg state model =
             , item =
                 tooltipItem
                     { position = Right
-                    , length = Medium
+                    , length = Small
                     , text = t (VaultDialogText VaultNameTooltip) model
                     }
                     [ Ui.Input.view state.nameInput
@@ -918,7 +918,7 @@ fileSelectionContainer state model =
                             []
                             [ tooltipItem
                                 { position = Top
-                                , length = XLarge
+                                , length = Large
                                 , text =
                                     t (VaultDialogText FileSelectionTooltip) model
                                 }

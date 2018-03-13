@@ -66,7 +66,7 @@ function createWindow() {
     return
   }
 
-  var width = 742
+  var width = 845
   if (process.platform == 'win32') {
     width += 34
   }
