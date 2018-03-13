@@ -423,21 +423,16 @@ openSetupWizardIfFirstLaunch model =
         )
 
 
-initSetupWizard :
-    { email : Maybe String
-    , password : Maybe String
-    , passwordResetSent : Bool
-    }
-initSetupWizard =
-    { email = Nothing
-    , password = Nothing
-    , passwordResetSent = False
-    }
-
-
 openSetupWizard : Model -> ( Model, Cmd Msg )
 openSetupWizard model =
-    { model | setupWizard = initSetupWizard }
+    let
+        setupWizard =
+            { email = Nothing
+            , password = Nothing
+            , passwordResetSent = False
+            }
+    in
+    { model | setupWizard = setupWizard }
         |> WizardDialog.open (SetupWizard.settings model)
 
 
