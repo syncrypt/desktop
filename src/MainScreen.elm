@@ -784,15 +784,20 @@ viewNotificationCenter { notificationCenter } =
 
 
 header : Model -> Html Msg
-header { language } =
+header { language, login } =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-HeaderLogo" ]
             []
-        , div [ class "MainScreen-Buttons" ]
-            [ View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
-            , View.IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
-            , View.IconButton.view language LogoutButton [ onClick Model.Logout ]
-            ]
+        , div [ class "MainScreen-Buttons" ] <|
+            case login of
+                LoggedIn _ ->
+                    [ View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
+                    , View.IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
+                    , View.IconButton.view language LogoutButton [ onClick Model.Logout ]
+                    ]
+
+                _ ->
+                    []
         ]
 
 

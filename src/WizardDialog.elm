@@ -261,12 +261,22 @@ wizardButtons language state buttonSettings =
             cancelButton language state
                 :: commonButtons Nothing
 
+        DefaultNoCancel ->
+            [ div [ class "NoCancel" ] <|
+                commonButtons Nothing
+            ]
+
         Visible buttons ->
             List.map toHtml buttons
 
         CustomNav navButtons ->
             cancelButton language state
                 :: commonButtons (Just navButtons)
+
+        CustomNavNoCancel navButtons ->
+            [ div [ class "NoCancel" ] <|
+                commonButtons (Just navButtons)
+            ]
 
 
 type NavButtonDirection

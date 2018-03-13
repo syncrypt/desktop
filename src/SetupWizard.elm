@@ -101,7 +101,7 @@ step1 model state =
                         }
                     ]
                 ]
-        , buttons = Default
+        , buttons = DefaultNoCancel
         }
 
 
@@ -124,7 +124,7 @@ step2 model state =
                         }
                     ]
                 ]
-        , buttons = Default
+        , buttons = DefaultNoCancel
         }
 
 
@@ -172,7 +172,7 @@ step3 model state =
                     ]
                 ]
         , buttons =
-            CustomNav
+            CustomNavNoCancel
                 { prev = Auto
                 , next = NavWithLabel (state.address (ToStepWithName "Key Creation")) "Login"
                 }
@@ -201,7 +201,7 @@ step4 model state =
                     ]
                 ]
         , buttons =
-            CustomNav
+            CustomNavNoCancel
                 { prev = Nav <| state.address (ToStepWithName "Account Setup")
                 , next = AutoWithLabel "I agree"
                 }
@@ -215,7 +215,7 @@ step5 model state =
             wizardContent
                 [ text "Coming soon with a nice animation next to this text." ]
         , buttons =
-            CustomNav
+            CustomNavNoCancel
                 { prev = Hidden
                 , next = Hidden
                 }

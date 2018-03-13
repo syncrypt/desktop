@@ -76,8 +76,10 @@ type alias NavButtons msg =
 
 type ButtonSettings msg
     = Default
+    | DefaultNoCancel
     | Visible (List (Button msg))
     | CustomNav (NavButtons msg)
+    | CustomNavNoCancel (NavButtons msg)
 
 
 type alias ViewSettings msg =
