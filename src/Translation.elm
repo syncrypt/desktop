@@ -465,7 +465,7 @@ translateEnglishVaultDialogText vt =
                     "This new vault will synchronize files in this folder: " ++ path
 
                 SyncedFolder path ->
-                    "This vault is synchronizing files from and to this folder: " ++ path
+                    "This vault is synchronizing files from and to this folder"
 
         FilesLabel ->
             "Files"

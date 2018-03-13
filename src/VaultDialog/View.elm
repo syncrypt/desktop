@@ -817,7 +817,13 @@ openFolderButton vaultId state model =
                     , text = tooltipMsg
                     }
                     [ button []
-                        { label = String.slice 0 30 folderPath ++ "..."
+                        { label =
+                            if String.length folderPath > 33 then
+                                String.left 10 folderPath
+                                    ++ "..."
+                                    ++ String.right 20 folderPath
+                            else
+                                folderPath
                         , onClick = msg
                         }
                     ]
