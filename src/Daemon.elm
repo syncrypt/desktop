@@ -1,4 +1,36 @@
-module Daemon exposing (..)
+module Daemon
+    exposing
+        ( ApiPath(..)
+        , ApiStreamPath(..)
+        , addVaultUser
+        , deleteVault
+        , exportVault
+        , getConfig
+        , getFlyingVault
+        , getFlyingVaults
+        , getLoginState
+        , getStats
+        , getUser
+        , getUserKeys
+        , getVault
+        , getVaultFingerprints
+        , getVaultHistory
+        , getVaultUser
+        , getVaultUsers
+        , getVaults
+        , getVersion
+        , invalidateFirstLaunch
+        , login
+        , loginCheck
+        , logout
+        , removeVault
+        , removeVaultUser
+        , sendFeedback
+        , subscribeVaultLogStream
+        , updateGUIConfig
+        , updateVault
+        , updateVaultMetadata
+        )
 
 import Config exposing (..)
 import Data.Daemon exposing (GUIConfig, daemonConfigDecoder)
