@@ -116,7 +116,10 @@ vaultActivity vault model =
 
 
 type alias HasUserCountAndId a =
-    { a | userCount : Int, id : String }
+    { a
+        | userCount : Int
+        , id : String
+    }
 
 
 vaultUserCount : HasUserCountAndId a -> Model -> Html msg

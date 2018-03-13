@@ -1077,9 +1077,6 @@ userKeySelection state model =
 
         keys =
             userKeys email state
-
-        isHidden =
-            keys == NotAsked
     in
     div [ class "UserKeys" ] <|
         (loadingSpinnerIf <| keys == Loading)

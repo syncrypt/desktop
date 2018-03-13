@@ -12,8 +12,8 @@ module WizardDialog
         )
 
 import FeedbackWizard
-import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class, classList, style)
+import Html exposing (Html, div, text)
+import Html.Attributes exposing (class)
 import Language exposing (Language)
 import Model
 import SetupWizard
@@ -51,7 +51,7 @@ open settings ({ wizardDialog } as model) =
 
 
 close : HasWizardDialog a msg -> HasWizardDialog a msg
-close ({ wizardDialog } as model) =
+close model =
     { model | wizardDialog = Nothing }
 
 
@@ -83,7 +83,7 @@ hide ({ wizardDialog } as model) =
 
 hideAndClose : HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 hideAndClose ({ wizardDialog } as model) =
-    case model.wizardDialog of
+    case wizardDialog of
         Nothing ->
             ( model
             , Cmd.none
@@ -98,7 +98,7 @@ hideAndClose ({ wizardDialog } as model) =
 update : Msg -> HasWizardDialog a msg -> ( HasWizardDialog a msg, Cmd msg )
 update msg ({ wizardDialog } as model) =
     case msg of
-        Modal msg ->
+        Modal modalMsg ->
             case wizardDialog of
                 Nothing ->
                     ( model
@@ -106,7 +106,7 @@ update msg ({ wizardDialog } as model) =
                     )
 
                 Just state ->
-                    ( { state | modal = Ui.Modal.update msg state.modal }
+                    ( { state | modal = Ui.Modal.update modalMsg state.modal }
                         |> Just
                         |> asWizardIn model
                     , Util.delayMsg 150 (state.address HideAndClose)
@@ -158,7 +158,7 @@ update msg ({ wizardDialog } as model) =
                         |> Maybe.map
                             (\{ onFinishMsg } ->
                                 onFinishMsg
-                                    |> Maybe.map (\msg -> Util.sendMsg msg)
+                                    |> Maybe.map Util.sendMsg
                                     |> Maybe.withDefault Cmd.none
                             )
                         |> Maybe.withDefault Cmd.none
