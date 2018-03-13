@@ -548,21 +548,21 @@ openFlyingVaultDetails flyingVault model =
 
 deletedVault : WebData VaultId -> Model -> ( Model, Cmd Msg )
 deletedVault data model =
+    let
+        nextModelWithState vaultId =
+            case model.state of
+                ShowingVaultDetails v ->
+                    if v.id == vaultId then
+                        { model | state = ShowingAllVaults }
+                    else
+                        model
+
+                _ ->
+                    model
+    in
     case data of
         Success vaultId ->
-            let
-                newModel =
-                    case model.state of
-                        ShowingVaultDetails v ->
-                            if v.id == vaultId then
-                                { model | state = ShowingAllVaults }
-                            else
-                                model
-
-                        _ ->
-                            model
-            in
-            newModel
+            nextModelWithState vaultId
                 |> VaultDialog.Update.close vaultId
                 ~> (notifyText <| VaultDeleted vaultId)
 
