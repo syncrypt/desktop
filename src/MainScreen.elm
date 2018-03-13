@@ -738,7 +738,9 @@ view model =
     div [ class "MainScreen" ] <|
         case model.login of
             Unknown ->
-                [ text "..." ]
+                [ div [ class "Loading" ]
+                    [ text "Loading ..." ]
+                ]
 
             LoggedOut ->
                 [ LoginDialog.View.view model ]
