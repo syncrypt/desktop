@@ -106,11 +106,6 @@ vaultInfoItem vault bodyItems =
         bodyItems
 
 
-vaultStatus : Vault -> Model -> Html msg
-vaultStatus vault model =
-    vaultUpdatedAtInfo vault model
-
-
 vaultActivity : Vault -> Model -> Html msg
 vaultActivity vault model =
     vaultInfoItem vault
@@ -162,12 +157,6 @@ vaultRevisionCount vault model =
                 [ text (toString vault.revisionCount) ]
             ]
         ]
-
-
-flyingVaultInfoItem : FlyingVault -> Model -> Html msg
-flyingVaultInfoItem vault model =
-    div [ class "VaultInfoItem" ]
-        [ flyingVaultUpdatedAtInfo vault model ]
 
 
 vaultInfo :
@@ -241,7 +230,7 @@ vaultItem model vault =
         ]
         [ model
             |> vaultInfo vault
-                [ vaultStatus vault model ]
+                [ vaultUpdatedAtInfo vault model ]
                 [ vaultUserCount vault model
                 , vaultActivity vault model
                 , vaultRevisionCount vault model
@@ -261,7 +250,7 @@ flyingVaultItem model flyingVault =
         ]
         [ model
             |> vaultInfo flyingVault
-                [ flyingVaultInfoItem flyingVault model ]
+                [ flyingVaultUpdatedAtInfo flyingVault model ]
                 [ vaultUserCount vault model
                 , vaultActivity vault model
                 , vaultRevisionCount vault model

@@ -106,13 +106,13 @@ $border-radius-vault-card: 5px;
   }
 
   .FlyingVaultCard {
-    border: 1px dashed #e6e6e6;
+    border: 1px dashed $color-bg-light;
     transition: all 0.5s;
-    background-color: #aaa;
+    background-color: #bbb;
   }
 
   .FlyingVaultCard:hover {
-    background-color: #efddda;
+    background-color: $color-bg-extra-light;
   }
 
   .FlyingVaultCard canvas {
@@ -248,7 +248,7 @@ $border-radius-vault-card: 5px;
   }
 
   .VaultUpdatedAt {
-    font-color: $color-text-dark;
+    color: $color-text-dark;
     font-size: $font-size-regular;
   }
 
