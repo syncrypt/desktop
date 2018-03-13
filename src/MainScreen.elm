@@ -743,7 +743,15 @@ view model =
                 ]
 
             LoggedOut ->
-                [ LoginDialog.View.view model ]
+                if model.isFirstLaunch then
+                    [ div [ class (currentClass model) ] <|
+                        [ header model
+                        , viewNotificationCenter model
+                        , WizardDialog.view model
+                        ]
+                    ]
+                else
+                    [ LoginDialog.View.view model ]
 
             LoggedIn _ ->
                 [ div [ class (currentClass model) ] <|
