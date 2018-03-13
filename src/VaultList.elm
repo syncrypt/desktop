@@ -34,9 +34,23 @@ type alias HasModificationDate a =
     { a | modificationDate : Maybe Date }
 
 
-vaultItemSyncStateClass : Vault -> Model -> String
+type VaultItemStateType
+    = Vault Vault
+    | FlyingVault FlyingVault
+
+
+vaultItemSyncStateClass : VaultItemStateType -> Model -> String
 vaultItemSyncStateClass vault model =
-    "VaultStatus-" ++ toString (Model.vaultStatus vault model)
+    let
+        status =
+            case vault of
+                Vault v ->
+                    Model.vaultStatus v.status v model
+
+                FlyingVault fv ->
+                    Model.vaultStatus Unsynced fv model
+    in
+    "VaultStatus-" ++ toString status
 
 
 updatedAtInfo : HasModificationDate a -> Maybe (Html msg) -> Model -> Html msg
@@ -70,7 +84,7 @@ vaultUpdatedAtInfo : Vault -> Model -> Html msg
 vaultUpdatedAtInfo vault model =
     updatedAtInfo vault
         (Just <|
-            div [ class (vaultItemSyncStateClass vault model) ]
+            div [ class (vaultItemSyncStateClass (Vault vault) model) ]
                 []
         )
         model
@@ -78,16 +92,12 @@ vaultUpdatedAtInfo vault model =
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
 flyingVaultUpdatedAtInfo flyingVault model =
-    let
-        updatedText =
-            case flyingVault.modificationDate of
-                Nothing ->
-                    text ""
-
-                Just _ ->
-                    text <| t T.LastUpdateToVault model
-    in
-    updatedAtInfo flyingVault (Just updatedText) model
+    updatedAtInfo flyingVault
+        (Just <|
+            div [ class (vaultItemSyncStateClass (FlyingVault flyingVault) model) ]
+                []
+        )
+        model
 
 
 vaultInfoItem : HasId a -> List (Html msg) -> Html msg

@@ -309,22 +309,18 @@ isClonedVault { id } model =
     not <| hasVaultWithId id model
 
 
-vaultStatus : Vault -> Model -> Data.Vault.Status
-vaultStatus vault { stats } =
-    let
-        default =
-            vault.status
-    in
+vaultStatus : Data.Vault.Status -> HasVaultId a -> Model -> Data.Vault.Status
+vaultStatus default { id } { stats } =
     case stats of
         Success stats ->
-            case Dict.get ("/v1/vault/" ++ vault.id ++ "/") stats.states of
-                Just status ->
-                    status
+            case Dict.get ("/v1/vault/" ++ id ++ "/") stats.states of
+                Just foundStatus ->
+                    foundStatus
 
                 Nothing ->
                     let
                         _ =
-                            Debug.log "Failed to get vault status: " ( vault.id, stats )
+                            Debug.log "Failed to get vault status: " ( id, stats )
                     in
                     default
 
