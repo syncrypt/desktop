@@ -28,7 +28,7 @@ view ({ settingsDialog } as model) =
 
 
 languageButton : Language -> HasSettingsDialog a -> Html Model.Msg
-languageButton forLanguage { language, settingsDialog } =
+languageButton forLanguage { language } =
     let
         onClickMsg =
             Model.SettingsDialogMsg <| LanguageSelection forLanguage
@@ -82,7 +82,7 @@ changePasswordForm : HasSettingsDialog a -> Html Model.Msg
 changePasswordForm ({ settingsDialog } as model) =
     div
         [ classList
-            [ ( "Hidden", not model.settingsDialog.showChangePasswordForm )
+            [ ( "Hidden", not settingsDialog.showChangePasswordForm )
             , ( "ChangePasswordForm", True )
             ]
         ]
@@ -159,9 +159,6 @@ buttons ({ settingsDialog } as model) =
         passwordConfirmation =
             settingsDialog.newPasswordConfirmationInput.value
 
-        isValidOldPassword =
-            not <| String.isEmpty oldPassword
-
         isValidNewPassword =
             (not <| String.isEmpty newPassword)
                 && (newPassword == passwordConfirmation)
@@ -181,7 +178,10 @@ buttons ({ settingsDialog } as model) =
 
             _ ->
                 if newPassword == passwordConfirmation then
-                    button [ class "Button", disabled isValidNewPassword ]
+                    button
+                        [ class "Button"
+                        , disabled <| isValidNewPassword
+                        ]
                         { label = dialogText T.ChangePassword model
                         , onClick = Model.SettingsDialogMsg ConfirmChangePassword
                         }

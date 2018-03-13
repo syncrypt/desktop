@@ -1,4 +1,12 @@
-port module Ports exposing (..)
+port module Ports
+    exposing
+        ( addEmailToCompletionList
+        , focusOn
+        , getEmailCompletionList
+        , openPasswordResetInBrowser
+        , openVaultFolder
+        , updateEmailCompletionList
+        )
 
 
 port focusOn : String -> Cmd msg

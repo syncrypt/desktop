@@ -5,7 +5,15 @@ import Daemon
 import Dialog exposing (asModalIn)
 import Model
 import Ports
-import SettingsDialog.Model as SModel exposing (..)
+import SettingsDialog.Model as SModel
+    exposing
+        ( HasSettingsDialog
+        , Msg(..)
+        , State
+        , asStateIn
+        , close
+        , hasChanged
+        )
 import Ui.Input
 import Ui.Modal
 
@@ -18,9 +26,9 @@ update msg ({ settingsDialog } as model) =
             , Cmd.none
             )
 
-        ConfirmationDialogMsg msg ->
+        ConfirmationDialogMsg dialogMsg ->
             ( settingsDialog
-                |> ConfirmationDialog.update msg
+                |> ConfirmationDialog.update dialogMsg
                 |> asStateIn model
             , Cmd.none
             )
@@ -38,9 +46,9 @@ update msg ({ settingsDialog } as model) =
                 }
             )
 
-        ModalMsg msg ->
+        ModalMsg modalMsg ->
             ( settingsDialog.modal
-                |> Ui.Modal.update msg
+                |> Ui.Modal.update modalMsg
                 |> asModalIn settingsDialog
                 |> asStateIn model
             , Cmd.none
@@ -60,27 +68,27 @@ update msg ({ settingsDialog } as model) =
             , Ports.openPasswordResetInBrowser ()
             )
 
-        OldPasswordInputMsg msg ->
+        OldPasswordInputMsg inputMsg ->
             model
-                |> updateInput msg
+                |> updateInput inputMsg
                     { input = settingsDialog.oldPasswordInput
                     , cmdMsg = SModel.OldPasswordInputMsg
                     , setInput =
                         \input state -> { state | oldPasswordInput = input }
                     }
 
-        NewPasswordInputMsg msg ->
+        NewPasswordInputMsg inputMsg ->
             model
-                |> updateInput msg
+                |> updateInput inputMsg
                     { input = settingsDialog.newPasswordInput
                     , cmdMsg = SModel.NewPasswordInputMsg
                     , setInput =
                         \input state -> { state | newPasswordInput = input }
                     }
 
-        NewPasswordConfirmationInputMsg msg ->
+        NewPasswordConfirmationInputMsg inputMsg ->
             model
-                |> updateInput msg
+                |> updateInput inputMsg
                     { input = settingsDialog.newPasswordConfirmationInput
                     , cmdMsg = SModel.NewPasswordConfirmationInputMsg
                     , setInput =

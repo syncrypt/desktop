@@ -1,6 +1,12 @@
 module VaultDialog.View exposing (..)
 
-import Animation exposing (..)
+import Animation
+    exposing
+        ( Animation(..)
+        , animation
+        , loadingSpinner
+        , loadingSpinnerIf
+        )
 import ConfirmationDialog
 import Daemon
 import Data.User as User exposing (Email, User, UserKey)
@@ -20,11 +26,8 @@ import Html
     exposing
         ( Html
         , div
-        , form
         , h4
         , img
-        , input
-        , label
         , span
         , table
         , td
@@ -32,9 +35,9 @@ import Html
         , th
         , tr
         )
-import Html.Attributes exposing (class, classList, for, id, src, style)
+import Html.Attributes exposing (class, classList, src)
 import Html.Events exposing (onClick)
-import Language exposing (HasLanguage, Language)
+import Language exposing (HasLanguage)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
@@ -58,10 +61,8 @@ import Util
         , button
         , dateParts
         , fullDateString
-        , monthNumber
         , onAnyKeyDown
         , onEnter
-        , padNumber
         , shortDateString
         , tooltipItem
         )
@@ -75,7 +76,6 @@ import VaultDialog.Model
         , RequiresConfirmation(..)
         , State
         , TabId
-        , folderIsEmpty
         , hasFiles
         , isExpanded
         , isFilterEnabled

@@ -41,11 +41,10 @@ module Util
         )
 
 import Date exposing (Date)
-import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (attribute, class, classList, style)
+import Html exposing (Html, span, text)
+import Html.Attributes exposing (attribute, class)
 import Html.Events
 import Json.Decode as Json
-import Language exposing (Language)
 import Process
 import Round
 import Task exposing (Task, andThen, attempt, perform)
@@ -178,8 +177,8 @@ bytesReadable x =
                         "" ->
                             a
 
-                        b ->
-                            a ++ "." ++ b
+                        c ->
+                            a ++ "." ++ c
 
                 _ ->
                     sizeStr
@@ -252,7 +251,7 @@ findIndex : (a -> Bool) -> List a -> Maybe Int
 findIndex check list =
     list
         |> List.indexedMap (,)
-        |> findFirst (\( idx, name ) -> check name)
+        |> findFirst (\( _, name ) -> check name)
         |> Maybe.map Tuple.first
 
 
@@ -339,7 +338,10 @@ type TooltipLength
 
 
 type alias TooltipConfig =
-    { position : Position, length : TooltipLength, text : String }
+    { position : Position
+    , length : TooltipLength
+    , text : String
+    }
 
 
 tooltipItem : TooltipConfig -> List (Html msg) -> Html msg
@@ -414,12 +416,17 @@ dateDecoder =
                     Json.succeed (Just date)
 
                 Err error ->
+                    let
+                        _ =
+                            Debug.log "Could not decode date" error
+                    in
                     Json.succeed Nothing
     in
     Json.string
         |> Json.andThen convert
 
 
+shortenString : Int -> String -> String
 shortenString maxSize string =
     if String.length string > maxSize then
         String.left maxSize string ++ "..."
@@ -435,6 +442,27 @@ padNumber val =
         "0" ++ toString val
 
 
+type alias Year =
+    Int
+
+
+type alias Day =
+    Int
+
+
+type alias Hour =
+    Int
+
+
+type alias Minute =
+    Int
+
+
+type alias Second =
+    Int
+
+
+dateParts : Date -> ( Year, Date.Month, Day, Hour, Minute, Second )
 dateParts date =
     ( Date.year date
     , Date.month date
@@ -485,6 +513,7 @@ monthNumber month =
             12
 
 
+fullDateString : Date -> String
 fullDateString date =
     let
         ( year, month, day, hour, minute, second ) =
@@ -503,6 +532,7 @@ fullDateString date =
         ++ (second |> padNumber)
 
 
+shortDateString : Date -> String
 shortDateString date =
     let
         ( _, _, _, hour, minute, second ) =

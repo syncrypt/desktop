@@ -17,6 +17,7 @@ import Dict exposing (Dict)
 import Path exposing (Path, asPath)
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
+import Time
 import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
@@ -603,6 +604,7 @@ eventSortByCreatedAt a b =
         GT
 
 
+eventDistVal : Event -> Time.Time
 eventDistVal event =
     case event of
         Data.Vault.History item ->

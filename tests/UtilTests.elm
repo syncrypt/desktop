@@ -1,9 +1,9 @@
 module UtilTests exposing (..)
 
-import Test exposing (..)
 import Expect
-import Util
 import Fuzz
+import Test exposing (..)
+import Util
 
 
 skipCharsWhile : Test
@@ -56,4 +56,33 @@ removeTrailing =
                 (str ++ "    ")
                     |> Util.removeTrailing ' '
                     |> Expect.equal (str |> Util.removeTrailing ' ')
+        ]
+
+
+bytesReadable : Test
+bytesReadable =
+    describe "Util.bytesReadable"
+        [ test "returns bytes strings" <|
+            \_ ->
+                999
+                    |> Util.bytesReadable
+                    |> Expect.equal "999 Bytes"
+        , test "returns kB strings" <|
+            \_ ->
+                (1024.0 * 10.234)
+                    |> round
+                    |> Util.bytesReadable
+                    |> Expect.equal "10 kB"
+        , test "returns MB strings" <|
+            \_ ->
+                (1024.0 * 1024.0 * 10.234)
+                    |> round
+                    |> Util.bytesReadable
+                    |> Expect.equal "10.2 MB"
+        , test "returns GB strings" <|
+            \_ ->
+                (1024.0 * 1024.0 * 1024.0 * 10.234)
+                    |> round
+                    |> Util.bytesReadable
+                    |> Expect.equal "10.23 GB"
         ]
