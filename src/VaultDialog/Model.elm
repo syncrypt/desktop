@@ -267,7 +267,7 @@ isIgnored path model =
 isAnyParentIgnored : Path -> State -> Bool
 isAnyParentIgnored path { ignoredFolderItems } =
     ignoredFolderItems
-        |> Set.filter (Path.isNestedUnder path)
+        |> Set.filter (\ignoredPath -> Path.isNestedUnder ignoredPath path)
         |> Set.isEmpty
         |> not
 
