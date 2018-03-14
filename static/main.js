@@ -67,7 +67,7 @@ function createWindow() {
     return
   }
 
-  var width = 845
+  var width = 930;
   if (process.platform == 'win32') {
     width += 34
   }
@@ -75,8 +75,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: width,
     minWidth: width,
-    height: 750,
-    minHeight: 750,
+    height: 820,
+    minHeight: 770,
     title: "Syncrypt",
     frame: true,
     resizable: true,
