@@ -76,6 +76,7 @@ import VaultDialog.Model
         , RequiresConfirmation(..)
         , State
         , TabId
+        , folderIsEmpty
         , hasFiles
         , isExpanded
         , isFilterEnabled
@@ -962,7 +963,8 @@ renderFolder state ( path, files ) =
         div [ class "FolderItem" ] <|
             inFolderPath path
                 [ span []
-                    [ fileCheckbox path state
+                    [ span [ class "Folder" ] []
+                    , fileCheckbox path state
                     , folderCollapseToggle path state
                     ]
                 , div (hiddenIfIgnored path state [])
@@ -974,7 +976,8 @@ renderFolder state ( path, files ) =
         div [ class "File FolderItem-Collapsed" ]
             (inFolderPath path
                 [ span []
-                    [ fileCheckbox path state
+                    [ span [ class "Folder" ] []
+                    , fileCheckbox path state
                     , folderCollapseToggle path state
                     ]
                 ]
@@ -1020,7 +1023,9 @@ inFolderPath path contents =
 
 folderCollapseToggle : Path -> State -> Html Msg
 folderCollapseToggle path state =
-    if isExpanded path state then
+    if folderIsEmpty path state then
+        text ""
+    else if isExpanded path state then
         Html.button
             [ onClick (CollapseFolder path)
             , class "FolderItem-Collapse-Toggle"

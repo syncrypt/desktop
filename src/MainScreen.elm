@@ -752,38 +752,54 @@ removeVaultFromSync vaultId model =
 
 view : Model -> Html Msg
 view model =
-    div [ class "MainScreen" ] <|
-        case model.login of
-            Unknown ->
-                [ div [ class "Loading" ]
-                    [ text "Loading ..." ]
-                ]
+    let
+        content =
+            case model.login of
+                Unknown ->
+                    loadingView model
 
-            LoggedOut ->
-                if model.isFirstLaunch then
-                    [ div [ class (currentClass model) ] <|
-                        [ viewNotificationCenter model
-                        , WizardDialog.view model
-                        ]
-                    ]
-                else
-                    [ LoginDialog.View.view model ]
+                LoggedOut ->
+                    loggedOutView model
 
-            LoggedIn _ ->
-                [ div [ class (currentClass model) ] <|
-                    [ header model
-                    , div
-                        [ class "MainScreen-Container"
-                        , animation 1.0 FadeInFast
-                        ]
-                        [ VaultList.view model ]
-                    , footer model
-                    , viewNotificationCenter model
-                    , WizardDialog.view model
-                    , SettingsDialog.View.view model
-                    ]
-                        ++ VaultDialog.View.viewAll model
-                ]
+                LoggedIn _ ->
+                    loggedInView model
+    in
+    div [ class "MainScreen" ]
+        [ content ]
+
+
+loadingView : Model -> Html msg
+loadingView model =
+    div [ class "Loading" ]
+        [ text "Loading ..." ]
+
+
+loggedOutView : Model -> Html Msg
+loggedOutView model =
+    if model.isFirstLaunch then
+        div [ class (currentClass model) ] <|
+            [ viewNotificationCenter model
+            , WizardDialog.view model
+            ]
+    else
+        LoginDialog.View.view model
+
+
+loggedInView : Model -> Html Msg
+loggedInView model =
+    div [ class (currentClass model) ] <|
+        [ header model
+        , div
+            [ class "MainScreen-Container"
+            , animation 1.0 FadeInFast
+            ]
+            [ VaultList.view model ]
+        , footer model
+        , viewNotificationCenter model
+        , WizardDialog.view model
+        , SettingsDialog.View.view model
+        ]
+            ++ VaultDialog.View.viewAll model
 
 
 currentClass : Model -> String
