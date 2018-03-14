@@ -929,7 +929,7 @@ fileSelectionContainer state model =
                                 , text =
                                     t (VaultDialogText FileSelectionTooltip) model
                                 }
-                                (renderFolders state)
+                                (viewFolders state)
                             ]
                     }
                 ]
@@ -940,16 +940,16 @@ fileSelectionContainer state model =
         body
 
 
-renderFolders : State -> List (Html Msg)
-renderFolders state =
+viewFolders : State -> List (Html Msg)
+viewFolders state =
     case sortedFolders state of
         ( _, rootFileNames ) :: folders ->
             let
                 rootFiles =
-                    List.map (renderFile state []) rootFileNames
+                    List.map (viewFile state []) rootFileNames
 
                 rootFolders =
-                    List.map (renderFolder state) folders
+                    List.map (viewFolder state) folders
             in
             rootFiles ++ rootFolders
 
@@ -957,35 +957,34 @@ renderFolders state =
             []
 
 
-renderFolder : State -> FolderItem -> Html Msg
-renderFolder state ( path, files ) =
+viewFolder : State -> FolderItem -> Html Msg
+viewFolder state ( path, files ) =
+    let
+        folderItem =
+            span []
+                [ span [ class "Folder" ] []
+                , fileCheckbox path state
+                , folderCollapseToggle path state
+                ]
+    in
     if isExpanded path state then
         div [ class "FolderItem" ] <|
             inFolderPath path
-                [ span []
-                    [ span [ class "Folder" ] []
-                    , fileCheckbox path state
-                    , folderCollapseToggle path state
-                    ]
+                [ folderItem
                 , div (hiddenIfIgnored path state [])
                     [ div [ class "FolderItem-Nested" ]
-                        (List.map (renderFile state path) files)
+                        (List.map (viewFile state path) files)
                     ]
                 ]
     else
         div [ class "File FolderItem-Collapsed" ]
             (inFolderPath path
-                [ span []
-                    [ span [ class "Folder" ] []
-                    , fileCheckbox path state
-                    , folderCollapseToggle path state
-                    ]
-                ]
+                [ folderItem ]
             )
 
 
-renderFile : State -> Path -> FileName -> Html Msg
-renderFile state folderPath path =
+viewFile : State -> Path -> FileName -> Html Msg
+viewFile state folderPath path =
     let
         filePath =
             folderPath ++ [ path ]

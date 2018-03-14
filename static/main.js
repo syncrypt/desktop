@@ -39,8 +39,9 @@ function launchDaemon() {
       console.log(msg)
     })
   } else {
-    console.warn('Did not start the daemon, because the following path does not ' +
-      `exist: ${daemonPath}`)
+    console.warn(
+      `Did not start the daemon, because the following path does not exist: ${daemonPath}`
+    )
   }
 }
 
