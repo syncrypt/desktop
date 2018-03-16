@@ -3,17 +3,21 @@ module Data.Daemon
         ( DaemonConfig
         , GUIConfig
         , KeyState(..)
+        , LogItem
         , Stats
         , daemonConfigDecoder
         , guiConfigDecoder
         , languageDecoder
+        , logItemDecoder
         )
 
-import Data.Vault
+import Data.Vault exposing (LogLevel, VaultId)
+import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (fail, succeed)
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode.Pipeline exposing (decode, optional, required)
 import Language exposing (Language(..))
+import Util
 
 
 type KeyState
@@ -43,6 +47,14 @@ type alias GUIConfig =
 
 type alias DaemonConfig =
     { gui : GUIConfig
+    }
+
+
+type alias LogItem =
+    { level : LogLevel
+    , createdAt : Maybe Date
+    , message : String
+    , vaultId : Maybe VaultId
     }
 
 
@@ -78,3 +90,12 @@ languageDecoder =
     in
     Json.string
         |> Json.andThen convert
+
+
+logItemDecoder : Json.Decoder LogItem
+logItemDecoder =
+    decode LogItem
+        |> required "level" Data.Vault.logLevelDecoder
+        |> required "createdAt" Util.dateDecoder
+        |> required "message" Json.string
+        |> optional "vault_id" (Json.maybe Json.string) Nothing

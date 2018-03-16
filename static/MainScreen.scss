@@ -205,3 +205,40 @@ li {
     max-height: 450px;
   }
 }
+
+.MainScreen-DaemonLogDialog {
+  max-width: 700px;
+  max-height: 650px;
+  overflow-y: scroll;
+
+  table {
+    max-width: 500%;
+    height: 100%;
+  }
+
+  th {
+    text-align: left;
+    margin-bottom: $padding-large;
+  }
+
+  th.LogLevel,
+  .LogLevel {
+    font-weight: bold;
+    margin: $padding-small;
+    width: 10%;
+  }
+
+  th.CreatedAt,
+  .CreatedAt {
+    margin: $padding-small;
+    width: 25%;
+  }
+
+  th.Message,
+  .Message {
+    font-family: 'Courier New', Courier, monospace;
+    margin: $padding-small;
+    width: 65%;
+    text-overflow: clip;
+  }
+}

@@ -72,6 +72,7 @@ subscriptions model =
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
+                , DaemonLog.subscriptions model
                 ]
 
         _ ->
@@ -395,6 +396,21 @@ update msg model =
             model
                 |> closeDaemonLogDialog
 
+        DaemonLogStream (Ok logItem) ->
+            ( model
+                |> Model.addDaemonLogItem logItem
+            , Cmd.none
+            )
+
+        DaemonLogStream (Err reason) ->
+            let
+                _ =
+                    Debug.log "DaemonLogStream Error" reason
+            in
+            ( model
+            , Cmd.none
+            )
+
 
 setSetupWizardEmail : String -> Model -> Model
 setSetupWizardEmail email ({ setupWizard, loginDialog } as model) =
@@ -473,7 +489,7 @@ openFeedbackWizard model =
 
 openDaemonLogDialog : Model -> ( Model, Cmd Msg )
 openDaemonLogDialog model =
-    model
+    { model | state = ShowingDaemonLog }
         |> WizardDialog.open (DaemonLog.dialogSettings model)
 
 

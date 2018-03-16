@@ -44,6 +44,7 @@ type alias Model =
     , emailCompletionList : List Email
     , feedback : Maybe String
     , setupWizard : SetupWizardState
+    , daemonLogItems : List Data.Daemon.LogItem
     }
 
 
@@ -83,6 +84,7 @@ type State
     | ShowingFlyingVaultDetails FlyingVault
     | CreatingNewVault
     | CloningVault VaultId
+    | ShowingDaemonLog
 
 
 type Msg
@@ -141,6 +143,7 @@ type Msg
     | ExportedUserKey (WebData ExportStatusResponse)
     | OpenDaemonLogDialog
     | CloseDaemonLogDialog
+    | DaemonLogStream (Result String Data.Daemon.LogItem)
 
 
 
@@ -244,6 +247,7 @@ init config =
         , password = Nothing
         , passwordResetSent = False
         }
+    , daemonLogItems = []
     }
 
 
@@ -331,3 +335,13 @@ vaultStatus default { id, remoteId } model =
 
         _ ->
             default
+
+
+addDaemonLogItem : Data.Daemon.LogItem -> Model -> Model
+addDaemonLogItem item model =
+    { model
+        | daemonLogItems =
+            item
+                :: model.daemonLogItems
+                |> List.take 500
+    }

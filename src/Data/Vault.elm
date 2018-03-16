@@ -22,6 +22,7 @@ module Data.Vault
         , init
         , jsonOptions
         , logItemDecoder
+        , logLevelDecoder
         , metadataEncoder
         , nameOrId
         , vaultStatusDecoder

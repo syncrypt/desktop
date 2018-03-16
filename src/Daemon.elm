@@ -28,6 +28,7 @@ module Daemon
         , removeVault
         , removeVaultUser
         , sendFeedback
+        , subscribeDaemonLogStream
         , subscribeVaultLogStream
         , updateGUIConfig
         , updateVault
@@ -80,6 +81,7 @@ type ApiPath
 
 type ApiStreamPath
     = VaultLogStream VaultId
+    | DaemonLogStream
 
 
 getStats : Model -> Cmd Msg
@@ -178,7 +180,27 @@ subscribeVaultLogStream vaultId toMsg { config } =
             toMsg <| Json.decodeString logItemDecoder json
 
         url =
-            apiWSUrl config (apiPath (Stream (VaultLogStream vaultId)))
+            Stream (VaultLogStream vaultId)
+                |> apiPath
+                |> apiWSUrl config
+    in
+    WebSocket.listen url parseMsg
+
+
+subscribeDaemonLogStream :
+    (Result String Data.Daemon.LogItem -> msg)
+    -> Model
+    -> Sub msg
+subscribeDaemonLogStream toMsg { config } =
+    let
+        parseMsg : String -> msg
+        parseMsg json =
+            toMsg <| Json.decodeString Data.Daemon.logItemDecoder json
+
+        url =
+            Stream DaemonLogStream
+                |> apiPath
+                |> apiWSUrl config
     in
     WebSocket.listen url parseMsg
 
@@ -496,6 +518,9 @@ apiPath apiPath =
 
         VaultHistory vaultId ->
             "vault/" ++ vaultId ++ "/history/"
+
+        Stream DaemonLogStream ->
+            "/logstream"
 
         Stream (VaultLogStream vaultId) ->
             "vault/" ++ vaultId ++ "/logstream"
