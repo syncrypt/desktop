@@ -54,6 +54,7 @@ type Text
     | Cancel
     | OK
     | Finish
+    | Close
     | Confirm
     | YourFeedback
     | SendUsYourFeedbackSuggestionsOrBugReports
@@ -152,7 +153,6 @@ type VaultDialogText
     | CreateVault
     | SaveVault
     | SyncVaultToFolder
-    | Close
     | YouDontHaveAccessToVaultUsers
 
 
@@ -291,6 +291,9 @@ translateEnglish text =
 
         Finish ->
             "Finish"
+
+        Close ->
+            "Close"
 
         Confirm ->
             "Confirm"
@@ -578,9 +581,6 @@ translateEnglishVaultDialogText vt =
         SyncVaultToFolder ->
             "Sync vault to folder"
 
-        Close ->
-            "Close"
-
         YouDontHaveAccessToVaultUsers ->
             "You don't have access to this vault's user list."
 
@@ -731,6 +731,9 @@ translateGerman text =
 
         Finish ->
             "Beenden"
+
+        Close ->
+            "Schließen"
 
         Confirm ->
             "Bestätigen"
@@ -1021,9 +1024,6 @@ translateGermanVaultDialogText vt =
 
         SyncVaultToFolder ->
             "Vault in Ordner synchronisieren"
-
-        Close ->
-            "Schließen"
 
         YouDontHaveAccessToVaultUsers ->
             "Du hast keinen Zugriff auf die Benutzerliste dieses Vaults"

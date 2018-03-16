@@ -57,6 +57,7 @@ type Button msg
     | Next
     | Cancel
     | Finish
+    | CloseBtn (Maybe msg)
     | CustomButton (List (Html.Attribute msg)) { label : String, onClick : msg }
 
 

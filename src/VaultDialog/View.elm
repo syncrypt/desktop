@@ -715,7 +715,7 @@ saveButton vaultId state model =
                     )
 
                 _ ->
-                    ( t (VaultDialogText Close) model
+                    ( t Close model
                     , Model.CloseVaultDetails vaultId
                     )
     in

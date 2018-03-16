@@ -574,10 +574,8 @@ type alias ButtonSettings msg =
 
 button : List (Html.Attribute msg) -> ButtonSettings msg -> Html msg
 button attrs settings =
-    span attrs
-        [ Html.button [ Html.Events.onClick settings.onClick ]
-            [ text settings.label ]
-        ]
+    Html.button (Html.Events.onClick settings.onClick :: attrs)
+        [ text settings.label ]
 
 
 type alias CustomButtonSettings msg =

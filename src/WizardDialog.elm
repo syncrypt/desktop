@@ -250,6 +250,9 @@ wizardButtons language state buttonSettings =
                 Finish ->
                     finishButton language state
 
+                CloseBtn onClick ->
+                    closeButton onClick language state
+
                 CustomButton attrs { label, onClick } ->
                     button (attrs ++ [ class "Custom-Button" ])
                         { label = label
@@ -383,6 +386,14 @@ finishButton language state =
     button [ class "Button-Finish" ]
         { label = T.translate T.Finish language
         , onClick = state.address FinishWizard
+        }
+
+
+closeButton : Maybe msg -> Language -> State msg -> Html msg
+closeButton onClick language state =
+    button [ class "Button-Close" ]
+        { label = T.translate T.Close language
+        , onClick = Maybe.withDefault (state.address HideAndClose) onClick
         }
 
 
