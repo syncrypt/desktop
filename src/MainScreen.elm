@@ -823,7 +823,8 @@ header { language, login } =
         , div [ class "MainScreen-Buttons" ] <|
             case login of
                 LoggedIn _ ->
-                    [ View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
+                    [ View.IconButton.view language RefreshVaultsButton [ onClick UpdateVaults ]
+                    , View.IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
                     , View.IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
                     , View.IconButton.view language LogoutButton [ onClick Model.Logout ]
                     ]

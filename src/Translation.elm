@@ -66,6 +66,7 @@ type Text
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
     | ProgramSettings
+    | RefreshVaults
     | SettingsDialogText SettingsDialogText
 
 
@@ -327,6 +328,9 @@ translateEnglish text =
 
         ProgramSettings ->
             "Program Settings"
+
+        RefreshVaults ->
+            "Refresh Vaults"
 
         SettingsDialogText text ->
             translateEnglishSettingsDialogText text
@@ -767,6 +771,9 @@ translateGerman text =
 
         ProgramSettings ->
             "Einstellungen"
+
+        RefreshVaults ->
+            "Vaults aktualisieren"
 
         SettingsDialogText text ->
             translateGermanSettingsDialogText text

@@ -11,6 +11,7 @@ type IconButton
     = SettingsButton
     | LogoutButton
     | FeedbackButton
+    | RefreshVaultsButton
 
 
 view : Language -> IconButton -> List (Html.Attribute msg) -> Html msg
@@ -47,6 +48,9 @@ iconName buttonType =
         FeedbackButton ->
             "feedback"
 
+        RefreshVaultsButton ->
+            "sync_white"
+
 
 tooltip : Language -> IconButton -> String
 tooltip language buttonType =
@@ -59,3 +63,6 @@ tooltip language buttonType =
 
         FeedbackButton ->
             T.translate T.SendUsFeedbackAndBugReports language
+
+        RefreshVaultsButton ->
+            T.translate T.RefreshVaults language
