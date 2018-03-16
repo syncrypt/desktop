@@ -18,7 +18,7 @@ import Html
         , thead
         , tr
         )
-import Html.Attributes exposing (class, type_)
+import Html.Attributes exposing (class, classList, type_)
 import Model
 import Translation
 import WizardDialog.Model exposing (..)
@@ -105,14 +105,22 @@ viewLogItems model =
                 ]
             ]
         , tbody []
-            (List.map (viewLogItem model) model.daemonLogItems)
+            (model.daemonLogItems
+                |> List.indexedMap (viewLogItem model)
+            )
         ]
     ]
 
 
-viewLogItem : Model.Model -> Data.Daemon.LogItem -> Html Model.Msg
-viewLogItem model { level, createdAt, message } =
-    tr [ class "LogItem" ]
+viewLogItem : Model.Model -> Int -> Data.Daemon.LogItem -> Html Model.Msg
+viewLogItem model idx { level, createdAt, message } =
+    tr
+        [ classList
+            [ ( "LogItem", True )
+            , ( "LogItemLight", idx % 2 == 0 )
+            , ( "LogItemDark", idx % 2 == 1 )
+            ]
+        ]
         [ td [ class "LogLevel" ]
             [ text <| toString level ]
         , td [ class "CreatedAt" ] <|

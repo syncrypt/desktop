@@ -207,8 +207,11 @@ li {
 }
 
 .MainScreen-DaemonLogDialog {
-  max-width: 700px;
-  max-height: 650px;
+  min-width: 500px;
+  height: 450px;
+
+  text-overflow: ellipsis;
+  overflow-x: hidden;
   overflow-y: scroll;
 
   table {
@@ -240,5 +243,14 @@ li {
     margin: $padding-small;
     width: 65%;
     text-overflow: clip;
+    max-width: 300px;
+  }
+
+  .LogItemDark {
+    background-color: #eee;
+  }
+
+  .LogItemLight {
+    background-color: $color-bg-light;
   }
 }
