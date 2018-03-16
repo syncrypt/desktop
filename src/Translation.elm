@@ -1121,8 +1121,16 @@ timeAgo date { now, language } =
     in
     case now of
         Just now ->
-            Date.Distance.inWordsWithConfig config date now
-                ++ " ago"
+            let
+                distanceString =
+                    Date.Distance.inWordsWithConfig config date now
+            in
+            case language of
+                German ->
+                    "vor " ++ distanceString
+
+                English ->
+                    distanceString ++ " ago"
 
         Nothing ->
             toString date
