@@ -80,7 +80,8 @@ $width-files-tab-input: 250px;
   }
 
   .TabBody {
-    margin-top: $padding-medium;
+    min-height: 200px;
+    // margin-top: $padding-medium;
     overflow-x: hidden;
   }
 

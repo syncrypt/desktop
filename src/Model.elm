@@ -339,9 +339,17 @@ vaultStatus default { id, remoteId } model =
 
 addDaemonLogItem : Data.Daemon.LogItem -> Model -> Model
 addDaemonLogItem item model =
-    { model
-        | daemonLogItems =
-            item
-                :: model.daemonLogItems
-                |> List.take 500
-    }
+    case model.now of
+        Just now ->
+            { model
+                | daemonLogItems =
+                    item
+                        :: model.daemonLogItems
+                        -- TODO: fix this code / refactor and reuse the similar code from VaultDialog
+                        |> List.sortBy (.createdAt >> Maybe.withDefault now >> Date.toTime)
+                        |> List.reverse
+                        |> List.take 500
+            }
+
+        Nothing ->
+            model
