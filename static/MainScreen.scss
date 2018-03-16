@@ -207,7 +207,7 @@ li {
 }
 
 .MainScreen-DaemonLogDialog {
-  min-width: 500px;
+  width: 600px;
   height: 450px;
 
   text-overflow: ellipsis;
@@ -215,8 +215,12 @@ li {
   overflow-y: scroll;
 
   table {
-    max-width: 500%;
+    max-width: 100%;
     height: 100%;
+  }
+
+  tr {
+    display: table-row;
   }
 
   th {

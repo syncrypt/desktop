@@ -82,12 +82,7 @@ step1 model state =
                 wizardContent <|
                     viewLogItems model
         , buttons =
-            Visible
-                [ CustomButton []
-                    { label = "Close"
-                    , onClick = Model.CloseDaemonLogDialog
-                    }
-                ]
+            Visible [ CloseBtn <| Just Model.CloseDaemonLogDialog ]
         }
 
 
