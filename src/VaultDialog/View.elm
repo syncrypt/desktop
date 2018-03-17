@@ -61,6 +61,7 @@ import Util
         , button
         , dateParts
         , fullDateString
+        , materialIcon
         , onAnyKeyDown
         , onEnter
         , shortDateString
@@ -1025,17 +1026,9 @@ folderCollapseToggle path state =
     if folderIsEmpty path state then
         text ""
     else if isExpanded path state then
-        Html.button
-            [ onClick (CollapseFolder path)
-            , class "FolderItem-Collapse-Toggle"
-            ]
-            [ text "v" ]
+        materialIcon "expand_more" [ onClick (CollapseFolder path) ]
     else
-        Html.button
-            [ onClick (ExpandFolder path)
-            , class "FolderItem-Collapse-Toggle"
-            ]
-            [ text ">" ]
+        materialIcon "chevron_right" [ onClick (ExpandFolder path) ]
 
 
 fileCheckbox : Path -> State -> Html Msg
