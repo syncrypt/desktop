@@ -57,7 +57,6 @@ contents model =
         [ text <| dialogText T.AccountOptions model ]
     , changePasswordButton model
     , resetPasswordButton model
-    , separator
     , changePasswordForm model
     ]
 
