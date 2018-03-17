@@ -138,6 +138,16 @@ const openPasswordResetInBrowser = () => {
   }
 }
 
+const openUserKeyExportFileDialog = (buttonLabel) => {
+  Electron.remote.dialog.showSaveDialog({
+    title: "Select file to export your key to",
+    buttonLabel: buttonLabel,
+    filters: [{ name: "User Key Export Archive", extensions: ["zip"] }]
+  }, (file) => {
+    elmApp.ports.selectedUserKeyExportFile.send(file);
+  });
+}
+
 var setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -155,6 +165,7 @@ var setupElmApp = function (daemonApiToken) {
   elmApp.ports.addEmailToCompletionList.subscribe(addEmailToCompletionList)
   elmApp.ports.updateEmailCompletionList.subscribe(updateEmailCompletionList)
   elmApp.ports.openPasswordResetInBrowser.subscribe(openPasswordResetInBrowser)
+  elmApp.ports.openUserKeyExportFileDialog.subscribe(openUserKeyExportFileDialog)
 }
 
 readAuthToken(setupElmApp)

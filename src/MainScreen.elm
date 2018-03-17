@@ -70,6 +70,7 @@ subscriptions model =
                 , Time.every Time.second (Date.fromTime >> SetTime)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
+                , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
                 ]
 
         _ ->
@@ -363,6 +364,25 @@ update msg model =
 
         SetupWizardPassword password ->
             ( setSetupWizardPassword password model
+            , Cmd.none
+            )
+
+        OpenUserKeyExportDialog ->
+            ( model
+            , Ports.openUserKeyExportFileDialog "Export Key to file"
+            )
+
+        SelectedUserKeyExportFile filePath ->
+            let
+                _ =
+                    Debug.log "SelectedUserKeyExportFile" filePath
+            in
+            ( model
+            , Daemon.exportUserKey filePath model
+            )
+
+        ExportedUserKey _ ->
+            ( model
             , Cmd.none
             )
 

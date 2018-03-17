@@ -54,11 +54,23 @@ contents model =
     , languageButton English model
     , separator
     , div [ class "InfoLabel" ]
+        [ text "Key export / import" ]
+    , keyExportButton model
+    , separator
+    , div [ class "InfoLabel" ]
         [ text <| dialogText T.AccountOptions model ]
     , changePasswordButton model
     , resetPasswordButton model
     , changePasswordForm model
     ]
+
+
+keyExportButton : HasSettingsDialog a -> Html Model.Msg
+keyExportButton model =
+    button [ class "Button" ]
+        { onClick = Model.OpenUserKeyExportDialog
+        , label = "Export Key"
+        }
 
 
 changePasswordButton : HasSettingsDialog a -> Html Model.Msg

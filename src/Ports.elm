@@ -4,7 +4,9 @@ port module Ports
         , focusOn
         , getEmailCompletionList
         , openPasswordResetInBrowser
+        , openUserKeyExportFileDialog
         , openVaultFolder
+        , selectedUserKeyExportFile
         , updateEmailCompletionList
         )
 
@@ -25,3 +27,9 @@ port getEmailCompletionList : (List String -> msg) -> Sub msg
 
 
 port openPasswordResetInBrowser : () -> Cmd msg
+
+
+port openUserKeyExportFileDialog : String -> Cmd msg
+
+
+port selectedUserKeyExportFile : (String -> msg) -> Sub msg

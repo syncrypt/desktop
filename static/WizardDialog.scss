@@ -49,4 +49,52 @@
   .Button-Close {
     float: right;
   }
+
+  .InfoText {
+    line-height: ($font-size-regular + $padding-tiny);
+
+    span {
+      line-height: ($font-size-regular + $padding-tiny);
+      display: block;
+    }
+
+    .Header {
+      font-weight: bold;
+      font-size: $font-size-header;
+      margin-bottom: $padding-tiny;
+    }
+
+    .SubHeader {
+      font-weight: bold;
+      margin-bottom: $padding-tiny;
+    }
+  }
+
+  .Options {
+    display: block;
+    max-width: 50%;
+    margin-top: $padding-medium;
+
+    button {
+      margin-top: $padding-small;
+      margin-right: $padding-small;
+    }
+
+    .InputLabel {
+      margin-top: $padding-small;
+      font-weight: bold;
+    }
+
+    input {
+      margin-top: $padding-tiny;
+      font-size: $font-size-regular;
+      height: $font-size-small;
+      width: 200px;
+      padding-top: $padding-tiny;
+      padding-bottom: $padding-tiny;
+      padding-left: $padding-small;
+      padding-right: $padding-small;
+      border: $border-radius-input solid #3AE2E2 !important;
+    }
+  }
 }

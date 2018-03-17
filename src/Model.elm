@@ -136,6 +136,9 @@ type Msg
     | SendPasswordResetLink
     | SetupWizardEmail String
     | SetupWizardPassword String
+    | OpenUserKeyExportDialog
+    | SelectedUserKeyExportFile String
+    | ExportedUserKey (WebData ExportStatusResponse)
 
 
 

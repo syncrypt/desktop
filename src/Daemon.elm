@@ -5,6 +5,7 @@ module Daemon
         , addVaultUser
         , attemptDelayed
         , deleteVault
+        , exportUserKey
         , exportVault
         , getConfig
         , getFlyingVault
@@ -74,6 +75,7 @@ type ApiPath
     | Login
     | LoginCheck
     | Logout
+    | ExportUserKey
 
 
 type ApiStreamPath
@@ -422,6 +424,21 @@ exportVault vaultId path { config } =
         |> Cmd.map (ExportedVault vaultId)
 
 
+exportUserKey : String -> Model -> Cmd Msg
+exportUserKey path { config } =
+    let
+        json =
+            Json.Encode.object [ ( "path", Json.Encode.string path ) ]
+    in
+    config
+        |> apiRequest
+            Post
+            ExportUserKey
+            (Json json)
+            exportStatusResponseDecoder
+        |> Cmd.map ExportedUserKey
+
+
 type alias Path =
     String
 
@@ -506,6 +523,9 @@ apiPath apiPath =
 
         Logout ->
             "auth/logout"
+
+        ExportUserKey ->
+            "user_key_export"
 
 
 {-| Converts `RequestMethod` into `String`.
