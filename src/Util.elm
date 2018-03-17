@@ -23,6 +23,7 @@ module Util
         , findIndex
         , fullDateString
         , last
+        , materialIcon
         , monthNumber
         , onAnyKeyDown
         , onEnter
@@ -597,3 +598,8 @@ customButton attributes { label, onClick, disabled } =
         { label = label
         , onClick = onClick
         }
+
+
+materialIcon : String -> List (Html.Attribute msg) -> Html msg
+materialIcon iconName attributes =
+    span (class "MaterialIcons Button" :: attributes) [ text iconName ]
