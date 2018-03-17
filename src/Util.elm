@@ -600,4 +600,5 @@ customButton attributes { label, onClick, disabled } =
 
 materialIcon : String -> List (Html.Attribute msg) -> Html msg
 materialIcon iconName attributes =
-    span (class "MaterialIcons Button" :: attributes) [ text iconName ]
+    span (class "MaterialIcons Button" :: attributes)
+        [ text iconName ]

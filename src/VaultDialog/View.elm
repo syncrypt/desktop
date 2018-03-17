@@ -1025,10 +1025,13 @@ folderCollapseToggle : Path -> State -> Html Msg
 folderCollapseToggle path state =
     if folderIsEmpty path state then
         text ""
-    else if isExpanded path state then
-        materialIcon "expand_more" [ onClick (CollapseFolder path) ]
     else
-        materialIcon "chevron_right" [ onClick (ExpandFolder path) ]
+        span [ class "FolderCollapseToggle" ]
+            [ if isExpanded path state then
+                materialIcon "expand_more" [ onClick (CollapseFolder path) ]
+              else
+                materialIcon "chevron_right" [ onClick (ExpandFolder path) ]
+            ]
 
 
 fileCheckbox : Path -> State -> Html Msg

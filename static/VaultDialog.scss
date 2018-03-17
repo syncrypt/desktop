@@ -259,6 +259,13 @@ $width-files-tab-input: 250px;
     padding: 10px;
   }
 
+  .FolderCollapseToggle {
+    margin-left: $padding-tiny;
+    .MaterialIcons:hover {
+      background-color: $color-highlight;
+    }
+  }
+
   .FileSelection ui-container {
     margin-top: 10px;
   }
