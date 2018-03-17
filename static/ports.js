@@ -148,6 +148,15 @@ const openUserKeyExportFileDialog = (buttonLabel) => {
   });
 }
 
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' || event.keyCode === 27) {
+    if (event.target.tagName === "BODY") {
+      elmApp.ports.escapePressed.send(null)
+    }
+  }
+});
+
+
 const setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,

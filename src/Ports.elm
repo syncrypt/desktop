@@ -1,6 +1,7 @@
 port module Ports
     exposing
         ( addEmailToCompletionList
+        , escapePressed
         , focusOn
         , getEmailCompletionList
         , openPasswordResetInBrowser
@@ -33,3 +34,6 @@ port openUserKeyExportFileDialog : String -> Cmd msg
 
 
 port selectedUserKeyExportFile : (String -> msg) -> Sub msg
+
+
+port escapePressed : (() -> msg) -> Sub msg

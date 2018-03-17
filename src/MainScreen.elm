@@ -71,6 +71,7 @@ subscriptions model =
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
+                , Ports.escapePressed EscapePressed
                 ]
 
         _ ->
@@ -385,6 +386,15 @@ update msg model =
             ( model
             , Cmd.none
             )
+
+        EscapePressed _ ->
+            case model.state of
+                -- ESC
+                ShowingVaultDetails vault ->
+                    closeVaultDetails vault.id model
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 setSetupWizardEmail : String -> Model -> Model

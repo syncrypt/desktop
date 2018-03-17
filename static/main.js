@@ -80,8 +80,11 @@ function createWindow() {
     title: "Syncrypt",
     frame: true,
     resizable: true,
-    vibrancy: "dark"
+    vibrancy: "dark",
+    show: false
   })
+
+  mainWindow.once("ready-to-show", () => mainWindow.show())
 
   // display the index.html file
   mainWindow.loadURL(`file://${__dirname}/index.html`)
