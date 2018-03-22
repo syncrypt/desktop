@@ -116,3 +116,6 @@ clean:
 
 distclean: clean clean-deps
 	rm -rf $(RELEASE_DIR)
+
+version:
+	@node -p "require('./package.json').version"
