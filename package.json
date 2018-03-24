@@ -47,6 +47,9 @@
     },
     "nsis": {
       "artifactName": "Syncrypt-Desktop-Setup.exe"
+    },
+    "appImage": {
+      "artifactName": "Syncrypt-Desktop.AppImage"
     }
   },
   "config": {

@@ -80,6 +80,11 @@ Syncrypt-Desktop-Setup.exe: all
 	$(ELECTRON_BUILD) --win nsis
 	cp $(PACKAGE_DIR)/Syncrypt-Desktop-Setup.exe $@
 
+Syncrypt-Desktop.AppImage: all
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_BUILD) --linux AppImage
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop.AppImage $@
+
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
