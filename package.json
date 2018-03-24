@@ -41,8 +41,12 @@
     },
     "win": {
       "target": [
-        "zip"
+        "zip",
+        "nsis"
       ]
+    },
+    "nsis": {
+      "artifactName": "Syncrypt-Desktop-Setup.exe"
     }
   },
   "config": {

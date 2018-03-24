@@ -63,17 +63,22 @@ release: release-setup
 Syncrypt-Desktop-linux.zip: all
 	rm -rf $(PACKAGE_DIR) $@
 	$(ELECTRON_BUILD) --linux zip
-	cp $(PACKAGE_DIR)/Syncrypt-Desktop-linux.zip Syncrypt-Desktop-linux.zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-linux.zip $@
 
 Syncrypt-Desktop-darwin.zip: all
 	rm -rf $(PACKAGE_DIR) $@
 	$(ELECTRON_BUILD) --mac zip
-	cp $(PACKAGE_DIR)/Syncrypt-Desktop-mac.zip Syncrypt-Desktop-darwin.zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-mac.zip $@
 
 Syncrypt-Desktop-win32.zip: all
 	rm -rf $(PACKAGE_DIR) $@
 	$(ELECTRON_BUILD) --win zip
-	cp $(PACKAGE_DIR)/Syncrypt-Desktop-win.zip Syncrypt-Desktop-win32.zip
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-win.zip $@
+
+Syncrypt-Desktop-Setup.exe: all
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_BUILD) --win nsis
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop-Setup.exe $@
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
