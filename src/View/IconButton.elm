@@ -15,8 +15,8 @@ type IconButton
     | DaemonLogButton
 
 
-view : Language -> IconButton -> List (Html.Attribute msg) -> Html msg
-view language buttonType attrs =
+view : List (Html.Attribute msg) -> Language -> IconButton -> Html msg
+view attrs language buttonType =
     tooltipItem
         { position = Bottom
         , length = Auto
