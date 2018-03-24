@@ -873,23 +873,28 @@ viewNotificationCenter { notificationCenter } =
 
 
 header : Model -> Html Msg
-header { language, login } =
+header model =
     div [ class "MainScreen-Header" ]
         [ div [ class "MainScreen-HeaderLogo" ]
             []
         , div [ class "MainScreen-Buttons" ] <|
-            case login of
-                LoggedIn _ ->
-                    [ IconButton.view language RefreshVaultsButton [ onClick UpdateVaults ]
-                    , IconButton.view language DaemonLogButton [ onClick OpenDaemonLogDialog ]
-                    , IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
-                    , IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
-                    , IconButton.view language LogoutButton [ onClick Model.Logout ]
-                    ]
-
-                _ ->
-                    []
+            headerButtons model
         ]
+
+
+headerButtons : Model -> List (Html Msg)
+headerButtons { language, login } =
+    case login of
+        LoggedIn _ ->
+            [ IconButton.view language RefreshVaultsButton [ onClick UpdateVaults ]
+            , IconButton.view language DaemonLogButton [ onClick OpenDaemonLogDialog ]
+            , IconButton.view language FeedbackButton [ onClick OpenFeedbackWizard ]
+            , IconButton.view language SettingsButton [ onClick OpenSettingsDialog ]
+            , IconButton.view language LogoutButton [ onClick Model.Logout ]
+            ]
+
+        _ ->
+            []
 
 
 footer : Model -> Html Msg
