@@ -20,15 +20,6 @@ autoUpdater.setFeedURL({
   url: 'https://builds.syncrypt.space/updater/'
 })
 
-// latest-linux.yml example:
-//
-// version: 2.7.0
-// files:
-//   - url: https://alpha.syncrypt.space/releases/syncrypt-desktop-0.4.0.linux-x64.zip
-//     sha2: fae0f2d71c6ea1e954bdad5035bb332f4b13fe68bc0530f1fcd6f879d18a5c34
-// stagingPercentage: 100
-
-
 var mainWindow = null // saves a global reference to mainWindow so it doesn't get garbage collected
 var systemTray = null
 var daemon = null
@@ -155,8 +146,6 @@ function initAutoUpdater() {
   }, 5000);
   autoUpdater.on('update-available', (info) => {
     autoUpdater.logger.info("Update available: "+ JSON.stringify(info))
-    // Forward signal to webContents
-    mainWindow.webContents.send('update-downloaded', info)
   });
   autoUpdater.on('update-downloaded', (info) => {
     console.info("Update downloaded: "+ JSON.stringify(info))
