@@ -8,4 +8,5 @@ type alias Config =
     , apiAuthToken : String
     , updateInterval : Time
     , pathSeparator : String
+    , version : String
     }

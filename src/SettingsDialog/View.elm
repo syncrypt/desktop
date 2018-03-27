@@ -62,7 +62,19 @@ contents model =
     , changePasswordButton model
     , resetPasswordButton model
     , changePasswordForm model
+    , separator
+    , div [ class "InfoLabel" ]
+        [ text "About Syncrypt Desktop" ]
+    , div []
+        [ text ("Version: " ++ model.config.version) ]
     ]
+        ++ (case model.updateAvailable of
+                Just version ->
+                    [ div [] [ text ("Update available: " ++ version) ] ]
+
+                Nothing ->
+                    []
+           )
 
 
 keyExportButton : HasSettingsDialog a -> Html Model.Msg

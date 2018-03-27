@@ -157,7 +157,8 @@ const setupElmApp = function (daemonApiToken) {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",
     pathSeparator: Path.sep,
-    updateInterval: 3000
+    updateInterval: 3000,
+    version: Electron.remote.app.getVersion()
   });
 
   elmApp.ports.openFolderDialog.subscribe(openFolderDialog)
@@ -172,8 +173,8 @@ const setupElmApp = function (daemonApiToken) {
   elmApp.ports.openUserKeyExportFileDialog.subscribe(openUserKeyExportFileDialog)
   elmApp.ports.quitAndInstall.subscribe(quitAndInstall)
 
-  Electron.ipcRenderer.on('update-downloaded', () => {
-    elmApp.ports.updateAvailable.send("dummy version")
+  Electron.ipcRenderer.on('update-downloaded', (ev, info) => {
+    elmApp.ports.updateAvailable.send(info.version)
   })
 }
 

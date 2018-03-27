@@ -11,6 +11,7 @@ module SettingsDialog.Model
         , open
         )
 
+import Config exposing (Config)
 import ConfirmationDialog
 import Dialog exposing (asModalIn)
 import Language exposing (Language(..))
@@ -47,6 +48,8 @@ type alias HasSettingsDialog a =
         | settingsDialog : State
         , language : Language
         , isFirstLaunch : Bool
+        , config : Config
+        , updateAvailable : Maybe String
     }
 
 
