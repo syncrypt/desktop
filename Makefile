@@ -60,15 +60,31 @@ release: release-setup
 		npm run make-installer
 	mv $(RELEASE_DIR)/tmp/out/make/* $(RELEASE_DIR)/
 
+# Linux builds
+
 Syncrypt-Desktop-linux.zip: all
 	rm -rf $(PACKAGE_DIR) $@
 	$(ELECTRON_BUILD) --linux zip
 	cp $(PACKAGE_DIR)/Syncrypt-Desktop-linux.zip $@
 
+Syncrypt-Desktop.AppImage: all
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_BUILD) --linux AppImage
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop.AppImage $@
+
+# Darwin builds
+
 Syncrypt-Desktop-darwin.zip: all
 	rm -rf $(PACKAGE_DIR) $@
 	$(ELECTRON_BUILD) --mac zip
 	cp $(PACKAGE_DIR)/Syncrypt-Desktop-mac.zip $@
+
+Syncrypt-Desktop.dmg: all
+	rm -rf $(PACKAGE_DIR) $@
+	$(ELECTRON_BUILD) --mac dmg
+	cp $(PACKAGE_DIR)/Syncrypt-Desktop.dmg $@
+
+# Windows builds
 
 Syncrypt-Desktop-win32.zip: all
 	rm -rf $(PACKAGE_DIR) $@
@@ -80,10 +96,6 @@ Syncrypt-Desktop-Setup.exe: all
 	$(ELECTRON_BUILD) --win nsis
 	cp $(PACKAGE_DIR)/Syncrypt-Desktop-Setup.exe $@
 
-Syncrypt-Desktop.AppImage: all
-	rm -rf $(PACKAGE_DIR) $@
-	$(ELECTRON_BUILD) --linux AppImage
-	cp $(PACKAGE_DIR)/Syncrypt-Desktop.AppImage $@
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)

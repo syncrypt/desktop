@@ -30,13 +30,15 @@
     ],
     "linux": {
       "target": [
-        "zip"
+        "zip",
+        "AppImage"
       ],
       "category": "FileTransfer"
     },
     "mac": {
       "target": [
-        "zip"
+        "zip",
+        "dmg"
       ]
     },
     "win": {
@@ -47,6 +49,9 @@
     },
     "nsis": {
       "artifactName": "Syncrypt-Desktop-Setup.exe"
+    },
+    "dmg": {
+      "artifactName": "Syncrypt-Desktop.dmg"
     },
     "appImage": {
       "artifactName": "Syncrypt-Desktop.AppImage"
