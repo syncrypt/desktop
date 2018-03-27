@@ -13,7 +13,7 @@ const Tray = electron.Tray
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"
 autoUpdater.autoDownload = true
-autoUpdater.channel = 'updater'
+autoUpdater.channel = 'master'
 // https://www.electron.build/auto-update#UpdateInfo
 autoUpdater.setFeedURL({
   provider: 'generic',
