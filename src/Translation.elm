@@ -570,7 +570,7 @@ translateEnglishVaultDialogText vt =
             "Delete vault?"
 
         AskDeleteVaultExtended ->
-            "Do you really want to delete this vault from the server? Deleting the vault on the server won't delete any of your local files inside this vault."
+            "Do you really want to delete this vault from the server? Deleting the vault on the server will also delete the vault keys and metadata, but it won't delete any of your local files inside this vault."
 
         ExportToFile ->
             "Export to file"
@@ -800,7 +800,7 @@ translateGermanNotificationText t =
             "Vault wurde erstellt: " ++ vaultId
 
         VaultDeleted vaultId ->
-            "Vault wurde in der cloud gelöscht: " ++ vaultId
+            "Vault wurde in der Cloud gelöscht: " ++ vaultId
 
         VaultUpdated vaultId ->
             "Vault wurde aktualisiert: " ++ vaultId
@@ -1023,7 +1023,7 @@ translateGermanVaultDialogText vt =
             "Vault löschen?"
 
         AskDeleteVaultExtended ->
-            "Soll der Vault wirklich vom Server gelöscht werden? Beim Löschen auf dem Server werden deine lokalen Dateien im Vaultordner nicht gelöscht oder anderweitig verändert."
+            "Soll der Vault wirklich vom Server gelöscht werden? Beim Löschen auf dem Server werden auch die Vaultschlüssel und Metadaten gelöscht, deine lokalen Dateien im Vaultordner werden aber nicht gelöscht oder anderweitig verändert."
 
         ExportToFile ->
             "In Datei exportieren"
