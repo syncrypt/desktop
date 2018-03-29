@@ -18,7 +18,7 @@
         "krisajenkins/remotedata": "4.3.0 <= v < 5.0.0",
         "myrho/elm-round": "1.0.1 <= v < 2.0.0",
         "sanichi/elm-md5": "1.0.6 <= v < 2.0.0",
-        "syncrypt/elm-date-distance": "1.0.5 <= v < 2.0.0"
+        "syncrypt/elm-date-distance": "1.0.6 <= v < 2.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"
 }
