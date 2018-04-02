@@ -17,10 +17,11 @@ import Json.Decode.Pipeline
         )
 import Language exposing (Language(..))
 import LoginDialog.Model
+import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
 import Ui.NotificationCenter
-import Util exposing (andLog, findFirst)
+import Util exposing (LogLevel, andLog, findFirst)
 import VaultDialog.Model
 import WizardDialog.Model
 

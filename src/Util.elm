@@ -6,6 +6,7 @@ module Util
         , ByteUnitPrecision
         , CustomButtonSettings
         , Direction(..)
+        , LogLevel(..)
         , Position(..)
         , TooltipLength(..)
         , allButLast
@@ -609,3 +610,10 @@ andLog infoText logData value =
             Debug.log infoText logData
     in
     value
+
+
+type LogLevel
+    = Debug
+    | Info
+    | Warning
+    | Error

@@ -7,7 +7,6 @@ import Data.Vault
         ( Event(..)
         , FlyingVault
         , HistoryItem
-        , LogLevel(Debug)
         , Vault
         , VaultId
         , nameOrId
@@ -22,6 +21,7 @@ import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
+import Util exposing (LogLevel(Debug))
 
 
 type alias FileName =
@@ -50,7 +50,7 @@ type EventFilter
     | User String
     | Email String
     | Search String Bool -- is case sensitive?
-    | Level Data.Vault.LogLevel
+    | Level LogLevel
     | MinDate Date
     | MaxDate Date
     | Operation LogOperationFilter

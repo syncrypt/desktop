@@ -6,7 +6,6 @@ module Data.Vault
         , HistoryItem
         , HistoryItems
         , LogItem
-        , LogLevel(..)
         , Metadata
         , NameOrId
         , Status(..)
@@ -45,7 +44,7 @@ import Json.Decode.Pipeline
         )
 import Json.Encode
 import Path exposing (Path)
-import Util exposing (dateDecoder)
+import Util exposing (LogLevel(..), dateDecoder)
 
 
 type alias VaultId =
@@ -113,13 +112,6 @@ type alias HistoryItem =
     , path : String
     , email : String
     }
-
-
-type LogLevel
-    = Debug
-    | Info
-    | Warning
-    | Error
 
 
 type alias LogItem =

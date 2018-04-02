@@ -11,13 +11,13 @@ module Data.Daemon
         , logItemDecoder
         )
 
-import Data.Vault exposing (LogLevel, VaultId)
+import Data.Vault exposing (VaultId)
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (fail, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Language exposing (Language(..))
-import Util
+import Util exposing (LogLevel)
 
 
 type KeyState

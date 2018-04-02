@@ -14,7 +14,6 @@ import Data.Vault
     exposing
         ( Event(..)
         , HistoryItem
-        , LogLevel(..)
         , Vault
         , VaultId
         )
@@ -56,7 +55,8 @@ import Ui.Modal
 import Ui.Tabs
 import Util
     exposing
-        ( Position(..)
+        ( LogLevel(..)
+        , Position(..)
         , TooltipLength(..)
         , button
         , dateParts
