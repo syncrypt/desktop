@@ -10,6 +10,7 @@ module Util
         , TooltipLength(..)
         , allButLast
         , andAlso
+        , andLog
         , animatedDots
         , attemptDelayed
         , button
@@ -417,11 +418,8 @@ dateDecoder =
                     Json.succeed (Just date)
 
                 Err error ->
-                    let
-                        _ =
-                            Debug.log "Could not decode date" error
-                    in
                     Json.succeed Nothing
+                        |> andLog "Could not decode date" error
     in
     Json.string
         |> Json.andThen convert
@@ -602,3 +600,12 @@ materialIcon : String -> List (Html.Attribute msg) -> Html msg
 materialIcon iconName attributes =
     span (class "MaterialIcons Button" :: attributes)
         [ text iconName ]
+
+
+andLog : String -> logData -> value -> value
+andLog infoText logData value =
+    let
+        _ =
+            Debug.log infoText logData
+    in
+    value

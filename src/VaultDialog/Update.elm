@@ -16,7 +16,7 @@ import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing ((~>))
+import Util exposing ((~>), andLog)
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
@@ -51,13 +51,10 @@ open model =
             openForFlyingVault flyingVault model
 
         _ ->
-            let
-                _ =
-                    Debug.log "Invalid state for VaultDialog.open: " model.state
-            in
             ( model
             , Cmd.none
             )
+                |> andLog "Invalid state for VaultDialog.open: " model.state
 
 
 openNew : Model -> ( Model, Cmd Model.Msg )
@@ -586,11 +583,8 @@ addLogStreamItem : Result String LogItem -> VaultId -> State -> Model -> Model
 addLogStreamItem logItem vaultId state model =
     case logItem of
         Err reason ->
-            let
-                _ =
-                    Debug.log "Failed decoding Vault log stream message: " reason
-            in
             model
+                |> andLog "Failed decoding Vault log stream message: " reason
 
         Ok item ->
             { state | logItems = item :: state.logItems }

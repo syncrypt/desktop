@@ -20,7 +20,7 @@ import LoginDialog.Model
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
 import Ui.NotificationCenter
-import Util exposing (findFirst)
+import Util exposing (andLog, findFirst)
 import VaultDialog.Model
 import WizardDialog.Model
 
@@ -290,11 +290,10 @@ retryOnFailure : WebData a -> msg -> Model -> ( Model, Cmd msg )
 retryOnFailure data msg model =
     case data of
         Failure reason ->
-            let
-                _ =
-                    Debug.log "Retrying due to failure: " ( msg, reason )
-            in
-            ( model, Util.delayMsg model.config.updateInterval msg )
+            ( model
+            , Util.delayMsg model.config.updateInterval msg
+            )
+                |> andLog "Retrying due to failure: " ( msg, reason )
 
         _ ->
             ( model, Cmd.none )
@@ -331,11 +330,8 @@ vaultStatus default { id, remoteId } model =
                     foundStatus
 
                 Nothing ->
-                    let
-                        _ =
-                            Debug.log "Failed to get vault status: " ( id, remoteId, stats )
-                    in
                     default
+                        |> andLog "Failed to get vault status: " ( id, remoteId, stats )
 
         _ ->
             default

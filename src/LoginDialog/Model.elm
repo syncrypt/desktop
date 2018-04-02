@@ -15,6 +15,7 @@ import Http
 import Language exposing (Language)
 import Ui.Input
 import Ui.Modal
+import Util exposing (andLog)
 
 
 type alias State =
@@ -71,12 +72,9 @@ asStateIn model state =
 
 loginFailed : Http.Error -> HasLoginDialog a -> HasLoginDialog a
 loginFailed reason ({ loginDialog } as model) =
-    let
-        _ =
-            Debug.log "Login Error:" reason
-    in
     { loginDialog | loginError = Just <| errorMsg reason }
         |> asStateIn model
+        |> andLog "Login Error:" reason
 
 
 loginSucceeded : HasLoginDialog a -> HasLoginDialog a
@@ -98,11 +96,8 @@ errorMsg err =
             "Login failed."
 
         e ->
-            let
-                _ =
-                    Debug.log "Unexpected login error: " e
-            in
             "Unknown error while talking to Syncrypt background process."
+                |> andLog "Unexpected login error: " e
 
 
 setEmailInput : String -> HasLoginDialog a -> HasLoginDialog a

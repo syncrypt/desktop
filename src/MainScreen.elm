@@ -26,7 +26,7 @@ import SetupWizard
 import Time
 import Translation exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing ((~>), Direction(..))
+import Util exposing ((~>), Direction(..), andLog)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
@@ -180,13 +180,10 @@ update msg model =
                 ~> delayedUpdateVaults 100
 
         CreatedVault _ webData ->
-            let
-                _ =
-                    Debug.log "CreatedVault unexpected data: " webData
-            in
             ( model
             , Cmd.none
             )
+                |> andLog "CreatedVault unexpected data: " webData
 
         ExportedVault vaultId (Success { success, filename }) ->
             model
@@ -311,22 +308,16 @@ update msg model =
                 ~> notify (text "Syncrypt initialized")
 
         EmailCompletionList emails ->
-            let
-                _ =
-                    Debug.log "got email completion list: " emails
-            in
             ( { model | emailCompletionList = emails }
             , Cmd.none
             )
+                |> andLog "got email completion list: " emails
 
         Model.UpdateAvailable version ->
-            let
-                _ =
-                    Debug.log "update available: " version
-            in
             ( { model | updateAvailable = Just version }
             , Cmd.none
             )
+                |> andLog "update available: " version
 
         InstallUpdate ->
             ( model
@@ -400,13 +391,10 @@ update msg model =
             )
 
         SelectedUserKeyExportFile filePath ->
-            let
-                _ =
-                    Debug.log "SelectedUserKeyExportFile" filePath
-            in
             ( model
             , Daemon.exportUserKey filePath model
             )
+                |> andLog "SelectedUserKeyExportFile" filePath
 
         ExportedUserKey _ ->
             ( model
@@ -428,13 +416,10 @@ update msg model =
             )
 
         DaemonLogStream (Err reason) ->
-            let
-                _ =
-                    Debug.log "DaemonLogStream Error" reason
-            in
             ( model
             , Cmd.none
             )
+                |> andLog "DaemonLogStream Error" reason
 
 
 setSetupWizardEmail : String -> Model -> Model
@@ -585,13 +570,10 @@ updatedVaults vaults model =
     in
     case vaults of
         RemoteData.Failure error ->
-            let
-                _ =
-                    Debug.log "Failed to get vaults, retrying" error
-            in
             ( newModel
             , Util.delayMsg 1000 UpdateVaults
             )
+                |> andLog "Failed to get vaults, retrying" error
 
         _ ->
             ( newModel
