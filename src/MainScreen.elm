@@ -26,7 +26,7 @@ import SetupWizard
 import Time
 import Translation exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
-import Util exposing ((~>), Direction(..), andLog)
+import Util exposing ((~>), Direction(..), LogLevel(Debug, Error, Info), andLog)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
@@ -169,8 +169,10 @@ update msg model =
                 |> VaultDialog.Update.openNew
 
         CreatedVault dialogState (Success vault) ->
-            model
-                |> VaultDialog.Update.saveVaultChanges vault.id dialogState
+            ( model
+            , Ports.log Info "Vault Created" Nothing
+            )
+                ~> VaultDialog.Update.saveVaultChanges vault.id dialogState
                 ~> (notifyText <| VaultCreated vault.id)
                 ~> delayedUpdateVaults 5000
 
@@ -181,9 +183,8 @@ update msg model =
 
         CreatedVault _ webData ->
             ( model
-            , Cmd.none
+            , Ports.log Error "CreatedVault unexpected data" (Just webData)
             )
-                |> andLog "CreatedVault unexpected data: " webData
 
         ExportedVault vaultId (Success { success, filename }) ->
             model
@@ -392,9 +393,11 @@ update msg model =
 
         SelectedUserKeyExportFile filePath ->
             ( model
-            , Daemon.exportUserKey filePath model
+            , Cmd.batch
+                [ Daemon.exportUserKey filePath model
+                , Ports.log Info "Exported User Key to file" (Just filePath)
+                ]
             )
-                |> andLog "SelectedUserKeyExportFile" filePath
 
         ExportedUserKey _ ->
             ( model
@@ -417,9 +420,8 @@ update msg model =
 
         DaemonLogStream (Err reason) ->
             ( model
-            , Cmd.none
+            , Ports.log Error "DaemonLogStream Error" (Just reason)
             )
-                |> andLog "DaemonLogStream Error" reason
 
 
 setSetupWizardEmail : String -> Model -> Model
@@ -571,9 +573,11 @@ updatedVaults vaults model =
     case vaults of
         RemoteData.Failure error ->
             ( newModel
-            , Util.delayMsg 1000 UpdateVaults
+            , Cmd.batch
+                [ Util.delayMsg 1000 UpdateVaults
+                , Ports.log Error "Failed to get vaults, retrying" (Just error)
+                ]
             )
-                |> andLog "Failed to get vaults, retrying" error
 
         _ ->
             ( newModel
@@ -633,8 +637,10 @@ deletedVault data model =
     in
     case data of
         Success vaultId ->
-            nextModelWithState vaultId
-                |> VaultDialog.Update.cancel vaultId
+            ( nextModelWithState vaultId
+            , Ports.log Info ("Deleted vault with ID " ++ vaultId) Nothing
+            )
+                ~> VaultDialog.Update.cancel vaultId
                 ~> (notifyText <| VaultDeleted vaultId)
 
         _ ->

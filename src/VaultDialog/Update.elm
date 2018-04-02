@@ -16,7 +16,7 @@ import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing ((~>), andLog)
+import Util exposing ((~>), LogLevel(Error))
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
@@ -52,9 +52,8 @@ open model =
 
         _ ->
             ( model
-            , Cmd.none
+            , Ports.log Error "Invalid state for VaultDialog.open: " (Just model.state)
             )
-                |> andLog "Invalid state for VaultDialog.open: " model.state
 
 
 openNew : Model -> ( Model, Cmd Model.Msg )
@@ -520,10 +519,8 @@ update msg vaultId ({ vaultDialogs } as model) =
                 ~> searchFingerprints email vaultId
 
         VaultLogStream logItem ->
-            ( model
+            model
                 |> addLogStreamItem logItem vaultId state
-            , Cmd.none
-            )
 
         ToggleEventSortOrder ->
             ( state
@@ -579,16 +576,19 @@ getVaultEventLog vaultId model =
         |> Cmd.map (Model.VaultDialogMsg vaultId << FetchedVaultHistory)
 
 
-addLogStreamItem : Result String LogItem -> VaultId -> State -> Model -> Model
+addLogStreamItem : Result String LogItem -> VaultId -> State -> Model -> ( Model, Cmd Model.Msg )
 addLogStreamItem logItem vaultId state model =
     case logItem of
         Err reason ->
-            model
-                |> andLog "Failed decoding Vault log stream message: " reason
+            ( model
+            , Ports.log Error "Failed decoding Vault log stream message: " (Just reason)
+            )
 
         Ok item ->
-            { state | logItems = item :: state.logItems }
+            ( { state | logItems = item :: state.logItems }
                 |> asStateIn vaultId model
+            , Cmd.none
+            )
 
 
 setUserInput : Email -> State -> Model -> ( Model, Cmd Model.Msg )

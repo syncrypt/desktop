@@ -21,7 +21,7 @@ import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
 import Ui.NotificationCenter
-import Util exposing (LogLevel, andLog, findFirst)
+import Util exposing ((~>), LogLevel(Error), andLog, findFirst)
 import VaultDialog.Model
 import WizardDialog.Model
 
@@ -292,12 +292,18 @@ retryOnFailure data msg model =
     case data of
         Failure reason ->
             ( model
-            , Util.delayMsg model.config.updateInterval msg
+            , Cmd.batch
+                [ Util.delayMsg model.config.updateInterval msg
+                , Ports.log Error
+                    "Retrying due to failure"
+                    (Just ( msg, reason ))
+                ]
             )
-                |> andLog "Retrying due to failure: " ( msg, reason )
 
         _ ->
-            ( model, Cmd.none )
+            ( model
+            , Cmd.none
+            )
 
 
 hasVaultWithId : VaultId -> Model -> Bool
@@ -332,7 +338,7 @@ vaultStatus default { id, remoteId } model =
 
                 Nothing ->
                     default
-                        |> andLog "Failed to get vault status: " ( id, remoteId, stats )
+                        |> andLog "Failed to get vault status" ( id, remoteId, stats )
 
         _ ->
             default

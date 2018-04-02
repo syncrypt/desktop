@@ -6,6 +6,7 @@ const Elm = require('./elm.js');
 const DaemonConfig = expandHomeDir('~/.config/syncrypt/config');
 const Electron = require('electron');
 const File = require('file');
+const os = require('os');
 
 const mainContainer = window.document.getElementById("Root");
 var elmApp = null;
@@ -152,6 +153,24 @@ const quitAndInstall = () => {
   Electron.ipcRenderer.send('quitAndInstall');
 }
 
+const logFile = Path.join(
+  os.homedir(), ".config", "syncrypt", "logs", "desktop.log"
+)
+
+const logWithData = (logItem) => {
+  const time = new Date().toISOString()
+  let line = `${time} | ${logItem.level} | ${logItem.text}`
+  if (logItem.data) {
+    line = `${line} | ${logItem.data}`
+  }
+  console.log(line)
+  Fs.appendFile(logFile, line + "\n", (err) => {
+    if (err) {
+      console.log(`Error while trying to append to log file ${logFile}: \n${line} `)
+    }
+  })
+}
+
 const setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -172,6 +191,7 @@ const setupElmApp = function (daemonApiToken) {
   elmApp.ports.openPasswordResetInBrowser.subscribe(openPasswordResetInBrowser)
   elmApp.ports.openUserKeyExportFileDialog.subscribe(openUserKeyExportFileDialog)
   elmApp.ports.quitAndInstall.subscribe(quitAndInstall)
+  elmApp.ports.logWithData.subscribe(logWithData)
 
   Electron.ipcRenderer.on('update-downloaded', (ev, info) => {
     elmApp.ports.updateAvailable.send(info.version)
