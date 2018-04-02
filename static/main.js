@@ -145,10 +145,10 @@ function initAutoUpdater() {
     autoUpdater.checkForUpdates();
   }, 5000);
   autoUpdater.on('update-available', (info) => {
-    autoUpdater.logger.info("Update available: "+ JSON.stringify(info))
+    autoUpdater.logger.info("Update available: " + JSON.stringify(info))
   });
   autoUpdater.on('update-downloaded', (info) => {
-    console.info("Update downloaded: "+ JSON.stringify(info))
+    console.info("Update downloaded: " + JSON.stringify(info))
     // Forward signal to webContents
     mainWindow.webContents.send('update-downloaded', info)
   });
