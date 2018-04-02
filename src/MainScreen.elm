@@ -123,10 +123,12 @@ update msg model =
         UpdatedVaultsFromApi vaults ->
             model
                 |> updatedVaults vaults
+                ~> updateStats
 
         UpdatedFlyingVaultsFromApi vaults ->
             model
                 |> updatedFlyingVaults vaults
+                ~> updateStats
 
         OpenVaultDetails vault ->
             model
@@ -146,6 +148,7 @@ update msg model =
             model
                 |> clonedVault vaultId data
                 ~> updateVaults
+                ~> updateStats
 
         CloseVaultDetails vaultId ->
             model
@@ -169,13 +172,18 @@ update msg model =
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
                 ~> (notifyText <| VaultCreated vault.id)
-                ~> updateVaults
+                ~> delayedUpdateVaults 5000
 
         CreatedVault _ (Failure reason) ->
             model
                 |> notifyText (VaultCreateFailed <| toString reason)
+                ~> delayedUpdateVaults 100
 
-        CreatedVault _ _ ->
+        CreatedVault _ webData ->
+            let
+                _ =
+                    Debug.log "CreatedVault unexpected data: " webData
+            in
             ( model
             , Cmd.none
             )
@@ -527,6 +535,13 @@ updateVaults : Model -> ( Model, Cmd Msg )
 updateVaults model =
     ( { model | state = UpdatingVaults }
     , Daemon.getVaults model
+    )
+
+
+delayedUpdateVaults : Time.Time -> Model -> ( Model, Cmd Msg )
+delayedUpdateVaults delayMs model =
+    ( model
+    , Util.delayMsg delayMs UpdateVaults
     )
 
 
