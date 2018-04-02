@@ -637,7 +637,7 @@ deletedVault data model =
     case data of
         Success vaultId ->
             nextModelWithState vaultId
-                |> VaultDialog.Update.close vaultId
+                |> VaultDialog.Update.cancel vaultId
                 ~> (notifyText <| VaultDeleted vaultId)
 
         _ ->
