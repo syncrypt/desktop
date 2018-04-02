@@ -348,16 +348,16 @@ translateEnglishNotificationText : NotificationText -> String
 translateEnglishNotificationText t =
     case t of
         VaultCreated vaultId ->
-            "Vault created: " ++ vaultId
+            "Vault created"
 
         VaultDeleted vaultId ->
-            "Vault deleted from server: " ++ vaultId
+            "Vault deleted from server"
 
         VaultUpdated vaultId ->
-            "Vault updated: " ++ vaultId
+            "Vault updated"
 
         VaultRemoved vaultId ->
-            "Vault removed from sync: " ++ vaultId
+            "Vault removed from sync"
 
         VaultCreateFailed reason ->
             "Failed to create vault: " ++ reason
@@ -369,19 +369,17 @@ translateEnglishNotificationText t =
             "Vault deletion failed: " ++ reason
 
         VaultMetadataUpdateFailed vaultId ->
-            "Failed to update metadata for vault " ++ vaultId
+            "Failed to update metadata for vault"
 
         VaultCloneFailed vaultId reason ->
-            "Something went wrong while cloning the vault "
-                ++ vaultId
-                ++ " : "
+            "Something went wrong while cloning the vault : "
                 ++ reason
 
         VaultAddUserFailed vaultId email ->
-            "Failed to add user " ++ email ++ " to vault " ++ vaultId
+            "Failed to add user " ++ email ++ " to vault "
 
         VaultExported vaultId ->
-            "Vault exported: " ++ vaultId
+            "Vault exported"
 
         VaultExportFailed _ ->
             "Vault export failed"
@@ -797,16 +795,16 @@ translateGermanNotificationText : NotificationText -> String
 translateGermanNotificationText t =
     case t of
         VaultCreated vaultId ->
-            "Vault wurde erstellt: " ++ vaultId
+            "Vault wurde erstellt"
 
         VaultDeleted vaultId ->
-            "Vault wurde in der Cloud gelöscht: " ++ vaultId
+            "Vault wurde in der Cloud gelöscht"
 
         VaultUpdated vaultId ->
-            "Vault wurde aktualisiert: " ++ vaultId
+            "Vault wurde aktualisiert"
 
         VaultRemoved vaultId ->
-            "Vault sync wurde deaktiviert: " ++ vaultId
+            "Vault sync wurde deaktiviert"
 
         VaultCreateFailed reason ->
             "Es gab einen Fehler beim Erstellen des Vaults: " ++ reason
@@ -818,32 +816,28 @@ translateGermanNotificationText t =
             "Es gab einen Fehler beim Löschen des Vaults: " ++ reason
 
         VaultMetadataUpdateFailed vaultId ->
-            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults: "
-                ++ vaultId
+            "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults"
 
         VaultCloneFailed vaultId reason ->
-            "Es gab einen Fehler beim Download des Vaults "
-                ++ vaultId
-                ++ " : "
+            "Es gab einen Fehler beim Download des Vaults : "
                 ++ reason
 
         VaultAddUserFailed vaultId email ->
             "Es gab einen Fehler beim Hinzufügen des Users "
                 ++ email
-                ++ " zum Vault: "
-                ++ vaultId
+                ++ " zum Vault"
 
         VaultExported vaultId ->
-            "Vault wurde exportiert: " ++ vaultId
+            "Vault wurde exportiert"
 
         VaultExportFailed _ ->
             "Vault Export ist fehlgeschlagen"
 
         CouldNotCloneVaultWithoutFolder vaultId ->
-            "Konnte den Vault nicht klonen - Kein Ordner für die Dateien wurde festgelegt."
+            "Konnte den Vault nicht klonen - Kein Ordner für die Dateien wurde festgelegt"
 
         NoPathSelected ->
-            "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde."
+            "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde"
 
 
 translateGermanStatsText : StatsText -> String
