@@ -446,7 +446,7 @@ exportVault vaultId path { config } =
         |> Cmd.map (ExportedVault vaultId)
 
 
-exportUserKey : String -> Model -> Cmd Msg
+exportUserKey : Path -> Model -> Cmd Msg
 exportUserKey path { config } =
     let
         json =
