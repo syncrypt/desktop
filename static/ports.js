@@ -166,7 +166,7 @@ const logWithData = (logItem) => {
   console.log(line)
   Fs.appendFile(logFile, line + "\n", (err) => {
     if (err) {
-      console.log(`Error while trying to append to log file ${logFile}: \n${line} `)
+      console.error(`Error while trying to append to log file ${logFile}: \n${line}`)
     }
   })
 }
