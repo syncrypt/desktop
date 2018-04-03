@@ -4,6 +4,7 @@ module Translation
         , FolderButtonType(..)
         , NotificationText(..)
         , SettingsDialogText(..)
+        , SetupWizardText(..)
         , StatsText(..)
         , Text(..)
         , VaultDialogText(..)
@@ -70,6 +71,7 @@ type Text
     | RefreshVaults
     | SettingsDialogText SettingsDialogText
     | UpdateAvailable String
+    | SetupWizardText SetupWizardText
 
 
 type NotificationText
@@ -187,6 +189,41 @@ type SettingsDialogText
     | NewPasswordTooltip
     | NewPasswordConfirmationLabel
     | NewPasswordConfirmationTooltip
+
+
+type SetupWizardText
+    = WelcomeToSyncrypt
+    | WelcomeHeader1
+    | WelcomeHeader2
+    | AccountSetup
+    | DoYouAlreadyHaveASyncryptAccount
+    | YouCanLoginWithAnExistingAccountOrCreateANewOne
+    | LoginWithAccount
+    | SignUpWithNewAccount
+    | AccountLogin
+    | LoginWithYourAccount
+    | IfYouForgotYourPassword
+    | WeWillSendYouAPasswordResetLink
+    | YourEmail
+    | Password
+    | ForgotPassword
+    | PasswordResetLinkHasBeenSent
+    | AccountSignup
+    | LegalNotice
+    | PleaseReadAndConfirm
+    | TOS1
+    | TOS2
+    | TOS3
+    | TOS4
+    | TOS5
+    | TOS6
+    | TOS7
+    | TOS8
+    | TOS9
+    | TOS10
+    | TOS11
+    | IAgree
+    | KeyCreation
 
 
 type FolderButtonType
@@ -342,6 +379,9 @@ translateEnglish text =
 
         UpdateAvailable version ->
             "Update available, click here to install version " ++ version
+
+        SetupWizardText text ->
+            translateEnglishSetupWizardText text
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -670,6 +710,105 @@ translateEnglishSettingsDialogText text =
             "This is to make sure you're not mispelling your new password"
 
 
+translateEnglishSetupWizardText text =
+    case text of
+        WelcomeToSyncrypt ->
+            "Welcome to Syncrypt"
+
+        WelcomeHeader1 ->
+            "We'll guide you through a step-by-step setup process to initiate your Syncrypt account."
+
+        WelcomeHeader2 ->
+            "Please pick a language:"
+
+        AccountSetup ->
+            "Account Setup"
+
+        DoYouAlreadyHaveASyncryptAccount ->
+            "Do you already have a Syncrypt Account?"
+
+        YouCanLoginWithAnExistingAccountOrCreateANewOne ->
+            "You can login with an existing account or create a new one and get started right away."
+
+        LoginWithAccount ->
+            "Yes, login with account"
+
+        SignUpWithNewAccount ->
+            "No, sign up with new account"
+
+        AccountLogin ->
+            "Account Login"
+
+        LoginWithYourAccount ->
+            "Login with your existing Syncrypt Account"
+
+        IfYouForgotYourPassword ->
+            "If you forgot your password, enter your email and press the button below."
+
+        WeWillSendYouAPasswordResetLink ->
+            "We will send you a password reset link to the email you entered."
+
+        YourEmail ->
+            "Your Email"
+
+        Password ->
+            "Password"
+
+        ForgotPassword ->
+            "Forgot Password"
+
+        PasswordResetLinkHasBeenSent ->
+            "Password reset link has been sent."
+
+        AccountSignup ->
+            "Account Signup"
+
+        LegalNotice ->
+            "Legal Notice"
+
+        PleaseReadAndConfirm ->
+            "Please read and confirm the following agreement and terms of service:"
+
+        TOS1 ->
+            "I hereby permit SYNCRYPT UG (haftungsbeschränkt), henceforth: Syncrypt, to collect, save, process and use my personal data."
+
+        TOS2 ->
+            "The collected data in particular is: Last name, first name & email adress to create and sustain a customer account. It is collected with the registration and saved for the entire period of service."
+
+        TOS3 ->
+            "The IP-adress is stored for a period of maximum two weeks to be able to identify and prevent attacks on our servers."
+
+        TOS4 ->
+            "Syncrypt stores and uses the personal data only to provide the service."
+
+        TOS5 ->
+            "Under no circumstance will Syncrypt sell personal Data to advertisers or other third parties."
+
+        TOS6 ->
+            "It is possible that the government and/or justice system will contact Syncrypt and ask to provide personal data. Every request will be examined by Syncrypt to full extent before releasing any data. If the legal requirements are granted, Syncrypt can be forced to give away this data and any stored encrypted files. All stored files are still encrypted with your private key. Syncrypt has no way to circumvent or lift this encryption."
+
+        TOS7 ->
+            "I give my permission voluntarily. I can withdraw it anytime without having to state a reason. To do so, I can simply write an email to alpha@syncrypt.space."
+
+        TOS8 ->
+            "I understand that this service can not be provided without this permission. If I disagree with this document, I can not use the service."
+
+        TOS9 ->
+            "Syncrypt can change parts of this permission in the future. In that case I will be informed and have to give a new permission."
+
+        TOS10 ->
+            "The current Privacy Policy and this document can be found at syncrypt.space/legal."
+
+        TOS11 ->
+            "This permission is in accordance with §§ 4a I, 28 BDSG."
+
+        IAgree ->
+            "I agree"
+
+        KeyCreation ->
+            "Key Creation"
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -789,6 +928,9 @@ translateGerman text =
 
         UpdateAvailable version ->
             "Update verfügbar, klicken zum Installieren"
+
+        SetupWizardText text ->
+            translateGermanSetupWizardText text
 
 
 translateGermanNotificationText : NotificationText -> String
@@ -1117,6 +1259,105 @@ translateGermanSettingsDialogText text =
 
         NewPasswordConfirmationTooltip ->
             "Hiermit stellen wir sicher, dass Du dich nicht vertippst"
+
+
+translateGermanSetupWizardText text =
+    case text of
+        WelcomeToSyncrypt ->
+            "Willkommen bei Syncrypt"
+
+        WelcomeHeader1 ->
+            "Wir leiten dich Schritt für Schritt durch alle nötigen Schritte, um ein neues Syncrypt Profil einzurichten."
+
+        WelcomeHeader2 ->
+            "Bitte wähle eine Sprache: "
+
+        AccountSetup ->
+            "Profil Erstellung"
+
+        DoYouAlreadyHaveASyncryptAccount ->
+            "Hast du bereits ein Syncrypt Profil?"
+
+        YouCanLoginWithAnExistingAccountOrCreateANewOne ->
+            "Du kannst dich mit einem bestehenden Profil einloggen oder ein neues erstellen."
+
+        LoginWithAccount ->
+            "Ja, mit bestehendem Profil einloggen"
+
+        SignUpWithNewAccount ->
+            "Nein, ein neues Profil erstellen"
+
+        AccountLogin ->
+            "Profil Login"
+
+        LoginWithYourAccount ->
+            "Logge dich mit deinem bestehenden Syncrypt Profil ein"
+
+        IfYouForgotYourPassword ->
+            "Falls du dein Passwort vergessen hast, trage deine Email hier ein."
+
+        WeWillSendYouAPasswordResetLink ->
+            "Wir werden dir einen Link zum zurücksetzen des Passworts schicken."
+
+        YourEmail ->
+            "Deine Email"
+
+        Password ->
+            "Passwort"
+
+        ForgotPassword ->
+            "Passwort vergessen"
+
+        PasswordResetLinkHasBeenSent ->
+            "Email mit Link zum Zurücksetzen des Passworts wurde verschickt"
+
+        AccountSignup ->
+            "Neues Profil Erstellen"
+
+        LegalNotice ->
+            "Rechtlicher Hinweis"
+
+        PleaseReadAndConfirm ->
+            "Bitte lies und bestätige die folgende Vereinbarung und Einwilligungserklärung zum Datenschutz"
+
+        TOS1 ->
+            "Ich willige hiermit ein, dass die SYNCRYPT UG (haftungsbeschränkt), im folgenden: Syncrypt, meine personenbezogene Daten erhebt, speichert verarbeitet und nutzt."
+
+        TOS2 ->
+            "Im Einzelenen sind diese: Name, Vorname und Email-Adresse für die gesamte Dauer der Wahrnehmung des Dienstes. Diese Daten werden erhoben um ein Kundenkonto anzulegen und den Dienst zu ermöglichen."
+
+        TOS3 ->
+            "Weiterhin wird die IP-Adresse für einen Zeitraum von bis zu zwei Wochen gespeichert. Zweck der Speicherung ist die Erkennung und Vermeidung von potenziellen Attacken."
+
+        TOS4 ->
+            "Die personenbezogenen Daten werden von Syncrypt nur für die Ausübung des Dienstes gespeichert und genutzt."
+
+        TOS5 ->
+            "Zu keiner Zeit und unter keinen Umständen werden die personenbezogenen Daten an Dritte zu Zwecken der Werbung weitergegeben."
+
+        TOS6 ->
+            "In bestimmten Fällen kann Syncrypt vom Staat und dessen unterstellten Stellen dazu aufgefordert werden Daten herauszugeben. Diese Anfragen werden von Syncrypt geprüft. Bei Vorliegen der gesetzlichen Voraussetzungen ist Syncrypt verpflichtet diese Daten und hochgeladene, verschlüsselte Dateien herauszugeben. Die hochgeladenenen Dateien sind weiterhin mit dem privaten Schlüssel des Benutzers verschlüsselt. Syncrypt hat keine Möglichkeit die Verschlüsselung der Daten des Nutzers aufzuheben oder zu umgehen."
+
+        TOS7 ->
+            "Diese Einwilligung gebe ich bewusst und freiwillig ab. Ich kann sie jederzeit widerrufen. Die Widerrufserklärung ist zu richten an: alpha@syncrypt.space"
+
+        TOS8 ->
+            "Ich verstehe, dass Syncrypt ohne diese personenbezogenen Daten den Dienst nicht anbieten kann. Sollte ich mit der Einwilligung nicht einverstanden sein oder diese zu einem späteren Zeitpunkt widerrufen, kann ich den Dienst nicht in Anspruch nehmen."
+
+        TOS9 ->
+            "Diese Einwilligung steht im Einklang mit den §§ 4a I, 28 BDSG"
+
+        TOS10 ->
+            "Syncrypt behält sich vor, die Einwilligungserklärung zum Datenschutz zu ändern und zu erweitern. In diesem Fall sendet Syncrypt die neue Version per Email an den Nutzer und muss erneut eingewilligt werden."
+
+        TOS11 ->
+            "Die aktuelle Version der Einwilligung Datenschutz liegt auf syncrypt.space/legal"
+
+        IAgree ->
+            "I agree"
+
+        KeyCreation ->
+            "Key Creation"
 
 
 germanDistance : Date -> Date -> String
