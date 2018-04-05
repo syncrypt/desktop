@@ -1354,10 +1354,10 @@ translateGermanSetupWizardText text =
             "Die aktuelle Version der Einwilligung Datenschutz liegt auf syncrypt.space/legal"
 
         IAgree ->
-            "I agree"
+            "Ich stimme zu"
 
         KeyCreation ->
-            "Key Creation"
+            "Schlüssel Generierung"
 
 
 germanDistance : Date -> Date -> String
