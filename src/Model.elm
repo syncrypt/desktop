@@ -332,7 +332,6 @@ vaultStatus default { id, remoteId } model =
 
                 Nothing ->
                     default
-                        |> andLog "Failed to get vault status: " ( id, remoteId, stats )
 
         _ ->
             default
