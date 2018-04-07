@@ -298,10 +298,6 @@ update msg model =
             model
                 |> SettingsDialog.Update.update msg
 
-        OpenSetupWizardDialog ->
-            model
-                |> openSetupWizard
-
         SetupWizardFinished ->
             ( { model | isFirstLaunch = False }
             , Daemon.invalidateFirstLaunch model
