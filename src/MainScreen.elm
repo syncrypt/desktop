@@ -902,7 +902,7 @@ headerButtons : Model -> List (Html Msg)
 headerButtons { language, login } =
     case login of
         LoggedIn _ ->
-            [ IconButton.view [ onClick UpdateVaults ]
+            [ IconButton.view [ onClick UpdateVaultsWithForcedRefresh ]
                 language
                 RefreshVaultsButton
             , IconButton.view [ onClick OpenDaemonLogDialog ]
