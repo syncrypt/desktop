@@ -9,6 +9,7 @@ const ChildProcess = require('child_process')
 const FileSystem = require('fs')
 const { autoUpdater, appUpdater } = require("electron-updater");
 const Tray = electron.Tray
+const os = require("os")
 
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info"

@@ -39,6 +39,7 @@ type alias Model =
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
     , language : Language
+    , languageSelected : Bool
     , wizardDialog : Maybe (WizardDialog.Model.State Msg)
     , settingsDialog : SettingsDialog.Model.State
     , emailCompletionList : List Email
@@ -240,7 +241,8 @@ init config =
             |> Ui.NotificationCenter.timeout 2500
             |> Ui.NotificationCenter.duration 2500
     , login = Unknown
-    , language = Language.English
+    , language = Language.fromLocale config.locale
+    , languageSelected = False
     , wizardDialog = Nothing
     , settingsDialog = SettingsDialog.Model.init
     , emailCompletionList = []
@@ -352,3 +354,11 @@ addDaemonLogItem item model =
 
         Nothing ->
             model
+
+
+selectLanguage : Language -> Model -> Model
+selectLanguage lang model =
+    { model
+        | language = lang
+        , languageSelected = True
+    }

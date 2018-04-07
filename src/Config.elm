@@ -9,4 +9,5 @@ type alias Config =
     , updateInterval : Time
     , pathSeparator : String
     , version : String
+    , locale : String
     }

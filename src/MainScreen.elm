@@ -12,6 +12,7 @@ import FeedbackWizard
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Language
 import LoginDialog.Model
 import LoginDialog.Update
 import LoginDialog.View
@@ -325,9 +326,16 @@ update msg model =
             )
 
         UpdatedDaemonConfig (Success { gui }) ->
-            model
-                |> updateGUIConfig gui
-                |> openSetupWizardIfFirstLaunch
+            if gui.isFirstLaunch && not model.languageSelected then
+                { model
+                    | isFirstLaunch = True
+                    , language = Language.fromLocale model.config.locale
+                }
+                    |> openSetupWizard
+            else
+                ( updateGUIConfig gui model
+                , Cmd.none
+                )
 
         UpdatedDaemonConfig msg ->
             model
@@ -364,7 +372,7 @@ update msg model =
                 |> sendFeedback
 
         SetLanguage lang ->
-            ( { model | language = lang }
+            ( Model.selectLanguage lang model
             , Daemon.updateGUIConfig model
                 { isFirstLaunch = model.isFirstLaunch
                 , language = lang
@@ -468,17 +476,6 @@ updateGUIConfig { isFirstLaunch, language } model =
         | isFirstLaunch = isFirstLaunch
         , language = language
     }
-
-
-openSetupWizardIfFirstLaunch : Model -> ( Model, Cmd Msg )
-openSetupWizardIfFirstLaunch model =
-    if model.isFirstLaunch then
-        model
-            |> openSetupWizard
-    else
-        ( model
-        , Cmd.none
-        )
 
 
 openSetupWizard : Model -> ( Model, Cmd Msg )

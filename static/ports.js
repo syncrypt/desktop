@@ -152,13 +152,19 @@ const quitAndInstall = () => {
   Electron.ipcRenderer.send('quitAndInstall');
 }
 
+const getEnvLocale = () => {
+  const env = process.env
+  return env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE
+}
+
 const setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",
     pathSeparator: Path.sep,
     updateInterval: 3000,
-    version: Electron.remote.app.getVersion()
+    version: Electron.remote.app.getVersion(),
+    locale: getEnvLocale()
   });
 
   elmApp.ports.openFolderDialog.subscribe(openFolderDialog)
