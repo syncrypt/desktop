@@ -44,11 +44,11 @@ vaultItemSyncStateClass vault model =
     let
         status =
             case vault of
-                Vault v ->
-                    Model.vaultStatus v.status v model
+                Vault { status } ->
+                    status
 
-                FlyingVault fv ->
-                    Model.vaultStatus Unsynced fv model
+                FlyingVault _ ->
+                    Unsynced
     in
     "VaultStatus-" ++ toString status
 
@@ -334,7 +334,7 @@ flyingVaultList model =
                             )
                             model
 
-                Success _ ->
+                Success flyingVaults ->
                     text <|
                         t (T.VaultListText T.ClickOnVaultToClone) model
     in
@@ -360,12 +360,12 @@ unsyncedFlyingVaults model =
 
         vaultIds =
             vaults
-                |> List.map (\v -> v.id)
+                |> List.map (\v -> v.remoteId)
                 |> Set.fromList
 
         flyingVaultIds =
             flyingVaults
-                |> List.map (\v -> v.id)
+                |> List.map (\v -> v.remoteId)
                 |> Set.fromList
 
         diff =

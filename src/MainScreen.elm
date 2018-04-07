@@ -68,8 +68,9 @@ subscriptions model =
         LoggedIn _ ->
             Sub.batch
                 [ VaultDialog.View.subscriptions model
-                , Time.every (10 * Time.minute) (\_ -> UpdateVaults)
+                , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
                 , Time.every Time.second (Date.fromTime >> SetTime)
+                , Time.every model.config.updateInterval (\_ -> UpdateVaults)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
@@ -104,6 +105,11 @@ update msg model =
                 |> updateVaults
                 ~> updateStats
 
+        UpdateVaultsWithForcedRefresh ->
+            model
+                |> updateVaultsWithForcedRefresh
+                ~> updateStats
+
         UpdateDaemonConfig ->
             ( model
             , Daemon.getConfig model
@@ -124,12 +130,10 @@ update msg model =
         UpdatedVaultsFromApi vaults ->
             model
                 |> updatedVaults vaults
-                ~> updateStats
 
         UpdatedFlyingVaultsFromApi vaults ->
             model
                 |> updatedFlyingVaults vaults
-                ~> updateStats
 
         OpenVaultDetails vault ->
             model
@@ -202,9 +206,7 @@ update msg model =
             model
                 |> VaultDialog.Update.cancel vaultId
                 ~> updateVaults
-                ~> updateStats
                 ~> (notifyText <| VaultRemoved vaultId)
-                ~> updateFlyingVaults
 
         RemovedVaultFromSync data ->
             model
@@ -519,6 +521,13 @@ updateVaults model =
     )
 
 
+updateVaultsWithForcedRefresh : Model -> ( Model, Cmd Msg )
+updateVaultsWithForcedRefresh model =
+    ( { model | state = UpdatingVaults }
+    , Daemon.getVaultsWithForcedRefresh model
+    )
+
+
 delayedUpdateVaults : Time.Time -> Model -> ( Model, Cmd Msg )
 delayedUpdateVaults delayMs model =
     ( model
@@ -580,9 +589,7 @@ updatedVaults vaults model =
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 updatedFlyingVaults flyingVaults model =
     { model
-        | flyingVaults =
-            flyingVaults
-                |> RemoteData.map (\fv -> Model.unclonedFlyingVaults fv model)
+        | flyingVaults = flyingVaults
     }
         |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
 

@@ -101,7 +101,6 @@ type StatsText
         , busySlots : Int
         , idleSlots : Int
         , closedSlots : Int
-        , states : Dict String Data.Vault.Status
         }
     | StatsLoading
     | StatsNotAvailable

@@ -35,7 +35,6 @@ type alias Stats =
     , busySlots : Int
     , idleSlots : Int
     , closedSlots : Int
-    , states : Dict String Data.Vault.Status
     }
 
 

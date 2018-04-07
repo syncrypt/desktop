@@ -20,6 +20,7 @@ module Daemon
         , getVaultUser
         , getVaultUsers
         , getVaults
+        , getVaultsWithForcedRefresh
         , getVersion
         , invalidateFirstLaunch
         , login
@@ -58,6 +59,7 @@ import WebSocket
 type ApiPath
     = Stats
     | Vaults
+    | VaultsWithForcedRefresh
     | FlyingVaults
     | Vault VaultId
     | DeleteVault VaultId
@@ -101,6 +103,17 @@ getVaults { config } =
         |> apiRequest
             Get
             Vaults
+            EmptyBody
+            (Json.list Data.Vault.decoder)
+        |> Cmd.map UpdatedVaultsFromApi
+
+
+getVaultsWithForcedRefresh : Model -> Cmd Msg
+getVaultsWithForcedRefresh { config } =
+    config
+        |> apiRequest
+            Get
+            VaultsWithForcedRefresh
             EmptyBody
             (Json.list Data.Vault.decoder)
         |> Cmd.map UpdatedVaultsFromApi
@@ -491,6 +504,9 @@ apiPath apiPath =
 
         Vaults ->
             "vault"
+
+        VaultsWithForcedRefresh ->
+            "vault/?force_refresh=1"
 
         FlyingVaults ->
             "flying-vault"

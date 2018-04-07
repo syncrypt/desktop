@@ -93,6 +93,7 @@ type Msg
     = SetTime Date
     | UpdateLoginState
     | UpdateVaults
+    | UpdateVaultsWithForcedRefresh
     | UpdateFlyingVaults
     | UpdateStats
     | UpdatedLoginState (WebData LoginState)
@@ -164,7 +165,6 @@ statsDecoder =
         |> optionalAt [ "slots", "busy" ] Json.int 0
         |> optionalAt [ "slots", "idle" ] Json.int 0
         |> optionalAt [ "slots", "closed" ] Json.int 0
-        |> required "states" (Json.dict Data.Vault.vaultStatusDecoder)
 
 
 keyStateDecoder : Json.Decoder KeyState
@@ -320,21 +320,6 @@ unclonedFlyingVaults flyingVaults model =
 isClonedVault : HasVaultId a -> Model -> Bool
 isClonedVault { remoteId } model =
     not <| hasVaultWithId remoteId model
-
-
-vaultStatus : Status -> HasVaultId a -> Model -> Status
-vaultStatus default { id, remoteId } model =
-    case model.stats of
-        Success stats ->
-            case Dict.get ("/v1/vault/" ++ id ++ "/") stats.states of
-                Just foundStatus ->
-                    foundStatus
-
-                Nothing ->
-                    default
-
-        _ ->
-            default
 
 
 addDaemonLogItem : Data.Daemon.LogItem -> Model -> Model
