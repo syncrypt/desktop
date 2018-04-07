@@ -365,7 +365,10 @@ update msg model =
 
         SetLanguage lang ->
             ( { model | language = lang }
-            , Cmd.none
+            , Daemon.updateGUIConfig model
+                { isFirstLaunch = model.isFirstLaunch
+                , language = lang
+                }
             )
 
         SendPasswordResetLink ->
