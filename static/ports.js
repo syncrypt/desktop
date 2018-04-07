@@ -154,7 +154,7 @@ const quitAndInstall = () => {
 
 const getEnvLocale = () => {
   const env = process.env
-  return env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE
+  return env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE || "en_US.UTF-8"
 }
 
 const setupElmApp = function (daemonApiToken) {
