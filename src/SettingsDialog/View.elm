@@ -66,7 +66,17 @@ contents model =
     , div [ class "InfoLabel" ]
         [ text "About Syncrypt Desktop" ]
     , div []
-        [ text ("Version: " ++ model.config.version) ]
+        [ div []
+            [ span [ class "InfoLabel" ]
+                [ text "Daemon auth token" ]
+            , text model.config.apiAuthToken
+            ]
+        , div []
+            [ span [ class "InfoLabel" ]
+                [ text "Version" ]
+            , text model.config.version
+            ]
+        ]
     ]
         ++ (case model.updateAvailable of
                 Just version ->
