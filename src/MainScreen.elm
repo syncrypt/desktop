@@ -103,7 +103,6 @@ update msg model =
         UpdateVaults ->
             model
                 |> updateVaults
-                ~> updateStats
 
         UpdateVaultsWithForcedRefresh ->
             model
