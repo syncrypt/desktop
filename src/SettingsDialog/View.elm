@@ -48,6 +48,16 @@ languageButton forLanguage { language } =
 
 contents : HasSettingsDialog a -> List (Html Model.Msg)
 contents model =
+    let
+        availableUpdate =
+            case model.updateAvailable of
+                Just version ->
+                    div []
+                        [ text ("Update available: " ++ version) ]
+
+                Nothing ->
+                    text ""
+    in
     [ div [ class "InfoLabel" ]
         [ text <| dialogText T.ChooseYourLanguage model ]
     , languageButton German model
@@ -67,24 +77,18 @@ contents model =
         [ text "About Syncrypt Desktop" ]
     , div []
         [ div []
-            [ span [ class "InfoLabel" ]
-                [ text "Daemon auth token" ]
-            , text model.config.apiAuthToken
+            [ span []
+                [ text "Version: " ]
+            , text model.config.version
+            , availableUpdate
             ]
         , div []
-            [ span [ class "InfoLabel" ]
-                [ text "Version" ]
-            , text model.config.version
+            [ span []
+                [ text "Daemon auth token: " ]
+            , text model.config.apiAuthToken
             ]
         ]
     ]
-        ++ (case model.updateAvailable of
-                Just version ->
-                    [ div [] [ text ("Update available: " ++ version) ] ]
-
-                Nothing ->
-                    []
-           )
 
 
 keyExportButton : HasSettingsDialog a -> Html Model.Msg
