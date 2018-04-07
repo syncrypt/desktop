@@ -17,7 +17,7 @@ import Dict exposing (Dict)
 import Json.Decode as Json exposing (fail, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Language exposing (Language(..))
-import Util exposing (LogLevel)
+import Util exposing (LogLevel, andLog)
 
 
 type KeyState
@@ -67,8 +67,8 @@ daemonConfigDecoder =
 guiConfigDecoder : Json.Decoder GUIConfig
 guiConfigDecoder =
     decode GUIConfig
-        |> required "is_first_launch" Json.bool
-        |> required "language" languageDecoder
+        |> optional "is_first_launch" Json.bool True
+        |> optional "language" languageDecoder Language.English
 
 
 languageDecoder : Json.Decoder Language
@@ -84,9 +84,8 @@ languageDecoder =
                     succeed German
 
                 val ->
-                    fail <|
-                        "Invalid language configured in syncrypt config: "
-                            ++ toString val
+                    succeed English
+                        |> andLog "Invalid language configured in syncrypt config, defaulting to English" val
     in
     Json.string
         |> Json.andThen convert
