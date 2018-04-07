@@ -287,19 +287,6 @@ vaultIds { vaults, flyingVaults } =
     idsOf (vaults |> orEmpty) ++ idsOf (flyingVaults |> orEmpty)
 
 
-retryOnFailure : WebData a -> msg -> Model -> ( Model, Cmd msg )
-retryOnFailure data msg model =
-    case data of
-        Failure reason ->
-            ( model
-            , Util.delayMsg model.config.updateInterval msg
-            )
-                |> andLog "Retrying due to failure: " ( msg, reason )
-
-        _ ->
-            ( model, Cmd.none )
-
-
 hasVaultWithId : VaultId -> Model -> Bool
 hasVaultWithId id model =
     model.vaults

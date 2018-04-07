@@ -35,6 +35,7 @@ module Util
         , removeLeading
         , removeTrailing
         , removeTrailingZeroes
+        , retryOnFailure
         , sendMsg
         , shortDateString
         , shortenString
@@ -49,6 +50,7 @@ import Html.Attributes exposing (attribute, class, style)
 import Html.Events
 import Json.Decode as Json
 import Process
+import RemoteData exposing (RemoteData(..), WebData)
 import Round
 import Task exposing (Task, andThen, attempt, perform)
 import Time exposing (Time)
@@ -617,3 +619,24 @@ type LogLevel
     | Info
     | Warning
     | Error
+
+
+type alias HasUpdateIntervalConfig a =
+    { a | updateInterval : Time.Time }
+
+
+type alias HasConfig a b =
+    { a | config : HasUpdateIntervalConfig b }
+
+
+retryOnFailure : WebData a -> msg -> HasConfig b c -> ( HasConfig b c, Cmd msg )
+retryOnFailure data msg model =
+    case data of
+        Failure reason ->
+            ( model
+            , delayMsg model.config.updateInterval msg
+            )
+                |> andLog "Retrying due to failure: " ( msg, reason )
+
+        _ ->
+            ( model, Cmd.none )

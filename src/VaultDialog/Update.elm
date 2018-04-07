@@ -512,7 +512,7 @@ update msg vaultId ({ vaultDialogs } as model) =
             ({ state | vaultFingerprints = RemoteData.map Set.fromList data }
                 |> asStateIn state.id model
             )
-                |> Model.retryOnFailure data (Model.VaultDialogMsg vaultId GetVaultFingerprints)
+                |> Util.retryOnFailure data (Model.VaultDialogMsg vaultId GetVaultFingerprints)
 
         SetUserInput email ->
             model

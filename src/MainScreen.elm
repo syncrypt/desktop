@@ -337,7 +337,7 @@ update msg model =
 
         UpdatedDaemonConfig msg ->
             model
-                |> Model.retryOnFailure msg UpdateDaemonConfig
+                |> Util.retryOnFailure msg UpdateDaemonConfig
 
         OpenFeedbackWizard ->
             model
@@ -559,7 +559,7 @@ updatedLoginState data model =
 
         Failure _ ->
             { model | login = LoggedOut }
-                |> Model.retryOnFailure data UpdateLoginState
+                |> Util.retryOnFailure data UpdateLoginState
 
         _ ->
             ( { model | login = Unknown }
@@ -591,7 +591,7 @@ updatedFlyingVaults flyingVaults model =
     { model
         | flyingVaults = flyingVaults
     }
-        |> Model.retryOnFailure flyingVaults UpdateFlyingVaults
+        |> Util.retryOnFailure flyingVaults UpdateFlyingVaults
 
 
 openVaultDetails : Vault -> Model -> ( Model, Cmd Msg )
