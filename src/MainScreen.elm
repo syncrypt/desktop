@@ -25,7 +25,7 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
 import Time
-import Translation exposing (NotificationText(..), Text(..), t, translate)
+import Translation as T exposing (NotificationText(..), Text(..), t, translate)
 import Ui.NotificationCenter
 import Util exposing ((~>), Direction(..), andLog)
 import VaultDialog.Model exposing (CloneStatus(..))
@@ -663,7 +663,7 @@ notify body model =
     )
 
 
-notifyText : Translation.NotificationText -> Model -> ( Model, Cmd Msg )
+notifyText : T.NotificationText -> Model -> ( Model, Cmd Msg )
 notifyText notificationText model =
     model
         |> notify
@@ -932,38 +932,43 @@ footer : Model -> Html Msg
 footer { stats, vaults, language, updateAvailable } =
     let
         statsText =
-            Translation.StatsText <|
+            T.StatsText <|
                 case stats of
                     Success s ->
-                        Translation.Stats s
+                        T.Stats s
 
                     Loading ->
-                        Translation.StatsLoading
+                        T.StatsLoading
 
                     NotAsked ->
-                        Translation.StatsNotAvailable
+                        T.StatsNotAvailable
 
                     Failure reason ->
-                        Translation.StatsFailedToLoad (toString reason)
+                        T.StatsFailedToLoad (toString reason)
 
         syncedVaultsText =
             case vaults of
                 Success vaults ->
-                    Translation.SyncedVaults (List.length vaults)
+                    T.SyncedVaults (List.length vaults)
 
                 Loading ->
-                    Translation.VaultsLoading
+                    T.VaultsLoading
 
                 NotAsked ->
-                    Translation.VaultsNotAvailable
+                    T.VaultsNotAvailable
 
                 Failure reason ->
-                    Translation.VaultsFailedToLoad (toString reason)
+                    T.VaultsFailedToLoad (toString reason)
 
         updateAvailableDiv =
             case updateAvailable of
                 Just version ->
-                    [ span [ class "MainScreen-UpdateAvailable", onClick Model.InstallUpdate ] [ text <| translate (Translation.UpdateAvailable version) language ] ]
+                    [ span
+                        [ class "MainScreen-UpdateAvailable"
+                        , onClick Model.InstallUpdate
+                        ]
+                        [ text <| translate (T.UpdateAvailable version) language ]
+                    ]
 
                 Nothing ->
                     []
