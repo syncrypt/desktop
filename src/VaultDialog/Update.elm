@@ -190,11 +190,8 @@ saveVaultChanges vaultId state model =
         ( newModel, modalCmd ) =
             cancel vaultId model
 
-        updateCmd =
-            Daemon.getVaults model
-
         commands =
-            updateCmd :: modalCmd :: updateMetadataCmd :: addUserCmds
+            modalCmd :: updateMetadataCmd :: addUserCmds
     in
     ( newModel
     , Cmd.batch commands
