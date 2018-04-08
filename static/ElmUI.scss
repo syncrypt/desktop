@@ -85,8 +85,12 @@ ui-modal-content {
   padding: $padding-extra-large $padding-large $padding-large $padding-large !important;
 }
 
+ui-modal-wrapper {
+  min-width: 300px;
+  max-height: none !important;
+}
+
 ui-tabs-content {
-  width: 500px;
   height: 450px;
   overflow-y: auto;
   overflow-x: auto;

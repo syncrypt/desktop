@@ -86,9 +86,9 @@ function createWindow() {
 
   mainWindow = new BrowserWindow({
     width: width,
-    minWidth: width,
+    // minWidth: width,
     height: 820,
-    minHeight: 770,
+    // minHeight: 770,
     title: "Syncrypt",
     frame: true,
     resizable: true,
