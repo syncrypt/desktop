@@ -102,11 +102,11 @@ update msg model =
 
         UpdateVaults ->
             model
-                |> updateVaults
+                |> updateVaults { forceRefresh = False }
 
         UpdateVaultsWithForcedRefresh ->
             model
-                |> updateVaultsWithForcedRefresh
+                |> updateVaults { forceRefresh = True }
                 ~> updateStats
 
         UpdateDaemonConfig ->
@@ -146,12 +146,12 @@ update msg model =
             model
                 |> cloneVault vaultId
                 ~> VaultDialog.Update.close vaultId
-                ~> updateVaults
+                ~> updateVaults { forceRefresh = False }
 
         ClonedVault vaultId data ->
             model
                 |> clonedVault vaultId data
-                ~> updateVaults
+                ~> updateVaults { forceRefresh = True }
                 ~> updateStats
 
         CloseVaultDetails vaultId ->
@@ -162,7 +162,7 @@ update msg model =
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
                 ~> saveVault vaultId
-                ~> updateVaults
+                ~> updateVaults { forceRefresh = False }
 
         DeleteVaultDialog vaultId ->
             model
@@ -176,12 +176,12 @@ update msg model =
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
                 ~> (notifyText <| VaultCreated vault.id)
-                ~> delayedUpdateVaults 5000
+                ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
 
         CreatedVault _ (Failure reason) ->
             model
                 |> notifyText (VaultCreateFailed <| toString reason)
-                ~> delayedUpdateVaults 100
+                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
 
         CreatedVault _ webData ->
             ( model
@@ -204,18 +204,18 @@ update msg model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
-                ~> updateVaults
+                ~> updateVaults { forceRefresh = False }
                 ~> (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
             model
-                |> updateVaults
+                |> updateVaults { forceRefresh = False }
                 ~> notifyText (VaultRemoveFailed <| toString data)
 
         DeletedVault data ->
             model
                 |> deletedVault data
-                ~> updateVaults
+                ~> updateVaults { forceRefresh = False }
 
         VaultDialogMsg vaultId msg ->
             model
@@ -285,7 +285,7 @@ update msg model =
 
         VaultMetadataUpdated vaultId (Success _) ->
             model
-                |> updateVaults
+                |> updateVaults { forceRefresh = False }
 
         VaultMetadataUpdated vaultId _ ->
             model
@@ -513,24 +513,31 @@ updateLoginState model =
     )
 
 
-updateVaults : Model -> ( Model, Cmd Msg )
-updateVaults model =
+updateVaults : { forceRefresh : Bool } -> Model -> ( Model, Cmd Msg )
+updateVaults { forceRefresh } model =
+    let
+        fetchVaults =
+            if forceRefresh then
+                Daemon.getVaultsWithForcedRefresh
+            else
+                Daemon.getVaults
+    in
     ( { model | state = UpdatingVaults }
-    , Daemon.getVaults model
+    , fetchVaults model
     )
 
 
-updateVaultsWithForcedRefresh : Model -> ( Model, Cmd Msg )
-updateVaultsWithForcedRefresh model =
-    ( { model | state = UpdatingVaults }
-    , Daemon.getVaultsWithForcedRefresh model
-    )
-
-
-delayedUpdateVaults : Time.Time -> Model -> ( Model, Cmd Msg )
-delayedUpdateVaults delayMs model =
+delayedUpdateVaults : { delay : Time.Time, forceRefresh : Bool } -> Model -> ( Model, Cmd Msg )
+delayedUpdateVaults { delay, forceRefresh } model =
+    let
+        msg =
+            if forceRefresh then
+                UpdateVaultsWithForcedRefresh
+            else
+                UpdateVaults
+    in
     ( model
-    , Util.delayMsg delayMs UpdateVaults
+    , Util.delayMsg delay msg
     )
 
 
@@ -574,9 +581,8 @@ updatedVaults vaults model =
     in
     case vaults of
         RemoteData.Failure error ->
-            ( newModel
-            , Util.delayMsg 1000 UpdateVaults
-            )
+            model
+                |> delayedUpdateVaults { delay = 1000, forceRefresh = False }
                 |> andLog "Failed to get vaults, retrying" error
 
         _ ->
