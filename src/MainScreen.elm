@@ -350,7 +350,6 @@ update msg model =
             model
                 |> notify (text "Sending feedback failed. Please try again.")
 
-        --  ~> (notify (text "Failed to send feedback. Retrying."))
         FeedbackEntered text ->
             case String.trim text of
                 "" ->
