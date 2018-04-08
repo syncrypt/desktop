@@ -89,6 +89,9 @@ type NotificationText
     | VaultExportFailed Reason
     | CouldNotCloneVaultWithoutFolder VaultId
     | NoPathSelected
+    | SyncryptInitialized
+    | SendingFeedbackFailed
+    | ThanksForYourFeedback
 
 
 type StatsText
@@ -428,6 +431,15 @@ translateEnglishNotificationText t =
 
         NoPathSelected ->
             "No path selected - vault not created"
+
+        SyncryptInitialized ->
+            "Syncrypt initialized"
+
+        SendingFeedbackFailed ->
+            "Sending feedback failed. Please try again."
+
+        ThanksForYourFeedback ->
+            "Thanks for your feedback!"
 
 
 translateEnglishStatsText : StatsText -> String
@@ -979,6 +991,15 @@ translateGermanNotificationText t =
 
         NoPathSelected ->
             "Der Vault konnte nicht erstellt werden, da kein Pfad ausgewählt wurde"
+
+        SyncryptInitialized ->
+            "Syncrypt erfolgreich initialisiert"
+
+        SendingFeedbackFailed ->
+            "Feedback konnte nicht gesendet werden. Bitte versuche es nochmal."
+
+        ThanksForYourFeedback ->
+            "Danke für dein Feedback!"
 
 
 translateGermanStatsText : StatsText -> String

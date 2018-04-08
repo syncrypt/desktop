@@ -303,7 +303,7 @@ update msg model =
             ( { model | isFirstLaunch = False }
             , Daemon.invalidateFirstLaunch model
             )
-                ~> notify (text "Syncrypt initialized")
+                ~> notifyText SyncryptInitialized
 
         EmailCompletionList emails ->
             ( { model | emailCompletionList = emails }
@@ -344,11 +344,11 @@ update msg model =
 
         SentFeedback (Success _) ->
             { model | feedback = Nothing }
-                |> notify (text "Thanks for your feedback!")
+                |> notifyText ThanksForYourFeedback
 
         SentFeedback error ->
             model
-                |> notify (text "Sending feedback failed. Please try again.")
+                |> notifyText SendingFeedbackFailed
 
         FeedbackEntered text ->
             case String.trim text of
