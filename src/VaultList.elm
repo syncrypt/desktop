@@ -334,9 +334,19 @@ flyingVaultList model =
                             )
                             model
 
-                Success flyingVaults ->
+                Success [] ->
                     text <|
-                        t (T.VaultListText T.ClickOnVaultToClone) model
+                        t (T.VaultListText T.YouDontHaveAnyRemoteVaultsYet) model
+
+                Success _ ->
+                    case flyingVaultItems of
+                        [] ->
+                            text <|
+                                t (T.VaultListText T.YouHaveClonedAllAvailableVaults) model
+
+                        _ ->
+                            text <|
+                                t (T.VaultListText T.ClickOnVaultToClone) model
     in
     div [ class "VaultList" ] <|
         [ div [ class "VaultListInfo" ]

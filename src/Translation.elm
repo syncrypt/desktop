@@ -170,6 +170,8 @@ type VaultListText
     | LoadRemoteVaults
     | AvailableVaults
     | FetchingRemoteVaultInfo
+    | YouDontHaveAnyRemoteVaultsYet
+    | YouHaveClonedAllAvailableVaults
     | ClickOnVaultToClone
     | FetchingRemoteVaultsFailed Reason
 
@@ -666,6 +668,12 @@ translateEnglishVaultListText vlt =
 
         FetchingRemoteVaultInfo ->
             "Fetching remote vault info "
+
+        YouDontHaveAnyRemoteVaultsYet ->
+            "You don't have any remote vaults in the cloud yet. Create a new vault by clicking the plus button above."
+
+        YouHaveClonedAllAvailableVaults ->
+            "You have already cloned all available vaults to this computer."
 
         ClickOnVaultToClone ->
             "Click on a vault to clone it to your computer"
@@ -1226,6 +1234,12 @@ translateGermanVaultListText vlt =
 
         FetchingRemoteVaultInfo ->
             "Lade Cloud Vault Metadaten"
+
+        YouDontHaveAnyRemoteVaultsYet ->
+            "Es sind noch keine Vaults in der Cloud vorhanden. Erstelle einen neuen Vault durch klicken des Plus-Buttons."
+
+        YouHaveClonedAllAvailableVaults ->
+            "Es wurden bereits alle verfügbaren Vaults auf diesen Computer heruntergeladen."
 
         ClickOnVaultToClone ->
             "Klick auf einen Vault um ihn auf diesen Computer herunterzuladen"
