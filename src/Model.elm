@@ -333,3 +333,15 @@ selectLanguage lang model =
         | language = lang
         , languageSelected = True
     }
+
+
+login : String -> Model -> Model
+login email model =
+    { model
+        | login = LoggedIn { firstName = "", lastName = "", email = email }
+    }
+
+
+logout : Model -> Model
+logout model =
+    { model | login = LoggedOut }

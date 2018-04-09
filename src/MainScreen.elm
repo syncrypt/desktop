@@ -227,15 +227,12 @@ update msg model =
             )
 
         OpenSettingsDialog ->
-            -- TODO
-            ( model
-                |> SettingsDialog.open
+            ( SettingsDialog.open model
             , Cmd.none
             )
 
         CloseSettingsDialog ->
-            ( model
-                |> SettingsDialog.close
+            ( SettingsDialog.close model
             , Cmd.none
             )
 
@@ -592,9 +589,7 @@ updatedVaults vaults model =
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 updatedFlyingVaults flyingVaults model =
-    { model
-        | flyingVaults = flyingVaults
-    }
+    { model | flyingVaults = flyingVaults }
         |> Util.retryOnFailure flyingVaults UpdateFlyingVaults
 
 
@@ -797,16 +792,15 @@ handleLoginResult :
 handleLoginResult email data model =
     case data of
         Success _ ->
-            ( { model
-                | login =
-                    LoggedIn { firstName = "", lastName = "", email = email }
-              }
+            ( model
+                |> Model.login email
                 |> LoginDialog.Model.loginSucceeded
             , Cmd.none
             )
 
         Failure reason ->
-            ( { model | login = LoggedOut }
+            ( model
+                |> Model.logout
                 |> LoginDialog.Model.loginFailed reason
             , Cmd.none
             )
