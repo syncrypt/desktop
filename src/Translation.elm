@@ -20,7 +20,6 @@ import Data.Vault exposing (VaultId)
 import Date exposing (Date)
 import Date.Distance
 import Date.Distance.Types
-import Dict exposing (Dict)
 import Language exposing (HasLanguage, Language(..))
 
 
