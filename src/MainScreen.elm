@@ -144,8 +144,8 @@ update msg model =
 
         CloneVault vaultId ->
             model
+                |> VaultDialog.Update.close vaultId
                 |> cloneVault vaultId
-                ~> VaultDialog.Update.close vaultId
                 ~> updateVaults { forceRefresh = False }
 
         ClonedVault vaultId data ->
@@ -161,12 +161,14 @@ update msg model =
         SaveVaultDetails vaultId ->
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
-                ~> saveVault vaultId
+                |> saveVault vaultId
                 ~> updateVaults { forceRefresh = False }
 
         DeleteVaultDialog vaultId ->
-            model
+            ( model
                 |> VaultDialog.Update.cancel vaultId
+            , Cmd.none
+            )
 
         Model.CreateNewVault ->
             { model | state = CreatingNewVault }
@@ -204,7 +206,7 @@ update msg model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
-                ~> updateVaults { forceRefresh = False }
+                |> updateVaults { forceRefresh = False }
                 ~> (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
@@ -603,11 +605,11 @@ closeVaultDetails : VaultId -> Model -> ( Model, Cmd Msg )
 closeVaultDetails vaultId model =
     { model | state = ShowingAllVaults }
         |> VaultDialog.Update.close vaultId
-        ~> initiateDeleteVaultDialog vaultId
+        |> initiateVaultDialogDisposal vaultId
 
 
-initiateDeleteVaultDialog : VaultId -> Model -> ( Model, Cmd Msg )
-initiateDeleteVaultDialog vaultId model =
+initiateVaultDialogDisposal : VaultId -> Model -> ( Model, Cmd Msg )
+initiateVaultDialogDisposal vaultId model =
     ( model
     , Util.delayMsg 150 (DeleteVaultDialog vaultId)
     )
@@ -632,15 +634,26 @@ deletedVault data model =
 
                 _ ->
                     model
+
+        closeVaultDialog vaultId =
+            nextModelWithState vaultId
+                |> VaultDialog.Update.cancel vaultId
+
+        deleteFailed =
+            case model.state of
+                ShowingVaultDetails vault ->
+                    closeVaultDialog vault.id
+
+                _ ->
+                    model
     in
     case data of
         Success vaultId ->
-            nextModelWithState vaultId
-                |> VaultDialog.Update.cancel vaultId
-                ~> (notifyText <| VaultDeleted vaultId)
+            closeVaultDialog vaultId
+                |> notifyText (VaultDeleted vaultId)
 
         _ ->
-            model
+            deleteFailed
                 |> notifyText (VaultDeleteFailed <| toString data)
 
 
@@ -737,9 +750,9 @@ clonedVault vaultId data model =
     case data of
         Success vault ->
             ( { model | state = ShowingAllVaults }
+                |> VaultDialog.Update.cancel vaultId
             , Daemon.getVaults model
             )
-                ~> VaultDialog.Update.cancel vaultId
 
         Failure reason ->
             model

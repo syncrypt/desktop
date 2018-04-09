@@ -134,29 +134,21 @@ openForVault vault model =
     )
 
 
-cancel : VaultId -> Model -> ( Model, Cmd Model.Msg )
+cancel : VaultId -> Model -> Model
 cancel vaultId model =
-    let
-        state =
-            dialogState vaultId model
-    in
-    ( { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
-    , Cmd.none
-    )
+    { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
 
 
-close : VaultId -> Model -> ( Model, Cmd Model.Msg )
+close : VaultId -> Model -> Model
 close vaultId model =
     let
         state =
             dialogState vaultId model
     in
-    ( state.modal
+    state.modal
         |> Ui.Modal.close
         |> asModalIn state
         |> asStateIn vaultId model
-    , Cmd.none
-    )
 
 
 dialogState : VaultId -> Model -> State
@@ -187,13 +179,10 @@ saveVaultChanges vaultId state model =
                 { name = state.nameInput.value, icon = state.icon }
                 model
 
-        ( newModel, modalCmd ) =
-            cancel vaultId model
-
         commands =
-            modalCmd :: updateMetadataCmd :: addUserCmds
+            updateMetadataCmd :: addUserCmds
     in
-    ( newModel
+    ( cancel vaultId model
     , Cmd.batch commands
     )
 
@@ -214,11 +203,13 @@ update msg vaultId ({ vaultDialogs } as model) =
         -- ModalMsg only has Close so we know we'll want to close the
         -- dialog window because the user has clicked outside of it
         ModalMsg msg ->
-            state.modal
+            ( state.modal
                 |> Ui.Modal.update msg
                 |> asModalIn state
                 |> asStateIn vaultId { model | state = Model.ShowingAllVaults }
                 |> close vaultId
+            , Cmd.none
+            )
 
         NameChanged ->
             ( state
