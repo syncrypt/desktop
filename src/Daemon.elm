@@ -511,35 +511,35 @@ apiPath apiPath =
         FlyingVaults ->
             "flying-vault"
 
-        Vault vaultId ->
-            "vault/" ++ vaultId
+        Vault (VaultId vid) ->
+            "vault/" ++ vid
 
-        DeleteVault vaultId ->
-            "vault/" ++ vaultId ++ "?wipe=1"
+        DeleteVault (VaultId vid) ->
+            "vault/" ++ vid ++ "?wipe=1"
 
-        ExportVault vaultId ->
-            "vault/" ++ vaultId ++ "/export"
+        ExportVault (VaultId vid) ->
+            "vault/" ++ vid ++ "/export"
 
-        FlyingVault vaultId ->
-            "flying-vault/" ++ vaultId
+        FlyingVault (VaultId vid) ->
+            "flying-vault/" ++ vid
 
-        VaultUsers vaultId ->
-            "vault/" ++ vaultId ++ "/users"
+        VaultUsers (VaultId vid) ->
+            "vault/" ++ vid ++ "/users"
 
-        VaultUser vaultId email ->
-            "vault/" ++ vaultId ++ "/users/" ++ email
+        VaultUser (VaultId vid) email ->
+            "vault/" ++ vid ++ "/users/" ++ email
 
-        VaultFingerprints vaultId ->
-            "vault/" ++ vaultId ++ "/fingerprints"
+        VaultFingerprints (VaultId vid) ->
+            "vault/" ++ vid ++ "/fingerprints"
 
-        VaultHistory vaultId ->
-            "vault/" ++ vaultId ++ "/history/"
+        VaultHistory (VaultId vid) ->
+            "vault/" ++ vid ++ "/history/"
 
         Stream DaemonLogStream ->
             "/logstream"
 
-        Stream (VaultLogStream vaultId) ->
-            "vault/" ++ vaultId ++ "/logstream"
+        Stream (VaultLogStream (VaultId vid)) ->
+            "vault/" ++ vid ++ "/logstream"
 
         UserKeys email ->
             "user/" ++ email ++ "/keys"

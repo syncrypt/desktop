@@ -3,7 +3,7 @@ module VaultDialog.Update exposing (..)
 import ConfirmationDialog
 import Daemon
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, LogItem, Vault, VaultId, nameOrId)
+import Data.Vault exposing (FlyingVault, LogItem, Vault, VaultId(..), nameOrId)
 import Dialog exposing (asModalIn)
 import Dict
 import Model exposing (Model, vaultWithId)
@@ -66,7 +66,7 @@ openNew model =
     ( state.modal
         |> Ui.Modal.open
         |> asModalIn state
-        |> asStateIn "" model
+        |> asStateIn (VaultId "") model
     , Cmd.none
     )
 
@@ -93,7 +93,7 @@ openForVault : Vault -> Model -> ( Model, Cmd Model.Msg )
 openForVault vault model =
     let
         ( isNewlyCreated, ( state, cmd ) ) =
-            case Dict.get vault.id model.vaultDialogs of
+            case Dict.get (Data.Vault.idString vault.id) model.vaultDialogs of
                 Nothing ->
                     let
                         ( state, cmd ) =
@@ -115,7 +115,7 @@ openForVault vault model =
         commands =
             if isNewlyCreated then
                 [ cmd
-                , VaultDialog.Ports.getFileList ( vault.id, path )
+                , VaultDialog.Ports.getFileList ( Data.Vault.idString vault.id, path )
                 , model
                     |> fetchUsers vault.id
                 , model
@@ -136,7 +136,7 @@ openForVault vault model =
 
 cancel : VaultId -> Model -> Model
 cancel vaultId model =
-    { model | vaultDialogs = Dict.remove vaultId model.vaultDialogs }
+    { model | vaultDialogs = Dict.remove (Data.Vault.idString vaultId) model.vaultDialogs }
 
 
 close : VaultId -> Model -> Model
@@ -153,7 +153,7 @@ close vaultId model =
 
 dialogState : VaultId -> Model -> State
 dialogState vaultId model =
-    case Dict.get vaultId model.vaultDialogs of
+    case Dict.get (Data.Vault.idString vaultId) model.vaultDialogs of
         Just state ->
             state
 
@@ -288,7 +288,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         OpenIconDialog ->
             ( model
-            , VaultDialog.Ports.openIconFileDialog state.id
+            , VaultDialog.Ports.openIconFileDialog (Data.Vault.idString state.id)
             )
 
         SelectedIcon iconUrl ->
@@ -301,7 +301,7 @@ update msg vaultId ({ vaultDialogs } as model) =
         OpenExportDialog ->
             ( model
             , VaultDialog.Ports.openExportFileDialog
-                ( state.id
+                ( Data.Vault.idString state.id
                 , T.t (T.VaultDialogText T.ExportToFile) model
                 )
             )
@@ -313,7 +313,7 @@ update msg vaultId ({ vaultDialogs } as model) =
 
         OpenFolderDialog ->
             ( model
-            , VaultDialog.Ports.openFolderDialog state.id
+            , VaultDialog.Ports.openFolderDialog (Data.Vault.idString state.id)
             )
 
         OpenFolder folderPath ->
@@ -335,7 +335,7 @@ update msg vaultId ({ vaultDialogs } as model) =
                 |> hasChanged
                 |> asStateIn vaultId model
             , Cmd.batch
-                [ VaultDialog.Ports.getFileList ( vaultId, path )
+                [ VaultDialog.Ports.getFileList ( Data.Vault.idString vaultId, path )
                 , nameInputCmd
                 ]
             )
@@ -617,10 +617,10 @@ fetchUsers vaultId model =
 
 
 asStateIn : VaultId -> Model -> State -> Model
-asStateIn vaultId model state =
+asStateIn (VaultId vid) model state =
     { model
         | vaultDialogs =
-            Dict.insert vaultId state model.vaultDialogs
+            Dict.insert vid state model.vaultDialogs
     }
 
 

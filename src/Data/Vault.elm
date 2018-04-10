@@ -8,9 +8,10 @@ module Data.Vault
         , LogItem
         , Metadata
         , NameOrId
+        , RemoteVaultId(..)
         , Status(..)
         , Vault
-        , VaultId
+        , VaultId(..)
         , VaultOptions(..)
         , addVaultUserEncoder
         , asVault
@@ -18,12 +19,16 @@ module Data.Vault
         , flyingVaultDecoder
         , historyItemDecoder
         , historyItemsDecoder
+        , idDecoder
+        , idString
         , init
         , jsonOptions
         , logItemDecoder
         , logLevelDecoder
         , metadataEncoder
         , nameOrId
+        , remoteIdDecoder
+        , remoteIdString
         , vaultStatusDecoder
         )
 
@@ -47,8 +52,13 @@ import Path exposing (Path)
 import Util exposing (LogLevel(..), dateDecoder)
 
 
-type alias VaultId =
-    String
+type VaultId
+    = VaultId String
+
+
+type RemoteVaultId
+    = RemoteVaultId String
+    | NotAssigned
 
 
 {-| Record type with an id and optional name field.
@@ -78,7 +88,7 @@ type VaultOptions
         , ignorePaths : List Path
         }
     | Clone
-        { id : String
+        { id : VaultId
         , folder : Path
         , ignorePaths : List Path
         }
@@ -131,7 +141,7 @@ type Event
 -}
 type alias Vault =
     { id : VaultId
-    , remoteId : VaultId
+    , remoteId : RemoteVaultId
     , name : Maybe String
     , size : Int
     , status : Status
@@ -150,7 +160,7 @@ type alias Vault =
 -}
 type alias FlyingVault =
     { id : VaultId
-    , remoteId : VaultId
+    , remoteId : RemoteVaultId
     , name : Maybe String
     , size : Maybe Int
     , userCount : Int
@@ -165,7 +175,7 @@ type alias FlyingVault =
 init : VaultId -> Vault
 init vaultId =
     { id = vaultId
-    , remoteId = vaultId
+    , remoteId = NotAssigned
     , name = Nothing
     , size = 0
     , status = Initializing
@@ -192,10 +202,25 @@ init vaultId =
 -- Types have the correctly typed `name` and `id` fields.
 
 
+idString : VaultId -> String
+idString (VaultId vid) =
+    vid
+
+
+remoteIdString : RemoteVaultId -> String
+remoteIdString remoteId =
+    case remoteId of
+        RemoteVaultId vid ->
+            vid
+
+        NotAssigned ->
+            "N/A"
+
+
 nameOrId : NameOrId a -> String
 nameOrId vault =
     vault.name
-        |> Maybe.withDefault vault.id
+        |> Maybe.withDefault (idString vault.id)
 
 
 asVault : FlyingVault -> Vault
@@ -241,7 +266,7 @@ jsonOptions config options =
 
         Clone { id, folder } ->
             Json.Encode.object
-                [ ( "id", Json.Encode.string id )
+                [ ( "id", Json.Encode.string (idString id) )
                 , ( "folder", Json.Encode.string (pathString folder) )
                 ]
 
@@ -257,8 +282,8 @@ jsonOptions config options =
 decoder : Json.Decoder Vault
 decoder =
     decode Vault
-        |> required "id" Json.string
-        |> optional "remote_id" Json.string "N/A"
+        |> required "id" idDecoder
+        |> optional "remote_id" remoteIdDecoder NotAssigned
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> required "size" Json.int
         |> required "state" vaultStatusDecoder
@@ -270,6 +295,18 @@ decoder =
         |> optional "modification_date" dateDecoder Nothing
         |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
         |> required "crypt_info" cryptoInfoDecoder
+
+
+idDecoder : Json.Decoder VaultId
+idDecoder =
+    Json.string
+        |> Json.andThen (succeed << VaultId)
+
+
+remoteIdDecoder : Json.Decoder RemoteVaultId
+remoteIdDecoder =
+    Json.string
+        |> Json.andThen (succeed << RemoteVaultId)
 
 
 cryptoInfoDecoder : Json.Decoder CryptoInfo
@@ -330,7 +367,7 @@ logItemDecoder =
         |> required "level" logLevelDecoder
         |> required "createdAt" Util.dateDecoder
         |> required "message" Json.string
-        |> required "vault_id" Json.string
+        |> required "vault_id" idDecoder
 
 
 {-| Decodes a `Data.Vault.FlyingVault`.
@@ -338,8 +375,8 @@ logItemDecoder =
 flyingVaultDecoder : Json.Decoder FlyingVault
 flyingVaultDecoder =
     decode FlyingVault
-        |> required "id" Json.string
-        |> required "remote_id" Json.string
+        |> required "id" idDecoder
+        |> required "remote_id" remoteIdDecoder
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> optional "size" (Json.maybe Json.int) Nothing
         |> required "user_count" Json.int

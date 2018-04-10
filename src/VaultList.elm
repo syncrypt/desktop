@@ -27,7 +27,7 @@ import Util
 
 
 type alias HasId a =
-    { a | id : String }
+    { a | id : Data.Vault.VaultId }
 
 
 type alias HasModificationDate a =
@@ -123,7 +123,7 @@ vaultActivity vault model =
 type alias HasUserCountAndId a =
     { a
         | userCount : Int
-        , id : String
+        , id : Data.Vault.VaultId
     }
 
 
@@ -142,7 +142,7 @@ vaultUserCount vault model =
 
 
 type alias HasRevisionCountAndId a =
-    { a | revisionCount : Int, id : String }
+    { a | revisionCount : Int, id : Data.Vault.VaultId }
 
 
 vaultRevisionCount : HasRevisionCountAndId a -> Model -> Html msg
@@ -370,19 +370,19 @@ unsyncedFlyingVaults model =
 
         vaultIds =
             vaults
-                |> List.map (\v -> v.remoteId)
+                |> List.map (\v -> Data.Vault.remoteIdString v.remoteId)
                 |> Set.fromList
 
         flyingVaultIds =
             flyingVaults
-                |> List.map (\v -> v.remoteId)
+                |> List.map (\v -> Data.Vault.remoteIdString v.remoteId)
                 |> Set.fromList
 
         diff =
             Set.diff flyingVaultIds vaultIds
     in
     flyingVaults
-        |> List.filter (\fv -> Set.member fv.id diff)
+        |> List.filter (\fv -> Set.member (Data.Vault.idString fv.id) diff)
 
 
 view : Model -> Html Msg

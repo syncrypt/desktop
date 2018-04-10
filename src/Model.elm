@@ -3,7 +3,7 @@ module Model exposing (..)
 import Config exposing (Config)
 import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Status, Vault, VaultId)
+import Data.Vault exposing (FlyingVault, RemoteVaultId(..), Status, Vault, VaultId(..))
 import Date exposing (Date)
 import Dict exposing (Dict)
 import Json.Decode as Json exposing (andThen, succeed)
@@ -35,7 +35,7 @@ type alias Model =
     , isFirstLaunch : Bool
     , now : Maybe Date
     , loginDialog : LoginDialog.Model.State
-    , vaultDialogs : Dict VaultId VaultDialog.Model.State
+    , vaultDialogs : Dict String VaultDialog.Model.State
     , notificationCenter : Ui.NotificationCenter.Model Msg
     , login : LoginState
     , language : Language
@@ -234,7 +234,7 @@ init config =
     , isFirstLaunch = False
     , now = Nothing
     , loginDialog = LoginDialog.Model.init
-    , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
+    , vaultDialogs = Dict.empty
     , notificationCenter =
         Ui.NotificationCenter.init ()
             |> Ui.NotificationCenter.timeout 2500
@@ -288,10 +288,18 @@ vaultIds { vaults, flyingVaults } =
 
 
 hasVaultWithId : VaultId -> Model -> Bool
-hasVaultWithId id model =
+hasVaultWithId (VaultId id) model =
     model.vaults
         |> RemoteData.withDefault []
-        |> List.any (\v -> v.remoteId == id)
+        |> List.any
+            (\v ->
+                case v.remoteId of
+                    NotAssigned ->
+                        False
+
+                    RemoteVaultId vaultId ->
+                        vaultId == id
+            )
 
 
 type alias HasVaultId a =

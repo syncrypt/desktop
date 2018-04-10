@@ -96,4 +96,4 @@ logItemDecoder =
         |> required "level" Data.Vault.logLevelDecoder
         |> required "createdAt" Util.dateDecoder
         |> required "message" Json.string
-        |> optional "vault_id" (Json.maybe Json.string) Nothing
+        |> optional "vault_id" (Json.maybe Data.Vault.idDecoder) Nothing

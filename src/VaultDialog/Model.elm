@@ -8,7 +8,7 @@ import Data.Vault
         , FlyingVault
         , HistoryItem
         , Vault
-        , VaultId
+        , VaultId(..)
         , nameOrId
         )
 import Date exposing (Date)
@@ -147,7 +147,7 @@ type Msg
 
 init : State
 init =
-    { id = ""
+    { id = VaultId ""
     , cloneStatus = New
     , hasChangesPending = False
     , title = "Untitled Vault"
@@ -203,10 +203,12 @@ initForVault vault =
                 |> Ui.Input.showClearIcon True
 
         cloneStatus =
-            if vault.id == "" then
-                New
-            else
-                Cloned
+            case vault.id of
+                VaultId "" ->
+                    New
+
+                _ ->
+                    Cloned
 
         folderPath =
             if cloneStatus == New then

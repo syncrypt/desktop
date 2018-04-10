@@ -16,7 +16,7 @@ module Translation
 
 import Data.Daemon exposing (KeyState, Stats)
 import Data.User exposing (Email)
-import Data.Vault exposing (VaultId)
+import Data.Vault exposing (VaultId(..))
 import Date exposing (Date)
 import Date.Distance
 import Date.Distance.Types
@@ -290,7 +290,7 @@ translateEnglish text =
         CreateNewVault ->
             "Create New Vault"
 
-        VaultNotSynced vaultId ->
+        VaultNotSynced (VaultId vaultId) ->
             "Vault (not synchronized) " ++ vaultId
 
         Updated date now ->
@@ -390,16 +390,16 @@ translateEnglish text =
 translateEnglishNotificationText : NotificationText -> String
 translateEnglishNotificationText t =
     case t of
-        VaultCreated vaultId ->
+        VaultCreated (VaultId vaultId) ->
             "Vault created"
 
-        VaultDeleted vaultId ->
+        VaultDeleted (VaultId vaultId) ->
             "Vault deleted from server"
 
-        VaultUpdated vaultId ->
+        VaultUpdated (VaultId vaultId) ->
             "Vault updated"
 
-        VaultRemoved vaultId ->
+        VaultRemoved (VaultId vaultId) ->
             "Vault removed from sync"
 
         VaultCreateFailed reason ->
@@ -414,20 +414,20 @@ translateEnglishNotificationText t =
         VaultMetadataUpdateFailed vaultId ->
             "Failed to update metadata for vault"
 
-        VaultCloneFailed vaultId reason ->
+        VaultCloneFailed (VaultId vaultId) reason ->
             "Something went wrong while cloning the vault : "
                 ++ reason
 
-        VaultAddUserFailed vaultId email ->
+        VaultAddUserFailed (VaultId vaultId) email ->
             "Failed to add user " ++ email ++ " to vault "
 
-        VaultExported vaultId ->
+        VaultExported (VaultId vaultId) ->
             "Vault exported"
 
         VaultExportFailed _ ->
             "Vault export failed"
 
-        CouldNotCloneVaultWithoutFolder vaultId ->
+        CouldNotCloneVaultWithoutFolder (VaultId vaultId) ->
             "Could not clone vault - no folder specified"
 
         NoPathSelected ->
@@ -854,7 +854,7 @@ translateGerman text =
         CreateNewVault ->
             "Erzeuge einen neuen Vault"
 
-        VaultNotSynced vaultId ->
+        VaultNotSynced (VaultId vaultId) ->
             "Vault (nicht synchronisiert) " ++ vaultId
 
         Updated date now ->

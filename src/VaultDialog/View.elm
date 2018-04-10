@@ -97,8 +97,8 @@ import VaultDialog.Update exposing (dialogState, isOwner)
 subscriptions : Model -> Sub Model.Msg
 subscriptions model =
     let
-        msg =
-            Model.VaultDialogMsg
+        msg vaultId =
+            Model.VaultDialogMsg (Data.Vault.VaultId vaultId)
 
         fileListMsg ( vaultId, rootPath, folderItem ) =
             msg vaultId <| NestedFileList rootPath folderItem
@@ -114,7 +114,7 @@ subscriptions model =
                 Model.ShowingVaultDetails vault ->
                     let
                         logMsg =
-                            msg vault.id << VaultLogStream
+                            Model.VaultDialogMsg vault.id << VaultLogStream
                     in
                     model
                         |> Daemon.subscribeVaultLogStream vault.id logMsg
@@ -134,7 +134,7 @@ viewAll : Model -> List (Html Model.Msg)
 viewAll ({ vaultDialogs } as model) =
     vaultDialogs
         |> Dict.keys
-        |> List.map (\vaultId -> view vaultId model)
+        |> List.map (\vaultId -> view (Data.Vault.VaultId vaultId) model)
 
 
 view : VaultId -> Model -> Html Model.Msg
@@ -354,7 +354,7 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    [ text (String.toUpper vault.remoteId) ]
+                    [ text (String.toUpper <| Data.Vault.remoteIdString vault.remoteId) ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
                     [ text (toString vault.revisionCount) ]
