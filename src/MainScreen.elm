@@ -500,7 +500,7 @@ openDaemonLogDialog model =
 
 closeDaemonLogDialog : Model -> ( Model, Cmd Msg )
 closeDaemonLogDialog model =
-    model
+    { model | state = ShowingAllVaults }
         |> WizardDialog.hideAndClose
 
 
