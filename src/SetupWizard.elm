@@ -1,11 +1,13 @@
 module SetupWizard exposing (settings, viewSettings)
 
+import Data.Daemon exposing (KeyState(..))
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, input, p, span, text)
 import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onClick, onInput)
 import Language exposing (HasLanguage, Language(..))
 import Model
+import RemoteData
 import Translation as T
 import Util exposing (ButtonSettings, Position(..), button)
 import WizardDialog.Model exposing (..)
@@ -187,11 +189,30 @@ step4 model state =
 
 
 step5 model state =
+    let
+        keyStateText keyState =
+            case keyState of
+                Uninitialized ->
+                    text "Key not yet initialized."
+
+                Initializing ->
+                    text "Initializing key."
+
+                Initialized ->
+                    text "Key successfully initialized."
+
+        defaultText =
+            text "Updating..."
+    in
     Just
         { title = t T.KeyCreation model
         , contents =
             wizardContent
-                [ text "Coming soon with a nice animation next to this text." ]
+                [ model.stats
+                    |> RemoteData.map (\{ userKeyState } -> userKeyState)
+                    |> RemoteData.map keyStateText
+                    |> RemoteData.withDefault defaultText
+                ]
         , buttons =
             CustomNavNoCancel
                 { prev = Hidden
