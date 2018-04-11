@@ -209,7 +209,7 @@ step5 model state =
         , contents =
             wizardContent
                 [ model.stats
-                    |> RemoteData.map (\{ userKeyState } -> userKeyState)
+                    |> RemoteData.map .userKeyState
                     |> RemoteData.map keyStateText
                     |> RemoteData.withDefault defaultText
                 ]
