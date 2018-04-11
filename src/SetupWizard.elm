@@ -163,18 +163,20 @@ step4 model state =
                 [ infoTextWithHeaders [ class "TermsOfService" ]
                     (t T.LegalNotice model)
                     (t T.PleaseReadAndConfirm model)
-                    [ t T.TOS1 model
-                    , t T.TOS2 model
-                    , t T.TOS3 model
-                    , t T.TOS4 model
-                    , t T.TOS5 model
-                    , t T.TOS6 model
-                    , t T.TOS7 model
-                    , t T.TOS8 model
-                    , t T.TOS9 model
-                    , t T.TOS10 model
-                    , t T.TOS11 model
-                    ]
+                    (List.map (flip t model)
+                        [ T.TOS1
+                        , T.TOS2
+                        , T.TOS3
+                        , T.TOS4
+                        , T.TOS5
+                        , T.TOS6
+                        , T.TOS7
+                        , T.TOS8
+                        , T.TOS9
+                        , T.TOS10
+                        , T.TOS11
+                        ]
+                    )
                 ]
         , buttons =
             CustomNavNoCancel
