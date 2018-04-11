@@ -173,6 +173,10 @@ function createTray() {
   systemTray.setToolTip("Syncrypt Desktop")
   systemTray.setContextMenu(contextMenu)
   systemTray.setPressedImage(Path.join(Path.dirname(trayIconPath), TRAY_ICON_CLICKED))
+
+  if (process.platform == 'win32') {
+    systemTray.on("double-click", createWindow)
+  }
 }
 
 // called when electron has initialized
