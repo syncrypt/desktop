@@ -32,6 +32,7 @@ steps =
 settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
+    , name = "SetupWizard"
     , onFinishMsg = Just Model.SetupWizardFinished
     , steps = steps |> List.map Tuple.first
     , wizardType = SetupWizard

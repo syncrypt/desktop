@@ -206,8 +206,16 @@ li {
   }
 }
 
+.DaemonLog {
+  ui-modal-wrapper {
+    width: 600px !important;
+    max-width: 600px !important;
+    min-width: 600px !important;
+  }
+}
+
 .MainScreen-DaemonLogDialog {
-  width: 600px;
+  width: 540px;
   height: 450px;
 
   text-overflow: ellipsis;

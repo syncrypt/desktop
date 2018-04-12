@@ -19,6 +19,7 @@ import WizardDialog.Model
 settings : Model.Model -> WizardSettings Model.Msg
 settings _ =
     { address = Model.WizardDialogMsg
+    , name = "FeedbackWizard"
     , onFinishMsg = Just Model.SendFeedback
     , steps = [ "Send Feedback" ]
     , wizardType = FeedbackWizard

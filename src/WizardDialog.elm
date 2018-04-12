@@ -200,7 +200,7 @@ viewDialog language state step =
             , title = step.title
             }
     in
-    div [ class "WizardDialog" ]
+    div [ class "WizardDialog", class state.name ]
         [ Ui.Modal.view viewConfig state.modal ]
 
 
