@@ -224,15 +224,22 @@ li {
 
   table {
     max-width: 100%;
+    width: 100%;
     height: 100%;
   }
 
   tr {
     display: table-row;
+    padding: $padding-tiny;
+  }
+
+  td {
+    padding: $padding-small;
   }
 
   th {
     text-align: left;
+    padding: $padding-small;
     margin-bottom: $padding-large;
   }
 
