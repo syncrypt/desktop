@@ -237,8 +237,8 @@ init config =
     , vaultDialogs = Dict.fromList [ ( "", VaultDialog.Model.init ) ]
     , notificationCenter =
         Ui.NotificationCenter.init ()
-            |> Ui.NotificationCenter.timeout 2500
-            |> Ui.NotificationCenter.duration 2500
+            |> Ui.NotificationCenter.timeout 5000
+            |> Ui.NotificationCenter.duration 2000
     , login = Unknown
     , language = Language.fromLocale config.locale
     , languageSelected = False
