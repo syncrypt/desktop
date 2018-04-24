@@ -1,11 +1,15 @@
 module Data.Daemon
     exposing
         ( DaemonConfig
+        , Error
+        , ErrorStatus
         , GUIConfig
         , KeyState(..)
         , LogItem
         , Stats
         , daemonConfigDecoder
+        , errorDecoder
+        , errorStatus
         , guiConfigDecoder
         , languageDecoder
         , logItemDecoder
@@ -13,11 +17,20 @@ module Data.Daemon
 
 import Data.Vault exposing (VaultId)
 import Date exposing (Date)
-import Dict exposing (Dict)
-import Json.Decode as Json exposing (fail, succeed)
+import Json.Decode as Json exposing (andThen, fail, succeed)
 import Json.Decode.Pipeline exposing (decode, optional, required)
 import Language exposing (Language(..))
 import Util exposing (LogLevel, andLog)
+
+
+type alias Error =
+    { status : ErrorStatus
+    , reason : String
+    }
+
+
+type ErrorStatus
+    = ErrorStatus String
 
 
 type KeyState
@@ -55,6 +68,24 @@ type alias LogItem =
     , message : String
     , vaultId : Maybe VaultId
     }
+
+
+errorStatus : ErrorStatus -> String
+errorStatus (ErrorStatus s) =
+    s
+
+
+errorDecoder : Json.Decoder Error
+errorDecoder =
+    decode Error
+        |> required "status" errorStatusDecoder
+        |> required "reason" Json.string
+
+
+errorStatusDecoder : Json.Decoder ErrorStatus
+errorStatusDecoder =
+    Json.string
+        |> andThen (succeed << ErrorStatus)
 
 
 daemonConfigDecoder : Json.Decoder DaemonConfig
