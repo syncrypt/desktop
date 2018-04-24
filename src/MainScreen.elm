@@ -12,6 +12,7 @@ import FeedbackWizard
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Http
 import Language
 import LoginDialog.Model
 import LoginDialog.Update
