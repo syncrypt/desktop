@@ -303,50 +303,54 @@ vaultList model =
         ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
+flyingVaultListSubtitle : List FlyingVault -> Model -> Html Msg
+flyingVaultListSubtitle availableFlyingVaults model =
+    let
+        tt vaultListText =
+            text <| t vaultListText model
+
+        ttt vaultListText extraText =
+            text <|
+                t vaultListText model
+                    ++ extraText
+    in
+    case model.flyingVaults of
+        NotAsked ->
+            span
+                [ class "UpdateFlyingVaultsButton"
+                , onClick UpdateFlyingVaults
+                ]
+                [ tt <| T.VaultListText T.LoadRemoteVaults ]
+
+        Loading ->
+            ttt (T.VaultListText T.FetchingRemoteVaultInfo)
+                (Util.animatedDots model.now)
+
+        Failure reason ->
+            tt <|
+                T.VaultListText <|
+                    T.FetchingRemoteVaultsFailed (toString reason)
+
+        Success [] ->
+            tt <| T.VaultListText T.YouDontHaveAnyRemoteVaultsYet
+
+        Success _ ->
+            case availableFlyingVaults of
+                [] ->
+                    tt <| T.VaultListText T.YouHaveClonedAllAvailableVaults
+
+                _ ->
+                    tt <| T.VaultListText T.ClickOnVaultToClone
+
+
 flyingVaultList : Model -> Html Msg
 flyingVaultList model =
     let
-        flyingVaultItems =
-            model
-                |> unsyncedFlyingVaults
-                |> List.map (flyingVaultItem model)
+        availableFlyingVaults =
+            unsyncedFlyingVaults model
 
         subtitle =
-            case model.flyingVaults of
-                NotAsked ->
-                    span
-                        [ class "UpdateFlyingVaultsButton"
-                        , onClick UpdateFlyingVaults
-                        ]
-                        [ text <| t (T.VaultListText T.LoadRemoteVaults) model ]
-
-                Loading ->
-                    text <|
-                        t (T.VaultListText T.FetchingRemoteVaultInfo) model
-                            ++ Util.animatedDots model.now
-
-                Failure reason ->
-                    text <|
-                        t
-                            (T.VaultListText <|
-                                T.FetchingRemoteVaultsFailed <|
-                                    toString reason
-                            )
-                            model
-
-                Success [] ->
-                    text <|
-                        t (T.VaultListText T.YouDontHaveAnyRemoteVaultsYet) model
-
-                Success _ ->
-                    case flyingVaultItems of
-                        [] ->
-                            text <|
-                                t (T.VaultListText T.YouHaveClonedAllAvailableVaults) model
-
-                        _ ->
-                            text <|
-                                t (T.VaultListText T.ClickOnVaultToClone) model
+            flyingVaultListSubtitle availableFlyingVaults model
     in
     div [ class "VaultList" ] <|
         [ div [ class "VaultListInfo" ]
@@ -356,7 +360,7 @@ flyingVaultList model =
                 [ subtitle ]
             ]
         ]
-            ++ flyingVaultItems
+            ++ List.map (flyingVaultItem model) availableFlyingVaults
 
 
 unsyncedFlyingVaults : Model -> List FlyingVault
