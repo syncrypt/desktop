@@ -7,6 +7,7 @@ module Translation
         , SetupWizardText(..)
         , StatsText(..)
         , Text(..)
+        , VaultCreateFailReason(..)
         , VaultDialogText(..)
         , VaultListText(..)
         , t
@@ -78,9 +79,9 @@ type NotificationText
     | VaultRemoved VaultId
     | VaultDeleted VaultId
     | VaultUpdated VaultId
-    | VaultCreateFailed Reason
-    | VaultRemoveFailed Reason
-    | VaultDeleteFailed Reason
+    | VaultCreateFailed VaultCreateFailReason
+    | VaultRemoveFailed
+    | VaultDeleteFailed
     | VaultMetadataUpdateFailed VaultId
     | VaultCloneFailed VaultId Reason
     | VaultAddUserFailed VaultId Email
@@ -91,6 +92,11 @@ type NotificationText
     | SyncryptInitialized
     | SendingFeedbackFailed
     | ThanksForYourFeedback
+
+
+type VaultCreateFailReason
+    = FolderAlreadyInSync
+    | FolderPathNotValid
 
 
 type StatsText
@@ -403,13 +409,18 @@ translateEnglishNotificationText t =
             "Vault removed from sync"
 
         VaultCreateFailed reason ->
-            "Failed to create vault: " ++ reason
+            case reason of
+                FolderAlreadyInSync ->
+                    "Failed to create vault. Folder is already in sync in another vault."
 
-        VaultRemoveFailed reason ->
-            "Failed to remove vault: " ++ reason
+                FolderPathNotValid ->
+                    "Failed to create vault. Folder path is not a valid path."
 
-        VaultDeleteFailed reason ->
-            "Vault deletion failed: " ++ reason
+        VaultRemoveFailed ->
+            "Failed to remove vault. Please try again."
+
+        VaultDeleteFailed ->
+            "Vault deletion failed. Please try again."
 
         VaultMetadataUpdateFailed vaultId ->
             "Failed to update metadata for vault"
@@ -967,13 +978,18 @@ translateGermanNotificationText t =
             "Vault sync wurde deaktiviert"
 
         VaultCreateFailed reason ->
-            "Es gab einen Fehler beim Erstellen des Vaults: " ++ reason
+            case reason of
+                FolderAlreadyInSync ->
+                    "Vault konnte nicht erstellt werden. Ordner wird bereits in einem anderen Vault aktiv verwendet."
 
-        VaultRemoveFailed reason ->
-            "Es gab einen Fehler beim Deaktivieren des Vaults: " ++ reason
+                FolderPathNotValid ->
+                    "Vault konnte nicht erstellt werden. Der angegebene Ordner existiert nicht."
 
-        VaultDeleteFailed reason ->
-            "Es gab einen Fehler beim Löschen des Vaults: " ++ reason
+        VaultRemoveFailed ->
+            "Es gab einen Fehler beim Deaktivieren des Vaults. Bitte versuche es noch einmal."
+
+        VaultDeleteFailed ->
+            "Es gab einen Fehler beim Löschen des Vaults. Bitte versuche es noch einmal."
 
         VaultMetadataUpdateFailed vaultId ->
             "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults"

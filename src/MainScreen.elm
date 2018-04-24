@@ -25,7 +25,14 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
 import Time
-import Translation as T exposing (NotificationText(..), Text(..), t, translate)
+import Translation as T
+    exposing
+        ( NotificationText(..)
+        , Text(..)
+        , VaultCreateFailReason(..)
+        , t
+        , translate
+        )
 import Ui.NotificationCenter
 import Util exposing ((~>), Direction(..), andLog)
 import VaultDialog.Model exposing (CloneStatus(..))
@@ -181,8 +188,17 @@ update msg model =
                 ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
 
         CreatedVault _ (Failure reason) ->
+            let
+                msg =
+                    case reason of
+                        Http.BadStatus s ->
+                            VaultCreateFailed FolderAlreadyInSync
+
+                        _ ->
+                            VaultCreateFailed FolderPathNotValid
+            in
             model
-                |> notifyText (VaultCreateFailed <| toString reason)
+                |> notifyText msg
                 ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
 
         CreatedVault _ webData ->
@@ -212,7 +228,7 @@ update msg model =
         RemovedVaultFromSync data ->
             model
                 |> updateVaults { forceRefresh = False }
-                ~> notifyText (VaultRemoveFailed <| toString data)
+                ~> notifyText VaultRemoveFailed
 
         DeletedVault data ->
             model
@@ -654,7 +670,7 @@ deletedVault data model =
 
         _ ->
             deleteFailed
-                |> notifyText (VaultDeleteFailed <| toString data)
+                |> notifyText VaultDeleteFailed
 
 
 notify : Html Msg -> Model -> ( Model, Cmd Msg )
