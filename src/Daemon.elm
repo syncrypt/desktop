@@ -566,7 +566,7 @@ apiPath apiPath =
             "auth/logout"
 
         ExportUserKey ->
-            "user_key_export"
+            "identity/export"
 
 
 {-| Converts `RequestMethod` into `String`.
