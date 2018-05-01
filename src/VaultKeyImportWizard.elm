@@ -82,7 +82,7 @@ step2 model state =
                     [ t T.SelectYourVaultImportDestinationFolder model ]
                 , div []
                     [ button []
-                        { label = t T.SelectVaultKeyFileForImport model
+                        { label = t T.SelectYourVaultImportDestinationFolder model
                         , onClick = Model.OpenVaultImportFolderDialog
                         }
                     ]
