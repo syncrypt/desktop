@@ -1,18 +1,13 @@
 module VaultKeyImportWizard exposing (settings, viewSettings)
 
-import Html exposing (Html, div, input, p, span, text)
-import Html.Attributes exposing (class, type_)
-import Language exposing (HasLanguage, Language(..))
+import Html exposing (Html, div)
+import Html.Attributes exposing (class)
+import Language exposing (HasLanguage)
 import Model
 import Translation as T
-import Util exposing (ButtonSettings, Position(..), button)
+import Util exposing (button)
 import WizardDialog.Model exposing (..)
-import WizardDialog.View
-    exposing
-        ( infoText
-        , infoTextWithHeader
-        , infoTextWithHeaders
-        )
+import WizardDialog.View exposing (infoText)
 
 
 steps : List (StepConfig Model.Model Model.Msg)
