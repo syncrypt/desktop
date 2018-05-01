@@ -42,6 +42,7 @@ type WizardType
     = SetupWizard
     | FeedbackWizard
     | DaemonLogDialog
+    | VaultKeyImportWizard
 
 
 type alias WizardSettings msg =

@@ -157,6 +157,27 @@ const getEnvLocale = () => {
   return env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE || "en_US.UTF-8"
 }
 
+const openVaultKeyImportFileDialog = function (tag) {
+  Electron.remote.dialog.showOpenDialog({
+    properties: ["openFile"],
+    title: "Select vault key",
+    buttonLabel: "Import Vault Key",
+    filters: [{ name: "Vault Keys", extensions: ["zip"] }]
+  }, (files) => {
+    if (files && files.length == 1) {
+      elmApp.ports.selectedVaultKeyImportFile.send(files[0])
+    }
+  })
+}
+
+const openVaultImportFolderDialog = function () {
+  var folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  if (folders && folders.length == 1) {
+    const folderPath = folders[0].split(Path.sep)
+    elmApp.ports.selectedVaultImportFolder.send(folderPath)
+  }
+}
+
 const setupElmApp = function (daemonApiToken) {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -178,6 +199,8 @@ const setupElmApp = function (daemonApiToken) {
   elmApp.ports.openPasswordResetInBrowser.subscribe(openPasswordResetInBrowser)
   elmApp.ports.openUserKeyExportFileDialog.subscribe(openUserKeyExportFileDialog)
   elmApp.ports.quitAndInstall.subscribe(quitAndInstall)
+  elmApp.ports.openVaultKeyImportFileDialog.subscribe(openVaultKeyImportFileDialog)
+  elmApp.ports.openVaultImportFolderDialog.subscribe(openVaultImportFolderDialog)
 
   Electron.ipcRenderer.on('update-downloaded', (ev, info) => {
     elmApp.ports.updateAvailable.send(info.version)

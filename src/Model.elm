@@ -47,6 +47,7 @@ type alias Model =
     , updateAvailable : Maybe String
     , setupWizard : SetupWizardState
     , daemonLogItems : List Data.Daemon.LogItem
+    , vaultKeyImportWizard : VaultKeyImportWizardState
     }
 
 
@@ -55,6 +56,12 @@ type alias SetupWizardState =
     , password : Maybe String
     , passwordResetSent : Bool
     }
+
+
+type VaultKeyImportWizardState
+    = NoVaultImportStarted
+    | SelectedVaultKey String
+    | SelectedVaultKeyAndFolder String String
 
 
 type alias CurrentUser =
@@ -87,6 +94,7 @@ type State
     | CreatingNewVault
     | CloningVault VaultId
     | ShowingDaemonLog
+    | ImportingVaultKey
 
 
 type Msg
@@ -148,6 +156,12 @@ type Msg
     | DaemonLogStream (Result String Data.Daemon.LogItem)
     | UpdateAvailable String
     | InstallUpdate
+    | OpenVaultKeyImportWizard
+    | VaultKeyImportWizardFinished
+    | OpenVaultKeyImportFileDialog
+    | SelectedVaultKeyImportFile String
+    | OpenVaultImportFolderDialog
+    | SelectedVaultImportFolder String
 
 
 
@@ -253,6 +267,7 @@ init config =
         , passwordResetSent = False
         }
     , daemonLogItems = []
+    , vaultKeyImportWizard = NoVaultImportStarted
     }
 
 
@@ -345,3 +360,37 @@ login email model =
 logout : Model -> Model
 logout model =
     { model | login = LoggedOut }
+
+
+resetVaultKeyImportState : Model -> Model
+resetVaultKeyImportState model =
+    { model | vaultKeyImportWizard = NoVaultImportStarted }
+
+
+selectedVaultKeyImportFile : String -> Model -> Model
+selectedVaultKeyImportFile filePath model =
+    { model | vaultKeyImportWizard = SelectedVaultKey filePath }
+
+
+selectedVaultImportFolder : String -> Model -> Model
+selectedVaultImportFolder folderPath model =
+    case model.vaultKeyImportWizard of
+        NoVaultImportStarted ->
+            -- this really shouldn't ever happen
+            let
+                _ =
+                    Debug.log "Error: Selected vault import folder without key being set:" folderPath
+            in
+            model
+
+        SelectedVaultKey keyPath ->
+            { model
+                | vaultKeyImportWizard =
+                    SelectedVaultKeyAndFolder keyPath folderPath
+            }
+
+        SelectedVaultKeyAndFolder keyPath _ ->
+            { model
+                | vaultKeyImportWizard =
+                    SelectedVaultKeyAndFolder keyPath folderPath
+            }

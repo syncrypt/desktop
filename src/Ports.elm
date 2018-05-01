@@ -6,11 +6,17 @@ port module Ports
         , openPasswordResetInBrowser
         , openUserKeyExportFileDialog
         , openVaultFolder
+        , openVaultImportFolderDialog
+        , openVaultKeyImportFileDialog
         , quitAndInstall
         , selectedUserKeyExportFile
+        , selectedVaultImportFolder
+        , selectedVaultKeyImportFile
         , updateAvailable
         , updateEmailCompletionList
         )
+
+import Path exposing (Path)
 
 
 port focusOn : String -> Cmd msg
@@ -41,3 +47,15 @@ port quitAndInstall : () -> Cmd msg
 
 
 port updateAvailable : (String -> msg) -> Sub msg
+
+
+port openVaultKeyImportFileDialog : () -> Cmd msg
+
+
+port selectedVaultKeyImportFile : (String -> msg) -> Sub msg
+
+
+port openVaultImportFolderDialog : () -> Cmd msg
+
+
+port selectedVaultImportFolder : (Path -> msg) -> Sub msg

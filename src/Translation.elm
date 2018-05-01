@@ -9,6 +9,7 @@ module Translation
         , Text(..)
         , VaultCreateFailReason(..)
         , VaultDialogText(..)
+        , VaultKeyImportWizardText(..)
         , VaultListText(..)
         , t
         , timeAgo
@@ -67,11 +68,13 @@ type Text
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
     | ViewDaemonLog
+    | ImportVault
     | ProgramSettings
     | RefreshVaults
     | SettingsDialogText SettingsDialogText
     | UpdateAvailable String
     | SetupWizardText SetupWizardText
+    | VaultKeyImportWizardText VaultKeyImportWizardText
 
 
 type NotificationText
@@ -235,6 +238,13 @@ type SetupWizardText
     | KeyCreation
 
 
+type VaultKeyImportWizardText
+    = VaultKeyImport
+    | ImportYourVaultKeyHere
+    | SelectVaultKeyFileForImport
+    | SelectYourVaultImportDestinationFolder
+
+
 type FolderButtonType
     = SelectFolder
     | CloneIntoFolder
@@ -377,6 +387,9 @@ translateEnglish text =
         ViewDaemonLog ->
             "View the Syncrypt background process log"
 
+        ImportVault ->
+            "Import a previously exported Vault & key"
+
         ProgramSettings ->
             "Program Settings"
 
@@ -391,6 +404,9 @@ translateEnglish text =
 
         SetupWizardText text ->
             translateEnglishSetupWizardText text
+
+        VaultKeyImportWizardText text ->
+            translateEnglishVaultKeyImportWizardText text
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -838,6 +854,22 @@ translateEnglishSetupWizardText text =
             "Key Creation"
 
 
+translateEnglishVaultKeyImportWizardText : VaultKeyImportWizardText -> String
+translateEnglishVaultKeyImportWizardText text =
+    case text of
+        VaultKeyImport ->
+            "Vault Key import"
+
+        ImportYourVaultKeyHere ->
+            "You can Import your vault key here."
+
+        SelectVaultKeyFileForImport ->
+            "Select Vault Key file for import"
+
+        SelectYourVaultImportDestinationFolder ->
+            "Select the folder you want to use for the imported Vault"
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -946,6 +978,9 @@ translateGerman text =
         ViewDaemonLog ->
             "Syncrypt Logbuch öffnen"
 
+        ImportVault ->
+            "Importiere einen zuvor exportierten Vault & Schlüssel"
+
         ProgramSettings ->
             "Einstellungen"
 
@@ -960,6 +995,9 @@ translateGerman text =
 
         SetupWizardText text ->
             translateGermanSetupWizardText text
+
+        VaultKeyImportWizardText text ->
+            translateGermanVaultKeyImportWizardText text
 
 
 translateGermanNotificationText : NotificationText -> String
@@ -1407,6 +1445,22 @@ translateGermanSetupWizardText text =
 
         KeyCreation ->
             "Schlüssel Generierung"
+
+
+translateGermanVaultKeyImportWizardText : VaultKeyImportWizardText -> String
+translateGermanVaultKeyImportWizardText text =
+    case text of
+        VaultKeyImport ->
+            "Vault Schlüssel Import"
+
+        ImportYourVaultKeyHere ->
+            "Hier kannst du einen Vault Key importieren."
+
+        SelectVaultKeyFileForImport ->
+            "Vault Schlüssel Datei für Import auswählen"
+
+        SelectYourVaultImportDestinationFolder ->
+            "Wähle einen Ordner für den importierten Vault"
 
 
 germanDistance : Date -> Date -> String

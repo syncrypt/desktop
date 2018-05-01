@@ -13,6 +13,7 @@ type IconButton
     | FeedbackButton
     | RefreshVaultsButton
     | DaemonLogButton
+    | ImportVaultButton
 
 
 view : List (Html.Attribute msg) -> Language -> IconButton -> Html msg
@@ -55,6 +56,10 @@ iconName buttonType =
         DaemonLogButton ->
             "event"
 
+        ImportVaultButton ->
+            -- TODO: use custom / better icon here
+            "edit"
+
 
 tooltip : Language -> IconButton -> String
 tooltip language buttonType =
@@ -73,3 +78,6 @@ tooltip language buttonType =
 
         DaemonLogButton ->
             T.translate T.ViewDaemonLog language
+
+        ImportVaultButton ->
+            T.translate T.ImportVault language

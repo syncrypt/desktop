@@ -273,3 +273,9 @@ li {
     background-color: $color-bg-light;
   }
 }
+
+.VaultKeyImportWizard {
+  ui-modal-wrapper {
+    width: 500px;
+  }
+}

@@ -39,6 +39,7 @@ import Util exposing ((~>), Direction(..), andLog)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
+import VaultKeyImportWizard
 import VaultList
 import View.IconButton as IconButton exposing (IconButton(..))
 import WizardDialog
@@ -84,6 +85,7 @@ subscriptions model =
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
                 , DaemonLog.subscriptions model
                 , Ports.updateAvailable Model.UpdateAvailable
+                , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
                 ]
 
         _ ->
@@ -443,6 +445,39 @@ update msg model =
             , Cmd.none
             )
                 |> andLog "DaemonLogStream Error" reason
+
+        OpenVaultKeyImportWizard ->
+            model
+                |> openVaultKeyImportWizard
+
+        VaultKeyImportWizardFinished ->
+            -- TODO: make vault import request to daemon with selected key file and vault folder
+            ( { model | state = ShowingAllVaults }
+                |> resetVaultKeyImportState
+            , Cmd.none
+            )
+
+        OpenVaultKeyImportFileDialog ->
+            ( model
+            , Ports.openVaultKeyImportFileDialog ()
+            )
+
+        SelectedVaultKeyImportFile filePath ->
+            ( model
+                |> selectedVaultKeyImportFile filePath
+            , Cmd.none
+            )
+
+        OpenVaultImportFolderDialog ->
+            ( model
+            , Ports.openVaultImportFolderDialog ()
+            )
+
+        SelectedVaultImportFolder folderPath ->
+            ( model
+                |> selectedVaultImportFolder folderPath
+            , Cmd.none
+            )
 
 
 setSetupWizardEmail : String -> Model -> Model
@@ -848,6 +883,12 @@ removeVaultFromSync vaultId model =
     )
 
 
+openVaultKeyImportWizard : Model -> ( Model, Cmd Msg )
+openVaultKeyImportWizard model =
+    { model | state = ImportingVaultKey }
+        |> WizardDialog.open (VaultKeyImportWizard.settings model)
+
+
 
 -- VIEW
 
@@ -934,6 +975,9 @@ headerButtons { language, login } =
             [ IconButton.view [ onClick UpdateVaultsWithForcedRefresh ]
                 language
                 RefreshVaultsButton
+            , IconButton.view [ onClick OpenVaultKeyImportWizard ]
+                language
+                ImportVaultButton
             , IconButton.view [ onClick OpenDaemonLogDialog ]
                 language
                 DaemonLogButton

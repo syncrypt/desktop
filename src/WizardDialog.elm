@@ -22,6 +22,7 @@ import SetupWizard
 import Translation as T
 import Ui.Modal
 import Util exposing (button, customButton)
+import VaultKeyImportWizard
 import WizardDialog.Model exposing (..)
 
 
@@ -343,6 +344,9 @@ viewSettings state model =
 
         DaemonLogDialog ->
             DaemonLog.dialogViewSettings state model
+
+        VaultKeyImportWizard ->
+            VaultKeyImportWizard.viewSettings state model
 
 
 prevButton : Language -> State msg -> Html msg
