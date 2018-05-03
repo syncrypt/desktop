@@ -144,7 +144,8 @@ const openUserKeyExportFileDialog = (buttonLabel) => {
     buttonLabel: buttonLabel,
     filters: [{ name: "User Key Export Archive", extensions: ["zip"] }]
   }, (file) => {
-    elmApp.ports.selectedUserKeyExportFile.send(file);
+    const filePath = file.split(Path.sep)
+    elmApp.ports.selectedUserKeyExportFile.send(filePath);
   });
 }
 

@@ -150,7 +150,7 @@ type Msg
     | SetupWizardEmail String
     | SetupWizardPassword String
     | OpenUserKeyExportDialog
-    | SelectedUserKeyExportFile String
+    | SelectedUserKeyExportFile Path
     | ExportedUserKey (WebData ExportStatusResponse)
     | OpenDaemonLogDialog
     | CloseDaemonLogDialog

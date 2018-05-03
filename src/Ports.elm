@@ -40,7 +40,7 @@ port openPasswordResetInBrowser : () -> Cmd msg
 port openUserKeyExportFileDialog : String -> Cmd msg
 
 
-port selectedUserKeyExportFile : (String -> msg) -> Sub msg
+port selectedUserKeyExportFile : (Path -> msg) -> Sub msg
 
 
 port quitAndInstall : () -> Cmd msg

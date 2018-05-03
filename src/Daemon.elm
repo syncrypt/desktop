@@ -471,11 +471,14 @@ exportVault vaultId path { config } =
         |> Cmd.map (ExportedVault vaultId)
 
 
-exportUserKey : Path -> Model -> Cmd Msg
+exportUserKey : Path.Path -> Model -> Cmd Msg
 exportUserKey path { config } =
     let
+        pathString =
+            Path.toString config.pathSeparator path
+
         json =
-            Json.Encode.object [ ( "path", Json.Encode.string path ) ]
+            Json.Encode.object [ ( "path", Json.Encode.string pathString ) ]
     in
     config
         |> apiRequest
