@@ -10,6 +10,9 @@ const File = require('file');
 const mainContainer = window.document.getElementById("Root");
 var elmApp = null;
 
+const toElmPath = (pathString) =>
+  pathString.split(Path.sep)
+
 const readAuthToken = function (resolve, reject) {
   Fs.readFile(DaemonConfig, 'utf-8', function (err, data) {
     if (err) {
@@ -28,10 +31,12 @@ const readAuthToken = function (resolve, reject) {
 
 
 const openFolderDialog = function (vaultId) {
-  var folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
   if (folders && folders.length == 1) {
-    var folderPath = folders[0].split(Path.sep);
-    elmApp.ports.selectedFolder.send([vaultId, folderPath]);
+    elmApp.ports.selectedFolder.send([
+      vaultId,
+      toElmPath(folders[0])
+    ])
   }
 }
 
@@ -43,7 +48,7 @@ const openIconFileDialog = function (tag) {
     filters: [{ name: "Images", extensions: ["jpg", "jpeg", "png"] }]
   }, (files) => {
     if (files && files.length == 1) {
-      var iconUrl = Electron.nativeImage.createFromPath(files[0]).resize({
+      const iconUrl = Electron.nativeImage.createFromPath(files[0]).resize({
         width: 100,
         height: 100,
         quality: "good"
@@ -66,54 +71,53 @@ const openExportFileDialog = function ([tag, buttonLabel]) {
 const IGNORE_FILES = [".DS_Store", ".vault"];
 
 const getFileList = function ([vaultId, rootPathList]) {
-  var rootPath = rootPathList.join(Path.sep)
+  const rootPath = rootPathList.join(Path.sep)
   File.walk(rootPath, function (_, dirPath, dirs, files) {
-    var path = Path.relative(rootPath, dirPath).split(Path.sep);
+    const path = toElmPath(Path.relative(rootPath, dirPath))
 
     if (isVaultPath(path)) {
       return;
     }
 
-    var data = [
+    const data = [
       vaultId,
       rootPathList,
       [
         path,
         files.map((x) => Path.basename(x)).filter((x) => x != ".DS_Store")
       ]
-    ];
+    ]
 
-    elmApp.ports.fileList.send(data);
+    elmApp.ports.fileList.send(data)
   })
 }
 
 const isVaultPath = function (path) {
-  for (var i = 0; i < path.length; i++) {
-    if (path[i] == ".vault") {
-      return true;
+  for (let i = 0; i < path.length; i++) {
+    if (path[i] === ".vault") {
+      return true
     }
   }
-  return false;
+  return false
 }
 
 const focusOn = function (id) {
-  var elem = document.getElementById(id);
+  const elem = document.getElementById(id);
   if (elem) {
-    elem.focus();
+    elem.focus()
   }
 }
 
 const openVaultFolder = function (path) {
-  console.log("open folder:", path);
   if (process.platform === 'darwin') {
-    Electron.shell.openExternal("file://" + path);
+    Electron.shell.openExternal("file://" + path)
   } else {
-    Electron.shell.openItem(path);
+    Electron.shell.openItem(path)
   }
 }
 
 const addEmailToCompletionList = function (email) {
-  var emails = Array(localStorage["EmailCompletionList"])
+  const emails = Array(localStorage["EmailCompletionList"])
 
   if (emails.includes(email)) {
     return;
@@ -124,7 +128,7 @@ const addEmailToCompletionList = function (email) {
 }
 
 const updateEmailCompletionList = function () {
-  var emails = localStorage["EmailCompletionList"]
+  const emails = localStorage["EmailCompletionList"]
   if (emails) {
     elmApp.ports.getEmailCompletionList.send(Array(emails))
   }
@@ -144,9 +148,8 @@ const openUserKeyExportFileDialog = (buttonLabel) => {
     buttonLabel: buttonLabel,
     filters: [{ name: "User Key Export Archive", extensions: ["zip"] }]
   }, (file) => {
-    const filePath = file.split(Path.sep)
-    elmApp.ports.selectedUserKeyExportFile.send(filePath);
-  });
+    elmApp.ports.selectedUserKeyExportFile.send(toElmPath(file));
+  })
 }
 
 const quitAndInstall = () => {
@@ -166,17 +169,15 @@ const openVaultKeyImportFileDialog = function (tag) {
     filters: [{ name: "Vault Keys", extensions: ["zip"] }]
   }, (files) => {
     if (files && files.length == 1) {
-      const filePath = files[0].split(Path.sep)
-      elmApp.ports.selectedVaultKeyImportFile.send(filePath)
+      elmApp.ports.selectedVaultKeyImportFile.send(toElmPath(files[0]))
     }
   })
 }
 
 const openVaultImportFolderDialog = function () {
-  var folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
   if (folders && folders.length == 1) {
-    const folderPath = folders[0].split(Path.sep)
-    elmApp.ports.selectedVaultImportFolder.send(folderPath)
+    elmApp.ports.selectedVaultImportFolder.send(toElmPath(folders[0]))
   }
 }
 
