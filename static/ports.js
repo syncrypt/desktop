@@ -173,7 +173,8 @@ const openVaultKeyImportFileDialog = function (tag) {
 const openVaultImportFolderDialog = function () {
   var folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
   if (folders && folders.length == 1) {
-    elmApp.ports.selectedVaultImportFolder.send(folders[0])
+    const folderPath = folders[0].split(Path.sep)
+    elmApp.ports.selectedVaultImportFolder.send(folderPath)
   }
 }
 

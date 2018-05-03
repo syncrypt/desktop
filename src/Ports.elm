@@ -16,6 +16,8 @@ port module Ports
         , updateEmailCompletionList
         )
 
+import Path exposing (Path)
+
 
 port focusOn : String -> Cmd msg
 
@@ -56,4 +58,4 @@ port selectedVaultKeyImportFile : (String -> msg) -> Sub msg
 port openVaultImportFolderDialog : () -> Cmd msg
 
 
-port selectedVaultImportFolder : (String -> msg) -> Sub msg
+port selectedVaultImportFolder : (Path -> msg) -> Sub msg
