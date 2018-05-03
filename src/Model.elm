@@ -17,6 +17,7 @@ import Json.Decode.Pipeline
         )
 import Language exposing (Language(..))
 import LoginDialog.Model
+import Path exposing (Path)
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
 import Ui.NotificationCenter
@@ -60,8 +61,8 @@ type alias SetupWizardState =
 
 type VaultKeyImportWizardState
     = NoVaultImportStarted
-    | SelectedVaultKey String
-    | SelectedVaultKeyAndFolder String String
+    | SelectedVaultKey Path
+    | SelectedVaultKeyAndFolder Path Path
 
 
 type alias CurrentUser =
@@ -159,9 +160,9 @@ type Msg
     | OpenVaultKeyImportWizard
     | VaultKeyImportWizardFinished
     | OpenVaultKeyImportFileDialog
-    | SelectedVaultKeyImportFile String
+    | SelectedVaultKeyImportFile Path
     | OpenVaultImportFolderDialog
-    | SelectedVaultImportFolder String
+    | SelectedVaultImportFolder Path
 
 
 
@@ -367,12 +368,12 @@ resetVaultKeyImportState model =
     { model | vaultKeyImportWizard = NoVaultImportStarted }
 
 
-selectedVaultKeyImportFile : String -> Model -> Model
+selectedVaultKeyImportFile : Path -> Model -> Model
 selectedVaultKeyImportFile filePath model =
     { model | vaultKeyImportWizard = SelectedVaultKey filePath }
 
 
-selectedVaultImportFolder : String -> Model -> Model
+selectedVaultImportFolder : Path -> Model -> Model
 selectedVaultImportFolder folderPath model =
     case model.vaultKeyImportWizard of
         NoVaultImportStarted ->

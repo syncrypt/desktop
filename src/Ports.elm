@@ -52,7 +52,7 @@ port updateAvailable : (String -> msg) -> Sub msg
 port openVaultKeyImportFileDialog : () -> Cmd msg
 
 
-port selectedVaultKeyImportFile : (String -> msg) -> Sub msg
+port selectedVaultKeyImportFile : (Path -> msg) -> Sub msg
 
 
 port openVaultImportFolderDialog : () -> Cmd msg

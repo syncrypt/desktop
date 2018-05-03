@@ -165,7 +165,8 @@ const openVaultKeyImportFileDialog = function (tag) {
     filters: [{ name: "Vault Keys", extensions: ["zip"] }]
   }, (files) => {
     if (files && files.length == 1) {
-      elmApp.ports.selectedVaultKeyImportFile.send(files[0])
+      const filePath = files[0].split(Path.sep)
+      elmApp.ports.selectedVaultKeyImportFile.send(filePath)
     }
   })
 }
