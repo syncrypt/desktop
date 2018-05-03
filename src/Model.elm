@@ -124,6 +124,7 @@ type Msg
     | Logout
     | CreateNewVault
     | CreatedVault VaultDialog.Model.State (WebData Vault)
+    | ImportedVault (WebData Vault)
     | ExportedVault VaultId (WebData ExportStatusResponse)
     | VaultDialogMsg VaultId VaultDialog.Model.Msg
     | FocusOn String
@@ -378,11 +379,8 @@ selectedVaultImportFolder folderPath model =
     case model.vaultKeyImportWizard of
         NoVaultImportStarted ->
             -- this really shouldn't ever happen
-            let
-                _ =
-                    Debug.log "Error: Selected vault import folder without key being set:" folderPath
-            in
             model
+                |> andLog "Error: Selected vault import folder without key being set:" folderPath
 
         SelectedVaultKey keyPath ->
             { model

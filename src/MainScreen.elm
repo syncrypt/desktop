@@ -86,6 +86,7 @@ subscriptions model =
                 , DaemonLog.subscriptions model
                 , Ports.updateAvailable Model.UpdateAvailable
                 , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
+                , Ports.selectedVaultImportFolder SelectedVaultImportFolder
                 ]
 
         _ ->
@@ -209,6 +210,17 @@ update msg model =
             , Cmd.none
             )
                 |> andLog "CreatedVault unexpected data: " webData
+
+        ImportedVault (Success vault) ->
+            model
+                |> notifyText (VaultImported vault.id)
+                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+
+        ImportedVault webData ->
+            model
+                |> notifyText VaultImportFailed
+                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+                |> andLog "ImportedVault error: " webData
 
         ExportedVault vaultId (Success { success, filename }) ->
             model
@@ -454,7 +466,14 @@ update msg model =
             -- TODO: make vault import request to daemon with selected key file and vault folder
             ( { model | state = ShowingAllVaults }
                 |> resetVaultKeyImportState
-            , Cmd.none
+            , case model.vaultKeyImportWizard of
+                SelectedVaultKeyAndFolder keyPath folderPath ->
+                    Daemon.importVault folderPath keyPath model
+                        |> Cmd.map ImportedVault
+
+                wizardState ->
+                    Cmd.none
+                        |> andLog "Invalid VaultKeyImportWizard state" wizardState
             )
 
         OpenVaultKeyImportFileDialog ->

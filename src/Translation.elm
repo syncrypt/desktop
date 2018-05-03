@@ -79,10 +79,12 @@ type Text
 
 type NotificationText
     = VaultCreated VaultId
+    | VaultImported VaultId
     | VaultRemoved VaultId
     | VaultDeleted VaultId
     | VaultUpdated VaultId
     | VaultCreateFailed VaultCreateFailReason
+    | VaultImportFailed
     | VaultRemoveFailed
     | VaultDeleteFailed
     | VaultMetadataUpdateFailed VaultId
@@ -416,6 +418,9 @@ translateEnglishNotificationText t =
         VaultCreated vaultId ->
             "Vault created"
 
+        VaultImported vaultId ->
+            "Vault imported"
+
         VaultDeleted vaultId ->
             "Vault deleted from server"
 
@@ -438,6 +443,9 @@ translateEnglishNotificationText t =
 
         VaultDeleteFailed ->
             "Vault deletion failed. Please try again."
+
+        VaultImportFailed ->
+            "Vault import failed. Please try again."
 
         VaultMetadataUpdateFailed vaultId ->
             "Failed to update metadata for vault"
@@ -1010,6 +1018,9 @@ translateGermanNotificationText t =
         VaultCreated vaultId ->
             "Vault wurde erstellt"
 
+        VaultImported vaultId ->
+            "Vault wurde importiert"
+
         VaultDeleted vaultId ->
             "Vault wurde in der Cloud gelöscht"
 
@@ -1032,6 +1043,9 @@ translateGermanNotificationText t =
 
         VaultDeleteFailed ->
             "Es gab einen Fehler beim Löschen des Vaults. Bitte versuche es noch einmal."
+
+        VaultImportFailed ->
+            "Es gab einen Fehler beim Import des Vaults. Bitte versuche es noch einmal."
 
         VaultMetadataUpdateFailed vaultId ->
             "Es gab einen Fehler beim Aktualisieren der Metadaten des Vaults"

@@ -22,6 +22,7 @@ module Daemon
         , getVaults
         , getVaultsWithForcedRefresh
         , getVersion
+        , importVault
         , invalidateFirstLaunch
         , login
         , loginCheck
