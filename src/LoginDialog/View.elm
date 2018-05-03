@@ -97,6 +97,6 @@ passwordInput state =
 resetPasswordButton : HasLoginDialog a -> Html Model.Msg
 resetPasswordButton model =
     button []
-        { label = T.t (T.SettingsDialogText T.ResetPassword) model
+        { label = T.t (T.SettingsDialogTxt T.ResetPassword) model
         , onClick = Model.LoginDialogMsg OpenPasswordResetPage
         }

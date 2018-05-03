@@ -41,7 +41,7 @@ viewSettings state model =
 
 t : T.VaultKeyImportWizardText -> HasLanguage a -> String
 t text model =
-    T.t (T.VaultKeyImportWizardText text) model
+    T.t (T.VaultKeyImportWizardTxt text) model
 
 
 

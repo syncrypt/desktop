@@ -34,8 +34,8 @@ type alias Now =
 
 
 type Text
-    = NotificationText NotificationText
-    | StatsText StatsText
+    = NotificationTxt NotificationText
+    | StatsTxt StatsText
     | SyncedVaults Int
     | VaultsLoading
     | VaultsNotAvailable
@@ -49,8 +49,8 @@ type Text
     | UsersWithAccessTooltip
     | TotalVaultSizeTooltip
     | TotalVaultRevisionsTooltip
-    | VaultDialogText VaultDialogText
-    | VaultListText VaultListText
+    | VaultDialogTxt VaultDialogText
+    | VaultListTxt VaultListText
     | Previous
     | Next
     | Cancel
@@ -63,7 +63,7 @@ type Text
     | WeWillReplyToYouViaEmail
     | TypeYourFeedbackHere
     | SendFeedback
-    | ConfirmationDialogText ConfirmationDialogText
+    | ConfirmationDialogTxt ConfirmationDialogText
     | Logout
     | SoftwareAndAccountSettings
     | SendUsFeedbackAndBugReports
@@ -71,10 +71,10 @@ type Text
     | ImportVault
     | ProgramSettings
     | RefreshVaults
-    | SettingsDialogText SettingsDialogText
+    | SettingsDialogTxt SettingsDialogText
     | UpdateAvailable String
-    | SetupWizardText SetupWizardText
-    | VaultKeyImportWizardText VaultKeyImportWizardText
+    | SetupWizardTxt SetupWizardText
+    | VaultKeyImportWizardTxt VaultKeyImportWizardText
 
 
 type NotificationText
@@ -285,10 +285,10 @@ translate text lang =
 translateEnglish : Text -> String
 translateEnglish text =
     case text of
-        NotificationText t ->
+        NotificationTxt t ->
             translateEnglishNotificationText t
 
-        StatsText st ->
+        StatsTxt st ->
             translateEnglishStatsText st
 
         SyncedVaults vaultCount ->
@@ -333,10 +333,10 @@ translateEnglish text =
         TotalVaultRevisionsTooltip ->
             "Total number of file revisions in the vault"
 
-        VaultDialogText vt ->
+        VaultDialogTxt vt ->
             translateEnglishVaultDialogText vt
 
-        VaultListText vlt ->
+        VaultListTxt vlt ->
             translateEnglishVaultListText vlt
 
         Previous ->
@@ -375,7 +375,7 @@ translateEnglish text =
         SendFeedback ->
             "Send feedback"
 
-        ConfirmationDialogText cdt ->
+        ConfirmationDialogTxt cdt ->
             translateEnglishConfirmationDialogText cdt
 
         Logout ->
@@ -399,16 +399,16 @@ translateEnglish text =
         RefreshVaults ->
             "Refresh Vaults"
 
-        SettingsDialogText text ->
+        SettingsDialogTxt text ->
             translateEnglishSettingsDialogText text
 
         UpdateAvailable version ->
             "Update available, click here to install version " ++ version
 
-        SetupWizardText text ->
+        SetupWizardTxt text ->
             translateEnglishSetupWizardText text
 
-        VaultKeyImportWizardText text ->
+        VaultKeyImportWizardTxt text ->
             translateEnglishVaultKeyImportWizardText text
 
 
@@ -885,10 +885,10 @@ translateEnglishVaultKeyImportWizardText text =
 translateGerman : Text -> String
 translateGerman text =
     case text of
-        NotificationText t ->
+        NotificationTxt t ->
             translateGermanNotificationText t
 
-        StatsText st ->
+        StatsTxt st ->
             translateGermanStatsText st
 
         SyncedVaults vaultCount ->
@@ -933,10 +933,10 @@ translateGerman text =
         TotalVaultRevisionsTooltip ->
             "Anzahl aller Dateirevisionen in diesem Vault"
 
-        VaultDialogText vt ->
+        VaultDialogTxt vt ->
             translateGermanVaultDialogText vt
 
-        VaultListText vlt ->
+        VaultListTxt vlt ->
             translateGermanVaultListText vlt
 
         Previous ->
@@ -975,7 +975,7 @@ translateGerman text =
         SendFeedback ->
             "Feedback absenden"
 
-        ConfirmationDialogText cdt ->
+        ConfirmationDialogTxt cdt ->
             translateGermanConfirmationDialogText cdt
 
         Logout ->
@@ -999,16 +999,16 @@ translateGerman text =
         RefreshVaults ->
             "Vaults aktualisieren"
 
-        SettingsDialogText text ->
+        SettingsDialogTxt text ->
             translateGermanSettingsDialogText text
 
         UpdateAvailable version ->
             "Update verfügbar, klicken zum Installieren"
 
-        SetupWizardText text ->
+        SetupWizardTxt text ->
             translateGermanSetupWizardText text
 
-        VaultKeyImportWizardText text ->
+        VaultKeyImportWizardTxt text ->
             translateGermanVaultKeyImportWizardText text
 
 

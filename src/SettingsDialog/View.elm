@@ -233,7 +233,7 @@ buttons ({ settingsDialog } as model) =
 
 dialogText : T.SettingsDialogText -> HasLanguage a -> String
 dialogText dialogText model =
-    T.t (T.SettingsDialogText dialogText) model
+    T.t (T.SettingsDialogTxt dialogText) model
 
 
 separator : Html msg

@@ -747,7 +747,7 @@ notifyText notificationText model =
     model
         |> notify
             (text <|
-                t (NotificationText notificationText) model
+                t (NotificationTxt notificationText) model
             )
 
 
@@ -1019,7 +1019,7 @@ footer : Model -> Html Msg
 footer { stats, vaults, language, updateAvailable } =
     let
         statsText =
-            T.StatsText <|
+            T.StatsTxt <|
                 case stats of
                     Success s ->
                         T.Stats s

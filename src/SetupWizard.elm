@@ -53,7 +53,7 @@ viewSettings state model =
 
 t : T.SetupWizardText -> HasLanguage a -> String
 t text model =
-    T.t (T.SetupWizardText text) model
+    T.t (T.SetupWizardTxt text) model
 
 
 

@@ -302,7 +302,7 @@ update msg vaultId ({ vaultDialogs } as model) =
             ( model
             , VaultDialog.Ports.openExportFileDialog
                 ( state.id
-                , T.t (T.VaultDialogText T.ExportToFile) model
+                , T.t (T.VaultDialogTxt T.ExportToFile) model
                 )
             )
 
@@ -357,10 +357,10 @@ update msg vaultId ({ vaultDialogs } as model) =
         Confirm DeleteVault ->
             let
                 title =
-                    T.t (T.VaultDialogText T.AskDeleteVault) model
+                    T.t (T.VaultDialogTxt T.AskDeleteVault) model
 
                 question =
-                    T.t (T.VaultDialogText T.AskDeleteVaultExtended) model
+                    T.t (T.VaultDialogTxt T.AskDeleteVaultExtended) model
 
                 confirmMsg =
                     Confirmed DeleteVault
@@ -374,11 +374,11 @@ update msg vaultId ({ vaultDialogs } as model) =
         Confirm RemoveVault ->
             let
                 title =
-                    T.translate (T.ConfirmationDialogText T.RemoveVaultFromSyncQuestion)
+                    T.translate (T.ConfirmationDialogTxt T.RemoveVaultFromSyncQuestion)
                         model.language
 
                 question =
-                    T.translate (T.ConfirmationDialogText T.RemoveVaultFromSyncExplanation)
+                    T.translate (T.ConfirmationDialogTxt T.RemoveVaultFromSyncExplanation)
                         model.language
 
                 confirmMsg =

@@ -270,19 +270,19 @@ vaultList model =
         vaultListInfoSubtitle =
             case model.vaults of
                 Success _ ->
-                    [ text <| t (T.VaultListText T.HeaderDescription) model ]
+                    [ text <| t (T.VaultListTxt T.HeaderDescription) model ]
 
                 Failure reason ->
                     [ text <|
                         t
-                            (T.VaultListText <|
+                            (T.VaultListTxt <|
                                 T.LoadVaultsFailed (toString reason)
                             )
                             model
                     ]
 
                 Loading ->
-                    [ text <| t (T.VaultListText T.LoadingVaults) model ]
+                    [ text <| t (T.VaultListTxt T.LoadingVaults) model ]
 
                 NotAsked ->
                     []
@@ -320,27 +320,27 @@ flyingVaultListSubtitle availableFlyingVaults model =
                 [ class "UpdateFlyingVaultsButton"
                 , onClick UpdateFlyingVaults
                 ]
-                [ tt <| T.VaultListText T.LoadRemoteVaults ]
+                [ tt <| T.VaultListTxt T.LoadRemoteVaults ]
 
         Loading ->
-            ttt (T.VaultListText T.FetchingRemoteVaultInfo)
+            ttt (T.VaultListTxt T.FetchingRemoteVaultInfo)
                 (Util.animatedDots model.now)
 
         Failure reason ->
             tt <|
-                T.VaultListText <|
+                T.VaultListTxt <|
                     T.FetchingRemoteVaultsFailed (toString reason)
 
         Success [] ->
-            tt <| T.VaultListText T.YouDontHaveAnyRemoteVaultsYet
+            tt <| T.VaultListTxt T.YouDontHaveAnyRemoteVaultsYet
 
         Success _ ->
             case availableFlyingVaults of
                 [] ->
-                    tt <| T.VaultListText T.YouHaveClonedAllAvailableVaults
+                    tt <| T.VaultListTxt T.YouHaveClonedAllAvailableVaults
 
                 _ ->
-                    tt <| T.VaultListText T.ClickOnVaultToClone
+                    tt <| T.VaultListTxt T.ClickOnVaultToClone
 
 
 flyingVaultList : Model -> Html Msg
@@ -355,7 +355,7 @@ flyingVaultList model =
     div [ class "VaultList" ] <|
         [ div [ class "VaultListInfo" ]
             [ span [ class "Title" ]
-                [ text <| t (T.VaultListText T.AvailableVaults) model ]
+                [ text <| t (T.VaultListTxt T.AvailableVaults) model ]
             , span [ class "Subtitle" ]
                 [ subtitle ]
             ]

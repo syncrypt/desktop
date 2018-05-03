@@ -273,7 +273,7 @@ usersTab toRootMsg vaultId state model =
             isOwner vaultId model
 
         infoText =
-            t (VaultDialogText (UsersTabInfoText ownsVault)) model
+            t (VaultDialogTxt (UsersTabInfoText ownsVault)) model
 
         adminOnly maybeInfoText nodes =
             if ownsVault then
@@ -301,7 +301,7 @@ usersTab toRootMsg vaultId state model =
                     ]
                 ]
     in
-    ( t (VaultDialogText UsersTab) model
+    ( t (VaultDialogTxt UsersTab) model
     , tabBody
         { infoBox = Just (InfoBoxText "Users" infoText)
         , vaultId = vaultId
@@ -310,7 +310,7 @@ usersTab toRootMsg vaultId state model =
             [ body
             , adminOnly
                 (Just <|
-                    t (VaultDialogText YouDontHaveAccessToVaultUsers) model
+                    t (VaultDialogTxt YouDontHaveAccessToVaultUsers) model
                 )
                 [ rootMsg <| userList state model
                 , rootMsg <| pendingUserList state
@@ -343,9 +343,9 @@ cryptoTab vaultId state model =
                 ]
 
         vt vaultDialogText =
-            t (VaultDialogText vaultDialogText) model
+            t (VaultDialogTxt vaultDialogText) model
     in
-    ( t (VaultDialogText CryptoTab) model
+    ( t (VaultDialogTxt CryptoTab) model
     , tabBody
         { infoBox = Just (InfoBoxText "Crypto" (vt CryptoTabInfoText))
         , vaultId = vaultId
@@ -403,7 +403,7 @@ filesTab :
     -> Model
     -> ( String, Html Model.Msg )
 filesTab toRootMsg vaultId state model =
-    ( t (VaultDialogText NameAndFilesTab) model
+    ( t (VaultDialogTxt NameAndFilesTab) model
     , tabBody
         { infoBox = Nothing
         , vaultId = vaultId
@@ -422,7 +422,7 @@ filesTab toRootMsg vaultId state model =
 
 logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
-    ( t (VaultDialogText LogTab) model
+    ( t (VaultDialogTxt LogTab) model
     , tabBody
         { infoBox = Nothing
         , vaultId = vaultId
@@ -475,7 +475,7 @@ adminTab vaultId state model =
             if state.cloneStatus == New || not (isOwner vaultId model) then
                 []
             else
-                [ infoText <| t (VaultDialogText VaultDeleteButtonInfo) model
+                [ infoText <| t (VaultDialogTxt VaultDeleteButtonInfo) model
                 , deleteButton vaultId state model
                 ]
 
@@ -483,15 +483,15 @@ adminTab vaultId state model =
             if state.cloneStatus /= Cloned then
                 []
             else
-                [ infoText (t (VaultDialogText VaultRemoveButtonInfo) model)
+                [ infoText (t (VaultDialogTxt VaultRemoveButtonInfo) model)
                 , removeButton vaultId state model
                 , separator
                 ]
 
         infoBoxText =
-            InfoBoxText "Admin" (t (VaultDialogText AdminTabInfoText) model)
+            InfoBoxText "Admin" (t (VaultDialogTxt AdminTabInfoText) model)
     in
-    ( t (VaultDialogText AdminTab) model
+    ( t (VaultDialogTxt AdminTab) model
     , tabBody
         { infoBox = Just infoBoxText
         , vaultId = vaultId
@@ -499,7 +499,7 @@ adminTab vaultId state model =
         , body =
             [ div [ class "Admin-Buttons" ] <|
                 syncedActions
-                    ++ [ infoText (t (VaultDialogText VaultExportButtonInfo) model)
+                    ++ [ infoText (t (VaultDialogTxt VaultExportButtonInfo) model)
                        , exportButton <| Model.vaultWithId vaultId model
                        , separator
                        ]
@@ -664,7 +664,7 @@ cancelButton vaultId state model =
     span
         [ classList [ ( "Hidden", not state.hasChangesPending ) ] ]
         [ button []
-            { label = t (VaultDialogText CancelChanges) model
+            { label = t (VaultDialogTxt CancelChanges) model
             , onClick = Model.CloseVaultDetails vaultId
             }
         ]
@@ -674,7 +674,7 @@ deleteButton : VaultId -> State -> Model -> Html Model.Msg
 deleteButton vaultId state model =
     span []
         [ button []
-            { label = t (VaultDialogText DeleteFromServer) model
+            { label = t (VaultDialogTxt DeleteFromServer) model
             , onClick =
                 Model.VaultDialogMsg vaultId
                     (VaultDialog.Model.Confirm DeleteVault)
@@ -687,7 +687,7 @@ removeButton vaultId state model =
     span
         [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
         [ button []
-            { label = t (VaultDialogText StopSyncing) model
+            { label = t (VaultDialogTxt StopSyncing) model
             , onClick =
                 Model.VaultDialogMsg vaultId
                     (VaultDialog.Model.Confirm RemoveVault)
@@ -701,17 +701,17 @@ saveButton vaultId state model =
         ( label, msg ) =
             case ( state.cloneStatus, state.hasChangesPending ) of
                 ( New, True ) ->
-                    ( t (VaultDialogText CreateVault) model
+                    ( t (VaultDialogTxt CreateVault) model
                     , Model.SaveVaultDetails vaultId
                     )
 
                 ( Cloned, True ) ->
-                    ( t (VaultDialogText SaveVault) model
+                    ( t (VaultDialogTxt SaveVault) model
                     , Model.SaveVaultDetails vaultId
                     )
 
                 ( NotCloned, True ) ->
-                    ( t (VaultDialogText SyncVaultToFolder) model
+                    ( t (VaultDialogTxt SyncVaultToFolder) model
                     , Model.CloneVault vaultId
                     )
 
@@ -752,18 +752,18 @@ openFolderButton vaultId state model =
         ( folderPath, msg, tooltipMsg ) =
             case ( state.cloneStatus, state.localFolderPath ) of
                 ( NotCloned, Nothing ) ->
-                    ( t (VaultDialogText <| FolderButtonLabel CloneIntoFolder)
+                    ( t (VaultDialogTxt <| FolderButtonLabel CloneIntoFolder)
                         model
                     , OpenFolderDialog
-                    , t (VaultDialogText <| FolderButtonTooltip CloneIntoFolder)
+                    , t (VaultDialogTxt <| FolderButtonTooltip CloneIntoFolder)
                         model
                     )
 
                 ( _, Nothing ) ->
-                    ( t (VaultDialogText <| FolderButtonLabel SelectFolder)
+                    ( t (VaultDialogTxt <| FolderButtonLabel SelectFolder)
                         model
                     , OpenFolderDialog
-                    , t (VaultDialogText <| FolderButtonTooltip SelectFolder)
+                    , t (VaultDialogTxt <| FolderButtonTooltip SelectFolder)
                         model
                     )
 
@@ -773,14 +773,14 @@ openFolderButton vaultId state model =
                             pathString path
                     in
                     ( t
-                        (VaultDialogText <|
+                        (VaultDialogTxt <|
                             FolderButtonLabel <|
                                 FolderSelectedForSync ps
                         )
                         model
                     , OpenFolderDialog
                     , t
-                        (VaultDialogText <|
+                        (VaultDialogTxt <|
                             FolderButtonTooltip <|
                                 FolderSelectedForSync ps
                         )
@@ -793,14 +793,14 @@ openFolderButton vaultId state model =
                             pathString path
                     in
                     ( t
-                        (VaultDialogText <|
+                        (VaultDialogTxt <|
                             FolderButtonLabel <|
                                 SyncedFolder ps
                         )
                         model
                     , OpenFolder ps
                     , t
-                        (VaultDialogText <|
+                        (VaultDialogTxt <|
                             FolderButtonTooltip <|
                                 SyncedFolder ps
                         )
@@ -844,7 +844,7 @@ nameInput msg state model =
                 tooltipItem
                     { position = Right
                     , length = Small
-                    , text = t (VaultDialogText VaultNameTooltip) model
+                    , text = t (VaultDialogTxt VaultNameTooltip) model
                     }
                     [ Ui.Input.view state.nameInput
                         |> Html.map (msg << NameInputMsg)
@@ -892,12 +892,12 @@ userInput vaultId state model =
     labeledItem [ class "InputLabel" ]
         { side = Left
         , onClick = Just (Model.FocusOn state.userInput.uid)
-        , label = text <| t (VaultDialogText UserInputLabel) model
+        , label = text <| t (VaultDialogTxt UserInputLabel) model
         , item =
             tooltipItem
                 { position = Right
                 , length = Medium
-                , text = t (VaultDialogText UserInputTooltip) model
+                , text = t (VaultDialogTxt UserInputTooltip) model
                 }
                 [ Ui.Input.view
                     state.userInput
@@ -920,7 +920,7 @@ fileSelectionContainer state model =
                 [ labeledItem [ class "InputLabel" ]
                     { side = Left
                     , onClick = Nothing
-                    , label = text <| t (VaultDialogText FilesLabel) model
+                    , label = text <| t (VaultDialogTxt FilesLabel) model
                     , item =
                         Ui.Container.view settings
                             []
@@ -928,7 +928,7 @@ fileSelectionContainer state model =
                                 { position = Top
                                 , length = Large
                                 , text =
-                                    t (VaultDialogText FileSelectionTooltip) model
+                                    t (VaultDialogTxt FileSelectionTooltip) model
                                 }
                                 (viewFolders state)
                             ]
@@ -1124,7 +1124,7 @@ userKeyCheckbox email userKey state model =
 userList : State -> Model -> Html Msg
 userList state model =
     div [ class "UserList" ] <|
-        h4 [] [ text <| t (VaultDialogText VaultUsersLabel) model ]
+        h4 [] [ text <| t (VaultDialogTxt VaultUsersLabel) model ]
             :: (case state.users of
                     Success users ->
                         List.map (\u -> userItem u state model) users
