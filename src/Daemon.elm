@@ -49,6 +49,7 @@ import Json.Decode.Pipeline
         )
 import Json.Encode
 import Model exposing (..)
+import Path
 import RemoteData exposing (RemoteData(..), WebData)
 import Task exposing (Task)
 import Time exposing (Time)
@@ -375,6 +376,17 @@ deleteVault vaultId { config } =
             (DeleteVault vaultId)
             EmptyBody
             (succeed vaultId)
+
+
+importVault : Path.Path -> Path.Path -> Model -> Cmd (WebData Vault)
+importVault folderPath vaultPackagePath model =
+    updateVault
+        (Data.Vault.Import
+            { folder = folderPath
+            , vaultPackagePath = vaultPackagePath
+            }
+        )
+        model
 
 
 sendFeedback : String -> Model -> Cmd Msg

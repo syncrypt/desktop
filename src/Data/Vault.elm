@@ -77,6 +77,10 @@ type VaultOptions
         { folder : Path
         , ignorePaths : List Path
         }
+    | Import
+        { folder : Path
+        , vaultPackagePath : Path
+        }
     | Clone
         { id : String
         , folder : Path
@@ -237,6 +241,12 @@ jsonOptions config options =
                             (Json.Encode.string << pathString)
                             ignorePaths
                   )
+                ]
+
+        Import { folder, vaultPackagePath } ->
+            Json.Encode.object
+                [ ( "folder", Json.Encode.string (pathString folder) )
+                , ( "import_package", Json.Encode.string (pathString vaultPackagePath) )
                 ]
 
         Clone { id, folder } ->

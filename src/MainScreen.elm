@@ -6,7 +6,7 @@ import Daemon
 import DaemonLog
 import Data.Daemon exposing (GUIConfig)
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, Vault, VaultId, VaultOptions(..))
+import Data.Vault exposing (FlyingVault, Vault, VaultId)
 import Date
 import FeedbackWizard
 import Html exposing (Html, div, span, text)
@@ -756,7 +756,7 @@ createVault state model =
             ( model
             , model
                 |> Daemon.updateVault
-                    (Create
+                    (Data.Vault.Create
                         { folder = folderPath
                         , ignorePaths = Set.toList state.ignoredFolderItems
                         }
@@ -787,7 +787,7 @@ cloneVault vaultId origModel =
             ( model
             , model
                 |> Daemon.updateVault
-                    (Clone
+                    (Data.Vault.Clone
                         { id = vaultId
                         , folder = folderPath
                         , ignorePaths = Set.toList state.ignoredFolderItems
