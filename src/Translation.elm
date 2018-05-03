@@ -236,6 +236,7 @@ type SetupWizardText
     | TOS11
     | IAgree
     | KeyCreation
+    | KeyImport
 
 
 type VaultKeyImportWizardText
@@ -853,6 +854,9 @@ translateEnglishSetupWizardText text =
         KeyCreation ->
             "Key Creation"
 
+        KeyImport ->
+            "Key Import"
+
 
 translateEnglishVaultKeyImportWizardText : VaultKeyImportWizardText -> String
 translateEnglishVaultKeyImportWizardText text =
@@ -1445,6 +1449,9 @@ translateGermanSetupWizardText text =
 
         KeyCreation ->
             "Schlüssel Generierung"
+
+        KeyImport ->
+            "Schlüssel Import"
 
 
 translateGermanVaultKeyImportWizardText : VaultKeyImportWizardText -> String
