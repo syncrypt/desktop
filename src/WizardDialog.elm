@@ -18,11 +18,11 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Language exposing (Language)
 import Model
+import NewVaultWizard
 import SetupWizard
 import Translation as T
 import Ui.Modal
 import Util exposing (button, customButton)
-import VaultKeyImportWizard
 import WizardDialog.Model exposing (..)
 
 
@@ -345,8 +345,8 @@ viewSettings state model =
         DaemonLogDialog ->
             DaemonLog.dialogViewSettings state model
 
-        VaultKeyImportWizard ->
-            VaultKeyImportWizard.viewSettings state model
+        NewVaultWizard ->
+            NewVaultWizard.viewSettings state model
 
 
 prevButton : Language -> State msg -> Html msg

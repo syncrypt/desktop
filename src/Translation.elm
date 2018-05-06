@@ -2,6 +2,7 @@ module Translation
     exposing
         ( ConfirmationDialogText(..)
         , FolderButtonType(..)
+        , NewVaultWizardText(..)
         , NotificationText(..)
         , SettingsDialogText(..)
         , SetupWizardText(..)
@@ -9,7 +10,6 @@ module Translation
         , Text(..)
         , VaultCreateFailReason(..)
         , VaultDialogText(..)
-        , VaultKeyImportWizardText(..)
         , VaultListText(..)
         , t
         , timeAgo
@@ -74,7 +74,7 @@ type Text
     | SettingsDialogTxt SettingsDialogText
     | UpdateAvailable String
     | SetupWizardTxt SetupWizardText
-    | VaultKeyImportWizardTxt VaultKeyImportWizardText
+    | NewVaultWizardTxt NewVaultWizardText
 
 
 type NotificationText
@@ -241,7 +241,7 @@ type SetupWizardText
     | KeyImport
 
 
-type VaultKeyImportWizardText
+type NewVaultWizardText
     = VaultKeyImport
     | ImportYourVaultKeyHere
     | SelectVaultKeyFileForImport
@@ -408,8 +408,8 @@ translateEnglish text =
         SetupWizardTxt text ->
             translateEnglishSetupWizardText text
 
-        VaultKeyImportWizardTxt text ->
-            translateEnglishVaultKeyImportWizardText text
+        NewVaultWizardTxt text ->
+            translateEnglishNewVaultWizardText text
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -866,8 +866,8 @@ translateEnglishSetupWizardText text =
             "Key Import"
 
 
-translateEnglishVaultKeyImportWizardText : VaultKeyImportWizardText -> String
-translateEnglishVaultKeyImportWizardText text =
+translateEnglishNewVaultWizardText : NewVaultWizardText -> String
+translateEnglishNewVaultWizardText text =
     case text of
         VaultKeyImport ->
             "Vault Key import"
@@ -1008,8 +1008,8 @@ translateGerman text =
         SetupWizardTxt text ->
             translateGermanSetupWizardText text
 
-        VaultKeyImportWizardTxt text ->
-            translateGermanVaultKeyImportWizardText text
+        NewVaultWizardTxt text ->
+            translateGermanNewVaultWizardText text
 
 
 translateGermanNotificationText : NotificationText -> String
@@ -1468,8 +1468,8 @@ translateGermanSetupWizardText text =
             "Schlüssel Import"
 
 
-translateGermanVaultKeyImportWizardText : VaultKeyImportWizardText -> String
-translateGermanVaultKeyImportWizardText text =
+translateGermanNewVaultWizardText : NewVaultWizardText -> String
+translateGermanNewVaultWizardText text =
     case text of
         VaultKeyImport ->
             "Vault Schlüssel Import"

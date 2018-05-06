@@ -1,4 +1,4 @@
-module VaultKeyImportWizard exposing (settings, viewSettings)
+module NewVaultWizard exposing (settings, viewSettings)
 
 import Html exposing (Html, div)
 import Html.Attributes exposing (class)
@@ -20,17 +20,17 @@ steps =
 settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
-    , name = "VaultKeyImportWizard"
-    , onFinishMsg = Just Model.VaultKeyImportWizardFinished
+    , name = "NewVaultWizard"
+    , onFinishMsg = Just Model.NewVaultWizardFinished
     , steps = steps |> List.map Tuple.first
-    , wizardType = VaultKeyImportWizard
+    , wizardType = NewVaultWizard
     , closable = False
     }
 
 
 wizardContent : List (Html msg) -> Html msg
 wizardContent body =
-    div [ class "MainScreen-VaultKeyImportWizard" ]
+    div [ class "MainScreen-NewVaultWizard" ]
         body
 
 
@@ -39,9 +39,9 @@ viewSettings state model =
     WizardDialog.Model.viewSettings steps state model
 
 
-t : T.VaultKeyImportWizardText -> HasLanguage a -> String
+t : T.NewVaultWizardText -> HasLanguage a -> String
 t text model =
-    T.t (T.VaultKeyImportWizardTxt text) model
+    T.t (T.NewVaultWizardTxt text) model
 
 
 

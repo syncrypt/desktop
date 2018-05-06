@@ -48,7 +48,7 @@ type alias Model =
     , updateAvailable : Maybe String
     , setupWizard : SetupWizardState
     , daemonLogItems : List Data.Daemon.LogItem
-    , vaultKeyImportWizard : VaultKeyImportWizardState
+    , newVaultWizard : NewVaultWizardState
     }
 
 
@@ -59,7 +59,7 @@ type alias SetupWizardState =
     }
 
 
-type VaultKeyImportWizardState
+type NewVaultWizardState
     = NoVaultImportStarted
     | SelectedVaultKey Path
     | SelectedVaultKeyAndFolder Path Path
@@ -158,8 +158,8 @@ type Msg
     | DaemonLogStream (Result String Data.Daemon.LogItem)
     | UpdateAvailable String
     | InstallUpdate
-    | OpenVaultKeyImportWizard
-    | VaultKeyImportWizardFinished
+    | OpenNewVaultWizard
+    | NewVaultWizardFinished
     | OpenVaultKeyImportFileDialog
     | SelectedVaultKeyImportFile Path
     | OpenVaultImportFolderDialog
@@ -269,7 +269,7 @@ init config =
         , passwordResetSent = False
         }
     , daemonLogItems = []
-    , vaultKeyImportWizard = NoVaultImportStarted
+    , newVaultWizard = NoVaultImportStarted
     }
 
 
@@ -366,17 +366,17 @@ logout model =
 
 resetVaultKeyImportState : Model -> Model
 resetVaultKeyImportState model =
-    { model | vaultKeyImportWizard = NoVaultImportStarted }
+    { model | newVaultWizard = NoVaultImportStarted }
 
 
 selectedVaultKeyImportFile : Path -> Model -> Model
 selectedVaultKeyImportFile filePath model =
-    { model | vaultKeyImportWizard = SelectedVaultKey filePath }
+    { model | newVaultWizard = SelectedVaultKey filePath }
 
 
 selectedVaultImportFolder : Path -> Model -> Model
 selectedVaultImportFolder folderPath model =
-    case model.vaultKeyImportWizard of
+    case model.newVaultWizard of
         NoVaultImportStarted ->
             -- this really shouldn't ever happen
             model
@@ -384,12 +384,10 @@ selectedVaultImportFolder folderPath model =
 
         SelectedVaultKey keyPath ->
             { model
-                | vaultKeyImportWizard =
-                    SelectedVaultKeyAndFolder keyPath folderPath
+                | newVaultWizard = SelectedVaultKeyAndFolder keyPath folderPath
             }
 
         SelectedVaultKeyAndFolder keyPath _ ->
             { model
-                | vaultKeyImportWizard =
-                    SelectedVaultKeyAndFolder keyPath folderPath
+                | newVaultWizard = SelectedVaultKeyAndFolder keyPath folderPath
             }
