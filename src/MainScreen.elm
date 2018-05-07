@@ -374,16 +374,10 @@ update msg model =
                 |> notifyText SendingFeedbackFailed
 
         FeedbackEntered text ->
-            case String.trim text of
-                "" ->
-                    ( { model | feedback = Nothing }
-                    , Cmd.none
-                    )
-
-                trimmedText ->
-                    ( { model | feedback = Just trimmedText }
-                    , Cmd.none
-                    )
+            ( model
+                |> setFeedback text
+            , Cmd.none
+            )
 
         Model.SendFeedback ->
             model

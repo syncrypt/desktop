@@ -411,3 +411,13 @@ selectedVaultImportFolder folderPath model =
                             ImportVault <|
                                 SelectedVaultKeyAndFolder keyPath folderPath
                     }
+
+
+setFeedback : String -> Model -> Model
+setFeedback feedback model =
+    case String.trim feedback of
+        "" ->
+            { model | feedback = Nothing }
+
+        trimmedText ->
+            { model | feedback = Just trimmedText }
