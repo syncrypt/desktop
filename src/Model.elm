@@ -61,7 +61,12 @@ type alias SetupWizardState =
 
 type NewVaultWizardState
     = NoVaultImportStarted
-    | SelectedVaultKey Path
+    | ImportVault VaultImportState
+    | CreateNewVaultInPath Path
+
+
+type VaultImportState
+    = SelectedVaultKey Path
     | SelectedVaultKeyAndFolder Path Path
 
 
@@ -124,6 +129,7 @@ type Msg
     | Logout
     | CreateNewVault
     | CreatedVault VaultDialog.Model.State (WebData Vault)
+    | CreatedVaultInEmptyFolder Path (WebData Vault)
     | ImportedVault (WebData Vault)
     | ExportedVault VaultId (WebData ExportStatusResponse)
     | VaultDialogMsg VaultId VaultDialog.Model.Msg
@@ -366,12 +372,15 @@ logout model =
 
 resetVaultKeyImportState : Model -> Model
 resetVaultKeyImportState model =
-    { model | newVaultWizard = NoVaultImportStarted }
+    { model
+        | state = ShowingAllVaults
+        , newVaultWizard = NoVaultImportStarted
+    }
 
 
 selectedVaultKeyImportFile : Path -> Model -> Model
 selectedVaultKeyImportFile filePath model =
-    { model | newVaultWizard = SelectedVaultKey filePath }
+    { model | newVaultWizard = ImportVault <| SelectedVaultKey filePath }
 
 
 selectedVaultImportFolder : Path -> Model -> Model
@@ -382,12 +391,23 @@ selectedVaultImportFolder folderPath model =
             model
                 |> andLog "Error: Selected vault import folder without key being set:" folderPath
 
-        SelectedVaultKey keyPath ->
+        CreateNewVaultInPath _ ->
             { model
-                | newVaultWizard = SelectedVaultKeyAndFolder keyPath folderPath
+                | newVaultWizard = CreateNewVaultInPath folderPath
             }
 
-        SelectedVaultKeyAndFolder keyPath _ ->
-            { model
-                | newVaultWizard = SelectedVaultKeyAndFolder keyPath folderPath
-            }
+        ImportVault importState ->
+            case importState of
+                SelectedVaultKey keyPath ->
+                    { model
+                        | newVaultWizard =
+                            ImportVault <|
+                                SelectedVaultKeyAndFolder keyPath folderPath
+                    }
+
+                SelectedVaultKeyAndFolder keyPath _ ->
+                    { model
+                        | newVaultWizard =
+                            ImportVault <|
+                                SelectedVaultKeyAndFolder keyPath folderPath
+                    }

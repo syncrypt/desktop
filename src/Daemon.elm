@@ -4,6 +4,7 @@ module Daemon
         , ApiStreamPath(..)
         , addVaultUser
         , attemptDelayed
+        , createNewVaultInFolder
         , deleteVault
         , exportUserKey
         , exportVault
@@ -353,6 +354,17 @@ updateVault options { config } =
             Data.Vault.decoder
 
 
+createNewVaultInFolder : Path.Path -> List Path.Path -> Model -> Cmd (WebData Vault)
+createNewVaultInFolder folderPath ignorePaths model =
+    updateVault
+        (Data.Vault.Create
+            { folder = folderPath
+            , ignorePaths = ignorePaths
+            }
+        )
+        model
+
+
 removeVault : VaultId -> Model -> Cmd Msg
 removeVault vaultId { config } =
     let
@@ -490,10 +502,6 @@ exportUserKey path { config } =
         |> Cmd.map ExportedUserKey
 
 
-type alias Path =
-    String
-
-
 type alias Url =
     String
 
@@ -512,7 +520,7 @@ type RequestMethod
     apiPath (Vault "foobaruuid") -- -> "vaults/foobaruuid"
 
 -}
-apiPath : ApiPath -> Path
+apiPath : ApiPath -> String
 apiPath apiPath =
     case apiPath of
         Stats ->
@@ -671,7 +679,7 @@ attemptDelayed time msg request =
         |> Util.attemptDelayed time msg
 
 
-rootUrl : Config -> Path -> Path
+rootUrl : Config -> String -> String
 rootUrl config path =
     case ( String.endsWith "/" config.apiUrl, String.startsWith "/" path ) of
         ( True, False ) ->
@@ -696,7 +704,7 @@ rootUrl config path =
         apiUrl config "/bar" -- -> "http://localhost:28080/bar/"
 
 -}
-apiUrl : Config -> Path -> Url
+apiUrl : Config -> String -> Url
 apiUrl config path =
     let
         hasQuery =
@@ -710,7 +718,7 @@ apiUrl config path =
         rootUrl config path ++ path ++ "/"
 
 
-apiWSUrl : Config -> Path -> Url
+apiWSUrl : Config -> String -> Url
 apiWSUrl config path =
     let
         wsUrl =

@@ -191,25 +191,18 @@ update msg model =
                 ~> (notifyText <| VaultCreated vault.id)
                 ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
 
-        CreatedVault _ (Failure reason) ->
-            let
-                msg =
-                    case reason of
-                        Http.BadStatus s ->
-                            VaultCreateFailed FolderAlreadyInSync
-
-                        _ ->
-                            VaultCreateFailed FolderPathNotValid
-            in
-            model
-                |> notifyText msg
-                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
-
         CreatedVault _ webData ->
-            ( model
-            , Cmd.none
-            )
-                |> andLog "CreatedVault unexpected data: " webData
+            model
+                |> createVaultFailed webData
+
+        CreatedVaultInEmptyFolder folderPath (Success vault) ->
+            model
+                |> (notifyText <| VaultCreated vault.id)
+                ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
+
+        CreatedVaultInEmptyFolder folderPath webData ->
+            model
+                |> createVaultFailed webData
 
         ImportedVault (Success vault) ->
             model
@@ -463,18 +456,8 @@ update msg model =
                 |> openNewVaultWizard
 
         NewVaultWizardFinished ->
-            -- TODO: make vault import request to daemon with selected key file and vault folder
-            ( { model | state = ShowingAllVaults }
-                |> resetVaultKeyImportState
-            , case model.newVaultWizard of
-                SelectedVaultKeyAndFolder keyPath folderPath ->
-                    Daemon.importVault folderPath keyPath model
-                        |> Cmd.map ImportedVault
-
-                wizardState ->
-                    Cmd.none
-                        |> andLog "Invalid NewVaultWizard state" wizardState
-            )
+            model
+                |> newVaultWizardFinished
 
         OpenVaultKeyImportFileDialog ->
             ( model
@@ -497,6 +480,29 @@ update msg model =
                 |> selectedVaultImportFolder folderPath
             , Cmd.none
             )
+
+
+createVaultFailed webData model =
+    case webData of
+        Failure reason ->
+            let
+                msg =
+                    case reason of
+                        Http.BadStatus s ->
+                            VaultCreateFailed FolderAlreadyInSync
+
+                        _ ->
+                            VaultCreateFailed FolderPathNotValid
+            in
+            model
+                |> notifyText msg
+                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+
+        _ ->
+            ( model
+            , Cmd.none
+            )
+                |> andLog "CreatedVault unexpected data: " webData
 
 
 setSetupWizardEmail : String -> Model -> Model
@@ -906,6 +912,38 @@ openNewVaultWizard : Model -> ( Model, Cmd Msg )
 openNewVaultWizard model =
     { model | state = ImportingVaultKey }
         |> WizardDialog.open (NewVaultWizard.settings model)
+
+
+newVaultWizardFinished : Model -> ( Model, Cmd Msg )
+newVaultWizardFinished model =
+    let
+        cmd =
+            case model.newVaultWizard of
+                NoVaultImportStarted ->
+                    Cmd.none
+                        |> andLog "No import started after closing NewVaultWizard" model.newVaultWizard
+
+                Model.ImportVault importState ->
+                    case importState of
+                        SelectedVaultKeyAndFolder keyPath folderPath ->
+                            model
+                                |> Daemon.importVault folderPath keyPath
+                                |> Cmd.map ImportedVault
+
+                        wizardState ->
+                            Cmd.none
+                                |> andLog "Invalid NewVaultWizard Import state" wizardState
+
+                CreateNewVaultInPath folderPath ->
+                    -- TODO: allow ignoring existing files if selected folder is not empty ?
+                    model
+                        |> Daemon.createNewVaultInFolder folderPath []
+                        |> Cmd.map (CreatedVaultInEmptyFolder folderPath)
+    in
+    ( model
+        |> resetVaultKeyImportState
+    , cmd
+    )
 
 
 
