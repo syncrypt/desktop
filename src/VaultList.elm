@@ -316,11 +316,7 @@ flyingVaultListSubtitle availableFlyingVaults model =
     in
     case model.flyingVaults of
         NotAsked ->
-            span
-                [ class "UpdateFlyingVaultsButton"
-                , onClick UpdateFlyingVaults
-                ]
-                [ tt <| T.VaultListTxt T.LoadRemoteVaults ]
+            text ""
 
         Loading ->
             ttt (T.VaultListTxt T.FetchingRemoteVaultInfo)

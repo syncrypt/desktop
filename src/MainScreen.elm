@@ -57,6 +57,7 @@ init config =
         initialActions =
             [ Daemon.getLoginState model
             , Daemon.getVaults model
+            , Daemon.getFlyingVaults model
             , Daemon.getStats model
             , Ports.updateEmailCompletionList ()
             , Daemon.getConfig model
@@ -80,6 +81,7 @@ subscriptions model =
                 , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
                 , Time.every Time.second (Date.fromTime >> SetTime)
                 , Time.every model.config.updateInterval (\_ -> UpdateVaults)
+                , Time.every (10 * Time.minute) (\_ -> UpdateFlyingVaults)
                 , Time.every model.config.updateInterval (\_ -> UpdateStats)
                 , Ports.getEmailCompletionList EmailCompletionList
                 , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
@@ -612,7 +614,7 @@ delayedUpdateVaults { delay, forceRefresh } model =
 
 updateFlyingVaults : Model -> ( Model, Cmd Msg )
 updateFlyingVaults model =
-    ( { model | flyingVaults = Loading }
+    ( model
     , Daemon.getFlyingVaults model
     )
 
@@ -662,7 +664,29 @@ updatedVaults vaults model =
 
 updatedFlyingVaults : WebData (List FlyingVault) -> Model -> ( Model, Cmd Msg )
 updatedFlyingVaults flyingVaults model =
-    { model | flyingVaults = flyingVaults }
+    let
+        newModel =
+            case ( model.flyingVaults, flyingVaults ) of
+                ( Success _, Success _ ) ->
+                    -- TODO: check if we have any new vaults and alert on them
+                    { model | flyingVaults = flyingVaults }
+
+                ( _, Success _ ) ->
+                    { model | flyingVaults = flyingVaults }
+
+                ( Success _, Loading ) ->
+                    model
+
+                ( Failure _, _ ) ->
+                    { model | flyingVaults = flyingVaults }
+
+                ( NotAsked, _ ) ->
+                    { model | flyingVaults = flyingVaults }
+
+                _ ->
+                    model
+    in
+    newModel
         |> Util.retryOnFailure flyingVaults UpdateFlyingVaults
 
 
