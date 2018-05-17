@@ -1,7 +1,7 @@
 {
   "name": "syncrypt-desktop",
   "productName": "Syncrypt",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "email": "info@syncrypt.space",
   "description": "Syncrypt platform independent desktop client",
   "main": "build/main.js",
