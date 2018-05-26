@@ -13,8 +13,8 @@ var elmApp = null;
 const toElmPath = (pathString) =>
   pathString.split(Path.sep)
 
-const readAuthToken = function (resolve, reject) {
-  Fs.readFile(DaemonConfig, 'utf-8', function (err, data) {
+const readAuthToken = (resolve, reject) => {
+  Fs.readFile(DaemonConfig, 'utf-8', (err, data) => {
     if (err) {
       reject();
       return;
@@ -30,7 +30,7 @@ const readAuthToken = function (resolve, reject) {
 }
 
 
-const openFolderDialog = function (vaultId) {
+const openFolderDialog = (vaultId) => {
   const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
   if (folders && folders.length == 1) {
     elmApp.ports.selectedFolder.send([
@@ -40,7 +40,7 @@ const openFolderDialog = function (vaultId) {
   }
 }
 
-const openIconFileDialog = function (tag) {
+const openIconFileDialog = (tag) => {
   Electron.remote.dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Select icon for vault",
@@ -58,7 +58,7 @@ const openIconFileDialog = function (tag) {
   });
 }
 
-const openExportFileDialog = function ([tag, buttonLabel]) {
+const openExportFileDialog = ([tag, buttonLabel]) => {
   Electron.remote.dialog.showSaveDialog({
     title: "Select file to export Vault key bundle to",
     buttonLabel: buttonLabel,
@@ -70,9 +70,9 @@ const openExportFileDialog = function ([tag, buttonLabel]) {
 
 const IGNORE_FILES = [".DS_Store", ".vault"];
 
-const getFileList = function ([vaultId, rootPathList]) {
+const getFileList = ([vaultId, rootPathList]) => {
   const rootPath = rootPathList.join(Path.sep)
-  File.walk(rootPath, function (_, dirPath, dirs, files) {
+  File.walk(rootPath, (_, dirPath, dirs, files) => {
     const path = toElmPath(Path.relative(rootPath, dirPath))
 
     if (isVaultPath(path)) {
@@ -92,7 +92,7 @@ const getFileList = function ([vaultId, rootPathList]) {
   })
 }
 
-const isVaultPath = function (path) {
+const isVaultPath = (path) => {
   for (let i = 0; i < path.length; i++) {
     if (path[i] === ".vault") {
       return true
@@ -101,14 +101,14 @@ const isVaultPath = function (path) {
   return false
 }
 
-const focusOn = function (id) {
+const focusOn = (id) => {
   const elem = document.getElementById(id);
   if (elem) {
     elem.focus()
   }
 }
 
-const openVaultFolder = function (path) {
+const openVaultFolder = (path) => {
   if (process.platform === 'darwin') {
     Electron.shell.openExternal("file://" + path)
   } else {
@@ -116,7 +116,7 @@ const openVaultFolder = function (path) {
   }
 }
 
-const addEmailToCompletionList = function (email) {
+const addEmailToCompletionList = (email) => {
   const emails = Array(localStorage["EmailCompletionList"])
 
   if (emails.includes(email)) {
@@ -127,7 +127,7 @@ const addEmailToCompletionList = function (email) {
   localStorage["EmailCompletionList"] = emails
 }
 
-const updateEmailCompletionList = function () {
+const updateEmailCompletionList = () => {
   const emails = localStorage["EmailCompletionList"]
   if (emails) {
     elmApp.ports.getEmailCompletionList.send(Array(emails))
@@ -161,7 +161,7 @@ const getEnvLocale = () => {
   return env.LC_ALL || env.LC_MESSAGES || env.LANG || env.LANGUAGE || "en_US.UTF-8"
 }
 
-const openVaultKeyImportFileDialog = function (tag) {
+const openVaultKeyImportFileDialog = (tag) => {
   Electron.remote.dialog.showOpenDialog({
     properties: ["openFile"],
     title: "Select vault key",
@@ -174,7 +174,7 @@ const openVaultKeyImportFileDialog = function (tag) {
   })
 }
 
-const openVaultImportFolderDialog = function () {
+const openVaultImportFolderDialog = () => {
   const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
   if (folders && folders.length == 1) {
     elmApp.ports.selectedVaultImportFolder.send(toElmPath(folders[0]))
