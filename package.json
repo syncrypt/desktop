@@ -93,7 +93,7 @@
     }
   },
   "dependencies": {
-    "electron-compile": "^6.4.0",
+    "electron-compile": "^6.4.2",
     "electron-log": "^2.2.14",
     "electron-updater": "^2.20.1",
     "expand-home-dir": "^0.0.3",
@@ -101,9 +101,8 @@
   },
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
-    "electron-builder": "^20.0.5",
-    "electron-forge": "^4.0.2",
-    "electron-prebuilt-compile": "1.6.2",
+    "electron-builder": "^20.15.1",
+    "electron": "^2.0.2",
     "elm": "^0.18.0",
     "elm-github-install": "^1.6.1",
     "node-sass": "^4.7.2"
