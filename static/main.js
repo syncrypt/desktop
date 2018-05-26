@@ -179,24 +179,38 @@ function createTray() {
   }
 }
 
-// called when electron has initialized
-app.on('ready', () => {
-  launchDaemon()
-  createWindow()
-  createTray()
-  initAutoUpdater()
-})
+const singleInstanceLock = app.requestSingleInstanceLock ? app.requestSingleInstanceLock() : true;
 
-/* Mac Specific things */
+if (!singleInstanceLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (commandLine, workingDirectory) => {
+    // A second instance has been opened, focus and/or restore the main window
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
 
-// when you close all the windows on a non-mac OS it quits the app
-app.on('window-all-closed', () => {
-  // if (process.platform !== 'darwin') { app.quit() }
-})
-
-// if there is no mainWindow it creates one (like when you click the dock icon)
-app.on('activate', () => {
-  if (mainWindow === null) {
+  // called when electron has initialized
+  app.on('ready', () => {
+    launchDaemon()
     createWindow()
-  }
-})
+    createTray()
+    initAutoUpdater()
+  })
+
+  /* Mac Specific things */
+
+  // when you close all the windows on a non-mac OS it quits the app
+  app.on('window-all-closed', () => {
+    // if (process.platform !== 'darwin') { app.quit() }
+  })
+
+  // if there is no mainWindow it creates one (like when you click the dock icon)
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createWindow()
+    }
+  })
+}
