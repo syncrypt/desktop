@@ -179,6 +179,18 @@ function createTray() {
   }
 }
 
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  // A second instance has been opened, focus and/or restore the main window
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  }
+})
+
+if (shouldQuit) {
+  app.quit()
+}
+
 // called when electron has initialized
 app.on('ready', () => {
   launchDaemon()
