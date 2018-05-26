@@ -115,14 +115,14 @@ vaultActivity vault model =
                 , length = Auto
                 , text = t T.TotalVaultSizeTooltip model
                 }
-                [ text (bytesReadable vault.size) ]
+                [ text (bytesReadable (Maybe.withDefault 0 vault.size)) ]
             ]
         ]
 
 
 type alias HasUserCountAndId a =
     { a
-        | userCount : Int
+        | userCount : Maybe Int
         , id : String
     }
 
@@ -136,13 +136,13 @@ vaultUserCount vault model =
                 , length = Auto
                 , text = t T.UsersWithAccessTooltip model
                 }
-                [ text (toString vault.userCount) ]
+                [ text (toString (Maybe.withDefault 0 vault.userCount)) ]
             ]
         ]
 
 
 type alias HasRevisionCountAndId a =
-    { a | revisionCount : Int, id : String }
+    { a | revisionCount : Maybe Int, id : String }
 
 
 vaultRevisionCount : HasRevisionCountAndId a -> Model -> Html msg
@@ -154,7 +154,7 @@ vaultRevisionCount vault model =
                 , length = Auto
                 , text = t T.TotalVaultRevisionsTooltip model
                 }
-                [ text (toString vault.revisionCount) ]
+                [ text (toString (Maybe.withDefault 0 vault.revisionCount)) ]
             ]
         ]
 

@@ -137,11 +137,11 @@ type alias Vault =
     { id : VaultId
     , remoteId : VaultId
     , name : Maybe String
-    , size : Int
+    , size : Maybe Int
     , status : Status
-    , userCount : Int
-    , fileCount : Int
-    , revisionCount : Int
+    , userCount : Maybe Int
+    , fileCount : Maybe Int
+    , revisionCount : Maybe Int
     , resourceUri : String
     , folderPath : String
     , modificationDate : Maybe Date
@@ -157,9 +157,9 @@ type alias FlyingVault =
     , remoteId : VaultId
     , name : Maybe String
     , size : Maybe Int
-    , userCount : Int
-    , fileCount : Int
-    , revisionCount : Int
+    , userCount : Maybe Int
+    , fileCount : Maybe Int
+    , revisionCount : Maybe Int
     , resourceUri : String
     , modificationDate : Maybe Date
     , icon : Maybe String
@@ -171,11 +171,11 @@ init vaultId =
     { id = vaultId
     , remoteId = vaultId
     , name = Nothing
-    , size = 0
+    , size = Nothing
     , status = Initializing
-    , userCount = 0
-    , fileCount = 0
-    , revisionCount = 0
+    , userCount = Nothing
+    , fileCount = Nothing
+    , revisionCount = Nothing
     , resourceUri = ""
     , folderPath = ""
     , modificationDate = Nothing
@@ -212,7 +212,7 @@ asVault fv =
         | id = fv.id
         , remoteId = fv.remoteId
         , name = fv.name
-        , size = Maybe.withDefault 0 fv.size
+        , size = fv.size
         , status = Unsynced
         , userCount = fv.userCount
         , fileCount = fv.fileCount
@@ -270,11 +270,11 @@ decoder =
         |> required "id" Json.string
         |> optional "remote_id" Json.string "N/A"
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
-        |> required "size" Json.int
+        |> required "size" (Json.maybe Json.int)
         |> required "state" vaultStatusDecoder
-        |> required "user_count" Json.int
-        |> required "file_count" Json.int
-        |> required "revision_count" Json.int
+        |> required "user_count" (Json.maybe Json.int)
+        |> required "file_count" (Json.maybe Json.int)
+        |> required "revision_count" (Json.maybe Json.int)
         |> required "resource_uri" Json.string
         |> required "folder" Json.string
         |> optional "modification_date" dateDecoder Nothing
@@ -352,9 +352,9 @@ flyingVaultDecoder =
         |> required "remote_id" Json.string
         |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
         |> optional "size" (Json.maybe Json.int) Nothing
-        |> required "user_count" Json.int
-        |> required "file_count" Json.int
-        |> required "revision_count" Json.int
+        |> required "user_count" (Json.maybe Json.int)
+        |> required "file_count" (Json.maybe Json.int)
+        |> required "revision_count" (Json.maybe Json.int)
         |> required "resource_uri" Json.string
         |> optional "modification_date" dateDecoder Nothing
         |> optional "icon" (Json.maybe Json.string) Nothing

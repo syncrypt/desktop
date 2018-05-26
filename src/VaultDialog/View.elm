@@ -357,7 +357,7 @@ cryptoTab vaultId state model =
                     [ text (String.toUpper vault.remoteId) ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
-                    [ text (toString vault.revisionCount) ]
+                    [ text (toString (Maybe.withDefault 0 vault.revisionCount)) ]
                 , cryptoInfoItem (vt LastModifiedLabel)
                     (vt LastModifiedTooltip)
                     [ text
