@@ -61,6 +61,7 @@ init config =
             , Daemon.getStats model
             , Ports.updateEmailCompletionList ()
             , Daemon.getConfig model
+            , Ports.updateAutoStartEnabledState ()
             ]
     in
     ( model
@@ -89,6 +90,7 @@ subscriptions model =
                 , Ports.updateAvailable Model.UpdateAvailable
                 , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
                 , Ports.selectedVaultImportFolder SelectedVaultImportFolder
+                , Ports.autoStartChanged AutoStartChanged
                 ]
 
         _ ->
@@ -256,7 +258,7 @@ update msg model =
 
         OpenSettingsDialog ->
             ( SettingsDialog.open model
-            , Cmd.none
+            , Ports.updateAutoStartEnabledState ()
             )
 
         CloseSettingsDialog ->
@@ -475,6 +477,26 @@ update msg model =
             ( model
                 |> selectedVaultImportFolder folderPath
             , Cmd.none
+            )
+
+        AutoStartChanged isEnabled ->
+            ( { model | autoStartEnabled = isEnabled }
+            , Cmd.none
+            )
+
+        ToggleAutoStart ->
+            if model.autoStartEnabled then
+                ( model
+                , Ports.disableAutoStart ()
+                )
+            else
+                ( model
+                , Ports.enableAutoStart ()
+                )
+
+        UpdateAutoStartEnabledState ->
+            ( model
+            , Ports.updateAutoStartEnabledState ()
             )
 
 

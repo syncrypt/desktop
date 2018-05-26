@@ -2,7 +2,8 @@ module SettingsDialog.View exposing (view)
 
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class, classList, disabled)
+import Html.Attributes exposing (checked, class, classList, disabled, type_)
+import Html.Events exposing (onClick)
 import Language exposing (HasLanguage, Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
@@ -72,6 +73,10 @@ contents model =
     , changePasswordButton model
     , resetPasswordButton model
     , changePasswordForm model
+    , separator
+    , div [ class "InfoLabel" ]
+        [ text "AutoStart" ]
+    , autoStartCheckbox model
     , separator
     , div [ class "InfoLabel" ]
         [ text "About Syncrypt Desktop" ]
@@ -239,4 +244,14 @@ dialogText dialogText model =
 separator : Html msg
 separator =
     Html.hr [ class "Separator" ]
+        []
+
+
+autoStartCheckbox : HasSettingsDialog a -> Html Model.Msg
+autoStartCheckbox { autoStartEnabled } =
+    Html.input
+        [ type_ "checkbox"
+        , onClick Model.ToggleAutoStart
+        , checked autoStartEnabled
+        ]
         []

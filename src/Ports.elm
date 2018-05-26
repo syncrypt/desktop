@@ -1,6 +1,9 @@
 port module Ports
     exposing
         ( addEmailToCompletionList
+        , autoStartChanged
+        , disableAutoStart
+        , enableAutoStart
         , focusOn
         , getEmailCompletionList
         , openPasswordResetInBrowser
@@ -12,6 +15,7 @@ port module Ports
         , selectedUserKeyExportFile
         , selectedVaultImportFolder
         , selectedVaultKeyImportFile
+        , updateAutoStartEnabledState
         , updateAvailable
         , updateEmailCompletionList
         )
@@ -59,3 +63,15 @@ port openVaultImportFolderDialog : () -> Cmd msg
 
 
 port selectedVaultImportFolder : (Path -> msg) -> Sub msg
+
+
+port updateAutoStartEnabledState : () -> Cmd msg
+
+
+port autoStartChanged : (Bool -> msg) -> Sub msg
+
+
+port enableAutoStart : () -> Cmd msg
+
+
+port disableAutoStart : () -> Cmd msg

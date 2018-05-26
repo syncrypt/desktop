@@ -6,6 +6,7 @@ const Elm = require('./elm.js');
 const DaemonConfig = expandHomeDir('~/.config/syncrypt/config');
 const Electron = require('electron');
 const File = require('file');
+const AutoLaunch = require("auto-launch");
 
 const mainContainer = window.document.getElementById("Root");
 var elmApp = null;
@@ -181,7 +182,56 @@ const openVaultImportFolderDialog = () => {
   }
 }
 
-const setupElmApp = function (daemonApiToken) {
+const syncryptAutoLauncher = new AutoLaunch({
+  name: "space.syncrypt.daemon",
+  isHidden: true
+})
+
+const enableAutoStart = () => {
+  console.log("enableAutoStart")
+  syncryptAutoLauncher.enable()
+  syncryptAutoLauncher.isEnabled()
+    .then((isEnabled) => {
+      elmApp.ports.autoStartChanged.send(true)
+      if (isEnabled) {
+        return
+      }
+      syncryptAutoLauncher.enable()
+    })
+    .catch(function (err) {
+      console.error("Got error in enableAutoStart:", err)
+    })
+}
+
+const updateAutoStartEnabledState = () => {
+  console.log("updateAutoStartEnabledState")
+  syncryptAutoLauncher.isEnabled()
+    .then((isEnabled) => {
+      console.log("updateAutoStartEnabledState:", isEnabled)
+      elmApp.ports.autoStartChanged.send(isEnabled)
+    })
+    .catch(function (err) {
+      console.error("Got error in updateAutoStartEnabledState:", err)
+      setTimeout(updateAutoStartEnabledState, 500)
+    })
+}
+
+const disableAutoStart = () => {
+  console.log("disableAutoStart")
+  syncryptAutoLauncher.disable()
+  syncryptAutoLauncher.isEnabled()
+    .then((isEnabled) => {
+      elmApp.ports.autoStartChanged.send(false)
+      if (isEnabled) {
+        syncryptAutoLauncher.disable()
+      }
+    })
+    .catch(function (err) {
+      console.error("Got error in disableAutoStart:", err)
+    })
+}
+
+const setupElmApp = (daemonApiToken) => {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
     apiUrl: "http://127.0.0.1:28080/v1/",
@@ -204,6 +254,9 @@ const setupElmApp = function (daemonApiToken) {
   elmApp.ports.quitAndInstall.subscribe(quitAndInstall)
   elmApp.ports.openVaultKeyImportFileDialog.subscribe(openVaultKeyImportFileDialog)
   elmApp.ports.openVaultImportFolderDialog.subscribe(openVaultImportFolderDialog)
+  elmApp.ports.enableAutoStart.subscribe(enableAutoStart)
+  elmApp.ports.updateAutoStartEnabledState.subscribe(updateAutoStartEnabledState)
+  elmApp.ports.disableAutoStart.subscribe(disableAutoStart)
 
   Electron.ipcRenderer.on('update-downloaded', (ev, info) => {
     elmApp.ports.updateAvailable.send(info.version)

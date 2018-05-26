@@ -72,8 +72,15 @@ function stopDaemon() {
   }
 }
 
+let initiallyHideWindow = process.argv.indexOf("--hidden") > 0
+
 // This will create our app window, no surprise there
 function createWindow() {
+  if (initiallyHideWindow) {
+    initiallyHideWindow = false
+    return
+  }
+
   if (mainWindow) {
     mainWindow.focus()
     return

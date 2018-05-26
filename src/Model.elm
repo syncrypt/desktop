@@ -49,6 +49,7 @@ type alias Model =
     , setupWizard : SetupWizardState
     , daemonLogItems : List Data.Daemon.LogItem
     , newVaultWizard : NewVaultWizardState
+    , autoStartEnabled : Bool
     }
 
 
@@ -170,6 +171,9 @@ type Msg
     | SelectedVaultKeyImportFile Path
     | OpenVaultImportFolderDialog
     | SelectedVaultImportFolder Path
+    | AutoStartChanged Bool
+    | ToggleAutoStart
+    | UpdateAutoStartEnabledState
 
 
 
@@ -276,6 +280,7 @@ init config =
         }
     , daemonLogItems = []
     , newVaultWizard = NoVaultImportStarted
+    , autoStartEnabled = False
     }
 
 

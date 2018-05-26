@@ -50,6 +50,7 @@ type alias HasSettingsDialog a =
         , isFirstLaunch : Bool
         , config : Config
         , updateAvailable : Maybe String
+        , autoStartEnabled : Bool
     }
 
 
