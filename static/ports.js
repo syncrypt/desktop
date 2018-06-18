@@ -263,4 +263,14 @@ const setupElmApp = (daemonApiToken) => {
   })
 }
 
-readAuthToken(setupElmApp)
+const readAuthTokenFailed = () => {
+  console.error("Could not read syncrypt daemon API auth token from config", DaemonConfig)
+  setTimeout(() => {
+    runApp()
+  }, 1000)
+}
+
+const runApp = () =>
+  readAuthToken(setupElmApp, readAuthTokenFailed)
+
+runApp()
