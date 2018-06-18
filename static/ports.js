@@ -23,8 +23,7 @@ const readAuthToken = (resolve, reject) => {
     const token = new RegExp("auth_token = ([a-zA-Z0-9]+)").exec(data)
     if (token && token.length == 2) {
       resolve(token[1])
-    }
-    else {
+    } else {
       reject()
     }
   })
