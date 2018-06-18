@@ -1,15 +1,15 @@
 'use strict'
-const Fs = require('fs');
-const Path = require('path');
-const expandHomeDir = require('expand-home-dir');
-const Elm = require('./elm.js');
-const DaemonConfig = expandHomeDir('~/.config/syncrypt/config');
-const Electron = require('electron');
-const File = require('file');
-const AutoLaunch = require("auto-launch");
+const Fs = require('fs')
+const Path = require('path')
+const expandHomeDir = require('expand-home-dir')
+const Elm = require('./elm.js')
+const DaemonConfig = expandHomeDir('~/.config/syncrypt/config')
+const Electron = require('electron')
+const File = require('file')
+const AutoLaunch = require("auto-launch")
 
-const mainContainer = window.document.getElementById("Root");
-var elmApp = null;
+const mainContainer = window.document.getElementById("Root")
+var elmApp = null
 
 const toElmPath = (pathString) =>
   pathString.split(Path.sep)
@@ -17,22 +17,22 @@ const toElmPath = (pathString) =>
 const readAuthToken = (resolve, reject) => {
   Fs.readFile(DaemonConfig, 'utf-8', (err, data) => {
     if (err) {
-      reject();
-      return;
+      reject()
+      return
     }
-    const token = new RegExp("auth_token = ([a-zA-Z0-9]+)").exec(data);
+    const token = new RegExp("auth_token = ([a-zA-Z0-9]+)").exec(data)
     if (token && token.length == 2) {
-      resolve(token[1]);
+      resolve(token[1])
     }
     else {
-      reject();
+      reject()
     }
-  });
+  })
 }
 
 
 const openFolderDialog = (vaultId) => {
-  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] })
   if (folders && folders.length == 1) {
     elmApp.ports.selectedFolder.send([
       vaultId,
@@ -53,10 +53,10 @@ const openIconFileDialog = (tag) => {
         width: 100,
         height: 100,
         quality: "good"
-      }).toDataURL();
-      elmApp.ports.selectedIconFile.send([tag, iconUrl]);
+      }).toDataURL()
+      elmApp.ports.selectedIconFile.send([tag, iconUrl])
     }
-  });
+  })
 }
 
 const openExportFileDialog = ([tag, buttonLabel]) => {
@@ -65,11 +65,11 @@ const openExportFileDialog = ([tag, buttonLabel]) => {
     buttonLabel: buttonLabel,
     filters: [{ name: "Vault Export Archives", extensions: ["zip"] }]
   }, (file) => {
-    elmApp.ports.selectedExportFile.send([tag, file]);
-  });
+    elmApp.ports.selectedExportFile.send([tag, file])
+  })
 }
 
-const IGNORE_FILES = [".DS_Store", ".vault"];
+const IGNORE_FILES = [".DS_Store", ".vault"]
 
 const getFileList = ([vaultId, rootPathList]) => {
   const rootPath = rootPathList.join(Path.sep)
@@ -77,7 +77,7 @@ const getFileList = ([vaultId, rootPathList]) => {
     const path = toElmPath(Path.relative(rootPath, dirPath))
 
     if (isVaultPath(path)) {
-      return;
+      return
     }
 
     const data = [
@@ -103,7 +103,7 @@ const isVaultPath = (path) => {
 }
 
 const focusOn = (id) => {
-  const elem = document.getElementById(id);
+  const elem = document.getElementById(id)
   if (elem) {
     elem.focus()
   }
@@ -121,7 +121,7 @@ const addEmailToCompletionList = (email) => {
   const emails = Array(localStorage["EmailCompletionList"])
 
   if (emails.includes(email)) {
-    return;
+    return
   }
 
   emails.push(email)
@@ -137,9 +137,9 @@ const updateEmailCompletionList = () => {
 
 const openPasswordResetInBrowser = () => {
   if (process.platform === 'darwin') {
-    Electron.shell.openExternal("https://alpha.syncrypt.space/password_reset");
+    Electron.shell.openExternal("https://alpha.syncrypt.space/password_reset")
   } else {
-    Electron.shell.openItem("https://alpha.syncrypt.space/password_reset");
+    Electron.shell.openItem("https://alpha.syncrypt.space/password_reset")
   }
 }
 
@@ -149,12 +149,12 @@ const openUserKeyExportFileDialog = (buttonLabel) => {
     buttonLabel: buttonLabel,
     filters: [{ name: "User Key Export Archive", extensions: ["zip"] }]
   }, (file) => {
-    elmApp.ports.selectedUserKeyExportFile.send(toElmPath(file));
+    elmApp.ports.selectedUserKeyExportFile.send(toElmPath(file))
   })
 }
 
 const quitAndInstall = () => {
-  Electron.ipcRenderer.send('quitAndInstall');
+  Electron.ipcRenderer.send('quitAndInstall')
 }
 
 const getEnvLocale = () => {
@@ -176,7 +176,7 @@ const openVaultKeyImportFileDialog = (tag) => {
 }
 
 const openVaultImportFolderDialog = () => {
-  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] });
+  const folders = Electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "createDirectory"] })
   if (folders && folders.length == 1) {
     elmApp.ports.selectedVaultImportFolder.send(toElmPath(folders[0]))
   }
@@ -239,7 +239,7 @@ const setupElmApp = (daemonApiToken) => {
     updateInterval: 3000,
     version: Electron.remote.app.getVersion(),
     locale: getEnvLocale()
-  });
+  })
 
   elmApp.ports.openFolderDialog.subscribe(openFolderDialog)
   elmApp.ports.getFileList.subscribe(getFileList)
