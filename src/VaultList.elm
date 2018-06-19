@@ -397,7 +397,7 @@ unsyncedFlyingVaults model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    span []
         [ vaultList model
         , flyingVaultList model
         ]

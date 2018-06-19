@@ -148,22 +148,24 @@ loadingCircle circleSize model =
                 ]
                 []
     in
-    svg
-        [ SvgA.version "1.1"
-        , SvgA.x "0"
-        , SvgA.y "0"
-        , SvgA.viewBox <| "0 0 " ++ widthStr ++ " " ++ heightStr
-        ]
-        [ circle color1 r1
-        , circle color2 r2
-        , Svg.text_
-            [ SvgA.x <| toString <| cx - 35
-            , SvgA.y <| toString <| cy + 5.0
-            , SvgA.fontSize "22px"
-            , SvgA.fontFamily "Hind"
-            , SvgA.fontWeight "500"
-            , SvgA.fill color1
-            , SvgA.class "LoadingCircle"
+    div [ class "Loading" ]
+        [ svg
+            [ SvgA.version "1.1"
+            , SvgA.x "0"
+            , SvgA.y "0"
+            , SvgA.viewBox <| "0 0 " ++ widthStr ++ " " ++ heightStr
             ]
-            [ Svg.text "Loading" ]
+            [ circle color1 r1
+            , circle color2 r2
+            , Svg.text_
+                [ SvgA.x <| toString <| cx - 35
+                , SvgA.y <| toString <| cy + 5.0
+                , SvgA.fontSize "22px"
+                , SvgA.fontFamily "Hind"
+                , SvgA.fontWeight "500"
+                , SvgA.fill color1
+                , SvgA.class "LoadingCircle"
+                ]
+                [ Svg.text "Loading" ]
+            ]
         ]

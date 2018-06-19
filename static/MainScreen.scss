@@ -280,6 +280,23 @@ li {
   }
 }
 
-.LoadingCircle {
-  transition: all 2.0s ease;
+.Loading {
+  svg {
+    z-index: -1;
+    position: absolute;
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .LoadingCircle {
+    transition: all 2.0s ease;
+  }
+}
+
+.Transparent {
+  .Loading {
+    svg {
+      opacity: 0.75;
+    }
+  }
 }

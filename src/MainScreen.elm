@@ -86,19 +86,20 @@ subscriptions model =
     in
     case model.login of
         LoggedIn _ ->
-            Sub.batch
-                [ VaultDialog.View.subscriptions model
-                , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
-                , Time.every model.config.updateInterval (\_ -> UpdateVaults)
-                , Time.every (10 * Time.minute) (\_ -> UpdateFlyingVaults)
-                , Time.every model.config.updateInterval (\_ -> UpdateStats)
-                , Ports.getEmailCompletionList EmailCompletionList
-                , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
-                , DaemonLog.subscriptions model
-                , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
-                , Ports.selectedVaultImportFolder SelectedVaultImportFolder
-                , Ports.autoStartChanged AutoStartChanged
-                ]
+            Sub.batch <|
+                commonSubs
+                    ++ [ VaultDialog.View.subscriptions model
+                       , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
+                       , Time.every model.config.updateInterval (\_ -> UpdateVaults)
+                       , Time.every (10 * Time.minute) (\_ -> UpdateFlyingVaults)
+                       , Time.every model.config.updateInterval (\_ -> UpdateStats)
+                       , Ports.getEmailCompletionList EmailCompletionList
+                       , Ports.selectedUserKeyExportFile SelectedUserKeyExportFile
+                       , DaemonLog.subscriptions model
+                       , Ports.selectedVaultKeyImportFile SelectedVaultKeyImportFile
+                       , Ports.selectedVaultImportFolder SelectedVaultImportFolder
+                       , Ports.autoStartChanged AutoStartChanged
+                       ]
 
         _ ->
             Sub.batch commonSubs
@@ -1029,7 +1030,7 @@ view model =
         content =
             case model.login of
                 Unknown ->
-                    loadingView model
+                    loadingCircle LargeCircle model
 
                 LoggedOut ->
                     loggedOutView model
@@ -1041,12 +1042,6 @@ view model =
         [ content ]
 
 
-loadingView : Model -> Html msg
-loadingView model =
-    div [ class "Loading" ]
-        [ loadingCircle MediumCircle model ]
-
-
 loggedOutView : Model -> Html Msg
 loggedOutView model =
     if model.isFirstLaunch then
@@ -1055,7 +1050,7 @@ loggedOutView model =
             , WizardDialog.view model
             ]
     else
-        div []
+        span []
             [ loadingCircle LargeCircle model
             , LoginDialog.View.view model
             ]
@@ -1064,7 +1059,14 @@ loggedOutView model =
 loggedInView : Model -> Html Msg
 loggedInView model =
     div [ class (currentClass model) ] <|
-        [ header model
+        [ case model.stats of
+            Success _ ->
+                text ""
+
+            _ ->
+                span [ class "Transparent" ]
+                    [ loadingCircle LargeCircle model ]
+        , header model
         , div
             [ class "MainScreen-Container"
             , animation 1.0 FadeInFast
