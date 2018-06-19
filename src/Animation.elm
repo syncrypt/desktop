@@ -76,6 +76,7 @@ type LoadingCircleSize
     = SmallCircle
     | MediumCircle
     | LargeCircle
+    | XLargeCircle
 
 
 loadingCircle : LoadingCircleSize -> { m | now : Maybe Date, windowSize : Window.Size } -> Html msg
@@ -110,6 +111,9 @@ loadingCircle circleSize model =
 
                 LargeCircle ->
                     19.0
+
+                XLargeCircle ->
+                    25.0
 
         r1 =
             sizeFactor

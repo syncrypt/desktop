@@ -1,6 +1,6 @@
 module MainScreen exposing (..)
 
-import Animation exposing (Animation(..), LoadingCircleSize(MediumCircle), animation, loadingCircle)
+import Animation exposing (Animation(..), LoadingCircleSize(..), animation, loadingCircle)
 import Config exposing (Config)
 import Daemon
 import DaemonLog
@@ -1055,7 +1055,10 @@ loggedOutView model =
             , WizardDialog.view model
             ]
     else
-        LoginDialog.View.view model
+        div []
+            [ loadingCircle LargeCircle model
+            , LoginDialog.View.view model
+            ]
 
 
 loggedInView : Model -> Html Msg
