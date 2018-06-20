@@ -500,6 +500,7 @@ update msg model =
             )
 
 
+createVaultFailed : WebData Vault -> Model -> ( Model, Cmd Msg )
 createVaultFailed webData model =
     case webData of
         Failure reason ->
