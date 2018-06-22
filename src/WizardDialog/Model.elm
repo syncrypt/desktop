@@ -43,6 +43,7 @@ type WizardType
     | FeedbackWizard
     | DaemonLogDialog
     | NewVaultWizard
+    | ReleaseNotesWizard
 
 
 type alias WizardSettings msg =

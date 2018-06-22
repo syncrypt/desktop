@@ -20,6 +20,7 @@ import LoginDialog.View
 import Model exposing (..)
 import NewVaultWizard
 import Ports
+import ReleaseNotesWizard
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
 import SettingsDialog.Model as SettingsDialog
@@ -435,7 +436,7 @@ update msg model =
 
         CloseDaemonLogDialog ->
             model
-                |> closeDaemonLogDialog
+                |> closeWizardWithState ShowingAllVaults
 
         DaemonLogStream (Ok logItem) ->
             ( model
@@ -498,6 +499,18 @@ update msg model =
             ( model
             , Ports.updateAutoStartEnabledState ()
             )
+
+        OpenReleaseNotesWizard ->
+            let
+                settings =
+                    ReleaseNotesWizard.settings model
+            in
+            model
+                |> openWizardWithState ShowingReleaseNotes settings
+
+        CloseReleaseNotesWizard ->
+            model
+                |> closeWizardWithState ShowingAllVaults
 
 
 createVaultFailed : WebData Vault -> Model -> ( Model, Cmd Msg )
@@ -594,8 +607,19 @@ openDaemonLogDialog model =
         |> WizardDialog.open (DaemonLog.dialogSettings model)
 
 
-closeDaemonLogDialog : Model -> ( Model, Cmd Msg )
-closeDaemonLogDialog model =
+openWizardWithState state dialogSettings model =
+    { model | state = state }
+        |> WizardDialog.open dialogSettings
+
+
+closeWizard : Model -> ( Model, Cmd Msg )
+closeWizard model =
+    model
+        |> WizardDialog.hideAndClose
+
+
+closeWizardWithState : State -> Model -> ( Model, Cmd Msg )
+closeWizardWithState state model =
     { model | state = ShowingAllVaults }
         |> WizardDialog.hideAndClose
 

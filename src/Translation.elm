@@ -4,6 +4,7 @@ module Translation
         , FolderButtonType(..)
         , NewVaultWizardText(..)
         , NotificationText(..)
+        , ReleaseNotesWizardText(..)
         , SettingsDialogText(..)
         , SetupWizardText(..)
         , StatsText(..)
@@ -75,6 +76,7 @@ type Text
     | UpdateAvailable String
     | SetupWizardTxt SetupWizardText
     | NewVaultWizardTxt NewVaultWizardText
+    | ReleaseNotesWizardTxt ReleaseNotesWizardText
 
 
 type NotificationText
@@ -248,6 +250,10 @@ type NewVaultWizardText
     | SelectYourVaultImportDestinationFolder
 
 
+type ReleaseNotesWizardText
+    = ReleaseNotesTitle
+
+
 type FolderButtonType
     = SelectFolder
     | CloneIntoFolder
@@ -410,6 +416,9 @@ translateEnglish text =
 
         NewVaultWizardTxt text ->
             translateEnglishNewVaultWizardText text
+
+        ReleaseNotesWizardTxt text ->
+            translateEnglishReleaseNotesWizardText text
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -882,6 +891,13 @@ translateEnglishNewVaultWizardText text =
             "Select the folder you want to use for the imported Vault"
 
 
+translateEnglishReleaseNotesWizardText : ReleaseNotesWizardText -> String
+translateEnglishReleaseNotesWizardText text =
+    case text of
+        ReleaseNotesTitle ->
+            "Release Notes"
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -1010,6 +1026,9 @@ translateGerman text =
 
         NewVaultWizardTxt text ->
             translateGermanNewVaultWizardText text
+
+        ReleaseNotesWizardTxt text ->
+            translateGermanReleaseNotesWizardText text
 
 
 translateGermanNotificationText : NotificationText -> String
@@ -1482,6 +1501,13 @@ translateGermanNewVaultWizardText text =
 
         SelectYourVaultImportDestinationFolder ->
             "Wähle einen Ordner für den importierten Vault"
+
+
+translateGermanReleaseNotesWizardText : ReleaseNotesWizardText -> String
+translateGermanReleaseNotesWizardText text =
+    case text of
+        ReleaseNotesTitle ->
+            "Versionshinweise"
 
 
 germanDistance : Date -> Date -> String

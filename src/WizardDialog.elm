@@ -19,6 +19,7 @@ import Html.Attributes exposing (class)
 import Language exposing (Language)
 import Model
 import NewVaultWizard
+import ReleaseNotesWizard
 import SetupWizard
 import Translation as T
 import Ui.Modal
@@ -347,6 +348,9 @@ viewSettings state model =
 
         NewVaultWizard ->
             NewVaultWizard.viewSettings state model
+
+        ReleaseNotesWizard ->
+            ReleaseNotesWizard.viewSettings state model
 
 
 prevButton : Language -> State msg -> Html msg

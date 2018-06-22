@@ -102,6 +102,7 @@ type State
     | CloningVault VaultId
     | ShowingDaemonLog
     | ImportingVaultKey
+    | ShowingReleaseNotes
 
 
 type Msg
@@ -174,6 +175,8 @@ type Msg
     | AutoStartChanged Bool
     | ToggleAutoStart
     | UpdateAutoStartEnabledState
+    | OpenReleaseNotesWizard
+    | CloseReleaseNotesWizard
 
 
 
