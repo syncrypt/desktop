@@ -51,3 +51,57 @@ $border-radius-modal: 5px;
     }
   }
 }
+
+@mixin LogTable {
+  table {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+  }
+
+  tr {
+    display: table-row;
+    padding: $padding-tiny;
+  }
+
+  td {
+    padding: $padding-small;
+  }
+
+  th {
+    text-align: left;
+    padding-top: $padding-small;
+    padding-bottom: $padding-small;
+    margin-bottom: $padding-large;
+  }
+
+  th.LogLevel,
+  .LogLevel {
+    font-weight: bold;
+    margin: $padding-small;
+    width: 10%;
+  }
+
+  th.CreatedAt,
+  .CreatedAt {
+    margin: $padding-small;
+    width: 26%;
+  }
+
+  th.Message,
+  .Message {
+    font-family: 'Courier New', Courier, monospace;
+    margin: $padding-small;
+    width: 64%;
+    text-overflow: clip;
+    max-width: 300px;
+  }
+
+  .LogItemDark {
+    background-color: #eee;
+  }
+
+  .LogItemLight {
+    background-color: $color-bg-light;
+  }
+}

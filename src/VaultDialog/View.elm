@@ -29,9 +29,11 @@ import Html
         , img
         , span
         , table
+        , tbody
         , td
         , text
         , th
+        , thead
         , tr
         )
 import Html.Attributes exposing (class, classList, src)
@@ -438,30 +440,32 @@ logTab vaultId state model =
                             (eventFilterButtons vaultId state)
                     }
                 ]
-            , div [ class "EventTableHeader" ]
-                [ table [ class "EventTable" ] <|
-                    [ th
-                        [ class "Default-Cursor"
-                        , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
-                        ]
-                        [ text "Time" ]
+            , div []
+                [ table [ class "LogItems" ] <|
+                    [ thead []
+                        [ tr []
+                            [ th
+                                [ class "Default-Cursor"
+                                , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
+                                ]
+                                [ text "Time" ]
 
-                    -- , th []
-                    --     [ text "User" ]
-                    , th []
-                        [ text "Operation" ]
-                    , th []
-                        [ text "Path / Message" ]
+                            -- , th []
+                            --     [ text "User" ]
+                            , th []
+                                [ text "Operation" ]
+                            , th []
+                                [ text "Path / Message" ]
+                            ]
+                        ]
                     ]
-                ]
-            , div [ class "EventTableContent" ]
-                [ table [ class "EventTable" ] <|
+                , tbody [] <|
                     case VaultDialog.Model.events state of
                         [] ->
                             [ loadingSpinner ]
 
                         events ->
-                            List.map (viewEvent model.now) events
+                            List.indexedMap (viewEvent model.now) events
                 ]
             ]
         }
@@ -569,14 +573,14 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Maybe Date -> Event -> Html msg
-viewEvent now event =
+viewEvent : Maybe Date -> Int -> Event -> Html msg
+viewEvent now idx event =
     case event of
         Log item ->
-            viewLogItem now item
+            viewLogItem now idx item
 
         History item ->
-            viewHistoryItem now item
+            viewHistoryItem now idx item
 
 
 type alias HasCreatedAt event =
@@ -606,32 +610,46 @@ eventDateString now { createdAt } =
             ""
 
 
-viewLogItem : Maybe Date -> Data.Vault.LogItem -> Html msg
-viewLogItem now item =
-    tr [ class "HistoryItem" ]
-        [ td []
+viewLogItem : Maybe Date -> Int -> Data.Vault.LogItem -> Html msg
+viewLogItem now idx item =
+    tr
+        [ classList
+            [ ( "HistoryItem", True )
+            , ( "LogItem", True )
+            , ( "LogItemLight", idx % 2 == 0 )
+            , ( "LogItemDark", idx % 2 == 1 )
+            ]
+        ]
+        [ td [ class "CreatedAt" ]
             [ text <| eventDateString now item ]
 
         -- , td []
         --     []
-        , td []
+        , td [ class "LogLevel" ]
             [ text <| toString item.level ]
-        , td []
+        , td [ class "Message" ]
             [ text item.message ]
         ]
 
 
-viewHistoryItem : Maybe Date -> HistoryItem -> Html msg
-viewHistoryItem now item =
-    tr [ class "HistoryItem" ]
-        [ td []
+viewHistoryItem : Maybe Date -> Int -> HistoryItem -> Html msg
+viewHistoryItem now idx item =
+    tr
+        [ classList
+            [ ( "HistoryItem", True )
+            , ( "LogItem", True )
+            , ( "LogItemLight", idx % 2 == 0 )
+            , ( "LogItemDark", idx % 2 == 1 )
+            ]
+        ]
+        [ td [ class "CreatedAt" ]
             [ text <| eventDateString now item ]
 
         -- , td []
         --     [ text item.email ]
-        , td []
+        , td [ class "Operation" ]
             [ text item.operation ]
-        , td []
+        , td [ class "Path" ]
             [ text <| Util.shortenString 50 item.path ]
         ]
 

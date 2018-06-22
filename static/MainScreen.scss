@@ -225,6 +225,16 @@ li {
   overflow-x: hidden;
   overflow-y: scroll;
 
+  @include LogTable;
+}
+
+.NewVaultWizard {
+  ui-modal-wrapper {
+    width: 500px;
+  }
+}
+
+@mixin LogTable {
   table {
     max-width: 100%;
     width: 100%;
@@ -274,11 +284,5 @@ li {
 
   .LogItemLight {
     background-color: $color-bg-light;
-  }
-}
-
-.NewVaultWizard {
-  ui-modal-wrapper {
-    width: 500px;
   }
 }
