@@ -28,3 +28,26 @@ $border-radius-modal: 5px;
 @mixin defaultCursor {
   cursor: default !important;
 }
+
+@mixin loadingAnimation($zIndex: 0) {
+  .Loading {
+    svg {
+      z-index: $zIndex;
+      position: absolute;
+      margin: 0px;
+      padding: 0px;
+    }
+
+    .LoadingCircle {
+      transition: all 2.0s ease;
+    }
+  }
+
+  .Transparent {
+    .Loading {
+      svg {
+        opacity: 0.75;
+      }
+    }
+  }
+}

@@ -51,6 +51,8 @@ li {
   width: 70%;
   height: 100%;
   transition: width 0.5s;
+
+  @include loadingAnimation(-1);
 }
 
 .MainScreen-Container {
@@ -211,6 +213,7 @@ li {
     width: 600px !important;
     max-width: 600px !important;
     min-width: 600px !important;
+    @include loadingAnimation(0);
   }
 }
 
@@ -277,26 +280,5 @@ li {
 .NewVaultWizard {
   ui-modal-wrapper {
     width: 500px;
-  }
-}
-
-.Loading {
-  svg {
-    z-index: -1;
-    position: absolute;
-    margin: 0px;
-    padding: 0px;
-  }
-
-  .LoadingCircle {
-    transition: all 2.0s ease;
-  }
-}
-
-.Transparent {
-  .Loading {
-    svg {
-      opacity: 0.75;
-    }
   }
 }
