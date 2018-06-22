@@ -1,8 +1,8 @@
 module DaemonLog exposing (dialogSettings, dialogViewSettings, subscriptions)
 
+import Animation
 import Daemon
 import Data.Daemon
-import Date.Distance
 import Html
     exposing
         ( Html
@@ -81,7 +81,7 @@ step1 model state =
         , contents =
             if List.isEmpty model.daemonLogItems then
                 wizardContent
-                    [ text "LOADING..." ]
+                    [ Animation.loadingCircle Animation.SmallCircle model ]
             else
                 wizardContent <|
                     viewLogItems model
