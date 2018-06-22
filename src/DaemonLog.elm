@@ -40,14 +40,22 @@ dialogSettings model =
     }
 
 
-subscriptions : Model.Model -> Sub Model.Msg
-subscriptions model =
-    case model.state of
-        Model.ShowingDaemonLog ->
-            Daemon.subscribeDaemonLogStream Model.DaemonLogStream model
+isDaemonLogOpened : Model.Model -> Bool
+isDaemonLogOpened { wizardDialog } =
+    case wizardDialog of
+        Just { wizardType } ->
+            wizardType == DaemonLogDialog
 
         _ ->
-            Sub.none
+            False
+
+
+subscriptions : Model.Model -> Sub Model.Msg
+subscriptions model =
+    if isDaemonLogOpened model then
+        Daemon.subscribeDaemonLogStream Model.DaemonLogStream model
+    else
+        Sub.none
 
 
 wizardContent : List (Html msg) -> Html msg
