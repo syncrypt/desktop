@@ -41,13 +41,8 @@ dialogSettings model =
 
 
 isDaemonLogOpened : Model.Model -> Bool
-isDaemonLogOpened { wizardDialog } =
-    case wizardDialog of
-        Just { wizardType } ->
-            wizardType == DaemonLogDialog
-
-        _ ->
-            False
+isDaemonLogOpened model =
+    WizardDialog.Model.isWizardOpen DaemonLogDialog model
 
 
 subscriptions : Model.Model -> Sub Model.Msg

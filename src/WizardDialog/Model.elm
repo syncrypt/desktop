@@ -17,6 +17,7 @@ module WizardDialog.Model
         , hasNextStep
         , hasPreviousStep
         , init
+        , isWizardOpen
         , moveToNextStep
         , moveToPreviousStep
         , moveToStep
@@ -256,3 +257,10 @@ viewSettings steps state model =
         |> currentStep steps
         |> Maybe.map (\( _, f ) -> f model state)
         |> Maybe.withDefault Nothing
+
+
+isWizardOpen : WizardType -> HasWizardDialog a msg -> Bool
+isWizardOpen wType { wizardDialog } =
+    wizardDialog
+        |> Maybe.map (.wizardType >> (==) wType)
+        |> Maybe.withDefault False
