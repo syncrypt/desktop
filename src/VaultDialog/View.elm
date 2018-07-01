@@ -1111,7 +1111,13 @@ userKeyCheckbox email userKey state model =
             labeledItem []
                 { side = Right
                 , onClick = labelMsg
-                , label = text (userKey.fingerprint ++ " - " ++ userKey.description)
+                , label =
+                    span []
+                        [ span [ class "UserKeyFingerprints" ]
+                            [ text userKey.fingerprint ]
+                        , span [ class "UserKeyDescription" ]
+                            [ text <| " (" ++ userKey.description ++ ")" ]
+                        ]
                 , item = checkbox
                 }
     in

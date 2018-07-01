@@ -373,24 +373,24 @@ $width-files-tab-input: 250px;
   }
 
   .UserKeyFingerprints {
-    position: relative;
-    float: right;
     font-family: monospace;
-    text-transform: uppercase;
-    margin-top: 7px;
-    font-size: 12px;
     font-weight: bold;
+    text-transform: uppercase;
+
+    position: relative;
+    margin-top: 7px;
+    font-size: $font-size-regular;
   }
 
-  .UserKeys .Checkbox {
-    font-family: monospace;
-    font-weight: bold;
-    text-transform: uppercase;
+  .UserKeyDescription {
+    font-size: $font-size-small;
+    margin-top: 2px;
   }
 
   .UserKeyCreatedTime {
     position: relative;
     float: right;
+    margin-top: 2px;
   }
 
   .Icon-Label {
