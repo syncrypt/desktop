@@ -299,9 +299,9 @@ translateEnglish text =
 
         SyncedVaults vaultCount ->
             if vaultCount == 1 then
-                " 1 synchronized vault / "
+                "1 synchronized vault"
             else
-                toString vaultCount ++ " synchronized vaults / "
+                toString vaultCount ++ " synchronized vaults"
 
         VaultsLoading ->
             "..."
@@ -322,10 +322,10 @@ translateEnglish text =
             "Updated " ++ Date.Distance.inWords date now ++ " ago"
 
         LastUpdateToVault ->
-            "Last update "
+            "Last update"
 
         LastUpdateToVaultLabel ->
-            "Last update to vault "
+            "Last update to vault"
 
         NoFilesUploadedYet ->
             "No files uploaded yet"
@@ -909,9 +909,9 @@ translateGerman text =
 
         SyncedVaults vaultCount ->
             if vaultCount == 1 then
-                " 1 synchronisierter Vault / "
+                "1 synchronisierter Vault"
             else
-                toString vaultCount ++ " synchronisierte Vaults / "
+                toString vaultCount ++ " synchronisierte Vaults"
 
         VaultsLoading ->
             "..."
@@ -932,10 +932,10 @@ translateGerman text =
             "Aktualisiert vor " ++ germanDistance date now
 
         LastUpdateToVault ->
-            "Letzte Änderung am "
+            "Letzte Änderung am"
 
         LastUpdateToVaultLabel ->
-            "Letzte Änderung am Vault "
+            "Letzte Änderung am Vault"
 
         NoFilesUploadedYet ->
             "Noch keine Dateien vorhanden"
@@ -1394,7 +1394,7 @@ translateGermanSetupWizardText text =
             "Wir leiten dich Schritt für Schritt durch alle nötigen Schritte, um ein neues Syncrypt Profil einzurichten."
 
         WelcomeHeader2 ->
-            "Bitte wähle eine Sprache: "
+            "Bitte wähle eine Sprache:"
 
         AccountSetup ->
             "Profil Erstellung"

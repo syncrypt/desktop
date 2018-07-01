@@ -1167,6 +1167,7 @@ footer { stats, vaults, language, updateAvailable } =
         [ span [ class "MainScreen-Stats" ]
             [ text <|
                 translate syncedVaultsText language
+                    ++ " / "
                     ++ translate statsText language
             ]
         ]
