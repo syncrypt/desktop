@@ -1295,7 +1295,7 @@ translateGermanVaultDialogText vt =
             "Vault erstellen"
 
         SaveVault ->
-            "Vault speichern & Änderungen bestätigen"
+            "Änderungen bestätigen & speichern"
 
         SyncVaultToFolder ->
             "Vault in Ordner synchronisieren"
