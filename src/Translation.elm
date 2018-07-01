@@ -671,19 +671,19 @@ translateEnglishVaultDialogText vt =
             "Export to file"
 
         CancelChanges ->
-            "Cancel Changes"
+            "Cancel changes"
 
         DeleteFromServer ->
-            "Delete from Server"
+            "Delete from server"
 
         StopSyncing ->
             "Stop syncing"
 
         CreateVault ->
-            "Create Vault"
+            "Create vault"
 
         SaveVault ->
-            "Save Vault"
+            "Save Vault & confirm changes"
 
         SyncVaultToFolder ->
             "Sync vault to folder"
@@ -1292,10 +1292,10 @@ translateGermanVaultDialogText vt =
             "Synchronisation stoppen"
 
         CreateVault ->
-            "Vault Erstellen"
+            "Vault erstellen"
 
         SaveVault ->
-            "Vault Speichern"
+            "Vault speichern & Änderungen bestätigen"
 
         SyncVaultToFolder ->
             "Vault in Ordner synchronisieren"

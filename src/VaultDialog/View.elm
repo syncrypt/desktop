@@ -895,8 +895,8 @@ userInput vaultId state model =
         , label = text <| t (VaultDialogTxt UserInputLabel) model
         , item =
             tooltipItem
-                { position = Right
-                , length = Medium
+                { position = Bottom
+                , length = Large
                 , text = t (VaultDialogTxt UserInputTooltip) model
                 }
                 [ Ui.Input.view
