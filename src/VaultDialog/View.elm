@@ -820,10 +820,10 @@ openFolderButton vaultId state model =
                     }
                     [ button []
                         { label =
-                            if String.length folderPath > 33 then
+                            if String.length folderPath > 30 then
                                 String.left 10 folderPath
                                     ++ "..."
-                                    ++ String.right 20 folderPath
+                                    ++ String.right 17 folderPath
                             else
                                 folderPath
                         , onClick = msg
