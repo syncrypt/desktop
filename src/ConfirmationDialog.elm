@@ -125,13 +125,13 @@ contents address language { question, confirmMsg } =
         , div [ class "ConfirmationDialog-Buttons" ]
             [ span [ class "ConfirmationDialog-Button-Cancel" ]
                 [ button []
-                    { label = T.translate T.Cancel language
+                    { label = T.translate language T.Cancel
                     , onClick = address Close
                     }
                 ]
             , span [ class "ConfirmationDialog-Button-Confirm" ]
                 [ button []
-                    { label = T.translate T.Confirm language
+                    { label = T.translate language T.Confirm
                     , onClick = confirmMsg
                     }
                 ]

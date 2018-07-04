@@ -374,12 +374,12 @@ update msg vaultId ({ vaultDialogs } as model) =
         Confirm RemoveVault ->
             let
                 title =
-                    T.translate (T.ConfirmationDialogTxt T.RemoveVaultFromSyncQuestion)
-                        model.language
+                    T.translate model.language
+                        (T.ConfirmationDialogTxt T.RemoveVaultFromSyncQuestion)
 
                 question =
-                    T.translate (T.ConfirmationDialogTxt T.RemoveVaultFromSyncExplanation)
-                        model.language
+                    T.translate model.language
+                        (T.ConfirmationDialogTxt T.RemoveVaultFromSyncExplanation)
 
                 confirmMsg =
                     Confirmed RemoveVault

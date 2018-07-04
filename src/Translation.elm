@@ -269,7 +269,7 @@ type FolderButtonType
 -}
 t : Text -> HasLanguage a -> String
 t text { language } =
-    translate text language
+    translate language text
 
 
 {-| Translates a `Text` into a `String` based on `lang`.
@@ -278,8 +278,8 @@ t text { language } =
     translate (VaultCreated "123") German  -- -> "Vault wurde erstellt: 123"
 
 -}
-translate : Text -> Language -> String
-translate text lang =
+translate : Language -> Text -> String
+translate lang text =
     case lang of
         English ->
             translateEnglish text

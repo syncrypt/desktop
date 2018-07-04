@@ -381,7 +381,7 @@ customButtonLabel label default =
 customPrevButton : CustomButtonLabel -> msg -> Language -> State msg -> Html msg
 customPrevButton label msg language state =
     button [ class "Button-Previous" ]
-        { label = customButtonLabel label (T.translate T.Previous language)
+        { label = customButtonLabel label (T.translate language T.Previous)
         , onClick = msg
         }
 
@@ -389,7 +389,7 @@ customPrevButton label msg language state =
 customNextButton : CustomButtonLabel -> msg -> Language -> State msg -> Html msg
 customNextButton label msg language state =
     button [ class "Button-Next" ]
-        { label = customButtonLabel label (T.translate T.Next language)
+        { label = customButtonLabel label (T.translate language T.Next)
         , onClick = msg
         }
 
@@ -397,7 +397,7 @@ customNextButton label msg language state =
 finishButton : Language -> State msg -> Html msg
 finishButton language state =
     button [ class "Button-Finish" ]
-        { label = T.translate T.Finish language
+        { label = T.translate language T.Finish
         , onClick = state.address FinishWizard
         }
 
@@ -405,7 +405,7 @@ finishButton language state =
 closeButton : Maybe msg -> Language -> State msg -> Html msg
 closeButton onClick language state =
     button [ class "Button-Close" ]
-        { label = T.translate T.Close language
+        { label = T.translate language T.Close
         , onClick = Maybe.withDefault (state.address HideAndClose) onClick
         }
 
@@ -414,7 +414,7 @@ cancelButton : Language -> State msg -> Html msg
 cancelButton language state =
     customButton [ class "Button-Cancel" ]
         { disabled = False -- TODO: CHANGE TO: not state.closable
-        , label = T.translate T.Cancel language
+        , label = T.translate language T.Cancel
         , onClick = state.address HideAndClose
         }
 

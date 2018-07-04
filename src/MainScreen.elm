@@ -1170,7 +1170,7 @@ footer { stats, vaults, language, updateAvailable } =
                         [ class "MainScreen-UpdateAvailable"
                         , onClick Model.InstallUpdate
                         ]
-                        [ text <| translate (T.UpdateAvailable version) language ]
+                        [ text <| translate language (T.UpdateAvailable version) ]
                     ]
 
                 Nothing ->
@@ -1179,9 +1179,9 @@ footer { stats, vaults, language, updateAvailable } =
     div [ class "MainScreen-Footer" ] <|
         [ span [ class "MainScreen-Stats" ]
             [ text <|
-                translate syncedVaultsText language
+                translate language syncedVaultsText
                     ++ " / "
-                    ++ translate statsText language
+                    ++ translate language statsText
             ]
         ]
             ++ updateAvailableDiv

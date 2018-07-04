@@ -65,19 +65,19 @@ tooltip : Language -> IconButton -> String
 tooltip language buttonType =
     case buttonType of
         LogoutButton ->
-            T.translate T.Logout language
+            T.translate language T.Logout
 
         SettingsButton ->
-            T.translate T.SoftwareAndAccountSettings language
+            T.translate language T.SoftwareAndAccountSettings
 
         FeedbackButton ->
-            T.translate T.SendUsFeedbackAndBugReports language
+            T.translate language T.SendUsFeedbackAndBugReports
 
         RefreshVaultsButton ->
-            T.translate T.RefreshVaults language
+            T.translate language T.RefreshVaults
 
         DaemonLogButton ->
-            T.translate T.ViewDaemonLog language
+            T.translate language T.ViewDaemonLog
 
         ImportVaultButton ->
-            T.translate T.ImportVault language
+            T.translate language T.ImportVault
