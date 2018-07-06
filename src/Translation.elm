@@ -241,6 +241,10 @@ type SetupWizardText
     | IAgree
     | KeyCreation
     | KeyImport
+    | KeyNotYetInitialized
+    | InitializingKey
+    | KeySuccessfullyInitialized
+    | Updating
 
 
 type NewVaultWizardText
@@ -874,6 +878,18 @@ translateEnglishSetupWizardText text =
         KeyImport ->
             "Key Import"
 
+        KeyNotYetInitialized ->
+            "Key not yet initialized."
+
+        InitializingKey ->
+            "Initializing key."
+
+        KeySuccessfullyInitialized ->
+            "Key successfully initialized."
+
+        Updating ->
+            "Updating..."
+
 
 translateEnglishNewVaultWizardText : NewVaultWizardText -> String
 translateEnglishNewVaultWizardText text =
@@ -1485,6 +1501,18 @@ translateGermanSetupWizardText text =
 
         KeyImport ->
             "Schlüssel Import"
+
+        KeyNotYetInitialized ->
+            "Schlüssel wurde noch nicht generiert"
+
+        InitializingKey ->
+            "Generiere Schlüssel"
+
+        KeySuccessfullyInitialized ->
+            "Schlüssel wurde erfolgreich generiert."
+
+        Updating ->
+            "Aktualisiere..."
 
 
 translateGermanNewVaultWizardText : NewVaultWizardText -> String

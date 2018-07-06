@@ -126,7 +126,7 @@ step3 model state =
                         , item =
                             div []
                                 [ input [ type_ "email", onInput Model.SetupWizardEmail ]
-                                    [ text "Your Email" ]
+                                    [ text <| t T.YourEmail model ]
                                 ]
                         }
                     , labeledItem [ class "InputLabel" ]
@@ -194,16 +194,16 @@ step5 model state =
         keyStateText keyState =
             case keyState of
                 Uninitialized ->
-                    text "Key not yet initialized."
+                    text <| t T.KeyNotYetInitialized model
 
                 Initializing ->
-                    text "Initializing key."
+                    text <| t T.InitializingKey model
 
                 Initialized ->
-                    text "Key successfully initialized."
+                    text <| t T.KeySuccessfullyInitialized model
 
         defaultText =
-            text "Updating..."
+            text <| t T.Updating model
     in
     Just
         { title = t T.KeyCreation model
