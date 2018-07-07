@@ -173,6 +173,23 @@ type VaultDialogText
     | SaveVault
     | SyncVaultToFolder
     | YouDontHaveAccessToVaultUsers
+    | Time
+    | Operation
+    | FilePathOrMessage
+    | DebugFilter
+    | InfoFilter
+    | WarningFilter
+    | ErrorFilter
+    | HistoryFilter
+    | LogFilter
+    | LogLevels
+    | InviteWithSelectedKeys
+    | Folder
+    | Name
+    | Invited Date Now
+    | InvitedAt Date
+    | Created Date Now
+    | VaultOwner
 
 
 type VaultListText
@@ -694,6 +711,57 @@ translateEnglishVaultDialogText vt =
 
         YouDontHaveAccessToVaultUsers ->
             "You don't have access to this vault's user list."
+
+        Time ->
+            "Time"
+
+        Operation ->
+            "Operation"
+
+        FilePathOrMessage ->
+            "Path / Message"
+
+        DebugFilter ->
+            "Debug"
+
+        InfoFilter ->
+            "Info"
+
+        WarningFilter ->
+            "Warning"
+
+        ErrorFilter ->
+            "Error"
+
+        HistoryFilter ->
+            "History"
+
+        LogFilter ->
+            "Log"
+
+        LogLevels ->
+            "Log Levels"
+
+        InviteWithSelectedKeys ->
+            "Invite with selected keys"
+
+        Folder ->
+            "Folder"
+
+        Name ->
+            "Name"
+
+        Invited date now ->
+            "Invited " ++ Date.Distance.inWords date now ++ " ago"
+
+        InvitedAt date ->
+            "Invited " ++ toString date
+
+        Created date now ->
+            "Created " ++ Date.Distance.inWords date now ++ " ago"
+
+        VaultOwner ->
+            "Vault Owner"
 
 
 translateEnglishVaultListText : VaultListText -> String
@@ -1318,6 +1386,57 @@ translateGermanVaultDialogText vt =
 
         YouDontHaveAccessToVaultUsers ->
             "Du hast keinen Zugriff auf die Benutzerliste dieses Vaults"
+
+        Time ->
+            "Zeit"
+
+        Operation ->
+            "Operation"
+
+        FilePathOrMessage ->
+            "Datei / Nachricht"
+
+        DebugFilter ->
+            "Debug"
+
+        InfoFilter ->
+            "Info"
+
+        WarningFilter ->
+            "Warnungen"
+
+        ErrorFilter ->
+            "Fehler"
+
+        HistoryFilter ->
+            "Historie"
+
+        LogFilter ->
+            "Log"
+
+        LogLevels ->
+            "Log Level"
+
+        InviteWithSelectedKeys ->
+            "Nutzer mit ausgewählten Schlüsseln einladen"
+
+        Folder ->
+            "Ordner"
+
+        Name ->
+            "Name"
+
+        Invited date now ->
+            "Eingeladen vor " ++ germanDistance date now
+
+        InvitedAt date ->
+            "Eingeladen " ++ toString date
+
+        Created date now ->
+            "Erstellt vor " ++ germanDistance date now
+
+        VaultOwner ->
+            "Vaultbesitzer"
 
 
 translateGermanVaultListText : VaultListText -> String

@@ -40,7 +40,7 @@ import Language exposing (HasLanguage)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Translation
+import Translation as T
     exposing
         ( FolderButtonType(..)
         , Text(..)
@@ -296,7 +296,7 @@ usersTab toRootMsg vaultId state model =
                         ]
                     , div [ class "UserKey-Selection" ]
                         [ rootMsg <| userKeySelection state model
-                        , rootMsg <| confirmUserKeysButton state
+                        , rootMsg <| confirmUserKeysButton state model
                         ]
                     ]
                 ]
@@ -422,6 +422,10 @@ filesTab toRootMsg vaultId state model =
 
 logTab : VaultId -> State -> Model -> ( String, Html Model.Msg )
 logTab vaultId state model =
+    let
+        vt txt =
+            t (VaultDialogTxt txt) model
+    in
     ( t (VaultDialogTxt LogTab) model
     , tabBody
         { infoBox = Nothing
@@ -435,7 +439,7 @@ logTab vaultId state model =
                     , label = text "Filters"
                     , item =
                         span []
-                            (eventFilterButtons vaultId state)
+                            (eventFilterButtons vaultId state vt)
                     }
                 ]
             , div [ class "EventTableHeader" ]
@@ -444,14 +448,14 @@ logTab vaultId state model =
                         [ class "Default-Cursor"
                         , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
                         ]
-                        [ text "Time" ]
+                        [ text <| vt T.Time ]
 
                     -- , th []
                     --     [ text "User" ]
                     , th []
-                        [ text "Operation" ]
+                        [ text <| vt T.Operation ]
                     , th []
-                        [ text "Path / Message" ]
+                        [ text <| vt T.FilePathOrMessage ]
                     ]
                 ]
             , div [ class "EventTableContent" ]
@@ -509,8 +513,8 @@ adminTab vaultId state model =
     )
 
 
-eventFilterButtons : VaultId -> State -> List (Html Model.Msg)
-eventFilterButtons vaultId state =
+eventFilterButtons : VaultId -> State -> (VaultDialogText -> String) -> List (Html Model.Msg)
+eventFilterButtons vaultId state vt =
     let
         rootMsg msg =
             Model.VaultDialogMsg vaultId msg
@@ -528,21 +532,21 @@ eventFilterButtons vaultId state =
                 }
 
         logLevelButtons =
-            [ filterButton "Debug" (Level Debug)
-            , filterButton "Info" (Level Info)
-            , filterButton "Warning" (Level Warning)
-            , filterButton "Error" (Level Error)
+            [ filterButton (vt DebugFilter) (Level Debug)
+            , filterButton (vt InfoFilter) (Level Info)
+            , filterButton (vt WarningFilter) (Level Warning)
+            , filterButton (vt ErrorFilter) (Level Error)
             ]
 
         logLevelButton =
             button [ class "LogLevelMenuButton" ]
-                { label = "Log Levels"
+                { label = vt LogLevels
                 , onClick = rootMsg ToggleViewLogLevelFilters
                 }
 
         buttons =
-            [ filterButton "History" IsHistoryItem
-            , filterButton "Log" IsLogItem
+            [ filterButton (vt HistoryFilter) IsHistoryItem
+            , filterButton (vt LogFilter) IsLogItem
             , span [ class "LogLevelButtons" ] <|
                 if isFilterEnabled IsLogItem state then
                     []
@@ -726,8 +730,8 @@ saveButton vaultId state model =
         }
 
 
-confirmUserKeysButton : State -> Html Msg
-confirmUserKeysButton state =
+confirmUserKeysButton : State -> Model -> Html Msg
+confirmUserKeysButton state model =
     let
         email =
             userInputEmail state
@@ -737,7 +741,7 @@ confirmUserKeysButton state =
             []
     else
         button []
-            { label = "Invite with selected keys"
+            { label = t (VaultDialogTxt InviteWithSelectedKeys) model
             , onClick = Confirmed AddUser
             }
 
@@ -811,7 +815,7 @@ openFolderButton vaultId state model =
         [ labeledItem [ class "InputLabel" ]
             { side = Left
             , onClick = Nothing
-            , label = text "Folder"
+            , label = text <| t (VaultDialogTxt Folder) model
             , item =
                 tooltipItem
                     { position = Right
@@ -839,7 +843,7 @@ nameInput msg state model =
         [ labeledItem [ class "InputLabel" ]
             { side = Left
             , onClick = Just (Model.FocusOn state.nameInput.uid)
-            , label = text "Name"
+            , label = text <| t (VaultDialogTxt Name) model
             , item =
                 tooltipItem
                     { position = Right
@@ -1202,11 +1206,17 @@ pendingUserItem email keys =
 userAddedTimestamp : User -> Model -> Html msg
 userAddedTimestamp user model =
     span [ class "UserAddedTime" ]
-        [ text
-            (user.accessGrantedAt
-                |> Maybe.map (\date -> "Invited " ++ timeAgo date model)
-                |> Maybe.withDefault "Vault Owner"
-            )
+        [ text <|
+            case ( user.accessGrantedAt, model.now ) of
+                ( Just date, Just now ) ->
+                    t (VaultDialogTxt (Invited date now)) model
+
+                ( Nothing, _ ) ->
+                    t (VaultDialogTxt VaultOwner) model
+
+                ( Just date, Nothing ) ->
+                    -- can't calculate distance so we'll just show the date
+                    toString date
         ]
 
 
@@ -1222,9 +1232,7 @@ keyCreatedTimestamp key model =
 
             ( Just date, Just now ) ->
                 [ text <|
-                    "Created "
-                        ++ Date.Distance.inWords date now
-                        ++ " ago"
+                    t (VaultDialogTxt <| Created date now) model
                 ]
 
 
