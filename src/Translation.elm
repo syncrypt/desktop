@@ -2,6 +2,7 @@ module Translation
     exposing
         ( ConfirmationDialogText(..)
         , FolderButtonType(..)
+        , LoginDialogText(..)
         , NewVaultWizardText(..)
         , NotificationText(..)
         , ReleaseNotesWizardText(..)
@@ -35,7 +36,8 @@ type alias Now =
 
 
 type Text
-    = NotificationTxt NotificationText
+    = LoginDialogTxt LoginDialogText
+    | NotificationTxt NotificationText
     | StatsTxt StatsText
     | SyncedVaults Int
     | VaultsLoading
@@ -77,6 +79,11 @@ type Text
     | SetupWizardTxt SetupWizardText
     | NewVaultWizardTxt NewVaultWizardText
     | ReleaseNotesWizardTxt ReleaseNotesWizardText
+
+
+type LoginDialogText
+    = LoginEmail
+    | LoginPassword
 
 
 type NotificationText
@@ -312,6 +319,9 @@ translate lang text =
 translateEnglish : Text -> String
 translateEnglish text =
     case text of
+        LoginDialogTxt t ->
+            translateEnglishLoginDialogText t
+
         NotificationTxt t ->
             translateEnglishNotificationText t
 
@@ -440,6 +450,16 @@ translateEnglish text =
 
         ReleaseNotesWizardTxt text ->
             translateEnglishReleaseNotesWizardText text
+
+
+translateEnglishLoginDialogText : LoginDialogText -> String
+translateEnglishLoginDialogText t =
+    case t of
+        LoginEmail ->
+            "Email"
+
+        LoginPassword ->
+            "Password"
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -985,6 +1005,9 @@ translateEnglishReleaseNotesWizardText text =
 translateGerman : Text -> String
 translateGerman text =
     case text of
+        LoginDialogTxt t ->
+            translateGermanLoginDialogText t
+
         NotificationTxt t ->
             translateGermanNotificationText t
 
@@ -1113,6 +1136,16 @@ translateGerman text =
 
         ReleaseNotesWizardTxt text ->
             translateGermanReleaseNotesWizardText text
+
+
+translateGermanLoginDialogText : LoginDialogText -> String
+translateGermanLoginDialogText t =
+    case t of
+        LoginEmail ->
+            "E-Mail"
+
+        LoginPassword ->
+            "Passwort"
 
 
 translateGermanNotificationText : NotificationText -> String

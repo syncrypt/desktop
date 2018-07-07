@@ -34,8 +34,8 @@ view model =
 contents : HasLoginDialog a -> List (Html Model.Msg)
 contents model =
     [ div [ class "Tab-Content" ]
-        [ Dialog.input <| emailInput model.loginDialog
-        , Dialog.input <| passwordInput model.loginDialog
+        [ Dialog.input <| emailInput model
+        , Dialog.input <| passwordInput model
         ]
     , div [ class "Errors" ] <|
         loginError model.loginDialog
@@ -64,12 +64,16 @@ loginButton =
         ]
 
 
-emailInput : State -> Html Model.Msg
-emailInput state =
+emailInput : HasLoginDialog a -> Html Model.Msg
+emailInput model =
+    let
+        state =
+            model.loginDialog
+    in
     labeledItem []
         { side = Left
         , onClick = Just <| Model.FocusOn state.emailInput.uid
-        , label = text "E-Mail"
+        , label = text <| T.t (T.LoginDialogTxt T.LoginEmail) model
         , item =
             span [ onEnter <| Model.FocusOn state.passwordInput.uid ]
                 [ state.emailInput
@@ -79,12 +83,16 @@ emailInput state =
         }
 
 
-passwordInput : State -> Html Model.Msg
-passwordInput state =
+passwordInput : HasLoginDialog a -> Html Model.Msg
+passwordInput model =
+    let
+        state =
+            model.loginDialog
+    in
     labeledItem []
         { side = Left
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
-        , label = text "Password"
+        , label = text <| T.t (T.LoginDialogTxt T.LoginPassword) model
         , item =
             span [ onEnter Model.Login ]
                 [ state.passwordInput
