@@ -229,6 +229,17 @@ type SettingsDialogText
     | NewPasswordTooltip
     | NewPasswordConfirmationLabel
     | NewPasswordConfirmationTooltip
+    | UpdateIsAvailable
+    | KeyExportOrImport
+    | AutoStart
+    | AutoStartEnabled
+    | AutoStartDisabled
+    | AboutSyncryptDesktop
+    | Version
+    | DaemonAuthToken
+    | YouNeedToEnterYourCurrentPassword
+    | YouNeedToEnterANewPassword
+    | PasswordConfirmationDoesNotMatch
 
 
 type SetupWizardText
@@ -864,6 +875,39 @@ translateEnglishSettingsDialogText text =
         NewPasswordConfirmationTooltip ->
             "This is to make sure you're not mispelling your new password"
 
+        UpdateIsAvailable ->
+            "Update available"
+
+        KeyExportOrImport ->
+            "Key export / import"
+
+        AutoStart ->
+            "Autostart at system boot"
+
+        AutoStartEnabled ->
+            "Autostart enabled"
+
+        AutoStartDisabled ->
+            "Autostart disabled"
+
+        AboutSyncryptDesktop ->
+            "About Syncrypt Desktop"
+
+        Version ->
+            "Version"
+
+        DaemonAuthToken ->
+            "Daemon auth token"
+
+        YouNeedToEnterYourCurrentPassword ->
+            "You need to enter your current password"
+
+        YouNeedToEnterANewPassword ->
+            "You need to enter a new password"
+
+        PasswordConfirmationDoesNotMatch ->
+            "Password confirmation doesn't match"
+
 
 translateEnglishSetupWizardText text =
     case text of
@@ -1126,7 +1170,7 @@ translateGerman text =
             translateGermanSettingsDialogText text
 
         UpdateAvailable version ->
-            "Update verfügbar, klicken zum Installieren"
+            "Update verfügbar, klicken zum Installieren der Version " ++ version
 
         SetupWizardTxt text ->
             translateGermanSetupWizardText text
@@ -1551,6 +1595,39 @@ translateGermanSettingsDialogText text =
 
         NewPasswordConfirmationTooltip ->
             "Hiermit stellen wir sicher, dass Du dich nicht vertippst"
+
+        UpdateIsAvailable ->
+            "Update verfügbar"
+
+        KeyExportOrImport ->
+            "Schlüssel exportieren / importieren"
+
+        AutoStart ->
+            "Autostart beim Booten"
+
+        AutoStartEnabled ->
+            "Autostart aktiviert"
+
+        AutoStartDisabled ->
+            "Autostart deaktiviert"
+
+        AboutSyncryptDesktop ->
+            "Über Syncrypt Desktop"
+
+        Version ->
+            "Version"
+
+        DaemonAuthToken ->
+            "Daemon auth token"
+
+        YouNeedToEnterYourCurrentPassword ->
+            "Du musst dein aktuelles Passwort eingeben"
+
+        YouNeedToEnterANewPassword ->
+            "Du musst ein neues Passwort eingeben"
+
+        PasswordConfirmationDoesNotMatch ->
+            "Passwortbestätigung gleicht nicht dem Passwort"
 
 
 translateGermanSetupWizardText text =

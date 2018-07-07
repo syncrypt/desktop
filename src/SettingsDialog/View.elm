@@ -54,7 +54,11 @@ contents model =
             case model.updateAvailable of
                 Just version ->
                     div []
-                        [ text ("Update available: " ++ version) ]
+                        [ text <|
+                            dialogText T.UpdateIsAvailable model
+                                ++ ": "
+                                ++ version
+                        ]
 
                 Nothing ->
                     text ""
@@ -65,7 +69,7 @@ contents model =
     , languageButton English model
     , separator
     , div [ class "InfoLabel" ]
-        [ text "Key export / import" ]
+        [ text <| dialogText T.KeyExportOrImport model ]
     , keyExportButton model
     , separator
     , div [ class "InfoLabel" ]
@@ -75,21 +79,21 @@ contents model =
     , changePasswordForm model
     , separator
     , div [ class "InfoLabel" ]
-        [ text "AutoStart" ]
+        [ text <| dialogText T.AutoStart model ]
     , autoStartCheckbox model
     , separator
     , div [ class "InfoLabel" ]
-        [ text "About Syncrypt Desktop" ]
+        [ text <| dialogText T.AboutSyncryptDesktop model ]
     , div []
         [ div []
             [ span []
-                [ text "Version: " ]
+                [ text <| dialogText T.Version model ++ ": " ]
             , text model.config.version
             , availableUpdate
             ]
         , div []
             [ span []
-                [ text "Daemon auth token: " ]
+                [ text <| dialogText T.DaemonAuthToken model ++ ": " ]
             , text model.config.apiAuthToken
             ]
         ]
@@ -213,10 +217,10 @@ buttons ({ settingsDialog } as model) =
         ]
         [ case ( oldPassword, newPassword, passwordConfirmation ) of
             ( "", _, _ ) ->
-                Dialog.errorMsg "You need to enter your current password"
+                Dialog.errorMsg <| dialogText T.YouNeedToEnterYourCurrentPassword model
 
             ( _, "", _ ) ->
-                Dialog.errorMsg "You need to enter a new password"
+                Dialog.errorMsg <| dialogText T.YouNeedToEnterANewPassword model
 
             _ ->
                 if newPassword == passwordConfirmation then
@@ -228,7 +232,7 @@ buttons ({ settingsDialog } as model) =
                         , onClick = Model.SettingsDialogMsg ConfirmChangePassword
                         }
                 else
-                    Dialog.errorMsg "Password confirmation doesn't match"
+                    Dialog.errorMsg <| dialogText T.PasswordConfirmationDoesNotMatch model
         , button [ class "Button" ]
             { label = T.t T.Cancel model
             , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
