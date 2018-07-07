@@ -55,7 +55,7 @@ contents model =
                 Just version ->
                     div []
                         [ text <|
-                            dialogText T.UpdateIsAvailable model
+                            t T.UpdateIsAvailable model
                                 ++ ": "
                                 ++ version
                         ]
@@ -64,36 +64,36 @@ contents model =
                     text ""
     in
     [ div [ class "InfoLabel" ]
-        [ text <| dialogText T.ChooseYourLanguage model ]
+        [ text <| t T.ChooseYourLanguage model ]
     , languageButton German model
     , languageButton English model
     , separator
     , div [ class "InfoLabel" ]
-        [ text <| dialogText T.KeyExportOrImport model ]
+        [ text <| t T.KeyExportOrImport model ]
     , keyExportButton model
     , separator
     , div [ class "InfoLabel" ]
-        [ text <| dialogText T.AccountOptions model ]
+        [ text <| t T.AccountOptions model ]
     , changePasswordButton model
     , resetPasswordButton model
     , changePasswordForm model
     , separator
     , div [ class "InfoLabel" ]
-        [ text <| dialogText T.AutoStart model ]
+        [ text <| t T.AutoStart model ]
     , autoStartCheckbox model
     , separator
     , div [ class "InfoLabel" ]
-        [ text <| dialogText T.AboutSyncryptDesktop model ]
+        [ text <| t T.AboutSyncryptDesktop model ]
     , div []
         [ div []
             [ span []
-                [ text <| dialogText T.Version model ++ ": " ]
+                [ text <| t T.Version model ++ ": " ]
             , text model.config.version
             , availableUpdate
             ]
         , div []
             [ span []
-                [ text <| dialogText T.DaemonAuthToken model ++ ": " ]
+                [ text <| t T.DaemonAuthToken model ++ ": " ]
             , text model.config.apiAuthToken
             ]
         ]
@@ -111,7 +111,7 @@ keyExportButton model =
 changePasswordButton : HasSettingsDialog a -> Html Model.Msg
 changePasswordButton model =
     button [ class "Button" ]
-        { label = dialogText T.ChangePassword model
+        { label = t T.ChangePassword model
         , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
         }
 
@@ -119,7 +119,7 @@ changePasswordButton model =
 resetPasswordButton : HasSettingsDialog a -> Html Model.Msg
 resetPasswordButton model =
     button [ class "Button" ]
-        { label = dialogText T.ResetPassword model
+        { label = t T.ResetPassword model
         , onClick = Model.SettingsDialogMsg OpenPasswordResetPage
         }
 
@@ -177,13 +177,13 @@ passwordInput inputType model =
     labeledItem [ class "InputLabel" ]
         { side = Top
         , onClick = Just (Model.FocusOn input.uid)
-        , label = text <| dialogText labelText model
+        , label = text <| t labelText model
         , item =
             span [ onEnter onEnterMsg ]
                 [ Util.tooltipItem
                     { position = Right
                     , length = Util.Medium
-                    , text = dialogText tooltipText model
+                    , text = t tooltipText model
                     }
                     [ Ui.Input.view
                         input
@@ -217,10 +217,10 @@ buttons ({ settingsDialog } as model) =
         ]
         [ case ( oldPassword, newPassword, passwordConfirmation ) of
             ( "", _, _ ) ->
-                Dialog.errorMsg <| dialogText T.YouNeedToEnterYourCurrentPassword model
+                Dialog.errorMsg <| t T.YouNeedToEnterYourCurrentPassword model
 
             ( _, "", _ ) ->
-                Dialog.errorMsg <| dialogText T.YouNeedToEnterANewPassword model
+                Dialog.errorMsg <| t T.YouNeedToEnterANewPassword model
 
             _ ->
                 if newPassword == passwordConfirmation then
@@ -228,11 +228,11 @@ buttons ({ settingsDialog } as model) =
                         [ class "Button"
                         , disabled <| isValidNewPassword
                         ]
-                        { label = dialogText T.ChangePassword model
+                        { label = t T.ChangePassword model
                         , onClick = Model.SettingsDialogMsg ConfirmChangePassword
                         }
                 else
-                    Dialog.errorMsg <| dialogText T.PasswordConfirmationDoesNotMatch model
+                    Dialog.errorMsg <| t T.PasswordConfirmationDoesNotMatch model
         , button [ class "Button" ]
             { label = T.t T.Cancel model
             , onClick = Model.SettingsDialogMsg ToggleChangePasswordForm
@@ -240,9 +240,9 @@ buttons ({ settingsDialog } as model) =
         ]
 
 
-dialogText : T.SettingsDialogText -> HasLanguage a -> String
-dialogText dialogText model =
-    T.t (T.SettingsDialogTxt dialogText) model
+t : T.SettingsDialogText -> HasLanguage a -> String
+t t model =
+    T.t (T.SettingsDialogTxt t) model
 
 
 separator : Html msg
