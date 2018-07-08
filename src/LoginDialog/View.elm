@@ -3,12 +3,18 @@ module LoginDialog.View exposing (view)
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
+import Language exposing (HasLanguage)
 import LoginDialog.Model exposing (HasLoginDialog, Msg(..), State)
 import Model exposing (Model)
 import Translation as T
 import Ui.Input
 import Ui.Modal
 import Util exposing (Position(..), button, onEnter)
+
+
+t : T.LoginDialogText -> HasLanguage a -> String
+t txt model =
+    T.t (T.LoginDialogTxt txt) model
 
 
 view : Model -> Html Model.Msg
@@ -73,7 +79,7 @@ emailInput model =
     labeledItem []
         { side = Left
         , onClick = Just <| Model.FocusOn state.emailInput.uid
-        , label = text <| T.t (T.LoginDialogTxt T.LoginEmail) model
+        , label = text <| t T.LoginEmail model
         , item =
             span [ onEnter <| Model.FocusOn state.passwordInput.uid ]
                 [ state.emailInput
@@ -92,7 +98,7 @@ passwordInput model =
     labeledItem []
         { side = Left
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
-        , label = text <| T.t (T.LoginDialogTxt T.LoginPassword) model
+        , label = text <| t T.LoginPassword model
         , item =
             span [ onEnter Model.Login ]
                 [ state.passwordInput
