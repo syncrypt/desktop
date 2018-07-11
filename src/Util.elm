@@ -547,25 +547,20 @@ shortDateString date =
         ++ (second |> padNumber)
 
 
-animatedDots : Maybe Date -> String
-animatedDots maybeNow =
-    case maybeNow of
-        Just now ->
-            case Date.second now % 4 of
-                0 ->
-                    ""
+animatedDots : Date -> String
+animatedDots now =
+    case Date.second now % 4 of
+        0 ->
+            ""
 
-                1 ->
-                    "."
-
-                2 ->
-                    ".."
-
-                _ ->
-                    "..."
-
-        Nothing ->
+        1 ->
             "."
+
+        2 ->
+            ".."
+
+        _ ->
+            "..."
 
 
 type alias ButtonSettings msg =

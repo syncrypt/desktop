@@ -321,7 +321,10 @@ flyingVaultListSubtitle availableFlyingVaults model =
 
         Loading ->
             ttt (T.VaultListTxt T.FetchingRemoteVaultInfo)
-                (Util.animatedDots model.now)
+                (model.now
+                    |> Maybe.map Util.animatedDots
+                    |> Maybe.withDefault "."
+                )
 
         Failure reason ->
             tt <|
