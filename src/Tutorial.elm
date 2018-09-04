@@ -11,8 +11,9 @@ module Tutorial
         , toPrevStep
         )
 
--- import Html exposing (Html, text)
--- import Util
+import Html exposing (Html, p, text)
+import Html.Attributes exposing (class)
+import Util exposing (button)
 
 
 type Msg
@@ -193,10 +194,58 @@ update msg state =
             )
 
 
+type alias ButtonHandlers msg =
+    { toPrevBtn : Msg -> msg
+    , toNextBtn : Msg -> msg
+    }
 
--- view : State msg -> Html msg
--- view state =
---     if isFinished state then
---         text ""
---     else
---         text "viewing state"
+
+view : ButtonHandlers msg -> State msg -> Html msg
+view handlers state =
+    case ( isVisible state, isFinished state ) of
+        ( True, False ) ->
+            viewCurrentStep handlers state
+
+        ( True, True ) ->
+            text "Tutorial done"
+
+        ( False, _ ) ->
+            text ""
+
+
+viewCurrentStep : ButtonHandlers msg -> State msg -> Html msg
+viewCurrentStep { toNextBtn, toPrevBtn } state =
+    case currentStep state of
+        Just step ->
+            p [ class "Tutorial" ]
+                [ p [ class "Title" ]
+                    [ text step.title ]
+                , viewParagraphs step
+                , p [ class "Nav" ]
+                    [ button [ class "ToNextBtn" ]
+                        { label = "Next"
+                        , onClick = toNextBtn ToNextStep
+                        }
+                    , button [ class "ToPrevBtn" ]
+                        { label = "Previous"
+                        , onClick = toPrevBtn ToPreviousStep
+                        }
+                    ]
+                ]
+
+        Nothing ->
+            text "Tutorial done"
+
+
+viewParagraphs : Step -> Html msg
+viewParagraphs step =
+    p [ class "Paragraphs" ]
+        (step.paragraphs
+            |> List.map viewParagraph
+        )
+
+
+viewParagraph : String -> Html msg
+viewParagraph par =
+    p [ class "Paragraph" ]
+        [ text par ]

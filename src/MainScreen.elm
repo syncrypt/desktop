@@ -37,6 +37,7 @@ import Translation as T
         , t
         , translate
         )
+import Tutorial
 import Ui.NotificationCenter
 import Util exposing ((~>), Direction(..), Position(..), TooltipLength(..), andLog, materialIcon, tooltipItem)
 import VaultDialog.Model exposing (CloneStatus(..))
