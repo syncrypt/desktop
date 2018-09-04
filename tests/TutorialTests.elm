@@ -10,6 +10,7 @@ type Msg
     = TutMsg Tutorial.Msg
 
 
+step1 : Tutorial.Step
 step1 =
     { id = "step1"
     , title = "Step 1"
@@ -17,6 +18,7 @@ step1 =
     }
 
 
+step2 : Tutorial.Step
 step2 =
     { id = "step2"
     , title = "Step 2"
@@ -24,6 +26,7 @@ step2 =
     }
 
 
+step3 : Tutorial.Step
 step3 =
     { id = "step3"
     , title = "Step 3"
