@@ -13,6 +13,7 @@ module LoginDialog.Model
 
 import Http
 import Language exposing (Language)
+import Translation exposing (LoginDialogText(..), Text(..), translate)
 import Ui.Input
 import Ui.Modal
 import Util exposing (andLog)
@@ -72,7 +73,7 @@ asStateIn model state =
 
 loginFailed : Http.Error -> HasLoginDialog a -> HasLoginDialog a
 loginFailed reason ({ loginDialog } as model) =
-    { loginDialog | loginError = Just <| errorMsg reason }
+    { loginDialog | loginError = Just <| errorMsg reason model }
         |> asStateIn model
         |> andLog "Login Error:" reason
 
@@ -83,21 +84,24 @@ loginSucceeded ({ loginDialog } as model) =
         |> asStateIn model
 
 
-errorMsg : Http.Error -> String
-errorMsg err =
-    case err of
-        Http.Timeout ->
-            "Daemon connection timed out."
+errorMsg : Http.Error -> HasLoginDialog a -> String
+errorMsg err { language } =
+    let
+        txt =
+            case err of
+                Http.Timeout ->
+                    DaemonConnectionTimedOut
 
-        Http.NetworkError ->
-            "Network error."
+                Http.NetworkError ->
+                    NetworkError
 
-        Http.BadStatus _ ->
-            "Login failed."
+                Http.BadStatus resp ->
+                    BadStatusOrLoginFailed resp
 
-        e ->
-            "Unknown error while talking to Syncrypt background process."
-                |> andLog "Unexpected login error: " e
+                e ->
+                    UnknownError e
+    in
+    translate language (LoginDialogTxt txt)
 
 
 setEmailInput : String -> HasLoginDialog a -> HasLoginDialog a

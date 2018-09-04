@@ -24,7 +24,9 @@ import Data.Vault exposing (VaultId)
 import Date exposing (Date)
 import Date.Distance
 import Date.Distance.Types
+import Http
 import Language exposing (HasLanguage, Language(..))
+import Util exposing (andLog)
 
 
 type alias Reason =
@@ -84,6 +86,10 @@ type Text
 type LoginDialogText
     = LoginEmail
     | LoginPassword
+    | DaemonConnectionTimedOut
+    | NetworkError
+    | BadStatusOrLoginFailed (Http.Response String)
+    | UnknownError Http.Error
 
 
 type NotificationText
@@ -471,6 +477,19 @@ translateEnglishLoginDialogText t =
 
         LoginPassword ->
             "Password"
+
+        DaemonConnectionTimedOut ->
+            "Daemon connection timed out."
+
+        NetworkError ->
+            "Network error."
+
+        BadStatusOrLoginFailed resp ->
+            "Login failed: " ++ toString resp
+
+        UnknownError httpError ->
+            "Unknown error while talking to Syncrypt background process."
+                |> andLog "Unexpected login error: " httpError
 
 
 translateEnglishNotificationText : NotificationText -> String
@@ -1190,6 +1209,19 @@ translateGermanLoginDialogText t =
 
         LoginPassword ->
             "Passwort"
+
+        DaemonConnectionTimedOut ->
+            "Daemon Verbindung abgebrochen."
+
+        NetworkError ->
+            "Netzwerkfehler."
+
+        BadStatusOrLoginFailed resp ->
+            "Login fehlgeschlagen: " ++ toString resp
+
+        UnknownError httpError ->
+            "Unbekannter Fehler bei Kommunikation mit Syncrypt Hintergrundprozess"
+                |> andLog "Unexpected login error: " httpError
 
 
 translateGermanNotificationText : NotificationText -> String
