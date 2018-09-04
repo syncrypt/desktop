@@ -1,0 +1,32 @@
+@import "Common.scss";
+
+.Tutorial {
+  z-index: 100 !important;
+  // display: inline-block;
+  position: sticky;
+  background-color: $color-bg-extra-light;
+  padding: $padding-medium;
+  float: right;
+  clear: both;
+  border: 2px solid $color-highlight;
+  text-overflow: ellipsis;
+  text-align: left;
+  width: 11 * $padding-medium;
+
+  .Title {
+    font-size: $font-size-header;
+    font-weight: bold;
+  }
+
+  .Nav {
+    button {
+      margin-top: $padding-tiny;
+      margin-right: $padding-tiny;
+    }
+
+    .ToPrevBtn {}
+    .ToNextBtn {}
+    .FinishBtn {}
+    .MarkAsCompletedBtn {}
+  }
+}

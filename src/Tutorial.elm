@@ -9,11 +9,13 @@ module Tutorial
         , isFinished
         , toNextStep
         , toPrevStep
+        , update
+        , view
         )
 
 import Html exposing (Html, p, text)
 import Html.Attributes exposing (class)
-import Util exposing (button)
+import Util exposing (button, renderIf)
 
 
 type Msg
@@ -70,6 +72,16 @@ isVisible : State msg -> Bool
 isVisible state =
     not state.hidden
         && (not <| isFinished state)
+
+
+hasPrevStep : State msg -> Bool
+hasPrevStep state =
+    not <| List.isEmpty state.prevSteps
+
+
+hasNextStep : State msg -> Bool
+hasNextStep state =
+    not <| List.isEmpty state.nextSteps
 
 
 currentStep : State msg -> Maybe Step
@@ -217,23 +229,37 @@ viewCurrentStep : State msg -> Html msg
 viewCurrentStep state =
     case currentStep state of
         Just step ->
+            let
+                isFinalStep =
+                    isFinished state || (not <| hasNextStep state)
+            in
             p [ class "Tutorial" ]
                 [ p [ class "Title" ]
-                    [ text step.title ]
+                    [ text <| "Tutorial: " ++ step.title ]
                 , viewParagraphs step
                 , p [ class "Nav" ]
-                    [ button [ class "ToNextBtn" ]
-                        { label = "Next"
-                        , onClick = state.address ToNextStep
-                        }
-                    , button [ class "ToPrevBtn" ]
-                        { label = "Previous"
-                        , onClick = state.address ToPreviousStep
-                        }
-                    , button [ class "MarkCompletedBtn" ]
-                        { label = "Skip Tutorial"
-                        , onClick = state.address MarkAsCompleted
-                        }
+                    [ renderIf (hasPrevStep state) <|
+                        button [ class "ToPrevBtn" ]
+                            { label = "Previous"
+                            , onClick = state.address ToPreviousStep
+                            }
+                    , renderIf (hasNextStep state) <|
+                        button [ class "ToNextBtn" ]
+                            { label = "Next"
+                            , onClick = state.address ToNextStep
+                            }
+                    , renderIf isFinalStep <|
+                        button [ class "FinishBtn" ]
+                            { label = "Finish Tutorial"
+                            , onClick = state.address MarkAsCompleted
+                            }
+                    , p []
+                        [ renderIf (not <| isFinalStep) <|
+                            button [ class "MarkCompletedBtn" ]
+                                { label = "Skip Tutorial"
+                                , onClick = state.address MarkAsCompleted
+                                }
+                        ]
                     ]
                 ]
 

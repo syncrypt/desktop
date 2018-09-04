@@ -36,6 +36,7 @@ module Util
         , removeLeading
         , removeTrailing
         , removeTrailingZeroes
+        , renderIf
         , retryOnFailure
         , sendMsg
         , shortDateString
@@ -649,3 +650,11 @@ logFailure description wd =
 
         _ ->
             wd
+
+
+renderIf : Bool -> Html msg -> Html msg
+renderIf cond html =
+    if cond then
+        html
+    else
+        text ""

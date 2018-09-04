@@ -21,6 +21,7 @@ import Path exposing (Path)
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
 import Tooltip exposing (Tooltip, Tooltips)
+import Tutorial
 import Ui.NotificationCenter
 import Util exposing (LogLevel, andLog, findFirst)
 import VaultDialog.Model
@@ -54,6 +55,7 @@ type alias Model =
     , autoStartEnabled : Bool
     , windowSize : Window.Size
     , tooltips : Tooltips
+    , mainTutorial : Tutorial.State Msg
     }
 
 
@@ -185,6 +187,7 @@ type Msg
     | OpenReleaseNotesWizard
     | CloseReleaseNotesWizard
     | WindowResized Window.Size
+    | MainTutorialMsg Tutorial.Msg
 
 
 
@@ -297,6 +300,7 @@ init config =
         , width = config.windowWidth
         }
     , tooltips = Tooltip.emptyTooltips
+    , mainTutorial = mainTutorial
     }
 
 
@@ -442,3 +446,30 @@ setFeedback feedback model =
 
         trimmedText ->
             { model | feedback = Just trimmedText }
+
+
+mainTutorial : Tutorial.State Msg
+mainTutorial =
+    Tutorial.init MainTutorialMsg
+        { id = "VaultList"
+        , title = "Tutorial"
+        , paragraphs =
+            [ "Click next to start the tutorial and learn more about how Syncrypt works."
+            ]
+        }
+        [ { id = "VaultList"
+          , title = "Vault List"
+          , paragraphs =
+                [ "The vault list to the left shows all your currently cloned & synchronized vaults."
+                , "Each vault is represented as a card with some meta information, like the number of people with access to the vault, the size of all files uploaded as well as the total number of files in the vault."
+                , "You can also see the last time the vault has been updated."
+                ]
+          }
+        , { id = "FlyingVaultList"
+          , title = "Remote Vault List"
+          , paragraphs =
+                [ "Below you can see all remote vaults you have access to, but don't currently have cloned to this device."
+                , "Click on a remote vault to pick a location to clone it to and download & synchronize files to and from it."
+                ]
+          }
+        ]

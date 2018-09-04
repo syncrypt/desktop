@@ -18,6 +18,7 @@ import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
 import Translation as T exposing (t)
+import Tutorial
 import Util
     exposing
         ( Position(..)
@@ -301,7 +302,7 @@ vaultList model =
                 |> List.map (vaultItem model)
     in
     div [ class "VaultList" ]
-        ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
+        ((Tutorial.view model.mainTutorial :: vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
 flyingVaultListSubtitle : List FlyingVault -> Model -> Html Msg

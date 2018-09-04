@@ -538,6 +538,15 @@ update msg model =
             model
                 |> closeWizardWithState ShowingAllVaults
 
+        MainTutorialMsg msg ->
+            let
+                ( state, cmd ) =
+                    Tutorial.update msg model.mainTutorial
+            in
+            ( { model | mainTutorial = state }
+            , cmd
+            )
+
 
 createVaultFailed : WebData Vault -> Model -> ( Model, Cmd Msg )
 createVaultFailed webData model =
