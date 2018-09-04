@@ -68,6 +68,11 @@ isFinished state =
     state.completed || (state.currStep == TutorialFinished)
 
 
+isFinalStep : State msg -> Bool
+isFinalStep state =
+    isFinished state || (not <| hasNextStep state)
+
+
 isVisible : State msg -> Bool
 isVisible state =
     not state.hidden
@@ -229,10 +234,6 @@ viewCurrentStep : State msg -> Html msg
 viewCurrentStep state =
     case currentStep state of
         Just step ->
-            let
-                isFinalStep =
-                    isFinished state || (not <| hasNextStep state)
-            in
             p [ class "Tutorial" ]
                 [ p [ class "Title" ]
                     [ text <| "Tutorial: " ++ step.title ]
@@ -248,13 +249,13 @@ viewCurrentStep state =
                             { label = "Next"
                             , onClick = state.address ToNextStep
                             }
-                    , renderIf isFinalStep <|
+                    , renderIf (isFinalStep state) <|
                         button [ class "FinishBtn" ]
                             { label = "Finish Tutorial"
                             , onClick = state.address MarkAsCompleted
                             }
                     , p []
-                        [ renderIf (not <| isFinalStep) <|
+                        [ renderIf (not <| isFinalStep state) <|
                             button [ class "MarkCompletedBtn" ]
                                 { label = "Skip Tutorial"
                                 , onClick = state.address MarkAsCompleted
