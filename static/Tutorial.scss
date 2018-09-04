@@ -27,6 +27,9 @@
     .ToPrevBtn {}
     .ToNextBtn {}
     .FinishBtn {}
-    .MarkAsCompletedBtn {}
+    .MarkCompletedBtn {
+      background-color: lightgray;
+      border: none;
+    }
   }
 }
