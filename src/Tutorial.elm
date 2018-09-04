@@ -200,11 +200,11 @@ type alias ButtonHandlers msg =
     }
 
 
-view : ButtonHandlers msg -> State msg -> Html msg
-view handlers state =
+view : State msg -> Html msg
+view state =
     case ( isVisible state, isFinished state ) of
         ( True, False ) ->
-            viewCurrentStep handlers state
+            viewCurrentStep state
 
         ( True, True ) ->
             text "Tutorial done"
@@ -213,8 +213,8 @@ view handlers state =
             text ""
 
 
-viewCurrentStep : ButtonHandlers msg -> State msg -> Html msg
-viewCurrentStep { toNextBtn, toPrevBtn } state =
+viewCurrentStep : State msg -> Html msg
+viewCurrentStep state =
     case currentStep state of
         Just step ->
             p [ class "Tutorial" ]
@@ -224,11 +224,15 @@ viewCurrentStep { toNextBtn, toPrevBtn } state =
                 , p [ class "Nav" ]
                     [ button [ class "ToNextBtn" ]
                         { label = "Next"
-                        , onClick = toNextBtn ToNextStep
+                        , onClick = state.address ToNextStep
                         }
                     , button [ class "ToPrevBtn" ]
                         { label = "Previous"
-                        , onClick = toPrevBtn ToPreviousStep
+                        , onClick = state.address ToPreviousStep
+                        }
+                    , button [ class "MarkCompletedBtn" ]
+                        { label = "Skip Tutorial"
+                        , onClick = state.address MarkAsCompleted
                         }
                     ]
                 ]
