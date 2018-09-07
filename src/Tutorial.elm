@@ -211,12 +211,6 @@ update msg state =
             )
 
 
-type alias ButtonHandlers msg =
-    { toPrevBtn : Msg -> msg
-    , toNextBtn : Msg -> msg
-    }
-
-
 view : State msg -> Html msg
 view state =
     case ( isVisible state, isFinished state ) of
