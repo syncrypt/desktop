@@ -240,23 +240,23 @@ viewCurrentStep state =
                 , viewParagraphs step
                 , p [ class "Nav" ]
                     [ renderIf (hasPrevStep state) <|
-                        button [ class "ToPrevBtn" ]
+                        button [ class "Button-ToPrev" ]
                             { label = "Previous"
                             , onClick = state.address ToPreviousStep
                             }
                     , renderIf (hasNextStep state) <|
-                        button [ class "ToNextBtn" ]
+                        button [ class "Button-ToNext" ]
                             { label = "Next"
                             , onClick = state.address ToNextStep
                             }
                     , renderIf (isFinalStep state) <|
-                        button [ class "FinishBtn" ]
+                        button [ class "Button-Finish" ]
                             { label = "Finish Tutorial"
                             , onClick = state.address MarkAsCompleted
                             }
                     , p []
                         [ renderIf (not <| isFinalStep state) <|
-                            button [ class "MarkCompletedBtn" ]
+                            button [ class "Button-MarkCompleted" ]
                                 { label = "Skip Tutorial"
                                 , onClick = state.address MarkAsCompleted
                                 }
