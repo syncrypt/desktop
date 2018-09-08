@@ -15,7 +15,7 @@ module Tutorial
 
 import Html exposing (Html, p, text)
 import Html.Attributes exposing (class)
-import Util exposing (button, renderIf)
+import Util exposing (button, renderIf, toList)
 
 
 type Msg
@@ -165,7 +165,7 @@ toFirstStep state =
                     nextSteps
                         ++ (state
                                 |> currentStep
-                                |> Maybe.map (\s -> [ s ])
+                                |> Maybe.map toList
                                 |> Maybe.withDefault []
                            )
                         ++ state.nextSteps

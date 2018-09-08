@@ -43,6 +43,7 @@ module Util
         , shortenString
         , skipCharsWhile
         , surround
+        , toList
         , tooltipItem
         )
 
@@ -658,3 +659,8 @@ renderIf cond html =
         html
     else
         text ""
+
+
+toList : a -> List a
+toList x =
+    [ x ]
