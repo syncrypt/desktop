@@ -203,6 +203,7 @@ type VaultDialogText
     | InvitedAt Date
     | Created Date Now
     | VaultOwner
+    | AllEventsHaveBeenFiltered
 
 
 type VaultListText
@@ -812,6 +813,9 @@ translateEnglishVaultDialogText vt =
 
         VaultOwner ->
             "Vault Owner"
+
+        AllEventsHaveBeenFiltered ->
+            "All events have been filtered."
 
 
 translateEnglishVaultListText : VaultListText -> String
@@ -1546,6 +1550,9 @@ translateGermanVaultDialogText vt =
 
         VaultOwner ->
             "Vaultbesitzer"
+
+        AllEventsHaveBeenFiltered ->
+            "Alle Ereignisse wurden gefiltert."
 
 
 translateGermanVaultListText : VaultListText -> String

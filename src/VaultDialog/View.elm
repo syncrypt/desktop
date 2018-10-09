@@ -461,11 +461,18 @@ logTab vaultId state model =
             , div [ class "EventTableContent" ]
                 [ table [ class "EventTable" ] <|
                     case VaultDialog.Model.events state of
-                        [] ->
+                        VaultDialog.Model.Events [] ->
                             [ loadingSpinner ]
 
-                        events ->
+                        VaultDialog.Model.Events events ->
                             List.map (viewEvent model.now) events
+
+                        VaultDialog.Model.AllEventsFiltered ->
+                            [ tr []
+                                [ td []
+                                    [ text <| vt T.AllEventsHaveBeenFiltered ]
+                                ]
+                            ]
                 ]
             ]
         }

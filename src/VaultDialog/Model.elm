@@ -441,7 +441,12 @@ hasChanged state =
     { state | hasChangesPending = True }
 
 
-events : State -> List Data.Vault.Event
+type VaultEvents
+    = Events (List Data.Vault.Event)
+    | AllEventsFiltered
+
+
+events : State -> VaultEvents
 events state =
     let
         historyEvents =
@@ -450,10 +455,22 @@ events state =
 
         logEvents =
             List.map Log state.logItems
+
+        allEvents =
+            historyEvents ++ logEvents
+
+        filteredEvents =
+            allEvents |> filterEvents state
     in
-    (historyEvents ++ logEvents)
-        |> filterEvents state
-        |> sortEvents state
+    case ( allEvents, filteredEvents ) of
+        ( [], [] ) ->
+            Events []
+
+        ( _, [] ) ->
+            AllEventsFiltered
+
+        _ ->
+            Events (filteredEvents |> sortEvents state)
 
 
 toggleSortOrder : State -> State
