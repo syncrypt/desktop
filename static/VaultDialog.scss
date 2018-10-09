@@ -106,10 +106,8 @@ $width-files-tab-input: 250px;
     }
 
     .Filter-Active {
-      button {
-        background-color: $color-bg-dark !important;
-        color: $color-highlight !important;
-      }
+      background-color: $color-bg-dark !important;
+      color: $color-highlight !important;
     }
 
     .LogLevelMenuButton {
