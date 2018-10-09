@@ -269,17 +269,23 @@ decoder =
     decode Vault
         |> required "id" Json.string
         |> optional "remote_id" Json.string "N/A"
-        |> optionalAt [ "metadata", "name" ] (Json.maybe Json.string) Nothing
-        |> required "size" Json.int
+        |> optionalMetadata "name" Json.string
+        |> optional "size" Json.int 0
         |> required "state" vaultStatusDecoder
-        |> required "user_count" Json.int
-        |> required "file_count" Json.int
-        |> required "revision_count" Json.int
+        |> optional "user_count" Json.int 1
+        |> optional "file_count" Json.int 0
+        |> optional "revision_count" Json.int 0
         |> required "resource_uri" Json.string
         |> required "folder" Json.string
         |> optional "modification_date" dateDecoder Nothing
-        |> optionalAt [ "metadata", "icon" ] (Json.maybe Json.string) Nothing
+        |> optionalMetadata "icon" Json.string
         |> required "crypt_info" cryptoInfoDecoder
+
+
+optionalMetadata : String -> Json.Decoder a -> Json.Decoder (Maybe a -> b) -> Json.Decoder b
+optionalMetadata propName propDecoder objDecoder =
+    objDecoder
+        |> optionalAt [ "metadata", propName ] (Json.maybe propDecoder) Nothing
 
 
 cryptoInfoDecoder : Json.Decoder CryptoInfo
