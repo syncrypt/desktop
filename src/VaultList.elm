@@ -12,13 +12,12 @@ import Data.Vault
         )
 import Date exposing (Date)
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, id)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
 import Translation as T exposing (t)
-import Tutorial
 import Util
     exposing
         ( Position(..)
@@ -302,7 +301,7 @@ vaultList model =
                 |> List.map (vaultItem model)
     in
     div [ class "VaultList" ]
-        ((Tutorial.view model.mainTutorial :: vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
+        ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
 
 
 flyingVaultListSubtitle : List FlyingVault -> Model -> Html Msg
