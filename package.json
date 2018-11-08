@@ -96,7 +96,7 @@
     "auto-launch": "^5.0.5",
     "electron-compile": "^6.4.0",
     "electron-log": "^2.2.14",
-    "electron-updater": "^2.20.1",
+    "electron-updater": "^3.0.3",
     "expand-home-dir": "^0.0.3",
     "file": "^0.2.2"
   },
