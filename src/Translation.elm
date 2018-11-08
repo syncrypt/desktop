@@ -1516,7 +1516,7 @@ translateGermanVaultDialogText vt =
             "Info"
 
         WarningFilter ->
-            "Warnungen"
+            "Warnung"
 
         ErrorFilter ->
             "Fehler"
