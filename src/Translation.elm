@@ -386,7 +386,7 @@ translateEnglish text =
             "Total vault size (with all file revisions on server)"
 
         TotalVaultRevisionsTooltip ->
-            "Total number of file revisions in the vault"
+            "Total number of file revisions"
 
         VaultDialogTxt vt ->
             translateEnglishVaultDialogText vt
@@ -1121,7 +1121,7 @@ translateGerman text =
             "Gesamtgröße des Vaults (inkl. aller Dateiversionen)"
 
         TotalVaultRevisionsTooltip ->
-            "Anzahl aller Dateirevisionen in diesem Vault"
+            "Anzahl aller Dateiversionen"
 
         VaultDialogTxt vt ->
             translateGermanVaultDialogText vt
