@@ -10,13 +10,13 @@ import Model exposing (Model, vaultWithId)
 import Path exposing (folderName)
 import Platform.Cmd exposing (map)
 import Ports
-import RemoteData exposing (RemoteData(..))
+import RemoteData exposing (RemoteData(..), WebData)
 import Set
 import Translation as T
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing ((~>), andLog)
+import Util exposing ((~>), andLog, logFailure)
 import VaultDialog.Model
     exposing
         ( CloneStatus(..)
@@ -421,13 +421,13 @@ update msg vaultId ({ vaultDialogs } as model) =
             )
 
         FetchedUsers users ->
-            ( { state | users = users }
+            ( { state | users = users |> logFailure "FetchedUsers" }
                 |> asStateIn vaultId model
             , Cmd.none
             )
 
         FetchedVaultHistory items ->
-            ( { state | historyItems = items }
+            ( { state | historyItems = items |> logFailure "FetchedVaultHistory" }
                 |> asStateIn vaultId model
             , Cmd.none
             )
@@ -497,7 +497,11 @@ update msg vaultId ({ vaultDialogs } as model) =
             )
 
         FoundVaultFingerprints data ->
-            ({ state | vaultFingerprints = RemoteData.map Set.fromList data }
+            ({ state
+                | vaultFingerprints =
+                    RemoteData.map Set.fromList data
+                        |> logFailure "FoundVaultFingerprints"
+             }
                 |> asStateIn state.id model
             )
                 |> Util.retryOnFailure data (Model.VaultDialogMsg vaultId GetVaultFingerprints)

@@ -25,6 +25,7 @@ module Util
         , findIndex
         , fullDateString
         , last
+        , logFailure
         , materialIcon
         , monthNumber
         , onAnyKeyDown
@@ -635,3 +636,16 @@ retryOnFailure data msg model =
 
         _ ->
             ( model, Cmd.none )
+
+
+{-| Logs a WebData if it's a failure case, otherwise just returns the given WebData.
+-}
+logFailure : String -> WebData a -> WebData a
+logFailure description wd =
+    case wd of
+        Failure x ->
+            wd
+                |> andLog ("Failure (" ++ description ++ ")") x
+
+        _ ->
+            wd
