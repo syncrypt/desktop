@@ -643,7 +643,7 @@ viewHistoryItem now item =
         , td []
             [ text item.operation ]
         , td []
-            [ text <| Util.shortenString 50 item.path ]
+            [ text <| Util.shortenString 50 (Maybe.withDefault "" item.path) ]
         ]
 
 

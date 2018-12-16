@@ -111,10 +111,12 @@ type alias HistoryItems =
 
 
 type alias HistoryItem =
-    { createdAt : Maybe Date
+    { revisionId : String
+    , createdAt : Maybe Date
     , operation : String
-    , path : String
+    , path : Maybe String
     , email : String
+    , fingerprint : String
     }
 
 
@@ -309,10 +311,12 @@ historyItemsDecoder =
 historyItemDecoder : Json.Decoder HistoryItem
 historyItemDecoder =
     decode HistoryItem
+        |> required "revision_id" Json.string
         |> required "created_at" dateDecoder
         |> required "operation" Json.string
-        |> required "path" Json.string
+        |> required "path" (Json.maybe Json.string)
         |> required "user_email" Json.string
+        |> required "user_fingerprint" Json.string
 
 
 logLevelDecoder : Json.Decoder LogLevel
@@ -344,7 +348,7 @@ logItemDecoder : Json.Decoder LogItem
 logItemDecoder =
     decode LogItem
         |> required "level" logLevelDecoder
-        |> required "createdAt" Util.dateDecoder
+        |> required "createdAt" dateDecoder
         |> required "message" Json.string
         |> required "vault_id" Json.string
 
