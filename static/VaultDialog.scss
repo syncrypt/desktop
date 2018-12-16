@@ -142,19 +142,38 @@ $width-files-tab-input: 250px;
       white-space: nowrap;
       display: inline-block;
     }
+    // Time
     th:nth-child(1), td:nth-child(1) {
+      min-width: 100px;
+    }
+    // Operation / Status / LogLevel
+    th:nth-child(2), td:nth-child(2) {
+      width: 80px;
+    }
+    // User Email
+    th:nth-child(3), td:nth-child(3) {
       width: 120px;
     }
-    th:nth-child(2), td:nth-child(2) {
-      width: 60px;
-    }
-    th:nth-child(3), td:nth-child(3) {
-      width: auto;
+    // File / LogMessage
+    th:nth-child(4), td:nth-child(4) {
+      width: 120px;
     }
     tr {
       white-space: nowrap;
     }
     width: 100%;
+
+    .VerifiedIcon {
+      background-size: 22px;
+      margin-top: -3px;
+      width: 22px;
+      height: 22px;
+      background-repeat: no-repeat;
+      float: left;
+      background-image: url(assets/check_circle_24px.svg);
+      background-position: 0px;
+      padding-right: $padding-micro;
+    }
   }
 
   .EventTableContent {

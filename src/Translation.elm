@@ -187,6 +187,7 @@ type VaultDialogText
     | SyncVaultToFolder
     | YouDontHaveAccessToVaultUsers
     | Time
+    | User
     | Operation
     | FilePathOrMessage
     | DebugFilter
@@ -765,6 +766,9 @@ translateEnglishVaultDialogText vt =
 
         Time ->
             "Time"
+
+        User ->
+            "User"
 
         Operation ->
             "Operation"
@@ -1502,6 +1506,9 @@ translateGermanVaultDialogText vt =
 
         Time ->
             "Zeit"
+
+        User ->
+            "Benutzer"
 
         Operation ->
             "Operation"

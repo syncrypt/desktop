@@ -449,11 +449,10 @@ logTab vaultId state model =
                         , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
                         ]
                         [ text <| vt T.Time ]
-
-                    -- , th []
-                    --     [ text "User" ]
                     , th []
                         [ text <| vt T.Operation ]
+                    , th []
+                        [ text <| vt T.User ]
                     , th []
                         [ text <| vt T.FilePathOrMessage ]
                     ]
@@ -622,11 +621,10 @@ viewLogItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-
-        -- , td []
-        --     []
         , td []
             [ text <| toString item.level ]
+        , td []
+            []
         , td []
             [ text item.message ]
         ]
@@ -637,14 +635,32 @@ viewHistoryItem now item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
-
-        -- , td []
-        --     [ text item.email ]
         , td []
-            [ text item.operation ]
+            [ span [ class "VerifiedIcon" ] []
+            , operationText item
+            ]
+        , td []
+            [ text item.email ]
         , td []
             [ text <| Util.shortenString 50 (Maybe.withDefault "" item.path) ]
         ]
+
+
+operationText : HistoryItem -> Html msg
+operationText { operation } =
+    text <|
+        case operation of
+            "OP_CREATE_VAULT" ->
+                "C"
+
+            "OP_SET_METADATA" ->
+                "M"
+
+            o ->
+                o
+                    |> String.split "OP_"
+                    |> List.drop 1
+                    |> String.join ""
 
 
 infoText : String -> Html msg
