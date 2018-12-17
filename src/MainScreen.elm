@@ -1226,7 +1226,7 @@ footer { stats, vaults, language, updateAvailable } =
         [ span [ class "MainScreen-Stats" ]
             [ tooltipItem
                 { position = Top
-                , length = Fit
+                , length = Auto
                 , text = translate language syncedVaultsText
                 }
                 [ syncedVaultsIcon ]
