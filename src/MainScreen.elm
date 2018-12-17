@@ -37,7 +37,7 @@ import Translation as T
         , translate
         )
 import Ui.NotificationCenter
-import Util exposing ((~>), Direction(..), andLog)
+import Util exposing ((~>), Direction(..), Position(..), TooltipLength(..), andLog, materialIcon, tooltipItem)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
@@ -1138,7 +1138,7 @@ footer { stats, vaults, language, updateAvailable } =
             T.StatsTxt <|
                 case stats of
                     Success s ->
-                        T.Stats s
+                        T.StatsLoaded s
 
                     Loading ->
                         T.StatsLoading
@@ -1148,6 +1148,35 @@ footer { stats, vaults, language, updateAvailable } =
 
                     Failure reason ->
                         T.StatsFailedToLoad (toString reason)
+
+        statsIcons =
+            case stats of
+                Success s ->
+                    span []
+                        [ text <| toString (s.busySlots + s.idleSlots)
+                        , span [ class "OpenConnectionsIcon" ]
+                            []
+                        , text <| toString s.idleSlots
+                        , span [ class "IdleConnectionsIcon" ]
+                            []
+                        , text <| toString s.stats
+                        , materialIcon "autorenew" [ class "FileQueriesIcon" ]
+                        , text <| toString s.downloads
+                        , span [ class "DownloadsIcon" ]
+                            []
+                        , text <| toString s.uploads
+                        , span [ class "UploadsIcon" ]
+                            []
+                        ]
+
+                Failure reason ->
+                    span []
+                        [ materialIcon "error_outline" []
+                        , text <| toString reason
+                        ]
+
+                _ ->
+                    materialIcon "sync" []
 
         syncedVaultsText =
             case vaults of
@@ -1162,6 +1191,23 @@ footer { stats, vaults, language, updateAvailable } =
 
                 Failure reason ->
                     T.VaultsFailedToLoad (toString reason)
+
+        syncedVaultsIcon =
+            case vaults of
+                Success vaults ->
+                    span []
+                        [ text <| toString <| List.length vaults
+                        , materialIcon "folder_open" [ class "SyncedVaultsIcon" ]
+                        ]
+
+                Loading ->
+                    materialIcon "autorenew" []
+
+                NotAsked ->
+                    materialIcon "autorenew" []
+
+                Failure reason ->
+                    materialIcon "sync_problem" [ class "VaultsFailedToLoadIcon" ]
 
         updateAvailableDiv =
             case updateAvailable of
@@ -1178,10 +1224,19 @@ footer { stats, vaults, language, updateAvailable } =
     in
     div [ class "MainScreen-Footer" ] <|
         [ span [ class "MainScreen-Stats" ]
-            [ text <|
-                translate language syncedVaultsText
-                    ++ " / "
-                    ++ translate language statsText
+            [ tooltipItem
+                { position = Top
+                , length = Fit
+                , text = translate language syncedVaultsText
+                }
+                [ syncedVaultsIcon ]
+            , tooltipItem
+                { position = Top
+                , length = Fit
+                , text = translate language statsText
+                }
+                [ statsIcons
+                ]
             ]
         ]
             ++ updateAvailableDiv

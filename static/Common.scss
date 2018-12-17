@@ -52,3 +52,16 @@ $border-radius-modal: 5px;
     }
   }
 }
+
+@mixin basic-icon($icon, $size) {
+  background-size: $size;
+  // margin-top: -3px;
+  width:  $size;
+  height: $size;
+  background-repeat: no-repeat;
+  background-image: $icon;
+  background-position: 0px;
+  padding-right: $size;
+  margin-right: $padding-small;
+  margin-left: $padding-tiny;
+}

@@ -120,16 +120,7 @@ type VaultCreateFailReason
 
 
 type StatsText
-    = Stats
-        { stats : Int
-        , downloads : Int
-        , uploads : Int
-        , userKeyState : KeyState
-        , totalSlots : Int
-        , busySlots : Int
-        , idleSlots : Int
-        , closedSlots : Int
-        }
+    = StatsLoaded Data.Daemon.Stats
     | StatsLoading
     | StatsNotAvailable
     | StatsFailedToLoad Reason
@@ -567,7 +558,7 @@ translateEnglishNotificationText t =
 translateEnglishStatsText : StatsText -> String
 translateEnglishStatsText st =
     case st of
-        Stats s ->
+        StatsLoaded s ->
             toString (s.busySlots + s.idleSlots)
                 ++ " open connections ("
                 ++ toString s.idleSlots
@@ -1340,7 +1331,7 @@ translateGermanNotificationText t =
 translateGermanStatsText : StatsText -> String
 translateGermanStatsText st =
     case st of
-        Stats s ->
+        StatsLoaded s ->
             toString (s.busySlots + s.idleSlots)
                 ++ " offene Verbindungen ("
                 ++ toString s.idleSlots
