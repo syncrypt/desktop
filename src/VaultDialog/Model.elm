@@ -9,6 +9,7 @@ import Data.Vault
         , HistoryItem
         , Vault
         , VaultId
+        , VaultOperation(..)
         , nameOrId
         )
 import Date exposing (Date)
@@ -566,13 +567,13 @@ doesFilterApply event filter =
             -- TODO
             case opFilter of
                 Create ->
-                    item.operation == "create"
+                    item.operation == CreateVault
 
                 Delete ->
-                    item.operation == "delete"
+                    item.operation == DeleteFile
 
                 Update ->
-                    item.operation == "update"
+                    item.operation == UpdateFile
 
         _ ->
             False

@@ -11,6 +11,7 @@ module Data.Vault
         , Status(..)
         , Vault
         , VaultId
+        , VaultOperation(..)
         , VaultOptions(..)
         , addVaultUserEncoder
         , asVault
@@ -113,11 +114,28 @@ type alias HistoryItems =
 type alias HistoryItem =
     { revisionId : String
     , createdAt : Maybe Date
-    , operation : String
+    , operation : VaultOperation
     , path : Maybe String
     , email : String
     , fingerprint : String
+    , signature : String
+    , verified : Bool
     }
+
+
+type UserId
+    = Email String
+
+
+type VaultOperation
+    = CreateVault
+    | SetMetadata
+    | AddUser
+    | RemoveUser
+    | AddFile
+    | UpdateFile
+    | DeleteFileRevision
+    | DeleteFile
 
 
 type alias LogItem =
@@ -313,10 +331,47 @@ historyItemDecoder =
     decode HistoryItem
         |> required "revision_id" Json.string
         |> required "created_at" dateDecoder
-        |> required "operation" Json.string
+        |> required "operation" vaultOperationDecoder
         |> required "path" (Json.maybe Json.string)
         |> required "user_email" Json.string
         |> required "user_fingerprint" Json.string
+        -- TODO: make it required once implemented in daemon
+        |> optional "signature" Json.string "N/A"
+        |> required "verified" Json.bool
+
+
+vaultOperationDecoder : Json.Decoder VaultOperation
+vaultOperationDecoder =
+    let
+        convert : String -> Json.Decoder VaultOperation
+        convert op =
+            case op of
+                "OP_CREATE_VAULT" ->
+                    succeed CreateVault
+
+                "OP_SET_METADATA" ->
+                    succeed SetMetadata
+
+                "OP_ADD_USER" ->
+                    succeed AddUser
+
+                "OP_REMOVE_USER" ->
+                    succeed RemoveUser
+
+                "OP_ADD_FILE" ->
+                    succeed AddFile
+
+                "OP_UPDATE_FILE" ->
+                    succeed UpdateFile
+
+                "OP_DELETE_FILE" ->
+                    succeed DeleteFile
+
+                val ->
+                    fail <| "Unknown VaultOperation: " ++ val
+    in
+    Json.string
+        |> Json.andThen convert
 
 
 logLevelDecoder : Json.Decoder LogLevel

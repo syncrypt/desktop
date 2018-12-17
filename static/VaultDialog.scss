@@ -144,18 +144,19 @@ $width-files-tab-input: 250px;
     }
     // Time
     th:nth-child(1), td:nth-child(1) {
-      min-width: 100px;
+      min-width: 125px;
     }
     // Operation / Status / LogLevel
     th:nth-child(2), td:nth-child(2) {
-      width: 80px;
+      width: 75px;
     }
     // User Email
     th:nth-child(3), td:nth-child(3) {
-      width: 120px;
+      width: 125px;
     }
     // File / LogMessage
     th:nth-child(4), td:nth-child(4) {
+      margin-left: $padding-tiny;
       width: 120px;
     }
     tr {
@@ -164,15 +165,12 @@ $width-files-tab-input: 250px;
     width: 100%;
 
     .VerifiedIcon {
-      background-size: 22px;
-      margin-top: -3px;
-      width: 22px;
-      height: 22px;
-      background-repeat: no-repeat;
-      float: left;
-      background-image: url(assets/check_circle_24px.svg);
-      background-position: 0px;
-      padding-right: $padding-micro;
+      color: $color-highlight;
+    }
+
+    .UnverifiedIcon {
+      color: $color-alert;
+      margin-top: -2px;
     }
   }
 

@@ -36,7 +36,7 @@ import Html
         )
 import Html.Attributes exposing (class, classList, src)
 import Html.Events exposing (onClick)
-import Language exposing (HasLanguage)
+import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
@@ -47,6 +47,7 @@ import Translation as T
         , VaultDialogText(..)
         , t
         , timeAgo
+        , translate
         )
 import Ui.Checkbox
 import Ui.Container
@@ -450,9 +451,21 @@ logTab vaultId state model =
                         ]
                         [ text <| vt T.Time ]
                     , th []
-                        [ text <| vt T.Operation ]
+                        [ tooltipItem
+                            { position = Bottom
+                            , length = Auto
+                            , text = vt T.OperationTooltip
+                            }
+                            [ text <| vt T.Operation ]
+                        ]
                     , th []
-                        [ text <| vt T.User ]
+                        [ tooltipItem
+                            { position = Bottom
+                            , length = Auto
+                            , text = vt T.UserTooltip
+                            }
+                            [ text <| vt T.User ]
+                        ]
                     , th []
                         [ text <| vt T.FilePathOrMessage ]
                     ]
@@ -464,7 +477,7 @@ logTab vaultId state model =
                             [ loadingSpinner ]
 
                         VaultDialog.Model.Events events ->
-                            List.map (viewEvent model.now) events
+                            List.map (viewEvent model.now model.language) events
 
                         VaultDialog.Model.AllEventsFiltered ->
                             [ tr []
@@ -579,14 +592,14 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Maybe Date -> Event -> Html msg
-viewEvent now event =
+viewEvent : Maybe Date -> Language -> Event -> Html msg
+viewEvent now lang event =
     case event of
         Log item ->
-            viewLogItem now item
+            viewLogItem now lang item
 
         History item ->
-            viewHistoryItem now item
+            viewHistoryItem now lang item
 
 
 type alias HasCreatedAt event =
@@ -616,13 +629,13 @@ eventDateString now { createdAt } =
             ""
 
 
-viewLogItem : Maybe Date -> Data.Vault.LogItem -> Html msg
-viewLogItem now item =
+viewLogItem : Maybe Date -> Language -> Data.Vault.LogItem -> Html msg
+viewLogItem now lang item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
         , td []
-            [ text <| toString item.level ]
+            [ logItemLogLevelIcon lang item ]
         , td []
             []
         , td []
@@ -630,37 +643,107 @@ viewLogItem now item =
         ]
 
 
-viewHistoryItem : Maybe Date -> HistoryItem -> Html msg
-viewHistoryItem now item =
+logItemLogLevelIcon : Language -> Data.Vault.LogItem -> Html msg
+logItemLogLevelIcon lang item =
+    case item.level of
+        Debug ->
+            tooltipItem { position = Right, length = Auto, text = "Debug log level" }
+                [ materialIcon "view_headline" [] ]
+
+        Info ->
+            tooltipItem { position = Right, length = Auto, text = "Info log level" }
+                [ materialIcon "info" [] ]
+
+        Warning ->
+            tooltipItem { position = Right, length = Auto, text = "Warning log level" }
+                [ materialIcon "warning" [] ]
+
+        Error ->
+            tooltipItem { position = Right, length = Auto, text = "Error log level" }
+                [ materialIcon "error" [] ]
+
+
+viewHistoryItem : Maybe Date -> Language -> HistoryItem -> Html msg
+viewHistoryItem now lang item =
     tr [ class "HistoryItem" ]
         [ td []
             [ text <| eventDateString now item ]
         , td []
-            [ span [ class "VerifiedIcon" ] []
-            , operationText item
+            [ if item.verified then
+                tooltipItem
+                    { position = Right
+                    , length = Auto
+                    , text = "Verified revision"
+                    }
+                    [ materialIcon "verified_user" [ class "VerifiedIcon" ] ]
+              else
+                tooltipItem
+                    { position = Right
+                    , length = Auto
+                    , text = "Verification failed for this revision"
+                    }
+                    [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
+            , viewOperation item
             ]
         , td []
-            [ text item.email ]
+            [ tooltipItem
+                { position = Bottom
+                , length = Auto
+                , text = item.fingerprint
+                }
+                [ text item.email ]
+            ]
         , td []
-            [ text <| Util.shortenString 50 (Maybe.withDefault "" item.path) ]
+            [ item.path
+                |> Maybe.map (text << Util.shortenString 50)
+                |> Maybe.withDefault (historyItemDescription lang item)
+            ]
         ]
 
 
-operationText : HistoryItem -> Html msg
-operationText { operation } =
-    text <|
-        case operation of
-            "OP_CREATE_VAULT" ->
-                "C"
+historyItemDescription : Language -> HistoryItem -> Html msg
+historyItemDescription lang item =
+    text <| translate lang (VaultDialogTxt <| HistoryItemDescription item)
 
-            "OP_SET_METADATA" ->
-                "M"
 
-            o ->
-                o
-                    |> String.split "OP_"
-                    |> List.drop 1
-                    |> String.join ""
+viewOperation : HistoryItem -> Html msg
+viewOperation { operation, revisionId } =
+    let
+        icon =
+            case operation of
+                Data.Vault.CreateVault ->
+                    materialIcon "create_new_folder" []
+
+                Data.Vault.SetMetadata ->
+                    materialIcon "toc" []
+
+                Data.Vault.AddUser ->
+                    materialIcon "person_add" []
+
+                Data.Vault.RemoveUser ->
+                    span [ class "RemoveUserIcon" ]
+                        [ materialIcon "person" []
+                        , materialIcon "delete_outline" []
+                        ]
+
+                Data.Vault.AddFile ->
+                    materialIcon "cloud_upload" []
+
+                Data.Vault.UpdateFile ->
+                    materialIcon "cloud_done" []
+
+                Data.Vault.DeleteFileRevision ->
+                    materialIcon "delete" []
+
+                Data.Vault.DeleteFile ->
+                    materialIcon "delete_forever" []
+    in
+    tooltipItem
+        { position = Right
+        , length = Auto
+        , text = revisionId
+        }
+        [ icon ]
 
 
 infoText : String -> Html msg

@@ -188,7 +188,9 @@ type VaultDialogText
     | YouDontHaveAccessToVaultUsers
     | Time
     | User
+    | UserTooltip
     | Operation
+    | OperationTooltip
     | FilePathOrMessage
     | DebugFilter
     | InfoFilter
@@ -205,6 +207,7 @@ type VaultDialogText
     | Created Date Now
     | VaultOwner
     | AllEventsHaveBeenFiltered
+    | HistoryItemDescription Data.Vault.HistoryItem
 
 
 type VaultListText
@@ -770,8 +773,14 @@ translateEnglishVaultDialogText vt =
         User ->
             "User"
 
+        UserTooltip ->
+            "Hover over a user to see the fingerprint that was used for each revision"
+
         Operation ->
             "Operation"
+
+        OperationTooltip ->
+            "Hover over the operation to see the revision ID"
 
         FilePathOrMessage ->
             "Path / Message"
@@ -820,6 +829,32 @@ translateEnglishVaultDialogText vt =
 
         AllEventsHaveBeenFiltered ->
             "All events have been filtered."
+
+        HistoryItemDescription { email, operation } ->
+            case operation of
+                Data.Vault.CreateVault ->
+                    "Created vault"
+
+                Data.Vault.SetMetadata ->
+                    "Updated vault metadata"
+
+                Data.Vault.AddUser ->
+                    "Added user " ++ email ++ " to vault"
+
+                Data.Vault.RemoveUser ->
+                    "Removed user " ++ email ++ " from vault"
+
+                Data.Vault.AddFile ->
+                    "Added file"
+
+                Data.Vault.UpdateFile ->
+                    "Updated file"
+
+                Data.Vault.DeleteFileRevision ->
+                    "Deleted file (with all revisions)"
+
+                Data.Vault.DeleteFile ->
+                    "Deleted file (with all revisions)"
 
 
 translateEnglishVaultListText : VaultListText -> String
@@ -936,6 +971,7 @@ translateEnglishSettingsDialogText text =
             "Password confirmation doesn't match"
 
 
+translateEnglishSetupWizardText : SetupWizardText -> String
 translateEnglishSetupWizardText text =
     case text of
         WelcomeToSyncrypt ->
@@ -1510,8 +1546,14 @@ translateGermanVaultDialogText vt =
         User ->
             "Benutzer"
 
+        UserTooltip ->
+            "↓ Verwendeter Fingerabdruck des Benutzers"
+
         Operation ->
             "Operation"
+
+        OperationTooltip ->
+            "↓ Versions ID (Revision ID)"
 
         FilePathOrMessage ->
             "Datei / Nachricht"
@@ -1560,6 +1602,32 @@ translateGermanVaultDialogText vt =
 
         AllEventsHaveBeenFiltered ->
             "Alle Ereignisse wurden gefiltert."
+
+        HistoryItemDescription { email, operation } ->
+            case operation of
+                Data.Vault.CreateVault ->
+                    "Vault wurde erstellt"
+
+                Data.Vault.SetMetadata ->
+                    "Vault Metadaten wurden aktualisiert"
+
+                Data.Vault.AddUser ->
+                    "Benutzer " ++ email ++ " wurde zum Vault hinzugefügt"
+
+                Data.Vault.RemoveUser ->
+                    "Benutzer " ++ email ++ " wurde vom Vault entfernt"
+
+                Data.Vault.AddFile ->
+                    "Datei hinzugefügt"
+
+                Data.Vault.UpdateFile ->
+                    "Datei aktualisiert"
+
+                Data.Vault.DeleteFileRevision ->
+                    "Datei Version wurde gelöscht"
+
+                Data.Vault.DeleteFile ->
+                    "Sämtliche Versionen einer Datei wurden gelöscht"
 
 
 translateGermanVaultListText : VaultListText -> String
