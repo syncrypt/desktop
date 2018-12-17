@@ -39,6 +39,7 @@ import Html.Events exposing (onClick)
 import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
+import Ports
 import RemoteData exposing (RemoteData(..))
 import Translation as T
     exposing
@@ -592,7 +593,7 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Maybe Date -> Language -> Event -> Html msg
+viewEvent : Maybe Date -> Language -> Event -> Html Model.Msg
 viewEvent now lang event =
     case event of
         Log item ->
@@ -663,7 +664,7 @@ logItemLogLevelIcon lang item =
                 [ materialIcon "error" [] ]
 
 
-viewHistoryItem : Maybe Date -> Language -> HistoryItem -> Html msg
+viewHistoryItem : Maybe Date -> Language -> HistoryItem -> Html Model.Msg
 viewHistoryItem now lang item =
     tr [ class "HistoryItem" ]
         [ td []
@@ -685,7 +686,7 @@ viewHistoryItem now lang item =
                     [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
             , viewOperation item
             ]
-        , td []
+        , td [ onClick (Model.CopyToClipboard item.fingerprint) ]
             [ tooltipItem
                 { position = Bottom
                 , length = Auto
@@ -706,7 +707,7 @@ historyItemDescription lang item =
     text <| translate lang (VaultDialogTxt <| HistoryItemDescription item)
 
 
-viewOperation : HistoryItem -> Html msg
+viewOperation : HistoryItem -> Html Model.Msg
 viewOperation { operation, revisionId } =
     let
         icon =
@@ -738,12 +739,14 @@ viewOperation { operation, revisionId } =
                 Data.Vault.DeleteFile ->
                     materialIcon "delete_forever" []
     in
-    tooltipItem
-        { position = Right
-        , length = Auto
-        , text = revisionId
-        }
-        [ icon ]
+    span [ onClick (Model.CopyToClipboard revisionId) ]
+        [ tooltipItem
+            { position = Right
+            , length = Auto
+            , text = revisionId
+            }
+            [ icon ]
+        ]
 
 
 infoText : String -> Html msg

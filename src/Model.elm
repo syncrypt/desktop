@@ -109,6 +109,7 @@ type State
 
 type Msg
     = SetTime Date
+    | CopyToClipboard String
     | UpdateLoginState
     | UpdateVaults
     | UpdateVaultsWithForcedRefresh

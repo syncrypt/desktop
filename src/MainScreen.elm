@@ -117,6 +117,11 @@ update msg model =
             , Cmd.none
             )
 
+        CopyToClipboard data ->
+            ( model
+            , Ports.copyToClipboard data
+            )
+
         UpdateLoginState ->
             model
                 |> updateLoginState

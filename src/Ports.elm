@@ -2,6 +2,7 @@ port module Ports
     exposing
         ( addEmailToCompletionList
         , autoStartChanged
+        , copyToClipboard
         , disableAutoStart
         , enableAutoStart
         , focusOn
@@ -75,3 +76,6 @@ port enableAutoStart : () -> Cmd msg
 
 
 port disableAutoStart : () -> Cmd msg
+
+
+port copyToClipboard : String -> Cmd msg

@@ -230,6 +230,11 @@ const disableAutoStart = () => {
     })
 }
 
+const copyToClipboard = (data) => {
+  console.log("Copying to clipboard: " + data.toString())
+  Electron.clipboard.writeText(data)
+}
+
 const setupElmApp = (daemonApiToken) => {
   elmApp = Elm.Main.embed(mainContainer, {
     apiAuthToken: daemonApiToken,
@@ -258,6 +263,7 @@ const setupElmApp = (daemonApiToken) => {
   elmApp.ports.enableAutoStart.subscribe(enableAutoStart)
   elmApp.ports.updateAutoStartEnabledState.subscribe(updateAutoStartEnabledState)
   elmApp.ports.disableAutoStart.subscribe(disableAutoStart)
+  elmApp.ports.copyToClipboard.subscribe(copyToClipboard)
 
   Electron.ipcRenderer.on('update-downloaded', (ev, info) => {
     elmApp.ports.updateAvailable.send(info.version)
