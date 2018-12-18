@@ -449,16 +449,6 @@ setFeedback feedback model =
             { model | feedback = Just trimmedText }
 
 
-
--- positionRightIfEmpty : Util.Position -> WebData (List a) -> Util.Position
--- positionRightIfEmpty pos data =
---     case RemoteData.withDefault [] data of
---         [] ->
---             Util.Right
---         _ ->
---             pos
-
-
 vaultListTooltip : Tooltip
 vaultListTooltip =
     Tooltip.init "MainTutorial.VaultList"
@@ -474,7 +464,7 @@ flyingVaultListTooltip =
     Tooltip.init "MainTutorial.FlyingVaultList"
         { text = T.MainTutorialTxt T.MainTutorialS3TT1
         , visibleTime = 5000
-        , position = Util.Bottom
+        , position = Util.Top
         , length = Util.Auto
         }
 
