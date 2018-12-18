@@ -3,6 +3,7 @@ module Translation
         ( ConfirmationDialogText(..)
         , FolderButtonType(..)
         , LoginDialogText(..)
+        , MainTutorialText(..)
         , NewVaultWizardText(..)
         , NotificationText(..)
         , ReleaseNotesWizardText(..)
@@ -82,6 +83,9 @@ type Text
     | SetupWizardTxt SetupWizardText
     | NewVaultWizardTxt NewVaultWizardText
     | ReleaseNotesWizardTxt ReleaseNotesWizardText
+    | FinishTutorial
+    | SkipTutorial
+    | MainTutorialTxt MainTutorialText
 
 
 type LoginDialogText
@@ -297,6 +301,18 @@ type ReleaseNotesWizardText
     = ReleaseNotesTitle
 
 
+type MainTutorialText
+    = MainTutorialS1T
+    | MainTutorialS1P1
+    | MainTutorialS2T
+    | MainTutorialS2P1
+    | MainTutorialS2P2
+    | MainTutorialS2P3
+    | MainTutorialS3T
+    | MainTutorialS3P1
+    | MainTutorialS3P2
+
+
 type FolderButtonType
     = SelectFolder
     | CloneIntoFolder
@@ -468,6 +484,15 @@ translateEnglish text =
 
         ReleaseNotesWizardTxt text ->
             translateEnglishReleaseNotesWizardText text
+
+        FinishTutorial ->
+            "Finish Tutorial"
+
+        SkipTutorial ->
+            "Skip Tutorial"
+
+        MainTutorialTxt text ->
+            translateEnglishMainTutorialText text
 
 
 translateEnglishLoginDialogText : LoginDialogText -> String
@@ -1108,6 +1133,37 @@ translateEnglishReleaseNotesWizardText text =
             "Release Notes"
 
 
+translateEnglishMainTutorialText : MainTutorialText -> String
+translateEnglishMainTutorialText text =
+    case text of
+        MainTutorialS1T ->
+            "Tutorial"
+
+        MainTutorialS1P1 ->
+            "Click next to start the tutorial and learn more about how Syncrypt works."
+
+        MainTutorialS2T ->
+            "Vault List"
+
+        MainTutorialS2P1 ->
+            "The vault list to the left shows all your currently cloned & synchronized vaults."
+
+        MainTutorialS2P2 ->
+            "Each vault is represented as a card with some meta information, like the number of people with access to the vault, the size of all files uploaded as well as the total number of files in the vault."
+
+        MainTutorialS2P3 ->
+            "You can also see the last time the vault has been updated."
+
+        MainTutorialS3T ->
+            "Remote Vault List"
+
+        MainTutorialS3P1 ->
+            "Below you can see all remote vaults you have access to, but don't currently have cloned to this device."
+
+        MainTutorialS3P2 ->
+            "Click on a remote vault to pick a location to clone it to and download & synchronize files to and from it."
+
+
 translateGerman : Text -> String
 translateGerman text =
     case text of
@@ -1245,6 +1301,15 @@ translateGerman text =
 
         ReleaseNotesWizardTxt text ->
             translateGermanReleaseNotesWizardText text
+
+        FinishTutorial ->
+            "Tutorial beenden"
+
+        SkipTutorial ->
+            "Tutorial überspringen"
+
+        MainTutorialTxt text ->
+            translateGermanMainTutorialText text
 
 
 translateGermanLoginDialogText : LoginDialogText -> String
@@ -1884,6 +1949,37 @@ translateGermanReleaseNotesWizardText text =
     case text of
         ReleaseNotesTitle ->
             "Versionshinweise"
+
+
+translateGermanMainTutorialText : MainTutorialText -> String
+translateGermanMainTutorialText text =
+    case text of
+        MainTutorialS1T ->
+            "Tutorial"
+
+        MainTutorialS1P1 ->
+            "Klicke auf weiter um das Tutorial zu starten und mehr über Syncrypt zu lernen."
+
+        MainTutorialS2T ->
+            "Vault Liste"
+
+        MainTutorialS2P1 ->
+            "Die Vault-Liste auf der linken Seite zeigt dir all deine verfügbaren Vaults an, die du derzeit auf diesem Gerät synchronisiert hast."
+
+        MainTutorialS2P2 ->
+            "Jeder Vault ist als Karte repräsentiert. Darauf kannst du weitere Informationen sehen, wie die Anzahl an Leuten, die Zugriff auf einen Vault haben oder die Anzahl & Größe aller Dateien, die bereits hochgeladen wurden."
+
+        MainTutorialS2P3 ->
+            "Du kannst außerdem sehen, wann ein Vault zuletzt aktualisiert wurde"
+
+        MainTutorialS3T ->
+            "Verfügbare Cloud Vaults (nicht synchronisiert)"
+
+        MainTutorialS3P1 ->
+            "Weiter unten kannst du alle verfügbaren, aber derzeit nicht auf diesem Gerät synchronisierten Vaults sehen."
+
+        MainTutorialS3P2 ->
+            "Klicke auf einen verfügbaren Vault und wähle einen Ort, wo du den Vault hin synchronisieren willst. Je nach Größe der Dateien in diesem Vault, kann die Synchronisation eine Weile dauern."
 
 
 germanDistance : Date -> Date -> String

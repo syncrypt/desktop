@@ -15,6 +15,8 @@ module Tutorial
 
 import Html exposing (Html, p, text)
 import Html.Attributes exposing (class)
+import Language exposing (Language)
+import Translation as T
 import Util exposing (button, renderIf, toList)
 
 
@@ -47,8 +49,8 @@ type CurrentStep
 
 type alias Step =
     { id : String
-    , title : String
-    , paragraphs : List String
+    , title : T.Text
+    , paragraphs : List T.Text
     }
 
 
@@ -211,11 +213,11 @@ update msg state =
             )
 
 
-view : State msg -> Html msg
-view state =
+view : Language -> State msg -> Html msg
+view lang state =
     case ( isVisible state, isFinished state ) of
         ( True, False ) ->
-            viewCurrentStep state
+            viewCurrentStep lang state
 
         ( True, True ) ->
             text "Tutorial done"
@@ -224,34 +226,34 @@ view state =
             text ""
 
 
-viewCurrentStep : State msg -> Html msg
-viewCurrentStep state =
+viewCurrentStep : Language -> State msg -> Html msg
+viewCurrentStep lang state =
     case currentStep state of
         Just step ->
             p [ class "Tutorial" ]
                 [ p [ class "Title" ]
-                    [ text <| "Tutorial: " ++ step.title ]
-                , viewParagraphs step
+                    [ text <| "Tutorial: " ++ T.translate lang step.title ]
+                , viewParagraphs lang step
                 , p [ class "Nav" ]
                     [ renderIf (hasPrevStep state) <|
                         button [ class "Button-ToPrev" ]
-                            { label = "Previous"
+                            { label = T.translate lang T.Previous
                             , onClick = state.address ToPreviousStep
                             }
                     , renderIf (hasNextStep state) <|
                         button [ class "Button-ToNext" ]
-                            { label = "Next"
+                            { label = T.translate lang T.Next
                             , onClick = state.address ToNextStep
                             }
                     , renderIf (isFinalStep state) <|
                         button [ class "Button-Finish" ]
-                            { label = "Finish Tutorial"
+                            { label = T.translate lang T.FinishTutorial
                             , onClick = state.address MarkAsCompleted
                             }
                     , p []
                         [ renderIf (not <| isFinalStep state) <|
                             button [ class "Button-MarkCompleted" ]
-                                { label = "Skip Tutorial"
+                                { label = T.translate lang T.SkipTutorial
                                 , onClick = state.address MarkAsCompleted
                                 }
                         ]
@@ -262,15 +264,15 @@ viewCurrentStep state =
             text "Tutorial done"
 
 
-viewParagraphs : Step -> Html msg
-viewParagraphs step =
+viewParagraphs : Language -> Step -> Html msg
+viewParagraphs lang step =
     p [ class "Paragraphs" ]
         (step.paragraphs
-            |> List.map viewParagraph
+            |> List.map (viewParagraph lang)
         )
 
 
-viewParagraph : String -> Html msg
-viewParagraph par =
+viewParagraph : Language -> T.Text -> Html msg
+viewParagraph lang par =
     p [ class "Paragraph" ]
-        [ text par ]
+        [ text <| T.translate lang par ]

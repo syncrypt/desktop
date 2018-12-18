@@ -1097,7 +1097,7 @@ loggedInView model =
             [ class "MainScreen-Container"
             , animation 1.0 FadeInFast
             ]
-            [ Tutorial.view model.mainTutorial
+            [ Tutorial.view model.language model.mainTutorial
             , VaultList.view model
             ]
         , footer model
