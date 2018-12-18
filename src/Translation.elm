@@ -314,6 +314,10 @@ type MainTutorialText
     | MainTutorialS3TT1
     | MainTutorialS3P1
     | MainTutorialS3P2
+    | MainTutorialS4T
+    | MainTutorialS4TT1
+    | MainTutorialS4P1
+    | MainTutorialS4P2
 
 
 type FolderButtonType
@@ -1175,6 +1179,18 @@ translateEnglishMainTutorialText text =
         MainTutorialS3P2 ->
             "Click on a remote vault to pick a location to clone it to and download & synchronize files to and from it."
 
+        MainTutorialS4T ->
+            "Status Bar"
+
+        MainTutorialS4TT1 ->
+            "The Status Bar shows realtime stats on background tasks"
+
+        MainTutorialS4P1 ->
+            "At the bottom of the application you can see the status bar. It displays information on background tasks like uploads, downloads, open & idle connection and more."
+
+        MainTutorialS4P2 ->
+            "You can hover your mouse over it to get a better idea of what each icon means."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -2001,6 +2017,18 @@ translateGermanMainTutorialText text =
 
         MainTutorialS3P2 ->
             "Klicke auf einen verfügbaren Vault und wähle einen Ort, wo du den Vault hin synchronisieren willst. Je nach Größe der Dateien in diesem Vault, kann die Synchronisation eine Weile dauern."
+
+        MainTutorialS4T ->
+            "Status Leiste"
+
+        MainTutorialS4TT1 ->
+            "Diese Status Leiste gibt Auskunft über Hintergrundprozesse"
+
+        MainTutorialS4P1 ->
+            "Am unteren Rand befindet sich die Status Leiste. Sie Auskunft über Hintergrundprozesse wie Dateiup- und -downloads, offene & inaktive Verbindungen zur Syncrypt Cloud und mehr."
+
+        MainTutorialS4P2 ->
+            "Du kannst mit deiner Mouse über die Status Leiste fahren um mehr Informationen zu den Symbolen zu sehen."
 
 
 germanDistance : Date -> Date -> String

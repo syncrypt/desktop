@@ -1160,7 +1160,7 @@ headerButtons { language, login } =
 
 
 footer : Model -> Html Msg
-footer { stats, vaults, language, updateAvailable } =
+footer ({ stats, vaults, language, updateAvailable } as model) =
     let
         statsText =
             T.StatsTxt <|
@@ -1252,13 +1252,16 @@ footer { stats, vaults, language, updateAvailable } =
     in
     div [ class "MainScreen-Footer" ] <|
         [ span [ class "MainScreen-Stats" ]
-            [ tooltipItem
-                { position = Top
-                , length = Auto
-                , text = translate language syncedVaultsText
-                , visible = False
-                }
-                [ syncedVaultsIcon ]
+            [ Tooltip.viewIfActive statusBarTooltip
+                model
+                [ tooltipItem
+                    { position = Top
+                    , length = Auto
+                    , text = translate language syncedVaultsText
+                    , visible = False
+                    }
+                    [ syncedVaultsIcon ]
+                ]
             , tooltipItem
                 { position = Top
                 , length = Fit

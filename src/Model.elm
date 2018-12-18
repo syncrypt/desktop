@@ -469,6 +469,16 @@ flyingVaultListTooltip =
         }
 
 
+statusBarTooltip : Tooltip
+statusBarTooltip =
+    Tooltip.init "MainTutorial.StatusBar"
+        { text = T.MainTutorialTxt T.MainTutorialS4TT1
+        , visibleTime = 5000
+        , position = Util.Top
+        , length = Util.Auto
+        }
+
+
 mainTutorial : Tutorial.State Msg
 mainTutorial =
     Tutorial.init MainTutorialMsg
@@ -497,5 +507,14 @@ mainTutorial =
                 ]
           , onEnter = [ AddTooltip flyingVaultListTooltip ]
           , onExit = [ RemoveTooltip (Tooltip.id flyingVaultListTooltip) ]
+          }
+        , { id = "StatusBar"
+          , title = T.MainTutorialTxt T.MainTutorialS4T
+          , paragraphs =
+                [ T.MainTutorialTxt T.MainTutorialS4P1
+                , T.MainTutorialTxt T.MainTutorialS4P2
+                ]
+          , onEnter = [ AddTooltip statusBarTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id statusBarTooltip) ]
           }
         ]
