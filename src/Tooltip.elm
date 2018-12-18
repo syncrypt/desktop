@@ -1,17 +1,25 @@
 module Tooltip
     exposing
         ( HasTooltips
+        , ID
         , Tooltip
+        , TooltipOptions
         , Tooltips
         , add
         , copied
         , emptyTooltips
+        , id
         , isActive
+        , length
+        , position
         , remove
         , removeIn
+        , removeInSchedule
+        , text
         , view
         , viewIfActive
         , viewWithId
+        , visibleTime
         )
 
 import Dict exposing (Dict)
@@ -22,10 +30,23 @@ import Translation as T
 import Util exposing (Position(..), TooltipLength(..))
 
 
-type alias Tooltip =
-    { id : String
-    , text : T.Text
-    , active : Bool
+type ID
+    = ID String
+
+
+type Tooltip
+    = Tooltip
+        { id : ID
+        , text : T.Text
+        , active : Bool
+        , visibleTime : Time
+        , position : Position
+        , length : TooltipLength
+        }
+
+
+type alias TooltipOptions =
+    { text : T.Text
     , visibleTime : Time
     , position : Position
     , length : TooltipLength
@@ -43,36 +64,91 @@ type alias HasTooltips a =
     }
 
 
+initID : String -> ID
+initID idString =
+    -- add random UUID?
+    ID idString
+
+
+init : String -> TooltipOptions -> Tooltip
+init idString { text, visibleTime, position, length } =
+    Tooltip
+        { id = initID idString
+        , active = True
+        , text = text
+        , visibleTime = visibleTime
+        , position = position
+        , length = length
+        }
+
+
+id : Tooltip -> ID
+id (Tooltip tip) =
+    tip.id
+
+
+text : Tooltip -> T.Text
+text (Tooltip { text }) =
+    text
+
+
+visibleTime : Tooltip -> Time
+visibleTime (Tooltip { visibleTime }) =
+    visibleTime
+
+
+position : Tooltip -> Position
+position (Tooltip { position }) =
+    position
+
+
+length : Tooltip -> TooltipLength
+length (Tooltip { length }) =
+    length
+
+
 emptyTooltips : Tooltips
 emptyTooltips =
     Dict.empty
 
 
-removeIn : Time -> String -> (String -> msg) -> Cmd msg
+removeInSchedule : Tooltip -> (ID -> msg) -> Cmd msg
+removeInSchedule ((Tooltip { visibleTime, id }) as tip) fn =
+    removeIn visibleTime id fn
+
+
+removeIn : Time -> ID -> (ID -> msg) -> Cmd msg
 removeIn time id fn =
     Util.delayMsg time (fn id)
 
 
 add : Tooltip -> HasTooltips a -> HasTooltips a
 add tip model =
-    { model | tooltips = Dict.insert tip.id tip model.tooltips }
+    { model | tooltips = Dict.insert (idStr tip) tip model.tooltips }
 
 
-remove : String -> HasTooltips a -> HasTooltips a
-remove id model =
+idStr : Tooltip -> String
+idStr (Tooltip { id }) =
+    case id of
+        ID idString ->
+            idString
+
+
+remove : ID -> HasTooltips a -> HasTooltips a
+remove (ID id) model =
     { model | tooltips = Dict.remove id model.tooltips }
 
 
-isActive : String -> HasTooltips a -> Bool
-isActive id { tooltips } =
+isActive : ID -> HasTooltips a -> Bool
+isActive (ID id) { tooltips } =
     tooltips
         |> Dict.get id
-        |> Maybe.map .active
+        |> Maybe.map (\(Tooltip { active }) -> active)
         |> Maybe.withDefault False
 
 
 view : Tooltip -> HasTooltips a -> List (Html msg) -> Html msg
-view { id, text, active, position, length } model body =
+view (Tooltip { text, active, position, length }) model body =
     Util.tooltipItem
         { position = position
         , length = length
@@ -82,26 +158,32 @@ view { id, text, active, position, length } model body =
 
 
 viewIfActive : Tooltip -> HasTooltips a -> List (Html msg) -> Html msg
-viewIfActive tip model body =
-    viewWithId tip.id model body
+viewIfActive (Tooltip { id }) model body =
+    viewWithId id model body
 
 
-viewWithId : String -> HasTooltips a -> List (Html msg) -> Html msg
-viewWithId id model body =
+viewWithId : ID -> HasTooltips a -> List (Html msg) -> Html msg
+viewWithId (ID id) model body =
+    let
+        bodyOnly =
+            Html.span [] body
+    in
     case Dict.get id model.tooltips of
         Nothing ->
-            Html.span [] body
+            bodyOnly
 
-        Just tip ->
-            view tip model body
+        Just ((Tooltip { active }) as tip) ->
+            if active then
+                view tip model body
+            else
+                bodyOnly
 
 
 copied : { id : String, position : Position } -> Tooltip
-copied { id, position } =
-    { id = "copied." ++ id
-    , text = T.CopiedToClipboard
-    , active = True
-    , visibleTime = 750
-    , position = position
-    , length = Auto
-    }
+copied opts =
+    init ("copied." ++ opts.id)
+        { text = T.CopiedToClipboard
+        , visibleTime = 750
+        , position = opts.position
+        , length = Auto
+        }

@@ -113,7 +113,7 @@ type Msg
     = SetTime Date
     | CopyToClipboard String
     | AddTooltip Tooltip
-    | RemoveTooltip String
+    | RemoveTooltip Tooltip.ID
     | UpdateLoginState
     | UpdateVaults
     | UpdateVaultsWithForcedRefresh

@@ -125,7 +125,7 @@ update msg model =
 
         AddTooltip tip ->
             ( model |> Tooltip.add tip
-            , Tooltip.removeIn tip.visibleTime tip.id RemoveTooltip
+            , Tooltip.removeInSchedule tip RemoveTooltip
             )
 
         RemoveTooltip tip ->

@@ -764,15 +764,15 @@ viewOperation model { operation, revisionId } =
                     materialIcon "delete_forever" []
 
         copiedTooltip =
-            Tooltip.copied { id = revisionId, position = Bottom }
+            Tooltip.copied { id = revisionId, position = Left }
     in
     span
         [ onClick (Model.CopyToClipboard revisionId)
         , onClick (Model.AddTooltip copiedTooltip)
         ]
         [ tooltipItem
-            { position = Right
-            , length = Auto
+            { position = Bottom
+            , length = Large
             , text = revisionId
             }
             [ Tooltip.viewIfActive copiedTooltip
