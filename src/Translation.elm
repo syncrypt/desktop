@@ -603,7 +603,7 @@ translateEnglishVaultDialogText vt =
             "Log"
 
         AdminTab ->
-            "Administration"
+            "Admin"
 
         AdminTabInfoText ->
             "Administrative options for this vault"
@@ -1379,7 +1379,7 @@ translateGermanVaultDialogText vt =
             "Log"
 
         AdminTab ->
-            "Administration"
+            "Admin"
 
         AdminTabInfoText ->
             "Administrative Aktionen für diesen Vault"

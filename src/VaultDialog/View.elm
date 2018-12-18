@@ -336,7 +336,7 @@ cryptoTab vaultId state model =
                     , label = text label
                     , item =
                         tooltipItem
-                            { position = Top
+                            { position = Bottom
                             , length = Medium
                             , text = tooltip
                             }
@@ -356,7 +356,12 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    [ text (String.toUpper vault.remoteId) ]
+                    [ span
+                        [ class "Default-Cursor"
+                        , onClick (Model.CopyToClipboard vault.remoteId)
+                        ]
+                        [ text (String.toUpper vault.remoteId) ]
+                    ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
                     [ text (toString vault.revisionCount) ]
@@ -451,7 +456,7 @@ logTab vaultId state model =
                         , onClick (Model.VaultDialogMsg vaultId ToggleEventSortOrder)
                         ]
                         [ text <| vt T.Time ]
-                    , th []
+                    , th [ class "Default-Cursor" ]
                         [ tooltipItem
                             { position = Bottom
                             , length = Auto
@@ -459,7 +464,7 @@ logTab vaultId state model =
                             }
                             [ text <| vt T.Operation ]
                         ]
-                    , th []
+                    , th [ class "Default-Cursor" ]
                         [ tooltipItem
                             { position = Bottom
                             , length = Auto
@@ -467,7 +472,7 @@ logTab vaultId state model =
                             }
                             [ text <| vt T.User ]
                         ]
-                    , th []
+                    , th [ class "Default-Cursor" ]
                         [ text <| vt T.FilePathOrMessage ]
                     ]
                 ]
@@ -633,13 +638,13 @@ eventDateString now { createdAt } =
 viewLogItem : Maybe Date -> Language -> Data.Vault.LogItem -> Html msg
 viewLogItem now lang item =
     tr [ class "HistoryItem" ]
-        [ td []
+        [ td [ class "Default-Cursor" ]
             [ text <| eventDateString now item ]
-        , td []
+        , td [ class "Default-Cursor" ]
             [ logItemLogLevelIcon lang item ]
-        , td []
+        , td [ class "Default-Cursor" ]
             []
-        , td []
+        , td [ class "Default-Cursor" ]
             [ text item.message ]
         ]
 
@@ -667,9 +672,9 @@ logItemLogLevelIcon lang item =
 viewHistoryItem : Maybe Date -> Language -> HistoryItem -> Html Model.Msg
 viewHistoryItem now lang item =
     tr [ class "HistoryItem" ]
-        [ td []
+        [ td [ class "Default-Cursor" ]
             [ text <| eventDateString now item ]
-        , td []
+        , td [ class "Default-Cursor" ]
             [ if item.verified then
                 tooltipItem
                     { position = Right
@@ -686,7 +691,10 @@ viewHistoryItem now lang item =
                     [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
             , viewOperation item
             ]
-        , td [ onClick (Model.CopyToClipboard item.fingerprint) ]
+        , td
+            [ onClick (Model.CopyToClipboard item.fingerprint)
+            , class "Default-Cursor"
+            ]
             [ tooltipItem
                 { position = Bottom
                 , length = Auto
@@ -694,7 +702,7 @@ viewHistoryItem now lang item =
                 }
                 [ text item.email ]
             ]
-        , td []
+        , td [ class "Default-Cursor" ]
             [ item.path
                 |> Maybe.map (text << Util.shortenString 50)
                 |> Maybe.withDefault (historyItemDescription lang item)
