@@ -449,6 +449,36 @@ setFeedback feedback model =
             { model | feedback = Just trimmedText }
 
 
+
+-- positionRightIfEmpty : Util.Position -> WebData (List a) -> Util.Position
+-- positionRightIfEmpty pos data =
+--     case RemoteData.withDefault [] data of
+--         [] ->
+--             Util.Right
+--         _ ->
+--             pos
+
+
+vaultListTooltip : Tooltip
+vaultListTooltip =
+    Tooltip.init "MainTutorial.VaultList"
+        { text = T.MainTutorialTxt T.MainTutorialS2TT1
+        , visibleTime = 5000
+        , position = Util.Bottom
+        , length = Util.Auto
+        }
+
+
+flyingVaultListTooltip : Tooltip
+flyingVaultListTooltip =
+    Tooltip.init "MainTutorial.FlyingVaultList"
+        { text = T.MainTutorialTxt T.MainTutorialS3TT1
+        , visibleTime = 5000
+        , position = Util.Bottom
+        , length = Util.Auto
+        }
+
+
 mainTutorial : Tutorial.State Msg
 mainTutorial =
     Tutorial.init MainTutorialMsg
@@ -456,6 +486,8 @@ mainTutorial =
         , title = T.MainTutorialTxt T.MainTutorialS1T
         , paragraphs =
             [ T.MainTutorialTxt T.MainTutorialS1P1 ]
+        , onEnter = []
+        , onExit = []
         }
         [ { id = "VaultList"
           , title = T.MainTutorialTxt T.MainTutorialS2T
@@ -464,6 +496,8 @@ mainTutorial =
                 , T.MainTutorialTxt T.MainTutorialS2P2
                 , T.MainTutorialTxt T.MainTutorialS2P3
                 ]
+          , onEnter = [ AddTooltip vaultListTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id vaultListTooltip) ]
           }
         , { id = "FlyingVaultList"
           , title = T.MainTutorialTxt T.MainTutorialS3T
@@ -471,5 +505,7 @@ mainTutorial =
                 [ T.MainTutorialTxt T.MainTutorialS3P1
                 , T.MainTutorialTxt T.MainTutorialS3P2
                 ]
+          , onEnter = [ AddTooltip flyingVaultListTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id flyingVaultListTooltip) ]
           }
         ]

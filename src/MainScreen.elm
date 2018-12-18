@@ -1256,15 +1256,16 @@ footer { stats, vaults, language, updateAvailable } =
                 { position = Top
                 , length = Auto
                 , text = translate language syncedVaultsText
+                , visible = False
                 }
                 [ syncedVaultsIcon ]
             , tooltipItem
                 { position = Top
                 , length = Fit
                 , text = translate language statsText
+                , visible = False
                 }
-                [ statsIcons
-                ]
+                [ statsIcons ]
             ]
         ]
             ++ updateAvailableDiv

@@ -36,25 +36,27 @@ type alias State msg =
     { address : Msg -> msg
     , completed : Bool
     , hidden : Bool
-    , prevSteps : List Step
-    , currStep : CurrentStep
-    , nextSteps : List Step
+    , prevSteps : List (Step msg)
+    , currStep : CurrentStep msg
+    , nextSteps : List (Step msg)
     }
 
 
-type CurrentStep
-    = CurrentStep Step
+type CurrentStep msg
+    = CurrentStep (Step msg)
     | TutorialFinished
 
 
-type alias Step =
+type alias Step msg =
     { id : String
     , title : T.Text
     , paragraphs : List T.Text
+    , onEnter : List msg
+    , onExit : List msg
     }
 
 
-init : (Msg -> msg) -> Step -> List Step -> State msg
+init : (Msg -> msg) -> Step msg -> List (Step msg) -> State msg
 init address firstStep remainingSteps =
     { address = address
     , completed = False
@@ -91,7 +93,7 @@ hasNextStep state =
     not <| List.isEmpty state.nextSteps
 
 
-currentStep : State msg -> Maybe Step
+currentStep : State msg -> Maybe (Step msg)
 currentStep { currStep } =
     case currStep of
         CurrentStep step ->
@@ -101,56 +103,75 @@ currentStep { currStep } =
             Nothing
 
 
-toNextStep : State msg -> State msg
+triggerMsgs : List msg -> Cmd msg
+triggerMsgs msgs =
+    Cmd.batch <| List.map Util.sendMsg msgs
+
+
+toNextStep : State msg -> ( State msg, Cmd msg )
 toNextStep state =
     case ( state.currStep, state.nextSteps ) of
         ( TutorialFinished, _ ) ->
-            state
+            ( state
+            , Cmd.none
+            )
 
         ( CurrentStep prevStep, [] ) ->
-            { state
+            ( { state
                 | prevSteps = prevStep :: state.prevSteps
                 , currStep = TutorialFinished
-            }
+              }
+            , triggerMsgs prevStep.onExit
+            )
 
         ( _, currStep :: nextSteps ) ->
             let
-                prevSteps =
+                ( prevSteps, cmd ) =
                     case state.currStep of
                         TutorialFinished ->
-                            state.prevSteps
+                            ( state.prevSteps
+                            , Cmd.none
+                            )
 
                         CurrentStep step ->
-                            step :: state.prevSteps
+                            ( step :: state.prevSteps
+                            , triggerMsgs (step.onExit ++ currStep.onEnter)
+                            )
             in
-            { state
+            ( { state
                 | prevSteps = prevSteps
                 , currStep = CurrentStep currStep
                 , nextSteps = nextSteps
-            }
+              }
+            , cmd
+            )
 
 
-toPrevStep : State msg -> State msg
+toPrevStep : State msg -> ( State msg, Cmd msg )
 toPrevStep state =
     case state.prevSteps of
         [] ->
-            state
+            ( state
+            , Cmd.none
+            )
 
         currStep :: prevSteps ->
             let
-                nextSteps =
+                ( nextSteps, msgs ) =
                     case state.currStep of
                         CurrentStep step ->
-                            step :: state.nextSteps
+                            ( step :: state.nextSteps, step.onExit )
 
                         TutorialFinished ->
-                            []
+                            ( [], [] )
             in
-            { state
+            ( { state
                 | prevSteps = prevSteps
                 , currStep = CurrentStep currStep
                 , nextSteps = nextSteps
-            }
+              }
+            , triggerMsgs <| currStep.onEnter ++ msgs
+            )
 
 
 toFirstStep : State msg -> State msg
@@ -188,14 +209,10 @@ update : Msg -> State msg -> ( State msg, Cmd msg )
 update msg state =
     case msg of
         ToNextStep ->
-            ( toNextStep state
-            , Cmd.none
-            )
+            toNextStep state
 
         ToPreviousStep ->
-            ( toPrevStep state
-            , Cmd.none
-            )
+            toPrevStep state
 
         MarkAsCompleted ->
             ( markCompleted state
@@ -264,7 +281,7 @@ viewCurrentStep lang state =
             text "Tutorial done"
 
 
-viewParagraphs : Language -> Step -> Html msg
+viewParagraphs : Language -> Step msg -> Html msg
 viewParagraphs lang step =
     p [ class "Paragraphs" ]
         (step.paragraphs

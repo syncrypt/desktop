@@ -9,6 +9,7 @@ module Tooltip
         , copied
         , emptyTooltips
         , id
+        , init
         , isActive
         , length
         , position
@@ -139,6 +140,28 @@ remove (ID id) model =
     { model | tooltips = Dict.remove id model.tooltips }
 
 
+setActive : Bool -> Tooltip -> Tooltip
+setActive active (Tooltip tip) =
+    Tooltip { tip | active = active }
+
+
+updateTooltips : ID -> (Tooltip -> Tooltip) -> HasTooltips a -> HasTooltips a
+updateTooltips (ID id) f model =
+    { model | tooltips = Dict.update id (Maybe.map f) model.tooltips }
+
+
+activate : ID -> HasTooltips a -> HasTooltips a
+activate id model =
+    model
+        |> updateTooltips id (setActive True)
+
+
+deactivate : ID -> HasTooltips a -> HasTooltips a
+deactivate id model =
+    model
+        |> updateTooltips id (setActive False)
+
+
 isActive : ID -> HasTooltips a -> Bool
 isActive (ID id) { tooltips } =
     tooltips
@@ -153,6 +176,7 @@ view (Tooltip { text, active, position, length }) model body =
         { position = position
         , length = length
         , text = T.t text model
+        , visible = active
         }
         body
 

@@ -184,6 +184,7 @@ passwordInput inputType model =
                     { position = Right
                     , length = Util.Medium
                     , text = t tooltipText model
+                    , visible = False
                     }
                     [ Ui.Input.view
                         input

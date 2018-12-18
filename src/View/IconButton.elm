@@ -22,6 +22,7 @@ view attrs language buttonType =
         { position = Bottom
         , length = Auto
         , text = tooltip language buttonType
+        , visible = False
         }
         [ div
             (class "MainScreen-IconButton" :: attrs)

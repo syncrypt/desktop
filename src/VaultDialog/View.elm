@@ -340,6 +340,7 @@ cryptoTab vaultId state model =
                             { position = Bottom
                             , length = Medium
                             , text = tooltip
+                            , visible = False
                             }
                             body
                     }
@@ -469,6 +470,7 @@ logTab vaultId state model =
                             { position = Bottom
                             , length = Auto
                             , text = vt T.OperationTooltip
+                            , visible = False
                             }
                             [ text <| vt T.Operation ]
                         ]
@@ -477,6 +479,7 @@ logTab vaultId state model =
                             { position = Bottom
                             , length = Auto
                             , text = vt T.UserTooltip
+                            , visible = False
                             }
                             [ text <| vt T.User ]
                         ]
@@ -659,21 +662,25 @@ viewLogItem { now, language } item =
 
 logItemLogLevelIcon : Language -> Data.Vault.LogItem -> Html msg
 logItemLogLevelIcon lang item =
+    let
+        opts text =
+            { position = Right, length = Auto, text = text, visible = False }
+    in
     case item.level of
         Debug ->
-            tooltipItem { position = Right, length = Auto, text = "Debug log level" }
+            tooltipItem (opts "Debug log level")
                 [ materialIcon "view_headline" [] ]
 
         Info ->
-            tooltipItem { position = Right, length = Auto, text = "Info log level" }
+            tooltipItem (opts "Info log level")
                 [ materialIcon "info" [] ]
 
         Warning ->
-            tooltipItem { position = Right, length = Auto, text = "Warning log level" }
+            tooltipItem (opts "Warning log level")
                 [ materialIcon "warning" [] ]
 
         Error ->
-            tooltipItem { position = Right, length = Auto, text = "Error log level" }
+            tooltipItem (opts "Error log level")
                 [ materialIcon "error" [] ]
 
 
@@ -681,7 +688,10 @@ viewHistoryItem : Model -> HistoryItem -> Html Model.Msg
 viewHistoryItem ({ now, language } as model) item =
     let
         copiedFingerprintTooltip =
-            Tooltip.copied { id = item.fingerprint, position = Left }
+            Tooltip.copied
+                { id = item.revisionId ++ "/" ++ item.fingerprint
+                , position = Left
+                }
     in
     tr [ class "HistoryItem" ]
         [ td [ class "Default-Cursor" ]
@@ -692,6 +702,7 @@ viewHistoryItem ({ now, language } as model) item =
                     { position = Right
                     , length = Auto
                     , text = "Verified revision"
+                    , visible = False
                     }
                     [ materialIcon "verified_user" [ class "VerifiedIcon" ] ]
               else
@@ -699,6 +710,7 @@ viewHistoryItem ({ now, language } as model) item =
                     { position = Right
                     , length = Auto
                     , text = "Verification failed for this revision"
+                    , visible = False
                     }
                     [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
             , viewOperation model item
@@ -712,6 +724,7 @@ viewHistoryItem ({ now, language } as model) item =
                 { position = Bottom
                 , length = Auto
                 , text = item.fingerprint
+                , visible = False
                 }
                 [ Tooltip.viewIfActive copiedFingerprintTooltip
                     model
@@ -774,6 +787,7 @@ viewOperation model { operation, revisionId } =
             { position = Bottom
             , length = Large
             , text = revisionId
+            , visible = False
             }
             [ Tooltip.viewIfActive copiedTooltip
                 model
@@ -963,6 +977,7 @@ openFolderButton vaultId state model =
                     { position = Right
                     , length = Small
                     , text = tooltipMsg
+                    , visible = False
                     }
                     [ button []
                         { label =
@@ -991,6 +1006,7 @@ nameInput msg state model =
                     { position = Right
                     , length = Small
                     , text = t (VaultDialogTxt VaultNameTooltip) model
+                    , visible = False
                     }
                     [ Ui.Input.view state.nameInput
                         |> Html.map (msg << NameInputMsg)
@@ -1029,6 +1045,7 @@ iconInput state model =
         { position = Right
         , length = Auto
         , text = "Vault icon that can be seen by any invited user"
+        , visible = False
         }
         [ icon ]
 
@@ -1044,6 +1061,7 @@ userInput vaultId state model =
                 { position = Bottom
                 , length = Large
                 , text = t (VaultDialogTxt UserInputTooltip) model
+                , visible = False
                 }
                 [ Ui.Input.view
                     state.userInput
@@ -1075,6 +1093,7 @@ fileSelectionContainer state model =
                                 , length = Large
                                 , text =
                                     t (VaultDialogTxt FileSelectionTooltip) model
+                                , visible = False
                                 }
                                 (viewFolders state)
                             ]

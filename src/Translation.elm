@@ -212,6 +212,7 @@ type VaultListText
     | LoadVaultsFailed Reason
     | LoadingVaults
     | LoadRemoteVaults
+    | Vaults
     | AvailableVaults
     | FetchingRemoteVaultInfo
     | YouDontHaveAnyRemoteVaultsYet
@@ -305,10 +306,12 @@ type MainTutorialText
     = MainTutorialS1T
     | MainTutorialS1P1
     | MainTutorialS2T
+    | MainTutorialS2TT1
     | MainTutorialS2P1
     | MainTutorialS2P2
     | MainTutorialS2P3
     | MainTutorialS3T
+    | MainTutorialS3TT1
     | MainTutorialS3P1
     | MainTutorialS3P2
 
@@ -420,7 +423,7 @@ translateEnglish text =
             "OK"
 
         CopiedToClipboard ->
-            "Copied to clipboard"
+            "Copied"
 
         Finish ->
             "Finish"
@@ -896,8 +899,11 @@ translateEnglishVaultListText vlt =
         LoadRemoteVaults ->
             "Load remote vaults"
 
+        Vaults ->
+            "Vaults"
+
         AvailableVaults ->
-            "Available Vaults"
+            "Available Cloud Vaults"
 
         FetchingRemoteVaultInfo ->
             "Fetching remote vault info "
@@ -1145,6 +1151,9 @@ translateEnglishMainTutorialText text =
         MainTutorialS2T ->
             "Vault List"
 
+        MainTutorialS2TT1 ->
+            "Your synchronized vaults"
+
         MainTutorialS2P1 ->
             "The vault list to the left shows all your currently cloned & synchronized vaults."
 
@@ -1156,6 +1165,9 @@ translateEnglishMainTutorialText text =
 
         MainTutorialS3T ->
             "Remote Vault List"
+
+        MainTutorialS3TT1 ->
+            "Your available cloud vaults"
 
         MainTutorialS3P1 ->
             "Below you can see all remote vaults you have access to, but don't currently have cloned to this device."
@@ -1237,7 +1249,7 @@ translateGerman text =
             "OK"
 
         CopiedToClipboard ->
-            "Kopiert in Zwischenablage"
+            "Kopiert"
 
         Finish ->
             "Beenden"
@@ -1715,6 +1727,9 @@ translateGermanVaultListText vlt =
         LoadRemoteVaults ->
             "Aktualisiere Cloud Vaults"
 
+        Vaults ->
+            "Vaults"
+
         AvailableVaults ->
             "Verfügbare Cloud Vaults"
 
@@ -1963,6 +1978,9 @@ translateGermanMainTutorialText text =
         MainTutorialS2T ->
             "Vault Liste"
 
+        MainTutorialS2TT1 ->
+            "Deine synchroniserten Vaults"
+
         MainTutorialS2P1 ->
             "Die Vault-Liste auf der linken Seite zeigt dir all deine verfügbaren Vaults an, die du derzeit auf diesem Gerät synchronisiert hast."
 
@@ -1974,6 +1992,9 @@ translateGermanMainTutorialText text =
 
         MainTutorialS3T ->
             "Verfügbare Cloud Vaults (nicht synchronisiert)"
+
+        MainTutorialS3TT1 ->
+            "Deine vefügbaren Cloud Vaults"
 
         MainTutorialS3P1 ->
             "Weiter unten kannst du alle verfügbaren, aber derzeit nicht auf diesem Gerät synchronisierten Vaults sehen."

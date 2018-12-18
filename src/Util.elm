@@ -349,17 +349,25 @@ type alias TooltipConfig =
     { position : Position
     , length : TooltipLength
     , text : String
+    , visible : Bool
     }
 
 
 tooltipItem : TooltipConfig -> List (Html msg) -> Html msg
-tooltipItem { position, length, text } body =
+tooltipItem { position, length, text, visible } body =
     let
-        baseAttrs =
+        commonAttrs =
             [ attribute "data-balloon" text
             , attribute "data-balloon-pos" (tooltipPositionString position)
             , class "Tooltip"
             ]
+
+        baseAttrs =
+            if visible then
+                attribute "data-balloon-visible" ""
+                    :: commonAttrs
+            else
+                commonAttrs
 
         attributes =
             case length of

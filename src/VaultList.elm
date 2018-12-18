@@ -17,6 +17,7 @@ import Html.Events exposing (onClick)
 import Model exposing (..)
 import RemoteData exposing (RemoteData(..))
 import Set
+import Tooltip
 import Translation as T exposing (t)
 import Util
     exposing
@@ -76,6 +77,7 @@ updatedAtInfo vault updatedAtHeader model =
             { position = Top
             , length = Auto
             , text = t T.LastUpdateToVaultLabel model
+            , visible = False
             }
             [ header, updatedText ]
         ]
@@ -115,6 +117,7 @@ vaultActivity vault model =
                 { position = Top
                 , length = Auto
                 , text = t T.TotalVaultSizeTooltip model
+                , visible = False
                 }
                 [ text (bytesReadable vault.size) ]
             ]
@@ -136,6 +139,7 @@ vaultUserCount vault model =
                 { position = Top
                 , length = Auto
                 , text = t T.UsersWithAccessTooltip model
+                , visible = False
                 }
                 [ text (toString vault.userCount) ]
             ]
@@ -154,6 +158,7 @@ vaultRevisionCount vault model =
                 { position = Left
                 , length = Auto
                 , text = t T.TotalVaultRevisionsTooltip model
+                , visible = False
                 }
                 [ text (toString vault.revisionCount) ]
             ]
@@ -291,7 +296,7 @@ vaultList model =
         vaultListInfo =
             div [ class "VaultListInfo" ]
                 [ span [ class "Title" ]
-                    [ text "Vaults" ]
+                    [ text <| t (T.VaultListTxt T.Vaults) model ]
                 , span [ class "Subtitle" ]
                     vaultListInfoSubtitle
                 ]
@@ -301,7 +306,10 @@ vaultList model =
                 |> List.map (vaultItem model)
     in
     div [ class "VaultList" ]
-        ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
+        [ Tooltip.viewIfActive vaultListTooltip
+            model
+            ((vaultListInfo :: vaultItems) ++ [ newVaultItemButton ])
+        ]
 
 
 flyingVaultListSubtitle : List FlyingVault -> Model -> Html Msg
@@ -356,20 +364,24 @@ flyingVaultList model =
             Animation.loadingCircle Animation.LargeCircle model
     in
     div [ class "VaultList" ] <|
-        [ div [ class "VaultListInfo" ]
-            [ span [ class "Title" ]
-                [ text <| t (T.VaultListTxt T.AvailableVaults) model ]
-            , span [ class "Subtitle" ]
-                [ subtitle
-                , if model.flyingVaults == Loading then
-                    div []
-                        [ loadingAnimation ]
-                  else
-                    text ""
+        [ Tooltip.viewIfActive flyingVaultListTooltip
+            model
+            ([ div [ class "VaultListInfo" ]
+                [ span [ class "Title" ]
+                    [ text <| t (T.VaultListTxt T.AvailableVaults) model ]
+                , span [ class "Subtitle" ]
+                    [ subtitle
+                    , if model.flyingVaults == Loading then
+                        div []
+                            [ loadingAnimation ]
+                      else
+                        text ""
+                    ]
                 ]
-            ]
+             ]
+                ++ List.map (flyingVaultItem model) availableFlyingVaults
+            )
         ]
-            ++ List.map (flyingVaultItem model) availableFlyingVaults
 
 
 unsyncedFlyingVaults : Model -> List FlyingVault
