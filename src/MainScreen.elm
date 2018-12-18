@@ -28,6 +28,7 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
 import Time
+import Tooltip
 import Translation as T
     exposing
         ( NotificationText(..)
@@ -120,6 +121,16 @@ update msg model =
         CopyToClipboard data ->
             ( model
             , Ports.copyToClipboard data
+            )
+
+        AddTooltip tip ->
+            ( model |> Tooltip.add tip
+            , Tooltip.removeIn tip.visibleTime tip.id RemoveTooltip
+            )
+
+        RemoveTooltip tip ->
+            ( model |> Tooltip.remove tip
+            , Cmd.none
             )
 
         UpdateLoginState ->

@@ -41,6 +41,7 @@ import Model exposing (Model)
 import Path exposing (Path)
 import Ports
 import RemoteData exposing (RemoteData(..))
+import Tooltip
 import Translation as T
     exposing
         ( FolderButtonType(..)
@@ -346,6 +347,9 @@ cryptoTab vaultId state model =
 
         vt vaultDialogText =
             t (VaultDialogTxt vaultDialogText) model
+
+        copiedTooltip =
+            Tooltip.copied { id = "remoteId", position = Left }
     in
     ( t (VaultDialogTxt CryptoTab) model
     , tabBody
@@ -356,11 +360,15 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    [ span
-                        [ class "Default-Cursor"
-                        , onClick (Model.CopyToClipboard vault.remoteId)
+                    [ Tooltip.viewIfActive copiedTooltip
+                        model
+                        [ span
+                            [ class "Default-Cursor"
+                            , onClick (Model.CopyToClipboard vault.remoteId)
+                            , onClick (Model.AddTooltip copiedTooltip)
+                            ]
+                            [ text (String.toUpper vault.remoteId) ]
                         ]
-                        [ text (String.toUpper vault.remoteId) ]
                     ]
                 , cryptoInfoItem (vt FileRevisionsLabel)
                     (vt TotalNumberOfFileRevisionsTooltip)
@@ -483,7 +491,7 @@ logTab vaultId state model =
                             [ loadingSpinner ]
 
                         VaultDialog.Model.Events events ->
-                            List.map (viewEvent model.now model.language) events
+                            List.map (viewEvent model) events
 
                         VaultDialog.Model.AllEventsFiltered ->
                             [ tr []
@@ -598,14 +606,14 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Maybe Date -> Language -> Event -> Html Model.Msg
-viewEvent now lang event =
+viewEvent : Model -> Event -> Html Model.Msg
+viewEvent model event =
     case event of
         Log item ->
-            viewLogItem now lang item
+            viewLogItem model item
 
         History item ->
-            viewHistoryItem now lang item
+            viewHistoryItem model item
 
 
 type alias HasCreatedAt event =
@@ -635,13 +643,13 @@ eventDateString now { createdAt } =
             ""
 
 
-viewLogItem : Maybe Date -> Language -> Data.Vault.LogItem -> Html msg
-viewLogItem now lang item =
+viewLogItem : Model -> Data.Vault.LogItem -> Html msg
+viewLogItem { now, language } item =
     tr [ class "HistoryItem" ]
         [ td [ class "Default-Cursor" ]
             [ text <| eventDateString now item ]
         , td [ class "Default-Cursor" ]
-            [ logItemLogLevelIcon lang item ]
+            [ logItemLogLevelIcon language item ]
         , td [ class "Default-Cursor" ]
             []
         , td [ class "Default-Cursor" ]
@@ -669,8 +677,12 @@ logItemLogLevelIcon lang item =
                 [ materialIcon "error" [] ]
 
 
-viewHistoryItem : Maybe Date -> Language -> HistoryItem -> Html Model.Msg
-viewHistoryItem now lang item =
+viewHistoryItem : Model -> HistoryItem -> Html Model.Msg
+viewHistoryItem ({ now, language } as model) item =
+    let
+        copiedFingerprintTooltip =
+            Tooltip.copied { id = item.fingerprint, position = Left }
+    in
     tr [ class "HistoryItem" ]
         [ td [ class "Default-Cursor" ]
             [ text <| eventDateString now item ]
@@ -689,10 +701,11 @@ viewHistoryItem now lang item =
                     , text = "Verification failed for this revision"
                     }
                     [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
-            , viewOperation item
+            , viewOperation model item
             ]
         , td
             [ onClick (Model.CopyToClipboard item.fingerprint)
+            , onClick (Model.AddTooltip copiedFingerprintTooltip)
             , class "Default-Cursor"
             ]
             [ tooltipItem
@@ -700,12 +713,15 @@ viewHistoryItem now lang item =
                 , length = Auto
                 , text = item.fingerprint
                 }
-                [ text item.email ]
+                [ Tooltip.viewIfActive copiedFingerprintTooltip
+                    model
+                    [ text item.email ]
+                ]
             ]
         , td [ class "Default-Cursor" ]
             [ item.path
                 |> Maybe.map (text << Util.shortenString 50)
-                |> Maybe.withDefault (historyItemDescription lang item)
+                |> Maybe.withDefault (historyItemDescription language item)
             ]
         ]
 
@@ -715,8 +731,8 @@ historyItemDescription lang item =
     text <| translate lang (VaultDialogTxt <| HistoryItemDescription item)
 
 
-viewOperation : HistoryItem -> Html Model.Msg
-viewOperation { operation, revisionId } =
+viewOperation : Model -> HistoryItem -> Html Model.Msg
+viewOperation model { operation, revisionId } =
     let
         icon =
             case operation of
@@ -746,14 +762,23 @@ viewOperation { operation, revisionId } =
 
                 Data.Vault.DeleteFile ->
                     materialIcon "delete_forever" []
+
+        copiedTooltip =
+            Tooltip.copied { id = revisionId, position = Bottom }
     in
-    span [ onClick (Model.CopyToClipboard revisionId) ]
+    span
+        [ onClick (Model.CopyToClipboard revisionId)
+        , onClick (Model.AddTooltip copiedTooltip)
+        ]
         [ tooltipItem
             { position = Right
             , length = Auto
             , text = revisionId
             }
-            [ icon ]
+            [ Tooltip.viewIfActive copiedTooltip
+                model
+                [ icon ]
+            ]
         ]
 
 

@@ -60,6 +60,7 @@ type Text
     | Next
     | Cancel
     | OK
+    | CopiedToClipboard
     | Finish
     | Close
     | Confirm
@@ -401,6 +402,9 @@ translateEnglish text =
 
         OK ->
             "OK"
+
+        CopiedToClipboard ->
+            "Copied to clipboard"
 
         Finish ->
             "Finish"
@@ -1175,6 +1179,9 @@ translateGerman text =
 
         OK ->
             "OK"
+
+        CopiedToClipboard ->
+            "Kopiert in Zwischenablage"
 
         Finish ->
             "Beenden"

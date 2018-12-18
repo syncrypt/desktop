@@ -20,6 +20,7 @@ import LoginDialog.Model
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..), WebData)
 import SettingsDialog.Model
+import Tooltip exposing (Tooltip, Tooltips)
 import Ui.NotificationCenter
 import Util exposing (LogLevel, andLog, findFirst)
 import VaultDialog.Model
@@ -52,6 +53,7 @@ type alias Model =
     , newVaultWizard : NewVaultWizardState
     , autoStartEnabled : Bool
     , windowSize : Window.Size
+    , tooltips : Tooltips
     }
 
 
@@ -110,6 +112,8 @@ type State
 type Msg
     = SetTime Date
     | CopyToClipboard String
+    | AddTooltip Tooltip
+    | RemoveTooltip String
     | UpdateLoginState
     | UpdateVaults
     | UpdateVaultsWithForcedRefresh
@@ -292,6 +296,7 @@ init config =
         { height = config.windowHeight
         , width = config.windowWidth
         }
+    , tooltips = Tooltip.emptyTooltips
     }
 
 
