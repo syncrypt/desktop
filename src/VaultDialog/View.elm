@@ -438,7 +438,7 @@ logTab vaultId state model =
                 [ Dialog.labeledItem [ class "InputLabel" ]
                     { side = Left
                     , onClick = Nothing
-                    , label = text "Filters"
+                    , label = text <| vt T.Filters
                     , item =
                         span []
                             (eventFilterButtons vaultId state vt)

@@ -177,6 +177,7 @@ type VaultDialogText
     | SaveVault
     | SyncVaultToFolder
     | YouDontHaveAccessToVaultUsers
+    | Filters
     | Time
     | User
     | UserTooltip
@@ -757,6 +758,9 @@ translateEnglishVaultDialogText vt =
 
         YouDontHaveAccessToVaultUsers ->
             "You don't have access to this vault's user list."
+
+        Filters ->
+            "Filters"
 
         Time ->
             "Time"
@@ -1530,6 +1534,9 @@ translateGermanVaultDialogText vt =
 
         YouDontHaveAccessToVaultUsers ->
             "Du hast keinen Zugriff auf die Benutzerliste dieses Vaults"
+
+        Filters ->
+            "Filter"
 
         Time ->
             "Zeit"
