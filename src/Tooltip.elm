@@ -5,8 +5,10 @@ module Tooltip
         , Tooltip
         , TooltipOptions
         , Tooltips
+        , activate
         , add
         , copied
+        , deactivate
         , emptyTooltips
         , id
         , init
@@ -120,7 +122,10 @@ removeInSchedule ((Tooltip { visibleTime, id }) as tip) fn =
 
 removeIn : Time -> ID -> (ID -> msg) -> Cmd msg
 removeIn time id fn =
-    Util.delayMsg time (fn id)
+    if time /= Util.forever then
+        Util.delayMsg time (fn id)
+    else
+        Cmd.none
 
 
 add : Tooltip -> HasTooltips a -> HasTooltips a

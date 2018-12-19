@@ -1845,6 +1845,7 @@ translateGermanSettingsDialogText text =
             "Passwortbestätigung gleicht nicht dem Passwort"
 
 
+translateGermanSetupWizardText : SetupWizardText -> String
 translateGermanSetupWizardText text =
     case text of
         WelcomeToSyncrypt ->

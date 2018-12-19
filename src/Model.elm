@@ -117,6 +117,10 @@ type Msg
     | CopyToClipboard String
     | AddTooltip Tooltip
     | RemoveTooltip Tooltip.ID
+    | ShowTooltip Tooltip
+    | ShowTooltipWithID Tooltip.ID
+    | HideTooltip Tooltip
+    | HideTooltipWithId Tooltip.ID
     | UpdateLoginState
     | UpdateVaults
     | UpdateVaultsWithForcedRefresh

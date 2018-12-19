@@ -134,6 +134,26 @@ update msg model =
             , Cmd.none
             )
 
+        ShowTooltip tip ->
+            ( model |> Tooltip.activate (Tooltip.id tip)
+            , Cmd.none
+            )
+
+        ShowTooltipWithID tipId ->
+            ( model |> Tooltip.activate tipId
+            , Cmd.none
+            )
+
+        HideTooltip tip ->
+            ( model |> Tooltip.deactivate (Tooltip.id tip)
+            , Cmd.none
+            )
+
+        HideTooltipWithId tipId ->
+            ( model |> Tooltip.deactivate tipId
+            , Cmd.none
+            )
+
         UpdateLoginState ->
             model
                 |> updateLoginState

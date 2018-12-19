@@ -23,6 +23,7 @@ module Util
         , delayMsg
         , findFirst
         , findIndex
+        , forever
         , fullDateString
         , last
         , logFailure
@@ -672,3 +673,8 @@ renderIf cond html =
 toList : a -> List a
 toList x =
     [ x ]
+
+
+forever : Time
+forever =
+    -1
