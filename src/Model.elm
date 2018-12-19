@@ -55,7 +55,7 @@ type alias Model =
     , newVaultWizard : NewVaultWizardState
     , autoStartEnabled : Bool
     , windowSize : Window.Size
-    , tooltips : Tooltips
+    , tooltips : Tooltips T.Text
     , mainTutorial : Tutorial.State Msg
     }
 
@@ -115,11 +115,12 @@ type State
 type Msg
     = SetTime Date
     | CopyToClipboard String
-    | AddTooltip Tooltip
+    | CopyToClipboardWithTooltip String (Tooltip T.Text)
+    | AddTooltip (Tooltip T.Text)
     | RemoveTooltip Tooltip.ID
-    | ShowTooltip Tooltip
+    | ShowTooltip (Tooltip T.Text)
     | ShowTooltipWithID Tooltip.ID
-    | HideTooltip Tooltip
+    | HideTooltip (Tooltip T.Text)
     | HideTooltipWithId Tooltip.ID
     | UpdateLoginState
     | UpdateVaults
@@ -453,7 +454,7 @@ setFeedback feedback model =
             { model | feedback = Just trimmedText }
 
 
-vaultListTooltip : Tooltip
+vaultListTooltip : Tooltip T.Text
 vaultListTooltip =
     Tooltip.init "MainTutorial.VaultList"
         { text = T.MainTutorialTxt T.MainTutorialS2TT1
@@ -463,7 +464,7 @@ vaultListTooltip =
         }
 
 
-flyingVaultListTooltip : Tooltip
+flyingVaultListTooltip : Tooltip T.Text
 flyingVaultListTooltip =
     Tooltip.init "MainTutorial.FlyingVaultList"
         { text = T.MainTutorialTxt T.MainTutorialS3TT1
@@ -473,7 +474,7 @@ flyingVaultListTooltip =
         }
 
 
-statusBarTooltip : Tooltip
+statusBarTooltip : Tooltip T.Text
 statusBarTooltip =
     Tooltip.init "MainTutorial.StatusBar"
         { text = T.MainTutorialTxt T.MainTutorialS4TT1

@@ -124,6 +124,14 @@ update msg model =
             , Ports.copyToClipboard data
             )
 
+        CopyToClipboardWithTooltip data tooltip ->
+            ( model |> Tooltip.add tooltip
+            , Cmd.batch
+                [ Ports.copyToClipboard data
+                , Tooltip.removeInSchedule tooltip Model.RemoveTooltip
+                ]
+            )
+
         AddTooltip tip ->
             ( model |> Tooltip.add tip
             , Tooltip.removeInSchedule tip RemoveTooltip
@@ -1273,6 +1281,7 @@ footer ({ stats, vaults, language, updateAvailable } as model) =
     div [ class "MainScreen-Footer" ] <|
         [ span [ class "MainScreen-Stats" ]
             [ Tooltip.viewIfActive statusBarTooltip
+                T.translate
                 model
                 [ tooltipItem
                     { position = Top

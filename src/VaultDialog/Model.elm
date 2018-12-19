@@ -18,11 +18,13 @@ import Path exposing (Path, asPath)
 import RemoteData exposing (RemoteData(..), WebData)
 import Set exposing (Set)
 import Time
+import Tooltip exposing (Tooltip)
+import Translation as T
 import Ui.Checkbox
 import Ui.Input
 import Ui.Modal
 import Ui.Tabs
-import Util exposing (LogLevel(Debug))
+import Util exposing (LogLevel(Debug, Info))
 
 
 type alias FileName =
@@ -106,6 +108,10 @@ type alias TabId =
     String
 
 
+type alias RevisionId =
+    String
+
+
 type Msg
     = ModalMsg Ui.Modal.Msg
     | ConfirmationDialogMsg ConfirmationDialog.Msg
@@ -178,7 +184,7 @@ init =
     , users = NotAsked
     , logItems = []
     , historyItems = NotAsked
-    , eventFilters = [ Level Debug ]
+    , eventFilters = [ Level Debug, IsLogItem ]
     , eventSortOrder = Descending
     , eventSortBy = eventSortByCreatedAt
     , usersToAdd = Dict.empty

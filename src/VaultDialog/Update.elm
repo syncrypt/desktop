@@ -12,6 +12,7 @@ import Platform.Cmd exposing (map)
 import Ports
 import RemoteData exposing (RemoteData(..), WebData)
 import Set
+import Tooltip
 import Translation as T
 import Ui.Input
 import Ui.Modal

@@ -309,12 +309,13 @@ vaultList model =
             case vaultItems of
                 [] ->
                     [ Tooltip.viewIfActive vaultListTooltip
+                        T.translate
                         model
                         [ newVaultItemButton ]
                     ]
 
                 _ ->
-                    Tooltip.viewIfActive vaultListTooltip model vaultItems
+                    Tooltip.viewIfActive vaultListTooltip T.translate model vaultItems
                         :: [ newVaultItemButton ]
     in
     div [ class "VaultList" ]
@@ -374,6 +375,7 @@ flyingVaultList model =
     in
     div [ class "VaultList" ] <|
         [ Tooltip.viewIfActive flyingVaultListTooltip
+            T.translate
             model
             ([ div [ class "VaultListInfo" ]
                 [ span [ class "Title" ]

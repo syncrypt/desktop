@@ -18,7 +18,6 @@ import Data.Vault
         , VaultId
         )
 import Date exposing (Date)
-import Date.Distance
 import Dialog exposing (labeledItem)
 import Dict
 import Html
@@ -39,9 +38,9 @@ import Html.Events exposing (onClick)
 import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
-import Ports
 import RemoteData exposing (RemoteData(..))
 import Tooltip
+import Tooltips
 import Translation as T
     exposing
         ( FolderButtonType(..)
@@ -350,7 +349,7 @@ cryptoTab vaultId state model =
             t (VaultDialogTxt vaultDialogText) model
 
         copiedTooltip =
-            Tooltip.copied { id = "remoteId", position = Left }
+            Tooltips.copied { id = "remoteId", position = Left }
     in
     ( t (VaultDialogTxt CryptoTab) model
     , tabBody
@@ -362,11 +361,11 @@ cryptoTab vaultId state model =
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
                     [ Tooltip.viewIfActive copiedTooltip
+                        T.translate
                         model
                         [ span
                             [ class "Default-Cursor"
-                            , onClick (Model.CopyToClipboard vault.remoteId)
-                            , onClick (Model.AddTooltip copiedTooltip)
+                            , onClick <| Model.CopyToClipboardWithTooltip vault.remoteId copiedTooltip
                             ]
                             [ text (String.toUpper vault.remoteId) ]
                         ]
@@ -494,7 +493,7 @@ logTab vaultId state model =
                             [ loadingSpinner ]
 
                         VaultDialog.Model.Events events ->
-                            List.map (viewEvent model) events
+                            List.map (viewEvent vaultId model) events
 
                         VaultDialog.Model.AllEventsFiltered ->
                             [ tr []
@@ -609,14 +608,14 @@ tabInfoText infoText =
         ]
 
 
-viewEvent : Model -> Event -> Html Model.Msg
-viewEvent model event =
+viewEvent : VaultId -> Model -> Event -> Html Model.Msg
+viewEvent vaultId model event =
     case event of
         Log item ->
             viewLogItem model item
 
         History item ->
-            viewHistoryItem model item
+            viewHistoryItem vaultId model item
 
 
 type alias HasCreatedAt event =
@@ -684,11 +683,11 @@ logItemLogLevelIcon lang item =
                 [ materialIcon "error" [] ]
 
 
-viewHistoryItem : Model -> HistoryItem -> Html Model.Msg
-viewHistoryItem ({ now, language } as model) item =
+viewHistoryItem : VaultId -> Model -> HistoryItem -> Html Model.Msg
+viewHistoryItem vaultId ({ now, language } as model) item =
     let
-        copiedFingerprintTooltip =
-            Tooltip.copied
+        copiedTooltip =
+            Tooltips.copied
                 { id = item.revisionId ++ "/" ++ item.fingerprint
                 , position = Left
                 }
@@ -713,11 +712,10 @@ viewHistoryItem ({ now, language } as model) item =
                     , visible = False
                     }
                     [ materialIcon "error_outline" [ class "UnverifiedIcon" ] ]
-            , viewOperation model item
+            , viewOperation vaultId model item
             ]
         , td
-            [ onClick (Model.CopyToClipboard item.fingerprint)
-            , onClick (Model.AddTooltip copiedFingerprintTooltip)
+            [ onClick <| Model.CopyToClipboardWithTooltip item.fingerprint copiedTooltip
             , class "Default-Cursor"
             ]
             [ tooltipItem
@@ -726,7 +724,8 @@ viewHistoryItem ({ now, language } as model) item =
                 , text = item.fingerprint
                 , visible = False
                 }
-                [ Tooltip.viewIfActive copiedFingerprintTooltip
+                [ Tooltip.viewIfActive copiedTooltip
+                    T.translate
                     model
                     [ text item.email ]
                 ]
@@ -744,8 +743,8 @@ historyItemDescription lang item =
     text <| translate lang (VaultDialogTxt <| HistoryItemDescription item)
 
 
-viewOperation : Model -> HistoryItem -> Html Model.Msg
-viewOperation model { operation, revisionId } =
+viewOperation : VaultId -> Model -> HistoryItem -> Html Model.Msg
+viewOperation vaultId model { operation, revisionId } =
     let
         icon =
             case operation of
@@ -777,12 +776,10 @@ viewOperation model { operation, revisionId } =
                     materialIcon "delete_forever" []
 
         copiedTooltip =
-            Tooltip.copied { id = revisionId, position = Left }
+            Tooltips.copied { id = revisionId, position = Left }
     in
     span
-        [ onClick (Model.CopyToClipboard revisionId)
-        , onClick (Model.AddTooltip copiedTooltip)
-        ]
+        [ onClick <| Model.CopyToClipboardWithTooltip revisionId copiedTooltip ]
         [ tooltipItem
             { position = Bottom
             , length = Large
@@ -790,6 +787,7 @@ viewOperation model { operation, revisionId } =
             , visible = False
             }
             [ Tooltip.viewIfActive copiedTooltip
+                T.translate
                 model
                 [ icon ]
             ]
