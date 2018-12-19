@@ -216,18 +216,28 @@ update msg state =
 
         MarkAsCompleted ->
             ( markCompleted state
-            , Cmd.none
+            , triggerOnExit state
             )
 
         Restart ->
             ( toFirstStep state
-            , Cmd.none
+            , triggerOnExit state
             )
 
         Hide ->
             ( hide state
-            , Cmd.none
+            , triggerOnExit state
             )
+
+
+triggerOnExit : State msg -> Cmd msg
+triggerOnExit state =
+    case currentStep state of
+        Just step ->
+            triggerMsgs step.onExit
+
+        _ ->
+            Cmd.none
 
 
 view : Language -> State msg -> Html msg
