@@ -39,7 +39,7 @@ import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Tooltip
+import Tooltip exposing (TooltipLength(..))
 import Tooltips
 import Translation as T
     exposing
@@ -59,7 +59,6 @@ import Util
     exposing
         ( LogLevel(..)
         , Position(..)
-        , TooltipLength(..)
         , button
         , dateParts
         , fullDateString
@@ -67,7 +66,6 @@ import Util
         , onAnyKeyDown
         , onEnter
         , shortDateString
-        , tooltipItem
         )
 import VaultDialog.Model
     exposing
@@ -335,7 +333,7 @@ cryptoTab vaultId state model =
                     , onClick = Nothing
                     , label = text label
                     , item =
-                        tooltipItem
+                        Tooltip.item
                             { position = Bottom
                             , length = Medium
                             , text = tooltip
@@ -465,7 +463,7 @@ logTab vaultId state model =
                         ]
                         [ text <| vt T.Time ]
                     , th [ class "Default-Cursor" ]
-                        [ tooltipItem
+                        [ Tooltip.item
                             { position = Bottom
                             , length = Auto
                             , text = vt T.OperationTooltip
@@ -474,7 +472,7 @@ logTab vaultId state model =
                             [ text <| vt T.Operation ]
                         ]
                     , th [ class "Default-Cursor" ]
-                        [ tooltipItem
+                        [ Tooltip.item
                             { position = Bottom
                             , length = Auto
                             , text = vt T.UserTooltip
@@ -667,19 +665,19 @@ logItemLogLevelIcon lang item =
     in
     case item.level of
         Debug ->
-            tooltipItem (opts "Debug log level")
+            Tooltip.item (opts "Debug log level")
                 [ materialIcon "view_headline" [] ]
 
         Info ->
-            tooltipItem (opts "Info log level")
+            Tooltip.item (opts "Info log level")
                 [ materialIcon "info" [] ]
 
         Warning ->
-            tooltipItem (opts "Warning log level")
+            Tooltip.item (opts "Warning log level")
                 [ materialIcon "warning" [] ]
 
         Error ->
-            tooltipItem (opts "Error log level")
+            Tooltip.item (opts "Error log level")
                 [ materialIcon "error" [] ]
 
 
@@ -697,7 +695,7 @@ viewHistoryItem vaultId ({ now, language } as model) item =
             [ text <| eventDateString now item ]
         , td [ class "Default-Cursor" ]
             [ if item.verified then
-                tooltipItem
+                Tooltip.item
                     { position = Right
                     , length = Auto
                     , text = "Verified revision"
@@ -705,7 +703,7 @@ viewHistoryItem vaultId ({ now, language } as model) item =
                     }
                     [ materialIcon "verified_user" [ class "VerifiedIcon" ] ]
               else
-                tooltipItem
+                Tooltip.item
                     { position = Right
                     , length = Auto
                     , text = "Verification failed for this revision"
@@ -718,7 +716,7 @@ viewHistoryItem vaultId ({ now, language } as model) item =
             [ onClick <| Model.CopyToClipboardWithTooltip item.fingerprint copiedTooltip
             , class "Default-Cursor"
             ]
-            [ tooltipItem
+            [ Tooltip.item
                 { position = Bottom
                 , length = Auto
                 , text = item.fingerprint
@@ -780,7 +778,7 @@ viewOperation vaultId model { operation, revisionId } =
     in
     span
         [ onClick <| Model.CopyToClipboardWithTooltip revisionId copiedTooltip ]
-        [ tooltipItem
+        [ Tooltip.item
             { position = Bottom
             , length = Large
             , text = revisionId
@@ -971,7 +969,7 @@ openFolderButton vaultId state model =
             , onClick = Nothing
             , label = text <| t (VaultDialogTxt Folder) model
             , item =
-                tooltipItem
+                Tooltip.item
                     { position = Right
                     , length = Small
                     , text = tooltipMsg
@@ -1000,7 +998,7 @@ nameInput msg state model =
             , onClick = Just (Model.FocusOn state.nameInput.uid)
             , label = text <| t (VaultDialogTxt Name) model
             , item =
-                tooltipItem
+                Tooltip.item
                     { position = Right
                     , length = Small
                     , text = t (VaultDialogTxt VaultNameTooltip) model
@@ -1039,7 +1037,7 @@ iconInput state model =
             img iconAttrs
                 []
     in
-    tooltipItem
+    Tooltip.item
         { position = Right
         , length = Auto
         , text = "Vault icon that can be seen by any invited user"
@@ -1055,7 +1053,7 @@ userInput vaultId state model =
         , onClick = Just (Model.FocusOn state.userInput.uid)
         , label = text <| t (VaultDialogTxt UserInputLabel) model
         , item =
-            tooltipItem
+            Tooltip.item
                 { position = Bottom
                 , length = Large
                 , text = t (VaultDialogTxt UserInputTooltip) model
@@ -1086,7 +1084,7 @@ fileSelectionContainer state model =
                     , item =
                         Ui.Container.view settings
                             []
-                            [ tooltipItem
+                            [ Tooltip.item
                                 { position = Top
                                 , length = Large
                                 , text =

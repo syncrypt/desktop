@@ -3,6 +3,7 @@ module Tooltip
         ( HasTooltips
         , ID
         , Tooltip
+        , TooltipLength(..)
         , TooltipOptions
         , Tooltips
         , activate
@@ -12,6 +13,7 @@ module Tooltip
         , id
         , init
         , isActive
+        , item
         , length
         , position
         , remove
@@ -26,9 +28,10 @@ module Tooltip
 
 import Dict exposing (Dict)
 import Html exposing (Html)
+import Html.Attributes exposing (attribute, class, style)
 import Language exposing (HasLanguage, Language)
 import Time exposing (Time)
-import Util exposing (Position(..), TooltipLength(..))
+import Util exposing (Position(..))
 
 
 type ID
@@ -179,7 +182,7 @@ type alias Translator t =
 
 view : Tooltip t -> Translator t -> HasTooltips a t -> List (Html msg) -> Html msg
 view (Tooltip { text, active, position, length }) t model body =
-    Util.tooltipItem
+    item
         { position = position
         , length = length
         , text = t model.language text
@@ -208,3 +211,87 @@ viewWithId (ID id) t model body =
                 view tip t model body
             else
                 bodyOnly
+
+
+type TooltipLength
+    = Small
+    | Medium
+    | Large
+    | XLarge
+    | Fit
+    | Auto
+
+
+type alias TooltipConfig =
+    { position : Position
+    , length : TooltipLength
+    , text : String
+    , visible : Bool
+    }
+
+
+item : TooltipConfig -> List (Html msg) -> Html msg
+item { position, length, text, visible } body =
+    let
+        commonAttrs =
+            [ attribute "data-balloon" text
+            , attribute "data-balloon-pos" (tooltipPositionString position)
+            , class "Tooltip"
+            ]
+
+        baseAttrs =
+            if visible then
+                attribute "data-balloon-visible" ""
+                    :: commonAttrs
+            else
+                commonAttrs
+
+        attributes =
+            case length of
+                Auto ->
+                    baseAttrs
+
+                _ ->
+                    attribute "data-balloon-length"
+                        (tooltipLengthString length)
+                        :: baseAttrs
+    in
+    Html.span attributes body
+
+
+tooltipPositionString : Position -> String
+tooltipPositionString position =
+    case position of
+        Top ->
+            "up"
+
+        Bottom ->
+            "down"
+
+        Left ->
+            "left"
+
+        Right ->
+            "right"
+
+
+tooltipLengthString : TooltipLength -> String
+tooltipLengthString length =
+    case length of
+        Small ->
+            "small"
+
+        Medium ->
+            "medium"
+
+        Large ->
+            "large"
+
+        XLarge ->
+            "xlarge"
+
+        Fit ->
+            "fit"
+
+        Auto ->
+            ""

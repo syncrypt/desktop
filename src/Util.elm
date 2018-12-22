@@ -8,7 +8,6 @@ module Util
         , Direction(..)
         , LogLevel(..)
         , Position(..)
-        , TooltipLength(..)
         , allButLast
         , andAlso
         , andLog
@@ -45,7 +44,6 @@ module Util
         , skipCharsWhile
         , surround
         , toList
-        , tooltipItem
         )
 
 import Date exposing (Date)
@@ -335,90 +333,6 @@ type Position
     | Bottom
     | Right
     | Left
-
-
-type TooltipLength
-    = Small
-    | Medium
-    | Large
-    | XLarge
-    | Fit
-    | Auto
-
-
-type alias TooltipConfig =
-    { position : Position
-    , length : TooltipLength
-    , text : String
-    , visible : Bool
-    }
-
-
-tooltipItem : TooltipConfig -> List (Html msg) -> Html msg
-tooltipItem { position, length, text, visible } body =
-    let
-        commonAttrs =
-            [ attribute "data-balloon" text
-            , attribute "data-balloon-pos" (tooltipPositionString position)
-            , class "Tooltip"
-            ]
-
-        baseAttrs =
-            if visible then
-                attribute "data-balloon-visible" ""
-                    :: commonAttrs
-            else
-                commonAttrs
-
-        attributes =
-            case length of
-                Auto ->
-                    baseAttrs
-
-                _ ->
-                    attribute "data-balloon-length"
-                        (tooltipLengthString length)
-                        :: baseAttrs
-    in
-    span attributes body
-
-
-tooltipPositionString : Position -> String
-tooltipPositionString position =
-    case position of
-        Top ->
-            "up"
-
-        Bottom ->
-            "down"
-
-        Left ->
-            "left"
-
-        Right ->
-            "right"
-
-
-tooltipLengthString : TooltipLength -> String
-tooltipLengthString length =
-    case length of
-        Small ->
-            "small"
-
-        Medium ->
-            "medium"
-
-        Large ->
-            "large"
-
-        XLarge ->
-            "xlarge"
-
-        Fit ->
-            "fit"
-
-        Auto ->
-            ""
 
 
 {-| Decodes an `Maybe Date` from a string.

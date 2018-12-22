@@ -3,8 +3,9 @@ module View.IconButton exposing (IconButton(..), view)
 import Html exposing (Html, div)
 import Html.Attributes exposing (class, style)
 import Language exposing (Language)
+import Tooltip exposing (TooltipLength(Auto))
 import Translation as T
-import Util exposing (Position(..), TooltipLength(Auto), tooltipItem)
+import Util exposing (Position(..))
 
 
 type IconButton
@@ -18,7 +19,7 @@ type IconButton
 
 view : List (Html.Attribute msg) -> Language -> IconButton -> Html msg
 view attrs language buttonType =
-    tooltipItem
+    Tooltip.item
         { position = Bottom
         , length = Auto
         , text = tooltip language buttonType

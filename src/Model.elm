@@ -460,7 +460,7 @@ vaultListTooltip =
         { text = T.MainTutorialTxt T.MainTutorialS2TT1
         , visibleTime = 5000
         , position = Util.Bottom
-        , length = Util.Auto
+        , length = Tooltip.Auto
         }
 
 
@@ -470,7 +470,7 @@ flyingVaultListTooltip =
         { text = T.MainTutorialTxt T.MainTutorialS3TT1
         , visibleTime = 5000
         , position = Util.Top
-        , length = Util.Auto
+        , length = Tooltip.Auto
         }
 
 

@@ -8,6 +8,7 @@ import Language exposing (HasLanguage, Language(..))
 import Model
 import SettingsDialog.Model exposing (HasSettingsDialog, Msg(..))
 import String
+import Tooltip
 import Translation as T
 import Ui.Input
 import Ui.Modal
@@ -180,9 +181,9 @@ passwordInput inputType model =
         , label = text <| t labelText model
         , item =
             span [ onEnter onEnterMsg ]
-                [ Util.tooltipItem
+                [ Tooltip.item
                     { position = Right
-                    , length = Util.Medium
+                    , length = Tooltip.Medium
                     , text = t tooltipText model
                     , visible = False
                     }

@@ -1,12 +1,8 @@
 module Tooltips exposing (copied)
 
-import Data.Vault exposing (VaultId)
-import Html
-import Html.Events exposing (onClick)
-import Model
-import Tooltip exposing (Tooltip)
+import Tooltip exposing (Tooltip, TooltipLength(..))
 import Translation as T
-import Util exposing (Position(..), TooltipLength(..))
+import Util exposing (Position(..))
 
 
 copied : { id : String, position : Position } -> Tooltip T.Text

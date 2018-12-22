@@ -28,7 +28,7 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
 import Time
-import Tooltip
+import Tooltip exposing (TooltipLength(..))
 import Translation as T
     exposing
         ( NotificationText(..)
@@ -39,7 +39,7 @@ import Translation as T
         )
 import Tutorial
 import Ui.NotificationCenter
-import Util exposing ((~>), Direction(..), Position(..), TooltipLength(..), andLog, materialIcon, tooltipItem)
+import Util exposing ((~>), Direction(..), Position(..), andLog, materialIcon)
 import VaultDialog.Model exposing (CloneStatus(..))
 import VaultDialog.Update exposing (dialogState)
 import VaultDialog.View
@@ -1283,7 +1283,7 @@ footer ({ stats, vaults, language, updateAvailable } as model) =
             [ Tooltip.viewIfActive statusBarTooltip
                 T.translate
                 model
-                [ tooltipItem
+                [ Tooltip.item
                     { position = Top
                     , length = Auto
                     , text = translate language syncedVaultsText
@@ -1291,7 +1291,7 @@ footer ({ stats, vaults, language, updateAvailable } as model) =
                     }
                     [ syncedVaultsIcon ]
                 ]
-            , tooltipItem
+            , Tooltip.item
                 { position = Top
                 , length = Fit
                 , text = translate language statsText
