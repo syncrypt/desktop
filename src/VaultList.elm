@@ -302,22 +302,15 @@ vaultList model =
         vaultItems =
             RemoteData.withDefault [] model.vaults
                 |> List.map (vaultItem model)
-
-        itemsWithTooltip =
-            case vaultItems of
-                [] ->
-                    [ Tooltip.viewIfActive vaultListTooltip
-                        T.translate
-                        model
-                        [ newVaultItemButton ]
-                    ]
-
-                _ ->
-                    Tooltip.viewIfActive vaultListTooltip T.translate model vaultItems
-                        :: [ newVaultItemButton ]
     in
     div [ class "VaultList" ]
-        (vaultListInfo :: itemsWithTooltip)
+        [ Tooltip.viewIfActive vaultListTooltip
+            T.translate
+            model
+            ((vaultListInfo :: vaultItems)
+                ++ [ newVaultItemButton ]
+            )
+        ]
 
 
 flyingVaultListSubtitle : List FlyingVault -> Model -> Html Msg

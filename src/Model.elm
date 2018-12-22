@@ -458,8 +458,8 @@ vaultListTooltip : Tooltip T.Text
 vaultListTooltip =
     Tooltip.init "MainTutorial.VaultList"
         { text = T.MainTutorialTxt T.MainTutorialS2TT1
-        , visibleTime = 5000
-        , position = Util.Bottom
+        , visibleTime = Util.forever
+        , position = Util.Top
         , length = Tooltip.Auto
         }
 
@@ -468,7 +468,7 @@ flyingVaultListTooltip : Tooltip T.Text
 flyingVaultListTooltip =
     Tooltip.init "MainTutorial.FlyingVaultList"
         { text = T.MainTutorialTxt T.MainTutorialS3TT1
-        , visibleTime = 5000
+        , visibleTime = Util.forever
         , position = Util.Top
         , length = Tooltip.Auto
         }
@@ -478,9 +478,9 @@ statusBarTooltip : Tooltip T.Text
 statusBarTooltip =
     Tooltip.init "MainTutorial.StatusBar"
         { text = T.MainTutorialTxt T.MainTutorialS4TT1
-        , visibleTime = 5000
+        , visibleTime = Util.forever
         , position = Util.Top
-        , length = Util.Auto
+        , length = Tooltip.Auto
         }
 
 
