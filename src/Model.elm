@@ -118,6 +118,8 @@ type Msg
     | CopyToClipboardWithTooltip String (Tooltip T.Text)
     | AddTooltip (Tooltip T.Text)
     | RemoveTooltip Tooltip.ID
+    | ActivateTooltip Tooltip.ID
+    | DeactivateTooltip Tooltip.ID
     | ShowTooltip (Tooltip T.Text)
     | ShowTooltipWithID Tooltip.ID
     | HideTooltip (Tooltip T.Text)

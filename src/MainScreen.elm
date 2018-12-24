@@ -137,8 +137,18 @@ update msg model =
             , Tooltip.removeInSchedule tip RemoveTooltip
             )
 
-        RemoveTooltip tip ->
-            ( model |> Tooltip.remove tip
+        RemoveTooltip tipId ->
+            ( model |> Tooltip.remove tipId
+            , Cmd.none
+            )
+
+        ActivateTooltip tipId ->
+            ( model |> Tooltip.activate tipId
+            , Cmd.none
+            )
+
+        DeactivateTooltip tipId ->
+            ( model |> Tooltip.deactivate tipId
             , Cmd.none
             )
 
