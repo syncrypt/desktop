@@ -318,6 +318,10 @@ type MainTutorialText
     | MainTutorialS4TT1
     | MainTutorialS4P1
     | MainTutorialS4P2
+    | MainTutorialS5T
+    | MainTutorialS5TT1
+    | MainTutorialS5P1
+    | MainTutorialS5P2
 
 
 type FolderButtonType
@@ -1191,6 +1195,18 @@ translateEnglishMainTutorialText text =
         MainTutorialS4P2 ->
             "You can hover your mouse over it to get a better idea of what each icon means."
 
+        MainTutorialS5T ->
+            "Daemon Log Viewer"
+
+        MainTutorialS5TT1 ->
+            "Daemon Log"
+
+        MainTutorialS5P1 ->
+            "You can view what the Syncrypt background process is doing in the daemon log viewer."
+
+        MainTutorialS5P2 ->
+            "View up-to-date information on what Syncrypt is doing, what vaults are being synchronized and other useful debugging information."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -2030,6 +2046,18 @@ translateGermanMainTutorialText text =
 
         MainTutorialS4P2 ->
             "Du kannst mit deiner Mouse über die Status Leiste fahren um mehr Informationen zu den Symbolen zu sehen."
+
+        MainTutorialS5T ->
+            "Syncrypt Logbuch"
+
+        MainTutorialS5TT1 ->
+            "Syncrypt Logbuch (Daemon Log)"
+
+        MainTutorialS5P1 ->
+            "Du kannst dir im Logbuch Informationen zu allen aktuellen Hintergrundprozesse von Syncrypt anzeigen lassen."
+
+        MainTutorialS5P2 ->
+            "Sieh dir an z.B. an, welche Vaults gerade synchronisiert werden sowie weitere Informationen."
 
 
 germanDistance : Date -> Date -> String

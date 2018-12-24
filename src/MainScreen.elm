@@ -1160,7 +1160,7 @@ header model =
 
 
 headerButtons : Model -> List (Html Msg)
-headerButtons { language, login } =
+headerButtons ({ language, login } as model) =
     case login of
         LoggedIn _ ->
             [ IconButton.view [ onClick UpdateVaultsWithForcedRefresh ]
@@ -1169,9 +1169,13 @@ headerButtons { language, login } =
             , IconButton.view [ onClick OpenNewVaultWizard ]
                 language
                 ImportVaultButton
-            , IconButton.view [ onClick OpenDaemonLogDialog ]
-                language
-                DaemonLogButton
+            , Tooltip.viewIfActive daemonLogTooltip
+                T.translate
+                model
+                [ IconButton.view [ onClick OpenDaemonLogDialog ]
+                    language
+                    DaemonLogButton
+                ]
             , IconButton.view [ onClick OpenFeedbackWizard ]
                 language
                 FeedbackButton

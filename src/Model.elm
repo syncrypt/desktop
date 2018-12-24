@@ -484,6 +484,16 @@ statusBarTooltip =
         }
 
 
+daemonLogTooltip : Tooltip T.Text
+daemonLogTooltip =
+    Tooltip.init "MainTutorial.DaemonLog"
+        { text = T.MainTutorialTxt T.MainTutorialS5TT1
+        , visibleTime = Util.forever
+        , position = Util.Bottom
+        , length = Tooltip.Auto
+        }
+
+
 mainTutorial : Tutorial.State Msg
 mainTutorial =
     Tutorial.init MainTutorialMsg
@@ -521,5 +531,14 @@ mainTutorial =
                 ]
           , onEnter = [ AddTooltip statusBarTooltip ]
           , onExit = [ RemoveTooltip (Tooltip.id statusBarTooltip) ]
+          }
+        , { id = "DaemonLog"
+          , title = T.MainTutorialTxt T.MainTutorialS5T
+          , paragraphs =
+                [ T.MainTutorialTxt T.MainTutorialS5P1
+                , T.MainTutorialTxt T.MainTutorialS5P2
+                ]
+          , onEnter = [ AddTooltip daemonLogTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id daemonLogTooltip) ]
           }
         ]
