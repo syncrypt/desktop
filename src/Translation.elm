@@ -1590,7 +1590,7 @@ translateGermanVaultDialogText vt =
             "Schlüssel Fingerabdruck"
 
         KeyFingerprintTooltip ->
-            "Vault public key fingerprint"
+            "Fingerabdruck des Vault Schlüssels"
 
         TransferAlgorithmLabel ->
             "Transfer Algorithmus"
@@ -1748,7 +1748,7 @@ translateGermanVaultDialogText vt =
                     "Sämtliche Versionen einer Datei wurden gelöscht"
 
         ExportVaultKeyBundle ->
-            "Exportiere Vault-Schlüssel & -Einstellungen"
+            "Exportiere Vault Schlüssel & -Einstellungen"
 
 
 translateGermanVaultListText : VaultListText -> String
