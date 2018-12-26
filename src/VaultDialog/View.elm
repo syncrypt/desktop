@@ -789,7 +789,7 @@ viewOperation vaultId model { operation, revisionId } =
         [ onClick <| Model.CopyToClipboardWithTooltip revisionId copiedTooltip ]
         [ Tooltip.item
             { position = Bottom
-            , length = Large
+            , length = Auto
             , text = revisionId
             , visible = False
             }
