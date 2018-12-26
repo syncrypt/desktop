@@ -205,6 +205,7 @@ type VaultDialogText
     | VaultOwner
     | AllEventsHaveBeenFiltered
     | HistoryItemDescription Data.Vault.HistoryItem
+    | ExportVaultKeyBundle
 
 
 type VaultListText
@@ -890,6 +891,9 @@ translateEnglishVaultDialogText vt =
 
                 Data.Vault.DeleteFile ->
                     "Deleted file (with all revisions)"
+
+        ExportVaultKeyBundle ->
+            "Export vault key & configuration bundle"
 
 
 translateEnglishVaultListText : VaultListText -> String
@@ -1742,6 +1746,9 @@ translateGermanVaultDialogText vt =
 
                 Data.Vault.DeleteFile ->
                     "Sämtliche Versionen einer Datei wurden gelöscht"
+
+        ExportVaultKeyBundle ->
+            "Exportiere Vault-Schlüssel & -Einstellungen"
 
 
 translateGermanVaultListText : VaultListText -> String

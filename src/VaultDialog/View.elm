@@ -537,7 +537,7 @@ adminTab vaultId state model =
             [ div [ class "Admin-Buttons" ] <|
                 syncedActions
                     ++ [ infoText (t (VaultDialogTxt VaultExportButtonInfo) model)
-                       , exportButton <| Model.vaultWithId vaultId model
+                       , exportButton (Model.vaultWithId vaultId model) model
                        , separator
                        ]
                     ++ adminActions
@@ -804,12 +804,12 @@ separator =
         []
 
 
-exportButton : Vault -> Html Model.Msg
-exportButton vault =
+exportButton : Vault -> Model -> Html Model.Msg
+exportButton vault model =
     span
         [ class "Button-Export" ]
         [ button []
-            { label = "Export vault key bundle"
+            { label = t (VaultDialogTxt ExportVaultKeyBundle) model
             , onClick = Model.VaultDialogMsg vault.id OpenExportDialog
             }
         ]
