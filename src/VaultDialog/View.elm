@@ -39,7 +39,7 @@ import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
 import RemoteData exposing (RemoteData(..))
-import Tooltip exposing (TooltipLength(..))
+import Tooltip exposing (Length(..))
 import Tooltips
 import Translation as T
     exposing

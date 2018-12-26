@@ -2,8 +2,8 @@ module Tooltip
     exposing
         ( HasTooltips
         , ID
+        , Length(..)
         , Tooltip
-        , TooltipLength(..)
         , TooltipOptions
         , Tooltips
         , activate
@@ -46,7 +46,7 @@ type Tooltip text
         , active : Bool
         , visibleTime : Time
         , position : Position
-        , length : TooltipLength
+        , length : Length
         }
 
 
@@ -54,7 +54,7 @@ type alias TooltipOptions text =
     { text : text
     , visibleTime : Time
     , position : Position
-    , length : TooltipLength
+    , length : Length
     }
 
 
@@ -107,7 +107,7 @@ position (Tooltip { position }) =
     position
 
 
-length : Tooltip t -> TooltipLength
+length : Tooltip t -> Length
 length (Tooltip { length }) =
     length
 
@@ -219,7 +219,7 @@ viewWithId (ID id) t model body =
                 bodyOnly
 
 
-type TooltipLength
+type Length
     = Small
     | Medium
     | Large
@@ -230,7 +230,7 @@ type TooltipLength
 
 type alias TooltipConfig =
     { position : Position
-    , length : TooltipLength
+    , length : Length
     , text : String
     , visible : Bool
     }
@@ -259,7 +259,7 @@ item { position, length, text, visible } body =
 
                 _ ->
                     attribute "data-balloon-length"
-                        (tooltipLengthString length)
+                        (lengthString length)
                         :: baseAttrs
     in
     Html.span attributes body
@@ -281,8 +281,8 @@ tooltipPositionString position =
             "right"
 
 
-tooltipLengthString : TooltipLength -> String
-tooltipLengthString length =
+lengthString : Length -> String
+lengthString length =
     case length of
         Small ->
             "small"

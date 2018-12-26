@@ -28,7 +28,7 @@ import SettingsDialog.Update
 import SettingsDialog.View
 import SetupWizard
 import Time
-import Tooltip exposing (TooltipLength(..))
+import Tooltip exposing (Length(..))
 import Translation as T
     exposing
         ( NotificationText(..)

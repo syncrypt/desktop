@@ -21,6 +21,7 @@ main =
     , TooltipTests.text
     , TooltipTests.activateAndDeactivate
     , TooltipTests.hasTooltip
+    , TooltipTests.length
     ]
         |> concat
         |> Test.Runner.Html.run

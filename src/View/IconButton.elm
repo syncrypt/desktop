@@ -3,7 +3,7 @@ module View.IconButton exposing (IconButton(..), view)
 import Html exposing (Html, div)
 import Html.Attributes exposing (class, style)
 import Language exposing (Language)
-import Tooltip exposing (TooltipLength(Auto))
+import Tooltip exposing (Length(Auto))
 import Translation as T
 import Util exposing (Position(..))
 

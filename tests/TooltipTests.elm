@@ -5,7 +5,7 @@ import Expect
 import Fuzz
 import Language
 import Test exposing (..)
-import Tooltip exposing (Tooltip, TooltipLength(..))
+import Tooltip exposing (Length(..), Tooltip)
 import Util exposing (Position(..))
 
 
@@ -31,7 +31,7 @@ ttip id text =
 
 
 baseModel =
-    { tooltips = Dict.empty, language = Language.German }
+    { tooltips = Tooltip.emptyTooltips, language = Language.German }
 
 
 text : Test
@@ -117,4 +117,28 @@ hasTooltip =
                     |> Tooltip.add tip1
                     |> Tooltip.hasTooltip (Tooltip.id tip2)
                     |> Expect.false "hasTooltip"
+        ]
+
+
+length : Test
+length =
+    describe "Tooltip.length"
+        [ test "returns the assigned length" <|
+            \_ ->
+                let
+                    lengths =
+                        [ Small, Medium, Large, XLarge, Fit, Auto ]
+                in
+                lengths
+                    |> List.indexedMap
+                        (\i length ->
+                            Tooltip.init ("test" ++ toString i)
+                                { text = Bar
+                                , visibleTime = Util.forever
+                                , position = Top
+                                , length = length
+                                }
+                        )
+                    |> List.map Tooltip.length
+                    |> Expect.equal lengths
         ]

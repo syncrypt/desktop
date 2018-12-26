@@ -1,6 +1,6 @@
 module Tooltips exposing (copied)
 
-import Tooltip exposing (Tooltip, TooltipLength(..))
+import Tooltip exposing (Length(..), Tooltip)
 import Translation as T
 import Util exposing (Position(..))
 
