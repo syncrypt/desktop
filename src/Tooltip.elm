@@ -10,6 +10,7 @@ module Tooltip
         , add
         , deactivate
         , emptyTooltips
+        , hasTooltip
         , id
         , init
         , isActive
@@ -139,6 +140,11 @@ idStr (Tooltip { id }) =
     case id of
         ID idString ->
             idString
+
+
+hasTooltip : ID -> HasTooltips a t -> Bool
+hasTooltip (ID id) { tooltips } =
+    Dict.member id tooltips
 
 
 remove : ID -> HasTooltips a t -> HasTooltips a t

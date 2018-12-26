@@ -1,10 +1,6 @@
 module TestMain exposing (..)
 
-import Char
-import Expect
-import Fuzz exposing (..)
 import PathTests
-import String
 import Test exposing (..)
 import Test.Runner.Html
 import TooltipTests
@@ -23,6 +19,8 @@ main =
     , UtilTests.removeTrailing
     , UtilTests.skipCharsWhile
     , TooltipTests.text
+    , TooltipTests.activateAndDeactivate
+    , TooltipTests.hasTooltip
     ]
         |> concat
         |> Test.Runner.Html.run
