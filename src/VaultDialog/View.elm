@@ -346,8 +346,16 @@ cryptoTab vaultId state model =
         vt vaultDialogText =
             t (VaultDialogTxt vaultDialogText) model
 
-        copiedTooltip =
+        copiedVaultIdTooltip =
             Tooltips.copied { id = "remoteId", position = Left }
+
+        copiedFingerprintTooltip =
+            Tooltips.copied { id = "tooltip", position = Left }
+
+        fingerprintText =
+            vault.crypto.fingerprint
+                |> Maybe.map String.toUpper
+                |> Maybe.withDefault "N/A"
     in
     ( t (VaultDialogTxt CryptoTab) model
     , tabBody
@@ -358,12 +366,12 @@ cryptoTab vaultId state model =
             [ div [ class "VaultMetadata" ]
                 [ cryptoInfoItem (vt VaultIdLabel)
                     (vt VaultIdTooltip)
-                    [ Tooltip.viewIfActive copiedTooltip
+                    [ Tooltip.viewIfActive copiedVaultIdTooltip
                         T.translate
                         model
                         [ span
                             [ class "Default-Cursor"
-                            , onClick <| Model.CopyToClipboardWithTooltip vault.remoteId copiedTooltip
+                            , onClick <| Model.CopyToClipboardWithTooltip vault.remoteId copiedVaultIdTooltip
                             ]
                             [ text (String.toUpper vault.remoteId) ]
                         ]
@@ -384,11 +392,12 @@ cryptoTab vaultId state model =
                     [ text (String.toUpper vault.crypto.keyAlgorithm) ]
                 , cryptoInfoItem (vt KeyFingerprintLabel)
                     (vt KeyFingerprintTooltip)
-                    [ text
-                        (vault.crypto.fingerprint
-                            |> Maybe.map String.toUpper
-                            |> Maybe.withDefault "N/A"
-                        )
+                    [ Tooltip.viewIfActive copiedFingerprintTooltip
+                        T.translate
+                        model
+                        [ span [ onClick <| Model.CopyToClipboardWithTooltip fingerprintText copiedFingerprintTooltip ]
+                            [ text fingerprintText ]
+                        ]
                     ]
                 , cryptoInfoItem (vt TransferAlgorithmLabel)
                     (vt TransferAlgorithmTooltip)
