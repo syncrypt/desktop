@@ -762,7 +762,7 @@ translateEnglishVaultDialogText vt =
             "Length of vault private key"
 
         VaultRemoveButtonInfo ->
-            "Stop synchronizing this vault on this computer. Will stop all local changes from being uploaded and any remote changes being downloaded to this computer."
+            "Stops synchronizing this vault on this device. Will stop all local changes from being uploaded and any remote changes being downloaded to this machine."
 
         VaultDeleteButtonInfo ->
             "Delete this vault with its files from the Syncrypt cloud."
@@ -940,7 +940,7 @@ translateEnglishConfirmationDialogText cdt =
             "Remove vault from sync?"
 
         RemoveVaultFromSyncExplanation ->
-            "This vault will stop being synchronized to this computer. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this computer."
+            "This vault will stop being synchronized to this device. Any local file changes won't be uploaded and new files added to the vault won't be downloaded to this machine."
 
 
 translateEnglishSettingsDialogText : SettingsDialogText -> String
@@ -1795,7 +1795,7 @@ translateGermanConfirmationDialogText cdt =
             "Vault deaktivieren und automatische Synchronisation deaktivieren?"
 
         RemoveVaultFromSyncExplanation ->
-            "Dieser Vault wird nicht mehr mit der Cloud synchronisiert. Lokale Änderungen werden nicht mehr hochgeladen und Dateien, die von anderen Benutzern hochgeladen wurden, werden nicht mehr auf diesen Computer runtergeladen."
+            "Dieser Vault wird nicht mehr mit der Cloud synchronisiert. Lokale Änderungen werden nicht mehr hochgeladen und Dateien, die von anderen Benutzern hochgeladen wurden, werden nicht mehr auf diesem Gerät heruntergeladen."
 
 
 translateGermanSettingsDialogText : SettingsDialogText -> String
