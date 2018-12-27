@@ -3,7 +3,8 @@
 .Tutorial {
   z-index: 10 !important;
   // display: inline-block;
-  position: sticky;
+  right: 0px;
+  position: fixed;
   background-color: $color-bg-extra-light;
   padding: $padding-medium;
   margin-right: 5 + $padding-extra-large;
