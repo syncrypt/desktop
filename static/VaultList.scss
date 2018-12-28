@@ -61,16 +61,9 @@ $border-radius-vault-card: 5px;
   }
 
   .VaultStatus-Failed {
-    background-size: 22px;
-    margin-left: -2px;
-    margin-top: -5px;
+    margin-top: -1px;
     margin-right: 5px;
-    width: 22px;
-    height: 22px;
-    background-repeat: no-repeat;
-    float: left;
-    // TODO: need icon here
-    // background-image: url(assets/check_circle_24px.svg);
+    color: red !important;
   }
 
   .Card {

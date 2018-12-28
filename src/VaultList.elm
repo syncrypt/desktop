@@ -23,6 +23,7 @@ import Util
     exposing
         ( Position(..)
         , bytesReadable
+        , materialIcon
         )
 
 
@@ -37,6 +38,27 @@ type alias HasModificationDate a =
 type VaultItemStateType
     = Vault Vault
     | FlyingVault FlyingVault
+
+
+vaultItemSyncState : VaultItemStateType -> Status
+vaultItemSyncState vist =
+    case vist of
+        Vault { status } ->
+            status
+
+        FlyingVault _ ->
+            Unsynced
+
+
+vaultItemSyncStateIcon : VaultItemStateType -> Model -> Html msg
+vaultItemSyncStateIcon vist model =
+    case vaultItemSyncState vist of
+        Failed ->
+            materialIcon "error_outline" [ class (vaultItemSyncStateClass vist model) ]
+
+        _ ->
+            div [ class (vaultItemSyncStateClass vist model) ]
+                []
 
 
 vaultItemSyncStateClass : VaultItemStateType -> Model -> String
@@ -84,20 +106,14 @@ updatedAtInfo vault updatedAtHeader model =
 vaultUpdatedAtInfo : Vault -> Model -> Html msg
 vaultUpdatedAtInfo vault model =
     updatedAtInfo vault
-        (Just <|
-            div [ class (vaultItemSyncStateClass (Vault vault) model) ]
-                []
-        )
+        (Just <| vaultItemSyncStateIcon (Vault vault) model)
         model
 
 
 flyingVaultUpdatedAtInfo : FlyingVault -> Model -> Html msg
 flyingVaultUpdatedAtInfo flyingVault model =
     updatedAtInfo flyingVault
-        (Just <|
-            div [ class (vaultItemSyncStateClass (FlyingVault flyingVault) model) ]
-                []
-        )
+        (Just <| vaultItemSyncStateIcon (FlyingVault flyingVault) model)
         model
 
 
