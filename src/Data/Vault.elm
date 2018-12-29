@@ -118,7 +118,6 @@ type alias HistoryItem =
     , path : Maybe String
     , email : String
     , fingerprint : String
-    , signature : String
     , verified : Bool
     }
 
@@ -335,8 +334,6 @@ historyItemDecoder =
         |> required "path" (Json.maybe Json.string)
         |> required "user_email" Json.string
         |> required "user_fingerprint" Json.string
-        -- TODO: make it required once implemented in daemon
-        |> optional "signature" Json.string "N/A"
         |> required "verified" Json.bool
 
 
