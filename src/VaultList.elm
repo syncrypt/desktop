@@ -161,7 +161,7 @@ vaultUserCount vault model =
 
 
 type alias HasRevisionCountAndId a =
-    { a | revisionCount : Int, id : String }
+    { a | revisionCount : Int, id : Data.Vault.VaultId }
 
 
 vaultRevisionCount : HasRevisionCountAndId a -> Model -> Html msg
