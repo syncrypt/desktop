@@ -88,6 +88,7 @@ type alias State =
     , logItems : List Data.Vault.LogItem
     , historyItems : WebData (List Data.Vault.HistoryItem)
     , eventFilters : List EventFilter
+    , showLogSearchBox : Bool
     , eventSortBy : EventSortBy
     , eventSortOrder : EventSortOrder
     , usersToAdd : Dict User.Email (List User.UserKey)
@@ -150,6 +151,8 @@ type Msg
     | ToggleViewLogLevelFilters
     | ToggleInfoBox TabId
     | CloseInfoBox TabId
+    | ToggleLogSearch
+    | SearchLog String
 
 
 init : State
@@ -185,6 +188,7 @@ init =
     , logItems = []
     , historyItems = NotAsked
     , eventFilters = [ Level Debug, IsLogItem ]
+    , showLogSearchBox = False
     , eventSortOrder = Descending
     , eventSortBy = eventSortByCreatedAt
     , usersToAdd = Dict.empty
@@ -679,3 +683,23 @@ closeAllInfoBoxes state =
 isInfoBoxOpen : TabId -> State -> Bool
 isInfoBoxOpen tabId { openInfoBoxes } =
     Set.member tabId openInfoBoxes
+
+
+toggleLogSearch : State -> State
+toggleLogSearch s =
+    { s | showLogSearchBox = not s.showLogSearchBox }
+
+
+isCurrentlySearching : State -> Bool
+isCurrentlySearching { eventFilters } =
+    List.any isSearchFilter eventFilters
+
+
+isSearchFilter : EventFilter -> Bool
+isSearchFilter f =
+    case f of
+        Search _ _ ->
+            True
+
+        _ ->
+            False

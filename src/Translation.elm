@@ -196,6 +196,7 @@ type VaultDialogText
     | HistoryFilter
     | LogFilter
     | LogLevels
+    | SearchFilter
     | InviteWithSelectedKeys
     | Folder
     | Name
@@ -852,6 +853,9 @@ translateEnglishVaultDialogText vt =
 
         LogLevels ->
             "Log Levels"
+
+        SearchFilter ->
+            "Search"
 
         InviteWithSelectedKeys ->
             "Invite with selected keys"
@@ -1740,6 +1744,9 @@ translateGermanVaultDialogText vt =
 
         LogLevels ->
             "Log Level"
+
+        SearchFilter ->
+            "Suche"
 
         InviteWithSelectedKeys ->
             "Nutzer mit ausgewählten Schlüsseln einladen"

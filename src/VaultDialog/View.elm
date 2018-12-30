@@ -33,8 +33,8 @@ import Html
         , th
         , tr
         )
-import Html.Attributes exposing (class, classList, src)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (class, classList, src, type_)
+import Html.Events exposing (onClick, onInput)
 import Language exposing (HasLanguage, Language)
 import Model exposing (Model)
 import Path exposing (Path)
@@ -586,9 +586,23 @@ eventFilterButtons vaultId state vt =
                 , onClick = rootMsg ToggleViewLogLevelFilters
                 }
 
+        logSearchInput title =
+            if state.showLogSearchBox then
+                Html.input
+                    [ type_ "text"
+                    , onInput <| (rootMsg << SearchLog)
+                    , onEnter <| rootMsg ToggleLogSearch
+                    ]
+                    []
+            else
+                -- TODO: conditionally add Filter-Active class ?
+                button []
+                    { label = title, onClick = rootMsg ToggleLogSearch }
+
         buttons =
             [ filterButton (vt HistoryFilter) IsHistoryItem
             , filterButton (vt LogFilter) IsLogItem
+            , logSearchInput (vt SearchFilter)
             , span [ class "LogLevelButtons" ] <|
                 if isFilterEnabled IsLogItem state then
                     []

@@ -557,6 +557,20 @@ update msg vaultId ({ vaultDialogs } as model) =
             , Cmd.none
             )
 
+        ToggleLogSearch ->
+            ( state
+                |> VaultDialog.Model.toggleLogSearch
+                |> asStateIn vaultId model
+            , Cmd.none
+            )
+
+        SearchLog searchStr ->
+            ( state
+                |> VaultDialog.Model.filterEventsBy (VaultDialog.Model.Search searchStr False)
+                |> asStateIn vaultId model
+            , Cmd.none
+            )
+
 
 getVaultFingerprints : VaultId -> Model -> Cmd Model.Msg
 getVaultFingerprints vaultId model =
