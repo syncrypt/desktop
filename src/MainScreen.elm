@@ -1200,9 +1200,13 @@ headerButtons ({ language, login } as model) =
                     language
                     SettingsButton
                 ]
-            , IconButton.view [ onClick Model.Logout ]
-                language
-                LogoutButton
+            , Tooltip.viewIfActive logoutTooltip
+                T.translate
+                model
+                [ IconButton.view [ onClick Model.Logout ]
+                    language
+                    LogoutButton
+                ]
             ]
 
         _ ->

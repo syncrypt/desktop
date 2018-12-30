@@ -516,6 +516,16 @@ settingsTooltip =
         }
 
 
+logoutTooltip : Tooltip T.Text
+logoutTooltip =
+    Tooltip.init "MainTutorial.Logout"
+        { text = T.MainTutorialTxt T.MainTutorialS8TT1
+        , visibleTime = Util.forever
+        , position = Util.Bottom
+        , length = Tooltip.Auto
+        }
+
+
 mainTutorial : Tutorial.State Msg
 mainTutorial =
     Tutorial.init MainTutorialMsg
@@ -580,5 +590,12 @@ mainTutorial =
                 ]
           , onEnter = [ AddTooltip settingsTooltip ]
           , onExit = [ RemoveTooltip (Tooltip.id settingsTooltip) ]
+          }
+        , { id = "Logout"
+          , title = T.MainTutorialTxt T.MainTutorialS8T
+          , paragraphs =
+                [ T.MainTutorialTxt T.MainTutorialS8P1 ]
+          , onEnter = [ AddTooltip logoutTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id logoutTooltip) ]
           }
         ]

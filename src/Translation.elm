@@ -331,6 +331,9 @@ type MainTutorialText
     | MainTutorialS7TT1
     | MainTutorialS7P1
     | MainTutorialS7P2
+    | MainTutorialS8T
+    | MainTutorialS8TT1
+    | MainTutorialS8P1
 
 
 type FolderButtonType
@@ -1243,6 +1246,15 @@ translateEnglishMainTutorialText text =
         MainTutorialS7P2 ->
             "Feel free to play around and explore the available settings. Most of them should be pretty self-explanatory but if you run into any issues, please let us know."
 
+        MainTutorialS8T ->
+            "Logout"
+
+        MainTutorialS8TT1 ->
+            "Logout here"
+
+        MainTutorialS8P1 ->
+            "If you wish to logout of Syncrypt or login with another account, click the logout button in the top right corner."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -2121,6 +2133,15 @@ translateGermanMainTutorialText text =
 
         MainTutorialS7P2 ->
             "Die vorhandenen Einstellungen sollten soweit selbsterklärend sein. Bei Unklarheiten oder etwaigen Problemen, stehen wir gerne zur Verfügung. Sende uns dazu einfach entsprechendes Feedback (siehe letzter Schritt)."
+
+        MainTutorialS8T ->
+            "Abmeldung / Benutzerwechsel"
+
+        MainTutorialS8TT1 ->
+            "Abmelden"
+
+        MainTutorialS8P1 ->
+            "Falls du dich aus Syncrypt ausloggen bzw. den Benutzer wechseln möchtest, klicke den Logout-Button im oberen rechten Rand."
 
 
 germanDistance : Date -> Date -> String
