@@ -496,6 +496,26 @@ daemonLogTooltip =
         }
 
 
+feedbackTooltip : Tooltip T.Text
+feedbackTooltip =
+    Tooltip.init "MainTutorial.Feedback"
+        { text = T.MainTutorialTxt T.MainTutorialS6TT1
+        , visibleTime = Util.forever
+        , position = Util.Bottom
+        , length = Tooltip.Auto
+        }
+
+
+settingsTooltip : Tooltip T.Text
+settingsTooltip =
+    Tooltip.init "MainTutorial.Settings"
+        { text = T.MainTutorialTxt T.MainTutorialS7TT1
+        , visibleTime = Util.forever
+        , position = Util.Bottom
+        , length = Tooltip.Auto
+        }
+
+
 mainTutorial : Tutorial.State Msg
 mainTutorial =
     Tutorial.init MainTutorialMsg
@@ -542,5 +562,23 @@ mainTutorial =
                 ]
           , onEnter = [ AddTooltip daemonLogTooltip ]
           , onExit = [ RemoveTooltip (Tooltip.id daemonLogTooltip) ]
+          }
+        , { id = "Feedback"
+          , title = T.MainTutorialTxt T.MainTutorialS6T
+          , paragraphs =
+                [ T.MainTutorialTxt T.MainTutorialS6P1
+                , T.MainTutorialTxt T.MainTutorialS6P2
+                ]
+          , onEnter = [ AddTooltip feedbackTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id feedbackTooltip) ]
+          }
+        , { id = "Settings"
+          , title = T.MainTutorialTxt T.MainTutorialS7T
+          , paragraphs =
+                [ T.MainTutorialTxt T.MainTutorialS7P1
+                , T.MainTutorialTxt T.MainTutorialS7P2
+                ]
+          , onEnter = [ AddTooltip settingsTooltip ]
+          , onExit = [ RemoveTooltip (Tooltip.id settingsTooltip) ]
           }
         ]

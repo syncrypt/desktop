@@ -1186,12 +1186,20 @@ headerButtons ({ language, login } as model) =
                     language
                     DaemonLogButton
                 ]
-            , IconButton.view [ onClick OpenFeedbackWizard ]
-                language
-                FeedbackButton
-            , IconButton.view [ onClick OpenSettingsDialog ]
-                language
-                SettingsButton
+            , Tooltip.viewIfActive feedbackTooltip
+                T.translate
+                model
+                [ IconButton.view [ onClick OpenFeedbackWizard ]
+                    language
+                    FeedbackButton
+                ]
+            , Tooltip.viewIfActive settingsTooltip
+                T.translate
+                model
+                [ IconButton.view [ onClick OpenSettingsDialog ]
+                    language
+                    SettingsButton
+                ]
             , IconButton.view [ onClick Model.Logout ]
                 language
                 LogoutButton

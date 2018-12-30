@@ -323,6 +323,14 @@ type MainTutorialText
     | MainTutorialS5TT1
     | MainTutorialS5P1
     | MainTutorialS5P2
+    | MainTutorialS6T
+    | MainTutorialS6TT1
+    | MainTutorialS6P1
+    | MainTutorialS6P2
+    | MainTutorialS7T
+    | MainTutorialS7TT1
+    | MainTutorialS7P1
+    | MainTutorialS7P2
 
 
 type FolderButtonType
@@ -1211,6 +1219,30 @@ translateEnglishMainTutorialText text =
         MainTutorialS5P2 ->
             "View up-to-date information on what Syncrypt is doing, what vaults are being synchronized and other useful debugging information."
 
+        MainTutorialS6T ->
+            "Feedback & Bug reports"
+
+        MainTutorialS6TT1 ->
+            "Send Feedback"
+
+        MainTutorialS6P1 ->
+            "You can send us suggestions for improvements, error & bug reports as well as any other feedback."
+
+        MainTutorialS6P2 ->
+            "If there are any questions on our part, we will get back to you via Email."
+
+        MainTutorialS7T ->
+            "Program & Account Settings"
+
+        MainTutorialS7TT1 ->
+            "Settings Dialog"
+
+        MainTutorialS7P1 ->
+            "You can configure various account and program settings in the settings dialog."
+
+        MainTutorialS7P2 ->
+            "Feel free to play around and explore the available settings. Most of them should be pretty self-explanatory but if you run into any issues, please let us know."
+
 
 translateGerman : Text -> String
 translateGerman text =
@@ -2065,6 +2097,30 @@ translateGermanMainTutorialText text =
 
         MainTutorialS5P2 ->
             "Sieh dir an z.B. an, welche Vaults gerade synchronisiert werden sowie weitere Informationen."
+
+        MainTutorialS6T ->
+            "Feedback & Bugreports"
+
+        MainTutorialS6TT1 ->
+            "Sende uns Feedback"
+
+        MainTutorialS6P1 ->
+            "Du kannst uns Verbesserungsvorschläge, Fehler, Anregungen und sonstiges Feedback schicken."
+
+        MainTutorialS6P2 ->
+            "Falls es Rückfragen gibt, werden wir uns bei dir per Email melden."
+
+        MainTutorialS7T ->
+            "Programm- & Accounteinstellungen"
+
+        MainTutorialS7TT1 ->
+            "Einstellungen"
+
+        MainTutorialS7P1 ->
+            "Du kannst verschiedene Account- und Programmeinstellungen vornehmen, um Syncrypt an deine Bedürfnisse anzupassen"
+
+        MainTutorialS7P2 ->
+            "Die vorhandenen Einstellungen sollten soweit selbsterklärend sein. Bei Unklarheiten oder etwaigen Problemen, stehen wir gerne zur Verfügung. Sende uns dazu einfach entsprechendes Feedback (siehe letzter Schritt)."
 
 
 germanDistance : Date -> Date -> String
