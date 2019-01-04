@@ -877,40 +877,44 @@ translateEnglishVaultDialogText vt =
         AllEventsHaveBeenFiltered ->
             "All events have been filtered."
 
-        HistoryItemDescription { email, operation, fingerprint } ->
+        HistoryItemDescription { email, operation, fingerprint, path } ->
+            let
+                file =
+                    Maybe.withDefault "N/A" path
+            in
             case operation of
                 Data.Vault.CreateVault ->
-                    "Created vault"
+                    "Vault created"
 
                 Data.Vault.SetMetadata ->
-                    "Updated vault metadata"
+                    "Vault metadata updated"
 
                 Data.Vault.AddUser ->
-                    "Added user " ++ email ++ " to vault"
+                    "User " ++ email ++ " added to vault"
 
                 Data.Vault.RemoveUser ->
-                    "Removed user " ++ email ++ " from vault"
+                    "User " ++ email ++ " removed from vault"
 
                 Data.Vault.AddUserKey ->
-                    "Added user key for user " ++ email ++ " : " ++ fingerprint
+                    "User key for user " ++ email ++ " added: " ++ fingerprint
 
                 Data.Vault.RemoveUserKey ->
-                    "Removed user key for user " ++ email ++ " : " ++ fingerprint
+                    "User key for user " ++ email ++ " removed: " ++ fingerprint
 
                 Data.Vault.AddFile ->
-                    "Added file"
+                    "Upload: " ++ file
 
                 Data.Vault.DeleteFileRevision ->
-                    "Deleted file (with all revisions)"
+                    "Deleted (with all revisions): " ++ file
 
                 Data.Vault.RemoveFile ->
-                    "Deleted file (with all revisions)"
+                    "Deleted (with all revisions): " ++ file
 
                 Data.Vault.RenameFile ->
-                    "Renamed file"
+                    "Renamed: " ++ file
 
                 Data.Vault.RestoreFile ->
-                    "Restored file revision"
+                    "Restored revision for: " ++ file
 
         ExportVaultKeyBundle ->
             "Export vault key & configuration bundle"
@@ -1774,40 +1778,44 @@ translateGermanVaultDialogText vt =
         AllEventsHaveBeenFiltered ->
             "Alle Ereignisse wurden gefiltert."
 
-        HistoryItemDescription { email, operation, fingerprint } ->
+        HistoryItemDescription { email, operation, fingerprint, path } ->
+            let
+                file =
+                    Maybe.withDefault "N/A" path
+            in
             case operation of
                 Data.Vault.CreateVault ->
-                    "Vault wurde erstellt"
+                    "Vault erstellt"
 
                 Data.Vault.SetMetadata ->
-                    "Vault Metadaten wurden aktualisiert"
+                    "Vault Metadaten aktualisiert"
 
                 Data.Vault.AddUser ->
-                    "Benutzer " ++ email ++ " wurde zum Vault hinzugefügt"
+                    "Benutzer " ++ email ++ " zum Vault hinzugefügt"
 
                 Data.Vault.RemoveUser ->
-                    "Benutzer " ++ email ++ " wurde vom Vault entfernt"
+                    "Benutzer " ++ email ++ " vom Vault entfernt"
 
                 Data.Vault.AddUserKey ->
-                    "Benutzerschlüssel für " ++ email ++ " wurde hinzugefügt: " ++ fingerprint
+                    "Benutzerschlüssel für " ++ email ++ " hinzugefügt: " ++ fingerprint
 
                 Data.Vault.RemoveUserKey ->
-                    "Benutzerschlüssel für  " ++ email ++ " wurde hinzugefügt: " ++ fingerprint
+                    "Benutzerschlüssel für  " ++ email ++ " hinzugefügt: " ++ fingerprint
 
                 Data.Vault.AddFile ->
-                    "Datei hinzugefügt / aktualisiert"
+                    "Upload: " ++ file
 
                 Data.Vault.DeleteFileRevision ->
-                    "Datei Version wurde gelöscht"
+                    "Datei Version gelöscht: " ++ file
 
                 Data.Vault.RemoveFile ->
-                    "Sämtliche Versionen einer Datei wurden gelöscht"
+                    "Sämtliche Versionen gelöscht: " ++ file
 
                 Data.Vault.RenameFile ->
-                    "Datei wurde umbenannt"
+                    "Datei umbenannt:" ++ file
 
                 Data.Vault.RestoreFile ->
-                    "Ältere Dateiversion wurde wiederhergestellt"
+                    "Ältere Dateiversion wiederhergestellt: " ++ file
 
         ExportVaultKeyBundle ->
             "Exportiere Vault Schlüssel & -Einstellungen"
