@@ -101,7 +101,6 @@ type alias ExportStatusResponse =
 
 type State
     = LoadingVaults
-    | UpdatingVaults
     | ShowingAllVaults
     | ShowingVaultDetails Vault
     | ShowingFlyingVaultDetails FlyingVault

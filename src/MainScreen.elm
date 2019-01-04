@@ -713,7 +713,7 @@ updateVaults { forceRefresh } model =
             else
                 Daemon.getVaults
     in
-    ( { model | state = UpdatingVaults }
+    ( model
     , fetchVaults model
     )
 
