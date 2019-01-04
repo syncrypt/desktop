@@ -346,6 +346,7 @@ cryptoTab vaultId state model =
                     { side = Left
                     , onClick = Nothing
                     , label = text label
+                    , tooltipText = Nothing
                     , item =
                         Tooltip.item
                             { position = Bottom
@@ -364,7 +365,7 @@ cryptoTab vaultId state model =
             Tooltips.copied { id = "remoteId", position = Left }
 
         copiedFingerprintTooltip =
-            Tooltips.copied { id = "tooltip", position = Left }
+            Tooltips.copied { id = "fingerprint", position = Left }
 
         fingerprintText =
             vault.crypto.fingerprint
@@ -473,6 +474,7 @@ logTab vaultId state model =
                     { side = Left
                     , onClick = Nothing
                     , label = text <| vt T.Filters
+                    , tooltipText = Nothing
                     , item =
                         span []
                             (eventFilterButtons vaultId state vt)
@@ -1000,6 +1002,7 @@ openFolderButton vaultId state model =
             { side = Left
             , onClick = Nothing
             , label = text <| t (VaultDialogTxt Folder) model
+            , tooltipText = Nothing
             , item =
                 Tooltip.item
                     { position = Right
@@ -1029,6 +1032,7 @@ nameInput msg state model =
             { side = Left
             , onClick = Just (Model.FocusOn state.nameInput.uid)
             , label = text <| t (VaultDialogTxt Name) model
+            , tooltipText = Nothing
             , item =
                 Tooltip.item
                     { position = Right
@@ -1084,6 +1088,7 @@ userInput vaultId state model =
         { side = Left
         , onClick = Just (Model.FocusOn state.userInput.uid)
         , label = text <| t (VaultDialogTxt UserInputLabel) model
+        , tooltipText = Just <| t (VaultDialogTxt UserInputTooltip) model
         , item =
             Tooltip.item
                 { position = Bottom
@@ -1113,6 +1118,7 @@ fileSelectionContainer state model =
                     { side = Left
                     , onClick = Nothing
                     , label = text <| t (VaultDialogTxt FilesLabel) model
+                    , tooltipText = Nothing
                     , item =
                         Ui.Container.view settings
                             []
@@ -1256,6 +1262,7 @@ fileCheckbox path state =
                 , onClick = Just (ToggleIgnorePath path)
                 , label = text (Path.folderName path)
                 , item = checkbox
+                , tooltipText = Nothing
                 }
     in
     span [ class "Checkbox" ]
@@ -1304,6 +1311,7 @@ userKeyCheckbox email userKey state model =
             labeledItem []
                 { side = Right
                 , onClick = labelMsg
+                , tooltipText = Nothing
                 , label =
                     span []
                         [ span [ class "UserKeyFingerprints" ]

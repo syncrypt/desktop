@@ -123,6 +123,7 @@ step3 model state =
                         { side = Left
                         , onClick = Nothing
                         , label = text "Email"
+                        , tooltipText = Nothing
                         , item =
                             div []
                                 [ input [ type_ "email", onInput Model.SetupWizardEmail ]
@@ -133,6 +134,7 @@ step3 model state =
                         { side = Left
                         , onClick = Nothing
                         , label = text <| t T.Password model
+                        , tooltipText = Nothing
                         , item =
                             div []
                                 [ input [ type_ "password", onInput Model.SetupWizardPassword ]

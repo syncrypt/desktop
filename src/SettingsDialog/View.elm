@@ -179,6 +179,7 @@ passwordInput inputType model =
         { side = Top
         , onClick = Just (Model.FocusOn input.uid)
         , label = text <| t labelText model
+        , tooltipText = Nothing
         , item =
             span [ onEnter onEnterMsg ]
                 [ Tooltip.item

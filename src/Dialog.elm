@@ -12,6 +12,7 @@ module Dialog
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
+import Tooltip
 import Ui.Modal
 import Util exposing (Position(..))
 
@@ -30,6 +31,7 @@ type alias LabeledItemSettings msg =
     , onClick : Maybe msg
     , label : Html msg
     , item : Html msg
+    , tooltipText : Maybe String
     }
 
 
@@ -55,21 +57,35 @@ labeledItem attributes settings =
 
 
 orderedLabeling : LabeledItemSettings msg -> Html msg
-orderedLabeling { side, label, item } =
+orderedLabeling { side, label, item, tooltipText } =
     let
+        tip label =
+            case tooltipText of
+                Nothing ->
+                    label
+
+                Just txt ->
+                    Tooltip.item
+                        { position = Util.Left
+                        , length = Tooltip.Auto
+                        , text = txt
+                        , visible = False
+                        }
+                        [ label ]
+
         labelBody =
             case side of
                 Top ->
-                    [ label, item ]
+                    [ tip label, item ]
 
                 Bottom ->
-                    [ item, label ]
+                    [ item, tip label ]
 
                 Left ->
-                    [ label, item ]
+                    [ tip label, item ]
 
                 Right ->
-                    [ item, label ]
+                    [ item, tip label ]
     in
     span []
         labelBody

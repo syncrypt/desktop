@@ -80,6 +80,7 @@ emailInput model =
         { side = Left
         , onClick = Just <| Model.FocusOn state.emailInput.uid
         , label = text <| t T.LoginEmail model
+        , tooltipText = Nothing
         , item =
             span [ onEnter <| Model.FocusOn state.passwordInput.uid ]
                 [ state.emailInput
@@ -99,6 +100,7 @@ passwordInput model =
         { side = Left
         , onClick = Just (Model.FocusOn state.passwordInput.uid)
         , label = text <| t T.LoginPassword model
+        , tooltipText = Nothing
         , item =
             span [ onEnter Model.Login ]
                 [ state.passwordInput
