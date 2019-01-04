@@ -172,6 +172,14 @@ $width-files-tab-input: 250px;
       color: $color-alert;
       margin-top: -2px;
     }
+
+    .AddUserKeyIcon {
+      color: $color-highlight;
+    }
+
+    .RemoveUserKeyIcon {
+      color: $color-alert;
+    }
   }
 
   .EventTableContent {

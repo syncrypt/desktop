@@ -41,12 +41,6 @@ type CloneStatus
     | NotCloned
 
 
-type LogOperationFilter
-    = Create
-    | Delete
-    | Update
-
-
 type EventFilter
     = IsHistoryItem
     | IsLogItem
@@ -56,7 +50,7 @@ type EventFilter
     | Level LogLevel
     | MinDate Date
     | MaxDate Date
-    | Operation LogOperationFilter
+    | Operation Data.Vault.VaultOperation
 
 
 type EventSortOrder
@@ -571,16 +565,7 @@ doesFilterApply event filter =
             False
 
         ( Operation opFilter, History item ) ->
-            -- TODO
-            case opFilter of
-                Create ->
-                    item.operation == CreateVault
-
-                Delete ->
-                    item.operation == DeleteFile
-
-                Update ->
-                    item.operation == UpdateFile
+            item.operation == opFilter
 
         _ ->
             False

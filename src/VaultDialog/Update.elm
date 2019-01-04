@@ -114,18 +114,19 @@ openForVault vault model =
             Maybe.withDefault [] state.localFolderPath
 
         commands =
-            if isNewlyCreated then
-                [ cmd
-                , VaultDialog.Ports.getFileList ( vault.id, path )
-                , model
-                    |> fetchUsers vault.id
-                , model
-                    |> getVaultFingerprints vault.id
-                , model
-                    |> getVaultEventLog vault.id
-                ]
-            else
-                [ cmd ]
+            -- if isNewlyCreated then
+            [ cmd
+            , VaultDialog.Ports.getFileList ( vault.id, path )
+            , model
+                |> fetchUsers vault.id
+            , model
+                |> getVaultFingerprints vault.id
+            , model
+                |> getVaultEventLog vault.id
+            ]
+
+        -- else
+        --     [ cmd ]
     in
     ( state.modal
         |> Ui.Modal.open

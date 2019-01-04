@@ -877,7 +877,7 @@ translateEnglishVaultDialogText vt =
         AllEventsHaveBeenFiltered ->
             "All events have been filtered."
 
-        HistoryItemDescription { email, operation } ->
+        HistoryItemDescription { email, operation, fingerprint } ->
             case operation of
                 Data.Vault.CreateVault ->
                     "Created vault"
@@ -891,17 +891,26 @@ translateEnglishVaultDialogText vt =
                 Data.Vault.RemoveUser ->
                     "Removed user " ++ email ++ " from vault"
 
+                Data.Vault.AddUserKey ->
+                    "Added user key for user " ++ email ++ " : " ++ fingerprint
+
+                Data.Vault.RemoveUserKey ->
+                    "Removed user key for user " ++ email ++ " : " ++ fingerprint
+
                 Data.Vault.AddFile ->
                     "Added file"
-
-                Data.Vault.UpdateFile ->
-                    "Updated file"
 
                 Data.Vault.DeleteFileRevision ->
                     "Deleted file (with all revisions)"
 
-                Data.Vault.DeleteFile ->
+                Data.Vault.RemoveFile ->
                     "Deleted file (with all revisions)"
+
+                Data.Vault.RenameFile ->
+                    "Renamed file"
+
+                Data.Vault.RestoreFile ->
+                    "Restored file revision"
 
         ExportVaultKeyBundle ->
             "Export vault key & configuration bundle"
@@ -1765,7 +1774,7 @@ translateGermanVaultDialogText vt =
         AllEventsHaveBeenFiltered ->
             "Alle Ereignisse wurden gefiltert."
 
-        HistoryItemDescription { email, operation } ->
+        HistoryItemDescription { email, operation, fingerprint } ->
             case operation of
                 Data.Vault.CreateVault ->
                     "Vault wurde erstellt"
@@ -1779,17 +1788,26 @@ translateGermanVaultDialogText vt =
                 Data.Vault.RemoveUser ->
                     "Benutzer " ++ email ++ " wurde vom Vault entfernt"
 
-                Data.Vault.AddFile ->
-                    "Datei hinzugefügt"
+                Data.Vault.AddUserKey ->
+                    "Benutzerschlüssel für " ++ email ++ " wurde hinzugefügt: " ++ fingerprint
 
-                Data.Vault.UpdateFile ->
-                    "Datei aktualisiert"
+                Data.Vault.RemoveUserKey ->
+                    "Benutzerschlüssel für  " ++ email ++ " wurde hinzugefügt: " ++ fingerprint
+
+                Data.Vault.AddFile ->
+                    "Datei hinzugefügt / aktualisiert"
 
                 Data.Vault.DeleteFileRevision ->
                     "Datei Version wurde gelöscht"
 
-                Data.Vault.DeleteFile ->
+                Data.Vault.RemoveFile ->
                     "Sämtliche Versionen einer Datei wurden gelöscht"
+
+                Data.Vault.RenameFile ->
+                    "Datei wurde umbenannt"
+
+                Data.Vault.RestoreFile ->
+                    "Ältere Dateiversion wurde wiederhergestellt"
 
         ExportVaultKeyBundle ->
             "Exportiere Vault Schlüssel & -Einstellungen"

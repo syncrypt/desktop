@@ -32,6 +32,7 @@ import Config exposing (Config)
 import Data.User
     exposing
         ( Email
+        , Fingerprint
         , UserKey
         )
 import Date exposing (Date)
@@ -103,7 +104,7 @@ type alias CryptoInfo =
     , keyAlgorithm : String
     , transferAlgorithm : String
     , hashAlgorithm : String
-    , fingerprint : Maybe String
+    , fingerprint : Maybe Fingerprint
     }
 
 
@@ -117,7 +118,7 @@ type alias HistoryItem =
     , operation : VaultOperation
     , path : Maybe String
     , email : String
-    , fingerprint : String
+    , fingerprint : Fingerprint
     , verified : Bool
     }
 
@@ -131,10 +132,13 @@ type VaultOperation
     | SetMetadata
     | AddUser
     | RemoveUser
+    | AddUserKey
+    | RemoveUserKey
     | AddFile
-    | UpdateFile
     | DeleteFileRevision
-    | DeleteFile
+    | RenameFile
+    | RestoreFile
+    | RemoveFile
 
 
 type alias LogItem =
@@ -355,14 +359,26 @@ vaultOperationDecoder =
                 "OP_REMOVE_USER" ->
                     succeed RemoveUser
 
-                "OP_ADD_FILE" ->
+                "OP_ADD_USER_KEY" ->
+                    succeed AddUserKey
+
+                "OP_REMOVE_USER_KEY" ->
+                    succeed RemoveUserKey
+
+                "OP_UPLOAD" ->
                     succeed AddFile
 
-                "OP_UPDATE_FILE" ->
-                    succeed UpdateFile
+                "OP_RENAME_FILE" ->
+                    succeed RenameFile
 
-                "OP_DELETE_FILE" ->
-                    succeed DeleteFile
+                "OP_REMOVE_FILE" ->
+                    succeed RemoveFile
+
+                "OP_DELETE_FILE_REVISION" ->
+                    succeed DeleteFileRevision
+
+                "OP_RESTORE_FILE" ->
+                    succeed RestoreFile
 
                 val ->
                     fail <| "Unknown VaultOperation: " ++ val

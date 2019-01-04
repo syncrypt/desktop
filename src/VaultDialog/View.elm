@@ -784,17 +784,26 @@ viewOperation vaultId model { operation, revisionId } =
                         , materialIcon "delete_outline" []
                         ]
 
+                Data.Vault.AddUserKey ->
+                    materialIcon "vpn_key" [ class "AddUserKeyIcon" ]
+
+                Data.Vault.RemoveUserKey ->
+                    materialIcon "vpn_key" [ class "RemoveUserKeyIcon" ]
+
                 Data.Vault.AddFile ->
                     materialIcon "cloud_upload" []
-
-                Data.Vault.UpdateFile ->
-                    materialIcon "cloud_done" []
 
                 Data.Vault.DeleteFileRevision ->
                     materialIcon "delete" []
 
-                Data.Vault.DeleteFile ->
+                Data.Vault.RemoveFile ->
                     materialIcon "delete_forever" []
+
+                Data.Vault.RenameFile ->
+                    materialIcon "file_copy" []
+
+                Data.Vault.RestoreFile ->
+                    materialIcon "restore_page" []
 
         copiedTooltip =
             Tooltips.copied { id = revisionId, position = Left }
