@@ -416,7 +416,7 @@ logItemDecoder : Json.Decoder LogItem
 logItemDecoder =
     decode LogItem
         |> required "level" logLevelDecoder
-        |> required "createdAt" dateDecoder
+        |> required "created_at" dateDecoder
         |> required "message" Json.string
         |> required "vault_id" Json.string
 
