@@ -879,7 +879,7 @@ translateEnglishVaultDialogText vt =
 
         HistoryItemDescription { email, operation, fingerprint, path } ->
             let
-                file =
+                fpath =
                     Maybe.withDefault "N/A" path
             in
             case operation of
@@ -902,19 +902,19 @@ translateEnglishVaultDialogText vt =
                     "User key for user " ++ email ++ " removed: " ++ fingerprint
 
                 Data.Vault.AddFile ->
-                    "Upload: " ++ file
+                    "Uploaded: " ++ fpath
 
                 Data.Vault.DeleteFileRevision ->
-                    "Deleted (with all revisions): " ++ file
+                    "Deleted (with all revisions): " ++ fpath
 
                 Data.Vault.RemoveFile ->
-                    "Deleted (with all revisions): " ++ file
+                    "Deleted (with all revisions): " ++ fpath
 
                 Data.Vault.RenameFile ->
-                    "Renamed: " ++ file
+                    "Renamed: " ++ fpath
 
                 Data.Vault.RestoreFile ->
-                    "Restored revision for: " ++ file
+                    "Restored revision for: " ++ fpath
 
         ExportVaultKeyBundle ->
             "Export vault key & configuration bundle"
@@ -1780,7 +1780,7 @@ translateGermanVaultDialogText vt =
 
         HistoryItemDescription { email, operation, fingerprint, path } ->
             let
-                file =
+                fpath =
                     Maybe.withDefault "N/A" path
             in
             case operation of
@@ -1803,19 +1803,19 @@ translateGermanVaultDialogText vt =
                     "Benutzerschlüssel für  " ++ email ++ " hinzugefügt: " ++ fingerprint
 
                 Data.Vault.AddFile ->
-                    "Upload: " ++ file
+                    "Upload: " ++ fpath
 
                 Data.Vault.DeleteFileRevision ->
-                    "Datei Version gelöscht: " ++ file
+                    "Datei Version gelöscht: " ++ fpath
 
                 Data.Vault.RemoveFile ->
-                    "Sämtliche Versionen gelöscht: " ++ file
+                    "Sämtliche Versionen gelöscht: " ++ fpath
 
                 Data.Vault.RenameFile ->
-                    "Datei umbenannt:" ++ file
+                    "Datei umbenannt:" ++ fpath
 
                 Data.Vault.RestoreFile ->
-                    "Ältere Dateiversion wiederhergestellt: " ++ file
+                    "Ältere Dateiversion wiederhergestellt: " ++ fpath
 
         ExportVaultKeyBundle ->
             "Exportiere Vault Schlüssel & -Einstellungen"
