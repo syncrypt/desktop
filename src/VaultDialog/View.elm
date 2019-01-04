@@ -121,12 +121,26 @@ subscriptions model =
 
                 _ ->
                     Sub.none
+
+        historyStream =
+            case model.state of
+                Model.ShowingVaultDetails vault ->
+                    let
+                        histMsg =
+                            msg vault.id << VaultHistoryStream
+                    in
+                    model
+                        |> Daemon.subscribeVaultHistoryStream vault.id histMsg
+
+                _ ->
+                    Sub.none
     in
     Sub.batch
         [ VaultDialog.Ports.fileList fileListMsg
         , VaultDialog.Ports.selectedFolder selectedFolderMsg
         , VaultDialog.Ports.selectedExportFile selectedExportFileMsg
         , logStream
+        , historyStream
         ]
 
 

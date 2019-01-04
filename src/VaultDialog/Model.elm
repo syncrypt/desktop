@@ -144,6 +144,7 @@ type Msg
     | OpenExportDialog
     | SelectedExportFile String
     | VaultLogStream (Result String Data.Vault.LogItem)
+    | VaultHistoryStream (Result String Data.Vault.HistoryItem)
     | ToggleEventSortOrder
     | SortEventsBy EventSortBy
     | FilterEventsBy EventFilter

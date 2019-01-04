@@ -3,7 +3,7 @@ module VaultDialog.Update exposing (..)
 import ConfirmationDialog
 import Daemon
 import Data.User exposing (Email)
-import Data.Vault exposing (FlyingVault, LogItem, Vault, VaultId, nameOrId)
+import Data.Vault exposing (FlyingVault, HistoryItem, LogItem, Vault, VaultId, nameOrId)
 import Dialog exposing (asModalIn)
 import Dict
 import Model exposing (Model, vaultWithId)
@@ -518,6 +518,12 @@ update msg vaultId ({ vaultDialogs } as model) =
             , Cmd.none
             )
 
+        VaultHistoryStream histItem ->
+            ( model
+                |> addHistoryStreamItem histItem vaultId state
+            , Cmd.none
+            )
+
         ToggleEventSortOrder ->
             ( state
                 |> VaultDialog.Model.toggleSortOrder
@@ -581,6 +587,22 @@ addLogStreamItem logItem vaultId state model =
 
         Ok item ->
             { state | logItems = item :: state.logItems }
+                |> asStateIn vaultId model
+
+
+addHistoryStreamItem : Result String HistoryItem -> VaultId -> State -> Model -> Model
+addHistoryStreamItem histItem vaultId state model =
+    case histItem of
+        Err reason ->
+            model
+                |> andLog "Failed decoding Vault history stream message: " reason
+
+        Ok item ->
+            let
+                oldItems =
+                    RemoteData.withDefault [] state.historyItems
+            in
+            { state | historyItems = Success (item :: oldItems) }
                 |> asStateIn vaultId model
 
 
