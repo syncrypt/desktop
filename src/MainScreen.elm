@@ -1153,10 +1153,7 @@ headerButtons : Model -> List (Html Msg)
 headerButtons ({ language, login } as model) =
     case login of
         LoggedIn _ ->
-            [ IconButton.view [ onClick UpdateVaults ]
-                language
-                RefreshVaultsButton
-            , IconButton.view [ onClick OpenNewVaultWizard ]
+            [ IconButton.view [ onClick OpenNewVaultWizard ]
                 language
                 ImportVaultButton
             , Tooltip.viewIfActive daemonLogTooltip

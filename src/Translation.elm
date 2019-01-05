@@ -77,7 +77,6 @@ type Text
     | ViewDaemonLog
     | ImportVault
     | ProgramSettings
-    | RefreshVaults
     | SettingsDialogTxt SettingsDialogText
     | UpdateAvailable String
     | SetupWizardTxt SetupWizardText
@@ -489,9 +488,6 @@ translateEnglish text =
 
         ProgramSettings ->
             "Program Settings"
-
-        RefreshVaults ->
-            "Refresh Vaults"
 
         SettingsDialogTxt text ->
             translateEnglishSettingsDialogText text
@@ -1388,9 +1384,6 @@ translateGerman text =
 
         ProgramSettings ->
             "Einstellungen"
-
-        RefreshVaults ->
-            "Vaults aktualisieren"
 
         SettingsDialogTxt text ->
             translateGermanSettingsDialogText text

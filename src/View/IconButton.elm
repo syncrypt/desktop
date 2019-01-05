@@ -12,7 +12,6 @@ type IconButton
     = SettingsButton
     | LogoutButton
     | FeedbackButton
-    | RefreshVaultsButton
     | DaemonLogButton
     | ImportVaultButton
 
@@ -52,9 +51,6 @@ iconName buttonType =
         FeedbackButton ->
             "feedback"
 
-        RefreshVaultsButton ->
-            "sync_white"
-
         DaemonLogButton ->
             "event"
 
@@ -74,9 +70,6 @@ tooltip language buttonType =
 
         FeedbackButton ->
             T.translate language T.SendUsFeedbackAndBugReports
-
-        RefreshVaultsButton ->
-            T.translate language T.RefreshVaults
 
         DaemonLogButton ->
             T.translate language T.ViewDaemonLog
