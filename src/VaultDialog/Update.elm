@@ -32,6 +32,7 @@ import VaultDialog.Model
         , hasChanged
         , isIgnored
         , openInfoBox
+        , resetLocalFolderItems
         , toggleIgnorePath
         , toggleInfoBox
         , toggleUserKey
@@ -130,7 +131,7 @@ openForVault vault model =
     in
     ( state.modal
         |> Ui.Modal.open
-        |> asModalIn state
+        |> asModalIn (state |> resetLocalFolderItems)
         |> asStateIn vault.id model
     , Cmd.batch commands
     )

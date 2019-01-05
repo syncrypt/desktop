@@ -665,3 +665,8 @@ closeAllInfoBoxes state =
 isInfoBoxOpen : TabId -> State -> Bool
 isInfoBoxOpen tabId { openInfoBoxes } =
     Set.member tabId openInfoBoxes
+
+
+resetLocalFolderItems : State -> State
+resetLocalFolderItems state =
+    { state | localFolderItems = Dict.empty }
