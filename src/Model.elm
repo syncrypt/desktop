@@ -125,7 +125,6 @@ type Msg
     | HideTooltipWithId Tooltip.ID
     | UpdateLoginState
     | UpdateVaults
-    | UpdateVaultsWithForcedRefresh
     | UpdateFlyingVaults
     | UpdateStats
     | UpdatedLoginState (WebData LoginState)

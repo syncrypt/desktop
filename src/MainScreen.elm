@@ -91,7 +91,6 @@ subscriptions model =
             Sub.batch <|
                 commonSubs
                     ++ [ VaultDialog.View.subscriptions model
-                       , Time.every (10 * Time.minute) (\_ -> UpdateVaultsWithForcedRefresh)
                        , Time.every model.config.updateInterval (\_ -> UpdateVaults)
                        , Time.every (10 * Time.minute) (\_ -> UpdateFlyingVaults)
                        , Time.every model.config.updateInterval (\_ -> UpdateStats)
@@ -178,12 +177,7 @@ update msg model =
 
         UpdateVaults ->
             model
-                |> updateVaults { forceRefresh = False }
-
-        UpdateVaultsWithForcedRefresh ->
-            model
-                |> updateVaults { forceRefresh = True }
-                ~> updateStats
+                |> updateVaults
 
         UpdateDaemonConfig ->
             ( model
@@ -222,12 +216,12 @@ update msg model =
             model
                 |> VaultDialog.Update.close vaultId
                 |> cloneVault vaultId
-                ~> updateVaults { forceRefresh = False }
+                ~> updateVaults
 
         ClonedVault vaultId data ->
             model
                 |> clonedVault vaultId data
-                ~> updateVaults { forceRefresh = True }
+                ~> updateVaults
                 ~> updateStats
 
         CloseVaultDetails vaultId ->
@@ -238,7 +232,7 @@ update msg model =
             { model | state = ShowingAllVaults }
                 |> VaultDialog.Update.close vaultId
                 |> saveVault vaultId
-                ~> updateVaults { forceRefresh = False }
+                ~> updateVaults
 
         DeleteVaultDialog vaultId ->
             ( model
@@ -254,7 +248,7 @@ update msg model =
             model
                 |> VaultDialog.Update.saveVaultChanges vault.id dialogState
                 ~> (notifyText <| VaultCreated vault.id)
-                ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
+                ~> delayedUpdateVaults 5000
 
         CreatedVault _ webData ->
             model
@@ -263,7 +257,7 @@ update msg model =
         CreatedVaultInEmptyFolder folderPath (Success vault) ->
             model
                 |> (notifyText <| VaultCreated vault.id)
-                ~> delayedUpdateVaults { delay = 5000, forceRefresh = True }
+                ~> delayedUpdateVaults 5000
 
         CreatedVaultInEmptyFolder folderPath webData ->
             model
@@ -272,12 +266,12 @@ update msg model =
         ImportedVault (Success vault) ->
             model
                 |> notifyText (VaultImported vault.id)
-                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+                ~> delayedUpdateVaults 100
 
         ImportedVault webData ->
             model
                 |> notifyText VaultImportFailed
-                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+                ~> delayedUpdateVaults 100
                 |> andLog "ImportedVault error: " webData
 
         ExportedVault vaultId (Success { success, filename }) ->
@@ -295,18 +289,18 @@ update msg model =
         RemovedVaultFromSync (Success vaultId) ->
             model
                 |> VaultDialog.Update.cancel vaultId
-                |> updateVaults { forceRefresh = False }
+                |> updateVaults
                 ~> (notifyText <| VaultRemoved vaultId)
 
         RemovedVaultFromSync data ->
             model
-                |> updateVaults { forceRefresh = False }
+                |> updateVaults
                 ~> notifyText VaultRemoveFailed
 
         DeletedVault data ->
             model
                 |> deletedVault data
-                ~> updateVaults { forceRefresh = False }
+                ~> updateVaults
 
         VaultDialogMsg vaultId msg ->
             model
@@ -373,7 +367,7 @@ update msg model =
 
         VaultMetadataUpdated vaultId (Success _) ->
             model
-                |> updateVaults { forceRefresh = False }
+                |> updateVaults
 
         VaultMetadataUpdated vaultId _ ->
             model
@@ -601,7 +595,7 @@ createVaultFailed webData model =
             in
             model
                 |> notifyText msg
-                ~> delayedUpdateVaults { delay = 100, forceRefresh = True }
+                ~> delayedUpdateVaults 100
 
         _ ->
             ( model
@@ -704,31 +698,17 @@ updateLoginState model =
     )
 
 
-updateVaults : { forceRefresh : Bool } -> Model -> ( Model, Cmd Msg )
-updateVaults { forceRefresh } model =
-    let
-        fetchVaults =
-            if forceRefresh then
-                Daemon.getVaultsWithForcedRefresh
-            else
-                Daemon.getVaults
-    in
+updateVaults : Model -> ( Model, Cmd Msg )
+updateVaults model =
     ( model
-    , fetchVaults model
+    , Daemon.getVaults model
     )
 
 
-delayedUpdateVaults : { delay : Time.Time, forceRefresh : Bool } -> Model -> ( Model, Cmd Msg )
-delayedUpdateVaults { delay, forceRefresh } model =
-    let
-        msg =
-            if forceRefresh then
-                UpdateVaultsWithForcedRefresh
-            else
-                UpdateVaults
-    in
+delayedUpdateVaults : Time.Time -> Model -> ( Model, Cmd Msg )
+delayedUpdateVaults delay model =
     ( model
-    , Util.delayMsg delay msg
+    , Util.delayMsg delay UpdateVaults
     )
 
 
@@ -773,7 +753,7 @@ updatedVaults vaults model =
     case vaults of
         RemoteData.Failure error ->
             model
-                |> delayedUpdateVaults { delay = 1000, forceRefresh = False }
+                |> delayedUpdateVaults 1000
                 |> andLog "Failed to get vaults, retrying" error
 
         _ ->
@@ -1173,7 +1153,7 @@ headerButtons : Model -> List (Html Msg)
 headerButtons ({ language, login } as model) =
     case login of
         LoggedIn _ ->
-            [ IconButton.view [ onClick UpdateVaultsWithForcedRefresh ]
+            [ IconButton.view [ onClick UpdateVaults ]
                 language
                 RefreshVaultsButton
             , IconButton.view [ onClick OpenNewVaultWizard ]
