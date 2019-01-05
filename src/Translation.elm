@@ -54,7 +54,7 @@ type Text
     | NoFilesUploadedYet
     | UsersWithAccessTooltip
     | TotalVaultSizeTooltip
-    | TotalVaultRevisionsTooltip
+    | TotalVaultFilesTooltip
     | VaultDialogTxt VaultDialogText
     | VaultListTxt VaultListText
     | Previous
@@ -421,8 +421,8 @@ translateEnglish text =
         TotalVaultSizeTooltip ->
             "Total vault size (with all file revisions on server)"
 
-        TotalVaultRevisionsTooltip ->
-            "Total number of file revisions"
+        TotalVaultFilesTooltip ->
+            "Total number of files"
 
         VaultDialogTxt vt ->
             translateEnglishVaultDialogText vt
@@ -1320,8 +1320,8 @@ translateGerman text =
         TotalVaultSizeTooltip ->
             "Gesamtgröße des Vaults (inkl. aller Dateiversionen)"
 
-        TotalVaultRevisionsTooltip ->
-            "Anzahl aller Dateiversionen"
+        TotalVaultFilesTooltip ->
+            "Anzahl aller Dateien"
 
         VaultDialogTxt vt ->
             translateGermanVaultDialogText vt

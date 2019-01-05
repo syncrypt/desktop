@@ -160,21 +160,21 @@ vaultUserCount vault model =
         ]
 
 
-type alias HasRevisionCountAndId a =
-    { a | revisionCount : Int, id : Data.Vault.VaultId }
+type alias HasFileCountAndId a =
+    { a | fileCount : Int, id : Data.Vault.VaultId }
 
 
-vaultRevisionCount : HasRevisionCountAndId a -> Model -> Html msg
-vaultRevisionCount vault model =
+vaultFileCount : HasFileCountAndId a -> Model -> Html msg
+vaultFileCount vault model =
     vaultInfoItem vault
-        [ div [ class "VaultRevisions" ]
+        [ div [ class "VaultFiles" ]
             [ Tooltip.item
                 { position = Left
                 , length = Tooltip.Auto
-                , text = t T.TotalVaultRevisionsTooltip model
+                , text = t T.TotalVaultFilesTooltip model
                 , visible = False
                 }
-                [ text (toString vault.revisionCount) ]
+                [ text (toString vault.fileCount) ]
             ]
         ]
 
@@ -253,7 +253,7 @@ vaultItem model vault =
                 [ vaultUpdatedAtInfo vault model ]
                 [ vaultUserCount vault model
                 , vaultActivity vault model
-                , vaultRevisionCount vault model
+                , vaultFileCount vault model
                 ]
         ]
 
@@ -273,7 +273,7 @@ flyingVaultItem model flyingVault =
                 [ flyingVaultUpdatedAtInfo flyingVault model ]
                 [ vaultUserCount vault model
                 , vaultActivity vault model
-                , vaultRevisionCount vault model
+                , vaultFileCount vault model
                 ]
         ]
 

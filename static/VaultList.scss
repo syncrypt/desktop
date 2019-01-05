@@ -267,7 +267,7 @@ $border-radius-vault-card: 5px;
     @include vault-info-item(url(assets/data_usage_24px.svg), 20px, 0px, 30px);
   }
 
-  .VaultRevisions {
+  .VaultFiles {
     @include vault-info-item(url(assets/folder_open_24px.svg), 20px, 0px, 30px);
     margin-left: 40px;
     width: 100%;
