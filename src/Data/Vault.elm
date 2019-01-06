@@ -334,7 +334,7 @@ decoder =
         |> optional "modification_date" dateDecoder Nothing
         |> optionalMetadata "icon" Json.string
         |> required "crypt_info" cryptoInfoDecoder
-        |> required "ignore" (Json.list pathDecoder)
+        |> required "ignore_paths" (Json.list pathDecoder)
 
 
 pathDecoder : Json.Decoder Path
