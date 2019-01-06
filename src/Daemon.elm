@@ -34,8 +34,9 @@ module Daemon
         , subscribeVaultHistoryStream
         , subscribeVaultLogStream
         , updateGUIConfig
-        , updateVault
         , updateVaultMetadata
+        , updateVaultSettings
+        , updateVaults
         )
 
 import Config exposing (Config)
@@ -72,6 +73,7 @@ type ApiPath
     | UserKeys Email
     | VaultFingerprints VaultId
     | VaultHistory VaultId
+    | VaultSettings VaultId
     | Stream ApiStreamPath
     | User
     | DaemonConfig
@@ -352,8 +354,18 @@ getVaultFingerprints vaultId { config } =
             (Json.list Json.string)
 
 
-updateVault : VaultOptions -> Model -> Cmd (WebData Vault)
-updateVault options { config } =
+updateVaultSettings : VaultId -> VaultSettings -> Model -> Cmd (WebData Vault)
+updateVaultSettings vaultId settings { config } =
+    config
+        |> apiRequest
+            Put
+            (VaultSettings vaultId)
+            (Json <| vaultSettingsJson config settings)
+            Data.Vault.decoder
+
+
+updateVaults : VaultOptions -> Model -> Cmd (WebData Vault)
+updateVaults options { config } =
     config
         |> apiRequest
             Post
@@ -364,7 +376,7 @@ updateVault options { config } =
 
 createNewVaultInFolder : Path.Path -> List Path.Path -> Model -> Cmd (WebData Vault)
 createNewVaultInFolder folderPath ignorePaths model =
-    updateVault
+    updateVaults
         (Data.Vault.Create
             { folder = folderPath
             , ignorePaths = ignorePaths
@@ -401,7 +413,7 @@ deleteVault vaultId { config } =
 
 importVault : Path.Path -> Path.Path -> Model -> Cmd (WebData Vault)
 importVault folderPath vaultPackagePath model =
-    updateVault
+    updateVaults
         (Data.Vault.Import
             { folder = folderPath
             , vaultPackagePath = vaultPackagePath
@@ -563,6 +575,9 @@ apiPath apiPath =
 
         VaultHistory vaultId ->
             "vault/" ++ vaultId ++ "/history/"
+
+        VaultSettings vaultId ->
+            "vault/" ++ vaultId ++ "/settings/"
 
         Stream DaemonLogStream ->
             "/logstream"

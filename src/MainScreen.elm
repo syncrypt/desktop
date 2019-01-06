@@ -898,7 +898,7 @@ createVault state model =
         Just folderPath ->
             ( model
             , model
-                |> Daemon.updateVault
+                |> Daemon.updateVaults
                     (Data.Vault.Create
                         { folder = folderPath
                         , ignorePaths = Set.toList state.ignoredFolderItems
@@ -929,7 +929,7 @@ cloneVault vaultId origModel =
         Just folderPath ->
             ( model
             , model
-                |> Daemon.updateVault
+                |> Daemon.updateVaults
                     (Data.Vault.Clone
                         { id = vaultId
                         , folder = folderPath

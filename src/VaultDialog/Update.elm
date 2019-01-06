@@ -182,8 +182,16 @@ saveVaultChanges vaultId state model =
                 { name = state.nameInput.value, icon = state.icon }
                 model
 
+        updateSettingsCmd =
+            Daemon.updateVaultSettings vaultId
+                { folder = state.localFolderPath
+                , ignorePaths = state.ignoredFolderItems |> Set.toList
+                }
+                model
+                |> Cmd.map (Model.VaultMetadataUpdated vaultId)
+
         commands =
-            updateMetadataCmd :: addUserCmds
+            updateMetadataCmd :: updateSettingsCmd :: addUserCmds
     in
     ( cancel vaultId model
     , Cmd.batch commands

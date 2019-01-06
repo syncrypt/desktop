@@ -13,6 +13,7 @@ module Data.Vault
         , VaultId
         , VaultOperation(..)
         , VaultOptions(..)
+        , VaultSettings
         , addVaultUserEncoder
         , asVault
         , decoder
@@ -25,6 +26,7 @@ module Data.Vault
         , logLevelDecoder
         , metadataEncoder
         , nameOrId
+        , vaultSettingsJson
         , vaultStatusDecoder
         )
 
@@ -170,6 +172,7 @@ type alias Vault =
     , modificationDate : Maybe Date
     , icon : Maybe String
     , crypto : CryptoInfo
+    , ignore : List Path
     }
 
 
@@ -211,6 +214,7 @@ init vaultId =
         , hashAlgorithm = ""
         , fingerprint = Nothing
         }
+    , ignore = []
     }
 
 
@@ -247,35 +251,62 @@ asVault fv =
     }
 
 
+type alias VaultSettings =
+    { folder : Maybe Path, ignorePaths : List Path }
+
+
+vaultSettingsJson : Config -> VaultSettings -> Json.Encode.Value
+vaultSettingsJson config settings =
+    let
+        ignorePaths =
+            ( "ignorePaths"
+            , Json.Encode.list <|
+                List.map
+                    (Json.Encode.string << pathString config)
+                    settings.ignorePaths
+            )
+
+        props =
+            case settings.folder of
+                Nothing ->
+                    [ ignorePaths ]
+
+                Just folder ->
+                    [ ( "folder", Json.Encode.string (pathString config folder) )
+                    , ignorePaths
+                    ]
+    in
+    Json.Encode.object props
+
+
+pathString : Config -> Path -> String
+pathString config path =
+    String.join config.pathSeparator path
+
+
 jsonOptions : Config -> VaultOptions -> Json.Encode.Value
 jsonOptions config options =
     let
-        pathString : Path -> String
-        pathString path =
-            String.join config.pathSeparator path
+        ps path =
+            pathString config path
     in
     case options of
-        Create { folder, ignorePaths } ->
-            Json.Encode.object
-                [ ( "folder", Json.Encode.string (pathString folder) )
-                , ( "ignorePaths"
-                  , Json.Encode.list <|
-                        List.map
-                            (Json.Encode.string << pathString)
-                            ignorePaths
-                  )
-                ]
+        Create cfg ->
+            vaultSettingsJson config
+                { folder = Just <| cfg.folder
+                , ignorePaths = cfg.ignorePaths
+                }
 
         Import { folder, vaultPackagePath } ->
             Json.Encode.object
-                [ ( "folder", Json.Encode.string (pathString folder) )
-                , ( "import_package", Json.Encode.string (pathString vaultPackagePath) )
+                [ ( "folder", Json.Encode.string (ps folder) )
+                , ( "import_package", Json.Encode.string (ps vaultPackagePath) )
                 ]
 
         Clone { id, folder } ->
             Json.Encode.object
                 [ ( "id", Json.Encode.string id )
-                , ( "folder", Json.Encode.string (pathString folder) )
+                , ( "folder", Json.Encode.string (ps folder) )
                 ]
 
         Remove _ ->
@@ -303,6 +334,13 @@ decoder =
         |> optional "modification_date" dateDecoder Nothing
         |> optionalMetadata "icon" Json.string
         |> required "crypt_info" cryptoInfoDecoder
+        |> required "ignore" (Json.list pathDecoder)
+
+
+pathDecoder : Json.Decoder Path
+pathDecoder =
+    Json.string
+        |> Json.map Path.asPath
 
 
 optionalMetadata : String -> Json.Decoder a -> Json.Decoder (Maybe a -> b) -> Json.Decoder b
