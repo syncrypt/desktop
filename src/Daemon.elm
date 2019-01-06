@@ -73,7 +73,6 @@ type ApiPath
     | UserKeys Email
     | VaultFingerprints VaultId
     | VaultHistory VaultId
-    | VaultSettings VaultId
     | Stream ApiStreamPath
     | User
     | DaemonConfig
@@ -359,7 +358,7 @@ updateVaultSettings vaultId settings { config } =
     config
         |> apiRequest
             Put
-            (VaultSettings vaultId)
+            (Vault vaultId)
             (Json <| vaultSettingsJson config settings)
             Data.Vault.decoder
 
@@ -575,9 +574,6 @@ apiPath apiPath =
 
         VaultHistory vaultId ->
             "vault/" ++ vaultId ++ "/history/"
-
-        VaultSettings vaultId ->
-            "vault/" ++ vaultId ++ "/settings/"
 
         Stream DaemonLogStream ->
             "/logstream"
