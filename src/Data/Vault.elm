@@ -259,7 +259,7 @@ vaultSettingsJson : Config -> VaultSettings -> Json.Encode.Value
 vaultSettingsJson config settings =
     let
         ignorePaths =
-            ( "ignorePaths"
+            ( "ignore_paths"
             , Json.Encode.list <|
                 List.map
                     (Json.Encode.string << pathString config)
