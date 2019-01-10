@@ -32,7 +32,6 @@ steps =
 dialogSettings : Model.Model -> WizardSettings Model.Msg
 dialogSettings model =
     { address = Model.WizardDialogMsg
-    , name = "DaemonLog"
     , onFinishMsg = Nothing
     , steps = steps |> List.map Tuple.first
     , wizardType = DaemonLogDialog

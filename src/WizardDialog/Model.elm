@@ -49,7 +49,6 @@ type WizardType
 
 type alias WizardSettings msg =
     { address : Msg -> msg
-    , name : String
     , wizardType : WizardType
     , onFinishMsg : Maybe msg
     , steps : List String
@@ -98,7 +97,6 @@ type alias ViewSettings msg =
 type alias State msg =
     { modal : Ui.Modal.Model
     , address : Msg -> msg
-    , name : String
     , wizardType : WizardType
     , steps : List String
     , currentStep : Int
@@ -132,13 +130,12 @@ type alias StepConfig model msg =
 
 
 init : WizardSettings msg -> State msg
-init { name, wizardType, address, steps, onFinishMsg, closable } =
+init { wizardType, address, steps, onFinishMsg, closable } =
     { modal =
         Ui.Modal.init
             |> Ui.Modal.closable closable
             |> Ui.Modal.backdrop True
     , address = address
-    , name = name
     , wizardType = wizardType
     , steps = steps
     , currentStep = 1

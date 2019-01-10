@@ -20,7 +20,6 @@ steps =
 settings : Model.Model -> WizardSettings Model.Msg
 settings model =
     { address = Model.WizardDialogMsg
-    , name = "NewVaultWizard"
     , onFinishMsg = Just Model.NewVaultWizardFinished
     , steps = steps |> List.map Tuple.first
     , wizardType = NewVaultWizard
