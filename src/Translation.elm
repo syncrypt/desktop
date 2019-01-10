@@ -284,6 +284,8 @@ type SetupWizardText
     | TOS10
     | TOS11
     | IAgree
+    | CreateYourNewAccount
+    | Signup
     | KeyCreation
     | KeyImport
     | KeyNotYetInitialized
@@ -1132,6 +1134,12 @@ translateEnglishSetupWizardText text =
 
         IAgree ->
             "I agree"
+
+        CreateYourNewAccount ->
+            "Create your new account"
+
+        Signup ->
+            "Signup"
 
         KeyCreation ->
             "Key Creation"
@@ -2033,6 +2041,12 @@ translateGermanSetupWizardText text =
 
         IAgree ->
             "Ich stimme zu"
+
+        CreateYourNewAccount ->
+            "Erstelle dein neues Benutzerprofil"
+
+        Signup ->
+            "Anmelden"
 
         KeyCreation ->
             "Schlüssel Generierung"

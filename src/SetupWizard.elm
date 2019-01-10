@@ -24,8 +24,9 @@ steps =
     [ ( "Welcome", step1 )
     , ( "Account Setup", step2 )
     , ( "Account Login", step3 )
-    , ( "Account Signup", step4 )
-    , ( "Key Creation", step5 )
+    , ( "Account Signup 1", step4 )
+    , ( "Account Signup 2", step5 )
+    , ( "Key Creation", step6 )
     ]
 
 
@@ -98,11 +99,45 @@ step2 model state =
                         }
                     , button []
                         { label = t T.SignUpWithNewAccount model
-                        , onClick = state.address (ToStepWithName "Account Signup")
+                        , onClick = state.address (ToStepWithName "Account Signup 1")
                         }
                     ]
                 ]
         , buttons = DefaultNoCancel
+        }
+
+
+emailInput : HasLanguage a -> Html Model.Msg
+emailInput model =
+    labeledItem [ class "InputLabel" ]
+        { side = Left
+        , onClick = Nothing
+        , label = text "Email"
+        , item =
+            div []
+                [ input [ type_ "email", onInput Model.SetupWizardEmail ]
+                    [ text <| t T.YourEmail model ]
+                ]
+        }
+
+
+passwordInput model =
+    labeledItem [ class "InputLabel" ]
+        { side = Left
+        , onClick = Nothing
+        , label = text <| t T.Password model
+        , item =
+            div []
+                [ input [ type_ "password", onInput Model.SetupWizardPassword ]
+                    [ text "" ]
+                ]
+        }
+
+
+passwordResetButton model =
+    button [ class "ForgotPasswordButton" ]
+        { label = t T.ForgotPassword model
+        , onClick = Model.SendPasswordResetLink
         }
 
 
@@ -118,30 +153,9 @@ step3 model state =
                     , t T.WeWillSendYouAPasswordResetLink model
                     ]
                 , div [ class "Options" ]
-                    [ labeledItem [ class "InputLabel" ]
-                        { side = Left
-                        , onClick = Nothing
-                        , label = text "Email"
-                        , item =
-                            div []
-                                [ input [ type_ "email", onInput Model.SetupWizardEmail ]
-                                    [ text <| t T.YourEmail model ]
-                                ]
-                        }
-                    , labeledItem [ class "InputLabel" ]
-                        { side = Left
-                        , onClick = Nothing
-                        , label = text <| t T.Password model
-                        , item =
-                            div []
-                                [ input [ type_ "password", onInput Model.SetupWizardPassword ]
-                                    [ text "" ]
-                                ]
-                        }
-                    , button [ class "ForgotPasswordButton" ]
-                        { label = t T.ForgotPassword model
-                        , onClick = Model.SendPasswordResetLink
-                        }
+                    [ emailInput model
+                    , passwordInput model
+                    , passwordResetButton model
                     , if model.setupWizard.passwordResetSent then
                         div []
                             [ text <| t T.PasswordResetLinkHasBeenSent model ]
@@ -189,6 +203,27 @@ step4 model state =
 
 
 step5 model state =
+    Just
+        { title = t T.AccountSignup model
+        , contents =
+            wizardContent
+                [ infoTextWithHeader []
+                    (t T.CreateYourNewAccount model)
+                    []
+                , div [ class "Options" ]
+                    [ emailInput model
+                    , passwordInput model
+                    ]
+                ]
+        , buttons =
+            CustomNavNoCancel
+                { prev = Auto
+                , next = NavWithLabel (state.address (ToStepWithName "Key Creation")) (t T.Signup model)
+                }
+        }
+
+
+step6 model state =
     let
         keyStateText keyState =
             case keyState of
