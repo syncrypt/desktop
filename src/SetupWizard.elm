@@ -153,7 +153,7 @@ step3 model state =
         , buttons =
             CustomNavNoCancel
                 { prev = Auto
-                , next = NavWithLabel (state.address (ToStepWithName "Key Creation")) "Login"
+                , next = NavWithLabel (state.address (ToStepWithName "Key Creation")) (t T.Login model)
                 }
         }
 
@@ -184,7 +184,7 @@ step4 model state =
         , buttons =
             CustomNavNoCancel
                 { prev = Nav <| state.address (ToStepWithName "Account Setup")
-                , next = AutoWithLabel "I agree"
+                , next = AutoWithLabel <| t T.IAgree model
                 }
         }
 

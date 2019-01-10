@@ -268,6 +268,7 @@ type SetupWizardText
     | Password
     | ForgotPassword
     | PasswordResetLinkHasBeenSent
+    | Login
     | AccountSignup
     | LegalNotice
     | PleaseReadAndConfirm
@@ -1083,6 +1084,9 @@ translateEnglishSetupWizardText text =
 
         PasswordResetLinkHasBeenSent ->
             "Password reset link has been sent."
+
+        Login ->
+            "Login"
 
         AccountSignup ->
             "Account Signup"
@@ -1981,6 +1985,9 @@ translateGermanSetupWizardText text =
 
         PasswordResetLinkHasBeenSent ->
             "Email mit Link zum Zurücksetzen des Passworts wurde verschickt"
+
+        Login ->
+            "Einloggen"
 
         AccountSignup ->
             "Neues Profil Erstellen"
