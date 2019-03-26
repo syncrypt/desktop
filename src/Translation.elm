@@ -615,8 +615,6 @@ translateEnglishStatsText st =
                 ++ " open connections ("
                 ++ toString s.idleSlots
                 ++ " idle) / "
-                ++ toString s.stats
-                ++ " file queries / "
                 ++ toString s.downloads
                 ++ " downloads / "
                 ++ toString s.uploads
@@ -1522,8 +1520,6 @@ translateGermanStatsText st =
                 ++ " offene Verbindungen ("
                 ++ toString s.idleSlots
                 ++ " ruhend) / "
-                ++ toString s.stats
-                ++ " Dateiabfragen / "
                 ++ toString s.downloads
                 ++ " Downloads / "
                 ++ toString s.uploads

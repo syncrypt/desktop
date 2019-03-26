@@ -141,10 +141,6 @@ li {
   .IdleConnectionsIcon{
     @include basic-icon(url(assets/connection_grey_24px.svg), 15px);
   }
-  .FileQueriesIcon{
-    color: #eee !important;
-    @include footer-material-icon(15px);
-  }
   .DownloadsIcon{
     @include basic-icon(url(assets/download_24px.svg), 15px);
   }

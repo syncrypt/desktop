@@ -203,7 +203,6 @@ type Msg
 statsDecoder : Json.Decoder Stats
 statsDecoder =
     decode Stats
-        |> requiredAt [ "stats", "stats" ] Json.int
         |> requiredAt [ "stats", "downloads" ] Json.int
         |> requiredAt [ "stats", "uploads" ] Json.int
         |> requiredAt [ "user_key_state" ] keyStateDecoder

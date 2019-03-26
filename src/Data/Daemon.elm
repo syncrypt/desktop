@@ -40,8 +40,7 @@ type KeyState
 
 
 type alias Stats =
-    { stats : Int
-    , downloads : Int
+    { downloads : Int
     , uploads : Int
     , userKeyState : KeyState
     , totalSlots : Int

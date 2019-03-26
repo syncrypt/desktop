@@ -1218,8 +1218,6 @@ footer ({ stats, vaults, language, updateAvailable } as model) =
                         , text <| toString s.idleSlots
                         , span [ class "IdleConnectionsIcon" ]
                             []
-                        , text <| toString s.stats
-                        , materialIcon "autorenew" [ class "FileQueriesIcon" ]
                         , text <| toString s.downloads
                         , span [ class "DownloadsIcon" ]
                             []
