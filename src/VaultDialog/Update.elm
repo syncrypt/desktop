@@ -419,6 +419,11 @@ update msg vaultId ({ vaultDialogs } as model) =
             , Daemon.removeVault vaultId model
             )
 
+        ResyncVault ->
+            ( model
+            , Daemon.resyncVault vaultId model
+            )
+
         Confirmed AddUser ->
             let
                 ( input, cmd ) =

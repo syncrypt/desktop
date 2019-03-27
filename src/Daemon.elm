@@ -29,6 +29,7 @@ module Daemon
         , logout
         , removeVault
         , removeVaultUser
+        , resyncVault
         , sendFeedback
         , subscribeDaemonLogStream
         , subscribeVaultHistoryStream
@@ -73,6 +74,7 @@ type ApiPath
     | UserKeys Email
     | VaultFingerprints VaultId
     | VaultHistory VaultId
+    | ResyncVault VaultId
     | Stream ApiStreamPath
     | User
     | DaemonConfig
@@ -400,6 +402,17 @@ removeVault vaultId { config } =
         |> Cmd.map RemovedVaultFromSync
 
 
+resyncVault : VaultId -> Model -> Cmd Msg
+resyncVault vaultId { config } =
+    config
+        |> apiRequest
+            Get
+            (ResyncVault vaultId)
+            EmptyBody
+            (succeed vaultId)
+        |> Cmd.map ResyncingVault
+
+
 deleteVault : VaultId -> Model -> Cmd (WebData VaultId)
 deleteVault vaultId { config } =
     config
@@ -574,6 +587,9 @@ apiPath apiPath =
 
         VaultHistory vaultId ->
             "vault/" ++ vaultId ++ "/history/"
+
+        ResyncVault vaultId ->
+            "vault/" ++ vaultId ++ "/resync/"
 
         Stream DaemonLogStream ->
             "/logstream"

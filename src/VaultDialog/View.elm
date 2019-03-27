@@ -546,6 +546,9 @@ adminTab vaultId state model =
                 [ infoText (t (VaultDialogTxt VaultRemoveButtonInfo) model)
                 , removeButton vaultId state model
                 , separator
+                , infoText (t (VaultDialogTxt VaultResyncButtonInfo) model)
+                , resyncButton vaultId state model
+                , separator
                 ]
 
         infoBoxText =
@@ -879,6 +882,18 @@ removeButton vaultId state model =
             , onClick =
                 Model.VaultDialogMsg vaultId
                     (VaultDialog.Model.Confirm RemoveVault)
+            }
+        ]
+
+
+resyncButton : VaultId -> State -> Model -> Html Model.Msg
+resyncButton vaultId state model =
+    span
+        [ classList [ ( "Hidden", state.cloneStatus /= Cloned ) ] ]
+        [ button []
+            { label = t (VaultDialogTxt Resync) model
+            , onClick =
+                Model.VaultDialogMsg vaultId ResyncVault
             }
         ]
 

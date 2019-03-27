@@ -154,6 +154,7 @@ type Msg
     | NotificationCenterMsg Ui.NotificationCenter.Msg
     | RemoveVaultFromSync VaultId
     | RemovedVaultFromSync (WebData VaultId)
+    | ResyncingVault (WebData VaultId)
     | DeletedVault (WebData VaultId)
     | VaultUserAdded VaultId Email (WebData Email)
     | VaultMetadataUpdated VaultId (WebData Vault)

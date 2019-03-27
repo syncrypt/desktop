@@ -297,6 +297,10 @@ update msg model =
                 |> updateVaults
                 ~> notifyText VaultRemoveFailed
 
+        ResyncingVault data ->
+            model
+                |> notifyText VaultIsResyncing
+
         DeletedVault data ->
             model
                 |> deletedVault data

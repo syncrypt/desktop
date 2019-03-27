@@ -121,6 +121,7 @@ type Msg
     | TabsMsg Ui.Tabs.Msg
     | CollapseFolder Path
     | ExpandFolder Path
+    | ResyncVault
     | Confirm RequiresConfirmation
     | Confirmed RequiresConfirmation
     | AddUserWithKeys User.Email (List User.UserKey)

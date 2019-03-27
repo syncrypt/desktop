@@ -106,6 +106,7 @@ type NotificationText
     | VaultImportFailed
     | VaultRemoveFailed
     | VaultDeleteFailed
+    | VaultIsResyncing
     | VaultMetadataUpdateFailed VaultId
     | VaultCloneFailed VaultId Reason
     | VaultAddUserFailed VaultId Email
@@ -169,6 +170,7 @@ type VaultDialogText
     | RSAKeyLengthLabel
     | RSAKeyLengthTooltip
     | VaultRemoveButtonInfo
+    | VaultResyncButtonInfo
     | VaultDeleteButtonInfo
     | VaultExportButtonInfo
     | AskDeleteVault
@@ -177,6 +179,7 @@ type VaultDialogText
     | CancelChanges
     | DeleteFromServer
     | StopSyncing
+    | Resync
     | CreateVault
     | SaveVault
     | SyncVaultToFolder
@@ -566,6 +569,9 @@ translateEnglishNotificationText t =
                 FolderPathNotValid ->
                     "Failed to create vault. Folder path is not a valid path."
 
+        VaultIsResyncing ->
+            "Vault is re-syncing."
+
         VaultRemoveFailed ->
             "Failed to remove vault. Please try again."
 
@@ -772,6 +778,9 @@ translateEnglishVaultDialogText vt =
         VaultRemoveButtonInfo ->
             "Stops synchronizing this vault on this device. Will stop all local changes from being uploaded and any remote changes being downloaded to this machine."
 
+        VaultResyncButtonInfo ->
+            "Re-sync this vault and validate the sign chain from the beginning."
+
         VaultDeleteButtonInfo ->
             "Delete this vault with its files from the Syncrypt cloud."
 
@@ -795,6 +804,9 @@ translateEnglishVaultDialogText vt =
 
         StopSyncing ->
             "Stop syncing"
+
+        Resync ->
+            "Re-sync"
 
         CreateVault ->
             "Create vault"
@@ -1505,6 +1517,9 @@ translateGermanNotificationText t =
         SyncryptInitialized ->
             "Syncrypt erfolgreich initialisiert"
 
+        VaultIsResyncing ->
+            "Der Vault wird neu gesynct und validiert."
+
         SendingFeedbackFailed ->
             "Feedback konnte nicht gesendet werden. Bitte versuche es nochmal."
 
@@ -1677,6 +1692,9 @@ translateGermanVaultDialogText vt =
         VaultRemoveButtonInfo ->
             "Stoppt die Sychronisation des Vaults auf diesem Gerät. Dadurch werden keine neuen hochgeladenen Dateien runter- bzw. lokale Veränderungen mehr hochgeladen."
 
+        VaultResyncButtonInfo ->
+            "Setzt den lokalen Zustand des Vaults zurück. Danach wird die Signierungskette nochmal neu gesynct und validiert."
+
         VaultDeleteButtonInfo ->
             "Lösche diesen Vault mit allen Dateien in der Syncrypt Cloud (es werden keine Dateien lokal gelöscht)."
 
@@ -1700,6 +1718,9 @@ translateGermanVaultDialogText vt =
 
         StopSyncing ->
             "Synchronisation stoppen"
+
+        Resync ->
+            "Neu synchronisieren"
 
         CreateVault ->
             "Vault erstellen"
