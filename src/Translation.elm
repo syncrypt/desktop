@@ -2135,7 +2135,7 @@ translateGermanMainTutorialText text =
             "Verfügbare Cloud Vaults (nicht synchronisiert)"
 
         MainTutorialS3TT1 ->
-            "Deine vefügbaren Cloud Vaults"
+            "Deine verfügbaren Cloud Vaults"
 
         MainTutorialS3P1 ->
             "Weiter unten kannst du alle verfügbaren, aber derzeit nicht auf diesem Gerät synchronisierten Vaults sehen."
