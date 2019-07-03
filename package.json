@@ -107,6 +107,6 @@
     "electron-prebuilt-compile": "1.6.2",
     "elm": "^0.18.0",
     "elm-github-install": "^1.6.1",
-    "node-sass": "^4.7.2"
+    "node-sass": "^4.12.0"
   }
 }
