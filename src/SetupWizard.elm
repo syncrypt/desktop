@@ -1,6 +1,6 @@
 module SetupWizard exposing (settings, viewSettings)
 
-import Data.Daemon exposing (KeyState(..))
+import Data.Daemon exposing (InitializationState(..))
 import Dialog exposing (labeledItem)
 import Html exposing (Html, div, input, p, span, text)
 import Html.Attributes exposing (class, type_)

@@ -4,7 +4,7 @@ module Data.Daemon
         , Error
         , ErrorStatus
         , GUIConfig
-        , KeyState(..)
+        , InitializationState(..)
         , LogItem
         , Stats
         , daemonConfigDecoder
@@ -33,7 +33,7 @@ type ErrorStatus
     = ErrorStatus String
 
 
-type KeyState
+type InitializationState
     = Uninitialized
     | Initializing
     | Initialized
@@ -42,7 +42,8 @@ type KeyState
 type alias Stats =
     { downloads : Int
     , uploads : Int
-    , userKeyState : KeyState
+    , userKeyState : InitializationState
+    , identityState : InitializationState
     , totalSlots : Int
     , busySlots : Int
     , idleSlots : Int

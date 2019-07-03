@@ -19,7 +19,7 @@ module Translation
         , translate
         )
 
-import Data.Daemon exposing (KeyState, Stats)
+import Data.Daemon exposing (InitializationState, Stats)
 import Data.User exposing (Email)
 import Data.Vault exposing (VaultId)
 import Date exposing (Date)

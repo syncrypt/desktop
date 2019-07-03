@@ -361,9 +361,17 @@ update msg model =
             )
 
         UpdatedStatsFromApi stats ->
-            ( { model | stats = stats }
-            , Cmd.none
-            )
+            let
+                newModel =
+                    { model | stats = stats }
+            in
+            if isIdentityInitialized newModel then
+                ( newModel
+                , Cmd.none
+                )
+            else
+                newModel
+                    |> openSetupWizard
 
         VaultUserAdded vaultId email data ->
             model

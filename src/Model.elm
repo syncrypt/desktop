@@ -1,7 +1,7 @@
 module Model exposing (..)
 
 import Config exposing (Config)
-import Data.Daemon exposing (DaemonConfig, KeyState(..), Stats)
+import Data.Daemon exposing (DaemonConfig, InitializationState(..), Stats)
 import Data.User exposing (Email)
 import Data.Vault exposing (FlyingVault, Status, Vault, VaultId)
 import Date exposing (Date)
@@ -206,17 +206,18 @@ statsDecoder =
     decode Stats
         |> requiredAt [ "stats", "downloads" ] Json.int
         |> requiredAt [ "stats", "uploads" ] Json.int
-        |> requiredAt [ "user_key_state" ] keyStateDecoder
+        |> requiredAt [ "user_key_state" ] initializationStateDecoder
+        |> requiredAt [ "identity_state" ] initializationStateDecoder
         |> requiredAt [ "slots", "total" ] Json.int
         |> optionalAt [ "slots", "busy" ] Json.int 0
         |> optionalAt [ "slots", "idle" ] Json.int 0
         |> optionalAt [ "slots", "closed" ] Json.int 0
 
 
-keyStateDecoder : Json.Decoder KeyState
-keyStateDecoder =
+initializationStateDecoder : Json.Decoder InitializationState
+initializationStateDecoder =
     let
-        parseKeyState s =
+        parseState s =
             succeed <|
                 case s of
                     "initializing" ->
@@ -229,7 +230,7 @@ keyStateDecoder =
                         Uninitialized
     in
     Json.string
-        |> andThen parseKeyState
+        |> andThen parseState
 
 
 loginStateDecoder : Json.Decoder LoginState
@@ -597,3 +598,10 @@ mainTutorial =
           , onExit = [ RemoveTooltip (Tooltip.id logoutTooltip) ]
           }
         ]
+
+
+isIdentityInitialized : Model -> Bool
+isIdentityInitialized { stats } =
+    stats
+        |> RemoteData.map (\s -> s.identityState /= Uninitialized)
+        |> RemoteData.withDefault True
