@@ -124,7 +124,7 @@ test:
 	elm-test
 
 deps:
-	npm install && elm-install
+	npm install && node_modules/.bin/elm-install
 
 clean-deps:
 	rm -rf elm-stuff
