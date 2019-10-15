@@ -94,17 +94,17 @@
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
-    "electron-compile": "^6.4.0",
-    "electron-log": "^2.2.14",
-    "electron-updater": "^3.0.3",
+    "electron-compile": "^6.4.4",
+    "electron-log": "^3.0.8",
+    "electron-updater": "^4.1.2",
     "expand-home-dir": "^0.0.3",
     "file": "^0.2.2"
   },
   "devDependencies": {
-    "chokidar-cli": "^1.2.0",
-    "electron-builder": "^20.0.5",
-    "electron-forge": "^4.0.2",
-    "electron-prebuilt-compile": "1.6.2",
+    "chokidar-cli": "^2.0.0",
+    "electron-builder": "^21.2.0",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "4.0.0",
     "elm": "^0.18.0",
     "elm-github-install": "^1.6.1",
     "node-sass": "^4.12.0"
