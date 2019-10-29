@@ -162,6 +162,33 @@ function initAutoUpdater() {
   });
 }
 
+function createMainMenu() {
+  const template = [
+    {
+      label: "Application",
+      submenu: [
+        { label: "About Syncrypt", selector: "orderFrontStandardAboutPanel:" },
+        { type: "separator" },
+        { label: "Quit", accelerator: "Command+Q", click: function () { app.quit(); } }
+      ]
+    }, {
+      label: "Edit",
+      submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+      ]
+    }
+  ]
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
+
 const TRAY_ICON = "vault_tray_icon_16px.png"
 const TRAY_ICON_CLICKED = "vault_tray_icon_bw_16px.png"
 
@@ -204,6 +231,7 @@ if (!gotTheLock) {
     launchDaemon()
     createWindow()
     createTray()
+    createMainMenu()
     initAutoUpdater()
   })
 
