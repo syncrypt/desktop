@@ -11,7 +11,7 @@ MAIN_FILE = $(BUILD_DIR)/main.js
 CSS_FILES = $(wildcard static/*.scss)
 CSS_TARGETS = $(subst static,build,$(CSS_FILES:.scss=.css))
 
-ELECTRON_BUILD=./node_modules/.bin/build
+ELECTRON_BUILD=./node_modules/.bin/electron-builder
 
 SASS_CMD=./node_modules/node-sass/bin/node-sass
 
