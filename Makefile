@@ -40,7 +40,7 @@ package-setup: all
 	cp icon.* $(BUILD_DIR)
 	cp package.json $(BUILD_DIR)
 	sed -i -e "s/build\/main/main/g" $(BUILD_DIR)/package.json
-	cd $(BUILD_DIR) && npm install --production
+	cd $(BUILD_DIR) && npm install --no-save --production
 
 release-setup: all
 	rm -rf $(RELEASE_DIR)/tmp/*
@@ -52,7 +52,7 @@ release-setup: all
 	sed -i -e "s/build\/main/syncrypt\/main/g" $(RELEASE_DIR)/tmp/package.json
 	sed -i -e "s/\"electron-forge\": \"^4.0.2\",//g" $(RELEASE_DIR)/tmp/package.json
 	cp client/* $(RELEASE_DIR)/tmp/syncrypt/
-	cd $(RELEASE_DIR)/tmp && npm install
+	cd $(RELEASE_DIR)/tmp && npm install --no-save
 
 release: release-setup
 	#cd $(BUILD_DIR) && electron-packager ./ Syncrypt --overwrite
@@ -124,7 +124,7 @@ test:
 	elm-test
 
 deps:
-	npm install && node_modules/.bin/elm-install
+	npm install --no-save && node_modules/.bin/elm-install
 
 clean-deps:
 	rm -rf elm-stuff
